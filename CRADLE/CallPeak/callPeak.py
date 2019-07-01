@@ -46,11 +46,11 @@ def getArgs():
 	return parser
 
 
-def run():
+def run(args):
 
 	###### INITIALIZE PARAMETERS
         print("======  INITIALIZING PARAMETERS ...\n")
-	args = getArgs().parse_args()
+	#args = getArgs().parse_args()
 	vari.setGlobalVariables(args)	
 
 	global numProcess

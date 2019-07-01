@@ -459,12 +459,11 @@ def mergeCorrectedBWfiles(args):
 	return signalBWName
 
 	
-def run():
+def run(args):
 
 	start_time = time.time()
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
-	args = getArgs().parse_args()
 	vari.setGlobalVariables(args)
 
 	

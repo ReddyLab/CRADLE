@@ -510,14 +510,14 @@ def mergeCorrectedBWfiles(args):
 	return signalBWName
 
 	
-def run():
+def run(args):
 
 	import psutil
 
 	start_time = time.time()
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
-	args = getArgs().parse_args()
+	#args = getArgs().parse_args()
 	checkArgs(args)
 	vari.setGlobalVariables(args)
 	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)

@@ -3,7 +3,6 @@
 import numpy as np
 cimport numpy as np
 cimport cython
-from cython.view cimport array as cvarray
 import pyBigWig
 import statsmodels.formula.api as smf
 import statsmodels.sandbox.stats.multicomp
