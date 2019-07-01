@@ -1,5 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
-
 import os
 import math
 import numpy as np

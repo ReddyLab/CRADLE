@@ -1,5 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
-
 import sys
 import os
 import numpy as np
@@ -16,7 +14,7 @@ import matplotlib.pyplot as plt
 import h5py
 import random
 
-import vari
+from CRADLE.CorrectBiasStored import vari
 
 
 def performRegression(trainSet):

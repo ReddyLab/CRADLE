@@ -1,5 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
-
 import sys
 import os
 import numpy as np
@@ -17,7 +15,7 @@ import random
 import warnings
 import h5py
 
-import vari
+from CRADLE.CorrectBias import vari
 
 def calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
 

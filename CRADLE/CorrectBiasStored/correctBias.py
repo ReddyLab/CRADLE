@@ -1,5 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
-
 import os
 import numpy as np
 import multiprocessing
@@ -16,8 +14,8 @@ import time
 import linecache
 import tempfile
 
-import vari
-import calculateOnebp
+from CRADLE.CorrectBiasStored import vari
+from CRADLE.CorrectBiasStored import calculateOnebp
 
 def getArgs():
 	parser = argparse.ArgumentParser()

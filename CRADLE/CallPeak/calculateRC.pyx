@@ -1,5 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
-
 import numpy as np
 cimport numpy as np
 cimport cython
@@ -10,7 +8,7 @@ import tempfile
 import os
 import scipy.stats
 
-import vari
+from CRADLE.CallPeak import vari
 
 import warnings
 

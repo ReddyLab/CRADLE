@@ -1,5 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
-
 import os
 import numpy as np
 import multiprocessing
@@ -9,8 +7,8 @@ import pyBigWig
 import gc
 import statsmodels.sandbox.stats.multicomp
 
-import vari
-import calculateRC
+from CRADLE.CallPeak import vari
+from CRADLE.CallPeak import calculateRC
 
 import sys ## for test
 

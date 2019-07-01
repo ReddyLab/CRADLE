@@ -1,17 +1,10 @@
 #!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
 
 from distutils.core import setup, Extension
-#from Cython.Build import cythonize
 
 
 def main():
 
-	'''
-	setup(
-  	name = 'CalculateOnebp Part',
-  	ext_modules = cythonize("calculateOnebp.pyx"),
-	)
-	'''
 	setup(name = "CRADLE",
 	      version = "1.0.0",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",

@@ -1,5 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
-
 import os
 import numpy as np
 import multiprocessing
@@ -11,13 +9,12 @@ import random
 import pyBigWig
 import statsmodels.api as sm
 import gc
-#import matplotlib.pyplot as plt
 import time
 import linecache
 import tempfile
 
-import vari
-import calculateOnebp
+from CRADLE.CorrectBias import vari
+from CRADLE.CorrectBias import calculateOnebp
 
 def getArgs():
 	parser = argparse.ArgumentParser()
