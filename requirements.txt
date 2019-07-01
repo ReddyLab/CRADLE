@@ -1,0 +1,9 @@
+numpy >= 1.14.3
+multiprocessing >= 0.70a1
+argparse >= 1.1
+py2bit >= 0.3.0
+pyBigWig >= 0.3.11
+statsmodels >= 0.8.0
+scipy >= 1.0.1
+matplotlib >= 1.5.3
+h5py >= 2.6.0
