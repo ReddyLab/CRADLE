@@ -6,7 +6,7 @@ script: python test.py
 deploy:
   provider: pages
   skip_cleanup: true
-  github_token: 5b7d3c76542fdde41835cf28453af9d838003962 #${GITHUB_TOKEN} #5b7d3c76542fdde41835cf28453af9d838003962
+  github_token: ${GITHUB_TOKEN} #5b7d3c76542fdde41835cf28453af9d838003962 #${GITHUB_TOKEN} 
   keep_history: true
   on:
     branch: master
