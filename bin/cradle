@@ -109,7 +109,7 @@ def getArgs():
 
 def main():
 	
-	args = getArgs().parser_args()
+	args = getArgs().parse_args()
 
 	### Correcting bias 
 	if(args.commandName == "correctBias"):
