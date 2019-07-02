@@ -1,7 +1,7 @@
 #!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
 
 from distutils.core import setup, Extension
-
+import numpy
 
 def main():
 
