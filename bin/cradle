@@ -44,7 +44,7 @@ def getArgs():
 
 	correctBias_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
 
-	optionalArgs.add_argument('-bl', help="Blacklist regions")
+	correctBias_optional.add_argument('-bl', help="Blacklist regions")
 
 
 
