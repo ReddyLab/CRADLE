@@ -29,9 +29,9 @@ def main():
 		       "matplotlib >= 1.5.3",
 		       "h5py >= 2.6.0"
                ], 
-	      ext_modules = [ Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c'], include_dirs=[numpy.get_include()), 
-		              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()),
-			      Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'], include_dirs=[numpy.get_include())
+	      ext_modules = [ Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c'], include_dirs=[numpy.get_include()]), 
+		              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()]),
+			      Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'], include_dirs=[numpy.get_include()])
               ], ### 
 	      classifier = [
 			"Programming Language :: Python :: 2.7",
