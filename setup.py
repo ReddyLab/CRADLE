@@ -5,9 +5,13 @@ from distutils.core import setup, Extension
 
 def main():
 
+	#with open("README.md", "r") as fh:
+	#	long_description = fh.read()
+
 	setup(name = "CRADLE",
-	      version = "1.0.0",
+	      version = "0.1.0",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",
+	      #long_description = long_description,
 	      author = "Young-Sook Kim",
 	      author_email = "kys91240@gmail.com",
 	      url = "https://github.com/Young-Sook/CRADLE",
@@ -28,7 +32,12 @@ def main():
 	      ext_modules = [ Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c']), 
 		              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c']),
 			      Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'])
-              ] ### 
+              ], ### 
+	      classifier = [
+			"Programming Language :: Python :: 2.7",
+			"License :: OSI Approved :: MIT License"
+	      ]
+
 	      ### If meta data is needed -> add classifier = [ 'Development status:', 'Operating system'] 
 	)
 

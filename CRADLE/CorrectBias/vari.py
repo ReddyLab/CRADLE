@@ -143,9 +143,7 @@ def setBiasFiles(args):
 
 		ENTROPY = -0.02485
 		temp = np.array(GIBBS)
-		MIN_TM = temp[:,1].astype(float).min()
 	        MIN_TM = -0.12 / ENTROPY
-        	MAX_TM = temp[:,1].astype(float).max()
         	MAX_TM = -2.7 / ENTROPY
         	PARA1 = (math.pow(10, 6) - math.exp(1)) / (math.pow(10, 6) - 1)
         	PARA2 =  math.pow(10, -6) / (1-PARA1)
