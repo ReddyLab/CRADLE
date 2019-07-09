@@ -211,8 +211,6 @@ def setAnlaysisRegion(region, bl):
 
 		REGION = region_woBL		
 
-	print("Anlaysis Region:")
-	print(REGION)	
 	
 	return
 
