@@ -104,6 +104,8 @@ def getArgs():
 
 	callPeak_optional.add_argument('-wbin', help="he size of bin used for testing differential activity, default = rbin/6")
 
+	callPeak_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
+
 	return parser
 
 
