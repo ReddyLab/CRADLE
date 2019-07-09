@@ -123,6 +123,9 @@ def FilltrainSetMeta(trainBinInfo):
 			if(numBin == 0):
 				numBin = 1
 				meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))[0]
+				if(meanValue == None):
+					continue
+
 				if( (meanValue >= downLimit) and (meanValue < upLimit)):
 					result.append([regionChromo, regionStart, regionEnd, meanValue])
 
@@ -162,6 +165,10 @@ def FilltrainSetMeta(trainBinInfo):
 			if(numBin == 0):
 				numBin = 1
 				meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
+
+				if(meanValue == None):
+					continue
+
 				if( (meanValue >= downLimit) and (meanValue < upLimit)):
 					line = [regionChromo, regionStart, regionEnd]
 					resultFile.write('\t'.join([str(x) for x in line]) + "\n")
