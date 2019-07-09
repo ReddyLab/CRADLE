@@ -1,6 +1,5 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 import numpy
 
 def main():
@@ -15,12 +14,11 @@ def main():
 	      author = "Young-Sook Kim",
 	      author_email = "kys91240@gmail.com",
 	      url = "https://github.com/Young-Sook/CRADLE",
-	      packages = ['CorrectBias', 'CorrectBiasStored', 'CallPeak'], # package names
-	      package_dir = {'': 'CRADLE'}, # It calls ./CRADLE/CorrectBias/__init__.py
+	      packages = ['CRADLE', 'CRADLE.CorrectBias', 'CRADLE.CorrectBiasStored', 'CRADLE.CallPeak'], # package names
+	      package_dir = {'CRADLE': 'CRADLE'}, # It calls ./CRADLE/CorrectBias/__init__.py
 	      scripts = ["bin/cradle"], # python scource code, intended to be started from the command line.
 	      install_requires = [  
 		       "numpy >= 1.14.3",
-		       "multiprocessing >= 0.70a1",
 		       "argparse >= 1.1",
                        "py2bit >= 0.3.0",
 		       "pyBigWig >= 0.3.11",
