@@ -261,7 +261,6 @@ def setAnlaysisRegion(region, bl):
 		REGION = region_woBL
 	
 
-
 	return
 
 
