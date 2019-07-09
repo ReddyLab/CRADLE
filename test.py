@@ -7,7 +7,6 @@ import sys
 import math
 
 
-
 def findStartGibbs(seq, seqLen):
         gibbs = 0
         subtract = -1
@@ -167,6 +166,7 @@ if( (coef[0] == 5) and (coef[1] == -0.04) and (coef[2] == 0.001)):
 	sys.exit(0) # without error
 else:
 	sys.exit(1)
+
 
 
 
