@@ -1,4 +1,3 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
 
 import pyBigWig
 import numpy as np
@@ -8,14 +7,14 @@ import math
 
 
 def findStartGibbs(seq, seqLen):
-        gibbs = 0
-        subtract = -1
+	gibbs = 0
+	subtract = -1
 
-        for i in range(seqLen-1):
-                dimer = seq[i:(i+2)].upper()
-                
-                dimer_idx = 0
-                for j in range(2):
+	for i in range(seqLen-1):
+		dimer = seq[i:(i+2)].upper()
+		
+		dimer_idx = 0
+		for j in range(2):
 			if(dimer[j]=='A'):
 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0
 			elif(dimer[j]=='C'):
@@ -26,19 +25,19 @@ def findStartGibbs(seq, seqLen):
 				dimer_idx = dimer_idx + np.power(4, 1-j) * 3
 		gibbs = gibbs + GIBBS[dimer_idx][1]
 
-                if(i==0):
-                        subtract = gibbs
+		if(i==0):
+			subtract = gibbs
 
-        start_gibbs = gibbs - subtract
+	start_gibbs = gibbs - subtract
 
-        return start_gibbs, gibbs
+	return start_gibbs, gibbs
 
 
 def editStartGibbs(oldDimer, newDimer, past_start_gibbs):
-        gibbs = past_start_gibbs
-        subtract = -1
+	gibbs = past_start_gibbs
+	subtract = -1
 
-        # newDimer
+	# newDimer
 	dimer_idx = 0
 	for j in range(2):
 		if(newDimer[j]=='A'):
@@ -51,7 +50,7 @@ def editStartGibbs(oldDimer, newDimer, past_start_gibbs):
 			dimer_idx = dimer_idx + np.power(4, 1-j) * 3
 	gibbs = gibbs + GIBBS[dimer_idx][1]
 
-        ## remove the old dimer for the next iteration
+	## remove the old dimer for the next iteration
 	dimer_idx = 0
 	for j in range(2):
 		if(oldDimer[j]=='A'):
@@ -66,7 +65,7 @@ def editStartGibbs(oldDimer, newDimer, past_start_gibbs):
 
 	start_gibbs = gibbs - subtract
 
-        return start_gibbs, gibbs
+	return start_gibbs, gibbs
 
 
 def convertGibbs(gibbs):
@@ -76,19 +75,19 @@ def convertGibbs(gibbs):
 	PARA1 = (math.pow(10, 6) - math.exp(1)) / (math.pow(10, 6) - 1)
 	PARA2 =  math.pow(10, -6) / (1-PARA1)
 	
-        tm = gibbs / (ENTROPY*(fragLen-1))
-        tm = (tm - MIN_TM) / (MAX_TM - MIN_TM)
+	tm = gibbs / (ENTROPY*(fragLen-1))
+	tm = (tm - MIN_TM) / (MAX_TM - MIN_TM)
 
-        ## anneal
-        anneal = ( math.exp(tm) - PARA1 ) * PARA2
-        anneal = np.log(anneal)
+	## anneal
+	anneal = ( math.exp(tm) - PARA1 ) * PARA2
+	anneal = np.log(anneal)
 
-        ## denature
-        tm = tm - 1
-        denature = ( math.exp( tm*(-1) ) - PARA1 ) * PARA2
-        denature = math.log(denature)
+	## denature
+	tm = tm - 1
+	denature = ( math.exp( tm*(-1) ) - PARA1 ) * PARA2
+	denature = math.log(denature)
 
-        return anneal, denature
+	return anneal, denature
 
 
 
