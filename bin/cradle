@@ -49,7 +49,7 @@ def getArgs():
 
 
 	########### correctBias_stored
-        correctBiasStored_parser = subparsers.add_parser("correctBias_stored", help="Correct shear, pcr, mappability, g-quadruplex sturcture bias from bigwig files when there are stored covariate hdf5 files. This is much faster than correctBias.")
+	correctBiasStored_parser = subparsers.add_parser("correctBias_stored", help="Correct shear, pcr, mappability, g-quadruplex sturcture bias from bigwig files when there are stored covariate hdf5 files. This is much faster than correctBias.")
 	## required
 	correctBiasStored_required = correctBiasStored_parser.add_argument_group("Required Args")
 
@@ -120,13 +120,13 @@ def main():
 
 	### Correcting bias when there are stored covariates
 	if(args.commandName == "correctBias_stored"):
-                from CRADLE.CorrectBiasStored.correctBias_stored import run
-                run(args)
+		from CRADLE.CorrectBiasStored.correctBias_stored import run
+		run(args)
 
 	### Call peaks
 	if(args.commandName == "callPeak"):
-                from CRADLE.CallPeak.callPeak import run
-                run(args)	
+		from CRADLE.CallPeak.callPeak import run
+		run(args)	
 
 
 if __name__ == '__main__':
