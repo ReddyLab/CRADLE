@@ -1,4 +1,4 @@
-#!/data/reddylab/software/miniconda2/envs/YoungSook/bin/python2.7
+#!/usr/bin/python 
 
 import argparse
 
