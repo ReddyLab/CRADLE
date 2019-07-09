@@ -1,5 +1,4 @@
 numpy >= 1.14.3
-multiprocessing >= 0.70a1
 argparse >= 1.1
 py2bit >= 0.3.0
 pyBigWig >= 0.3.11
