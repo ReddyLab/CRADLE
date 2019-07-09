@@ -120,7 +120,7 @@ def main():
 
 	### Correcting bias when there are stored covariates
 	if(args.commandName == "correctBias_stored"):
-		from CRADLE.CorrectBiasStored.correctBias_stored import run
+		from CRADLE.CorrectBiasStored.correctBias import run
 		run(args)
 
 	### Call peaks
