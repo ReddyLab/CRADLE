@@ -16,59 +16,15 @@ import tempfile
 from CRADLE.CorrectBias import vari
 from CRADLE.CorrectBias import calculateOnebp
 
-def getArgs():
-	parser = argparse.ArgumentParser()
-	
-	### required
-	requiredArgs = parser.add_argument_group('Required Arguments')
-	
-	
-	requiredArgs.add_argument('-ctrlbw', help="Ctrl bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", nargs='+', required=True)
-	
-	requiredArgs.add_argument('-expbw', help="Experimental bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -expbw file1.bw file2.bw", nargs='+', required=True)
-
-	requiredArgs.add_argument('-l', help="Fragment length.", required=True)
-
-	requiredArgs.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-sspaced", required=True)
-
-	requiredArgs.add_argument('-biasType', help="Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type either shear or pcr, tb file is required. If you type map, mappability file and length of one sequenced end is required. If you type gquad, gquadruplex score is required.", nargs='+', required=True)	
-
-	requiredArgs.add_argument('-faFile', help=".2bit file.", required=True)
-
-
-
-	### optional  
-	optionalArgs = parser.add_argument_group('Optional Arguments')	
-
-	optionalArgs.add_argument('-binSize', help="The size of bin for correction", default=1) 
-
-	optionalArgs.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out", default=10)
-
-	optionalArgs.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")  
-
-	optionalArgs.add_argument('-kmer', help="The length of one sequencing end. Required when 'map' is in '-biasType'")
-
-	optionalArgs.add_argument('-gquadFile', help="Gqaudruplex file in bigwig format. Required when 'gquad' is in '-biasType'", nargs="+") 
-
-	optionalArgs.add_argument('-gquadMax', help="The maximum gquad score. This is used to normalize Gquad score.", default=78.6)
-
-
-	optionalArgs.add_argument('-o', help="Output directoy")
-
-	optionalArgs.add_argument('-p', help="The number of cpus")
-
-	optionalArgs.add_argument('-bl', help="Blacklist regions")
-
-	return parser
 
 
 def checkArgs(args):
 	if( ('map' in args.biasType) and (args.mapFile == None) ):
-                sys.exit("Error: Mappability File is required to correct mappability bias")
+		sys.exit("Error: Mappability File is required to correct mappability bias")
 	if( ('map' in args.biasType) and (args.kmer == None) ):
-                sys.exit("Error: Kmer is required to correct mappability bias")
+		sys.exit("Error: Kmer is required to correct mappability bias")
 	if( ('gquad' in args.biasType) and (args.gquadFile == None) ):
-                sys.exit("Error: Gquadruplex File is required to correct g-gquadruplex bias")
+		sys.exit("Error: Gquadruplex File is required to correct g-gquadruplex bias")
 	
 	if(args.o == None):
 		args.o = os.getcwd() + "/" + "CRADE_correction_result"	
@@ -77,135 +33,135 @@ def checkArgs(args):
 
 
 def getCandidateTrainSet(rcPercentile):
-        global trainBinSize
-        global highRC
+	global trainBinSize
+	global highRC
 
+	trainBinSize = int(vari.BINSIZE) * 2
+	if(trainBinSize < 1000):
+		trainBinSize = 1000
 
-        trainBinSize = int(vari.BINSIZE) * 2
-        if(trainBinSize < 1000):
-                trainBinSize = 1000
+	trainRegionNum = math.pow(10, 6)
+	trainRegionNum = trainRegionNum / float(trainBinSize)
 
-        trainRegionNum = math.pow(10, 6)
-        trainRegionNum = trainRegionNum / float(trainBinSize)
+	totalBinNum = 0
+	for region in vari.REGION:
+		regionStart = int(region[1])
+		regionEnd = int(region[2])
 
-        totalBinNum = 0
-        for region in vari.REGION:
-                regionStart = int(region[1])
-                regionEnd = int(region[2])
-
-                numBin = (regionEnd - regionStart) / trainBinSize
+		numBin = int((regionEnd - regionStart) / trainBinSize)
 		if(numBin == 0):
 			numBin = 1
-                totalBinNum = totalBinNum + numBin
+		totalBinNum = totalBinNum + numBin
 
-        if(totalBinNum < trainRegionNum):
-                trainRegionNum = totalBinNum
+	if(totalBinNum < trainRegionNum):
+		trainRegionNum = totalBinNum
 
-        trainRegionNum1 = int(np.round(trainRegionNum * 0.5 / 5))
-        trainRegionNum2 = int(np.round(trainRegionNum * 0.5 / 9))
-        trainSetMeta = []
+	trainRegionNum1 = int(np.round(trainRegionNum * 0.5 / 5))
+	trainRegionNum2 = int(np.round(trainRegionNum * 0.5 / 9))
+	trainSetMeta = []
 
-        ctrlBW = pyBigWig.open(vari.CTRLBW_NAMES[0])
+	ctrlBW = pyBigWig.open(vari.CTRLBW_NAMES[0])
 
-        meanRC = []
-        for region in vari.REGION:
-                regionChromo = region[0]
-                regionStart = int(region[1])
-                regionEnd = int(region[2])
+	meanRC = []
+	for region in vari.REGION:
+		regionChromo = region[0]
+		regionStart = int(region[1])
+		regionEnd = int(region[2])
 
-                numBin = (regionEnd - regionStart) / trainBinSize
+		numBin = int( (regionEnd - regionStart) / trainBinSize)
 		if(numBin == 0):
 			numBin = 1
-                temp = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-                temp = temp[np.where(temp!=None)]
-                meanRC.extend(temp.tolist())
+		temp = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
+		temp = temp[np.where(temp!=None)]
+		meanRC.extend(temp.tolist())
 
 	ctrlBW.close()
-        meanRC = np.array(meanRC)
-        del temp, ctrlBW
+	meanRC = np.array(meanRC)
+	del temp, ctrlBW
 
-        for i in range(5):
-                rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
-                rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
-                temp = [rc1, rc2, trainRegionNum1]
-                trainSetMeta.append(temp)  ## RC criteria1(down), RC criteria2(up), # of bases, candidate regions       
+	for i in range(5):
+		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
+		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
+		temp = [rc1, rc2, trainRegionNum1]
+		trainSetMeta.append(temp)  ## RC criteria1(down), RC criteria2(up), # of bases, candidate regions       
 
-        for i in range(6):
-                rc1 = int(np.percentile(meanRC, int(rcPercentile[i+5])))
-                rc2 = int(np.percentile(meanRC, int(rcPercentile[i+6])))
-                if(i == 5):
-                        temp = [rc1, rc2, 3*trainRegionNum2]
-                        highRC = rc1
-                else:
-                        temp = [rc1, rc2, trainRegionNum2]
+	for i in range(6):
+		rc1 = int(np.percentile(meanRC, int(rcPercentile[i+5])))
+		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+6])))
+		if(i == 5):
+			temp = [rc1, rc2, 3*trainRegionNum2]
+			highRC = rc1
+		else:
+			temp = [rc1, rc2, trainRegionNum2]
 		if(i == 0):
 			vari.HIGHRC = rc1
 
-                trainSetMeta.append(temp)
+		trainSetMeta.append(temp)
 
-        del meanRC
+	del meanRC
 
 
-        #### Get Candidate Regions
+	#### Get Candidate Regions
+
 	if(vari.NUMPROCESS < 11):
 		pool = multiprocessing.Pool(vari.NUMPROCESS)
 	else:
 		pool = multiprocessing.Pool(11)
-        trainSetMeta = pool.map_async(FilltrainSetMeta, trainSetMeta).get()
+	trainSetMeta = pool.map_async(FilltrainSetMeta, trainSetMeta).get()
 	pool.close()
 	pool.join()
 
 
-        return trainSetMeta
+	return trainSetMeta
 
 
 def FilltrainSetMeta(trainBinInfo):
 	downLimit = int(float(trainBinInfo[0]))
-        upLimit = int(float(trainBinInfo[1]))
+	upLimit = int(float(trainBinInfo[1]))
 
 	ctrlBW = pyBigWig.open(vari.CTRLBW_NAMES[0])
 
 	result_line = trainBinInfo
 	numOfCandiRegion = 0
 	
-	resultFile = tempfile.NamedTemporaryFile(suffix=".txt", dir=vari.OUTPUT_DIR, delete=False)
+	resultFile = tempfile.NamedTemporaryFile(mode="w+t", suffix=".txt", dir=vari.OUTPUT_DIR, delete=False)
 
 	if( downLimit == highRC ):
 		result = []
 
 		for region in vari.REGION:
 			regionChromo = region[0]
-                	regionStart = int(region[1])
-                	regionEnd = int(region[2])
+			regionStart = int(region[1])
+			regionEnd = int(region[2])
 
-                	numBin = (regionEnd - regionStart) / trainBinSize
+			numBin = int( (regionEnd - regionStart) / trainBinSize )
 			if(numBin == 0):
-                                numBin = 1
-                                meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))[0]
-                                if( (meanValue >= downLimit) and (meanValue < upLimit)):
-                                        result.append([regionChromo, regionStart, regionEnd, meanValue])
+				numBin = 1
+				meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))[0]
+				if( (meanValue >= downLimit) and (meanValue < upLimit)):
+					result.append([regionChromo, regionStart, regionEnd, meanValue])
 
-                        else:
+			else:
 				regionEnd = numBin * trainBinSize + regionStart		
 				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-				pos = np.array(range(0, numBin)) * trainBinSize + regionStart
+				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
 			
 				idx = np.where(meanValues != None)
 				meanValues = meanValues[idx]
-                        	pos = pos[idx]
+				pos = pos[idx]
 
 				idx = np.where((meanValues >= downLimit) & (meanValues < upLimit))
-                        	start = pos[idx]
-                        	end = start + trainBinSize
-                        	meanValues = meanValues[idx]
-                        	chromoArray = [regionChromo] * len(start)
+				start = pos[idx]
+				end = start + trainBinSize
+				meanValues = meanValues[idx]
+				chromoArray = [regionChromo] * len(start)
 				result.extend(np.column_stack((chromoArray, start, end, meanValues)).tolist())
 
 		if(len(result) == 0):
 			return None 		
 		
 		result = np.array(result)
-                result = result[result[:,3].astype(float).astype(int).argsort()][:,0:3].tolist()
+		result = result[result[:,3].astype(float).astype(int).argsort()][:,0:3].tolist()
 		
 		numOfCandiRegion = len(result)
 		for i in range(len(result)):
@@ -213,34 +169,34 @@ def FilltrainSetMeta(trainBinInfo):
 
 	else:
 		for region in vari.REGION:
-                        regionChromo = region[0]
-                        regionStart = int(region[1])
-                        regionEnd = int(region[2])
+			regionChromo = region[0]
+			regionStart = int(region[1])
+			regionEnd = int(region[2])
 	
-			numBin = (regionEnd - regionStart) / trainBinSize
+			numBin = int( (regionEnd - regionStart) / trainBinSize )
 			if(numBin == 0):
-                                numBin = 1
-                                meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-                                if( (meanValue >= downLimit) and (meanValue < upLimit)):
+				numBin = 1
+				meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
+				if( (meanValue >= downLimit) and (meanValue < upLimit)):
 					line = [regionChromo, regionStart, regionEnd]
 					resultFile.write('\t'.join([str(x) for x in line]) + "\n")	
 					numOfCandiRegion = numOfCandiRegion + 1
-                        else:
-	                        regionEnd = numBin * trainBinSize + regionStart
-        	                meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-                	        pos = np.array(range(0, numBin)) * trainBinSize + regionStart
+			else:
+				regionEnd = numBin * trainBinSize + regionStart
+				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
+				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
 
 				idx = np.where(meanValues != None)
-                        	meanValues = meanValues[idx]
-                        	pos = pos[idx]
+				meanValues = meanValues[idx]
+				pos = pos[idx]
 
-                        	idx = np.where((meanValues >= downLimit) & (meanValues < upLimit))
+				idx = np.where((meanValues >= downLimit) & (meanValues < upLimit))
 
 				if(len(idx[0]) == 0):
 					continue
 		
-                        	start = pos[idx]
-                        	end = start + trainBinSize
+				start = pos[idx]
+				end = start + trainBinSize
 				chromoArray = [regionChromo] * len(start)
 
 				numOfCandiRegion = numOfCandiRegion + len(start)
@@ -270,19 +226,19 @@ def selectTrainSetFromMeta(trainSetMeta):
 		if(trainSetMeta[binIdx] == None):
 			continue
 
-                regionNum = int(trainSetMeta[binIdx][2])
+		regionNum = int(trainSetMeta[binIdx][2])
 		candiRegionFile = trainSetMeta[binIdx][3]
-                candiRegionNum = int(trainSetMeta[binIdx][4])
+		candiRegionNum = int(trainSetMeta[binIdx][4])
 
-                if(candiRegionNum < regionNum):
+		if(candiRegionNum < regionNum):
 			subfile_stream = open(candiRegionFile)
 			subfile = subfile_stream.readlines()
 
 			for i in range(len(subfile)):
 				temp = subfile[i].split()
 				trainSet1.append([ temp[0], int(temp[1]), int(temp[2])])
-                else:	
-			selectRegionIdx = np.random.choice(range(candiRegionNum), regionNum, replace=False)
+		else:	
+			selectRegionIdx = np.random.choice(list(range(candiRegionNum)), regionNum, replace=False)
 			
 			for i in range(len(selectRegionIdx)):
 				temp = linecache.getline(candiRegionFile, selectRegionIdx[i]+1).split()		
@@ -291,43 +247,43 @@ def selectTrainSetFromMeta(trainSetMeta):
 
 	
 	### trainSet2
-        for binIdx in range(5, len(trainSetMeta)):
+	for binIdx in range(5, len(trainSetMeta)):
 		if(trainSetMeta[binIdx] == None):
-                        continue
+			continue
 
-                downLimit = int(trainSetMeta[binIdx][0])
+		downLimit = int(trainSetMeta[binIdx][0])
 		regionNum = int(trainSetMeta[binIdx][2])
-                candiRegionFile = trainSetMeta[binIdx][3]
-                candiRegionNum = int(trainSetMeta[binIdx][4])
+		candiRegionFile = trainSetMeta[binIdx][3]
+		candiRegionNum = int(trainSetMeta[binIdx][4])
 
-                if(downLimit == highRC):
+		if(downLimit == highRC):
 			subfile_stream = open(candiRegionFile)
 			subfile = subfile_stream.readlines()
 	
-                        i = len(subfile) - 1
-                        while( regionNum > 0 and i >= 0):
+			i = len(subfile) - 1
+			while( regionNum > 0 and i >= 0):
 				temp = subfile[i].split()
 				trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
 				i = i - 1
 				regionNum = regionNum - 1
-                else:
+		else:
 			if(candiRegionNum < regionNum):
-	                        subfile_stream = open(candiRegionFile)
-        	                subfile = subfile_stream.readlines()
+				subfile_stream = open(candiRegionFile)
+				subfile = subfile_stream.readlines()
 
-                	        for i in range(len(subfile)):
-                        	        temp = subfile[i].split()
-                                	trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
-                	else:
-                        	selectRegionIdx = np.random.choice(range(candiRegionNum), regionNum, replace=False)
+				for i in range(len(subfile)):
+					temp = subfile[i].split()
+					trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
+			else:
+				selectRegionIdx = np.random.choice(list(range(candiRegionNum)), regionNum, replace=False)
 
-                        	for i in range(len(selectRegionIdx)):
-                                	temp = linecache.getline(candiRegionFile, selectRegionIdx[i]+1).split()
-                                	trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
+				for i in range(len(selectRegionIdx)):
+					temp = linecache.getline(candiRegionFile, selectRegionIdx[i]+1).split()
+					trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
 
 		os.remove(candiRegionFile)
 
-        return trainSet1, trainSet2
+	return trainSet1, trainSet2
 
 
 
@@ -339,10 +295,10 @@ def getScaler(trainSet):
 	ob1 = pyBigWig.open(vari.CTRLBW_NAMES[0])
 	
 	ob1Values = []
-        for i in range(len(trainSet)):
-                regionChromo = trainSet[i][0]
-                regionStart = int(trainSet[i][1])
-                regionEnd = int(trainSet[i][2])
+	for i in range(len(trainSet)):
+		regionChromo = trainSet[i][0]
+		regionStart = int(trainSet[i][1])
+		regionEnd = int(trainSet[i][2])
 
 		binIdx = 0
 		while(binIdx < vari.BINSIZE):
@@ -383,47 +339,47 @@ def getScaler(trainSet):
 
 def getScalerForEachSample(args):
 	taskNum = int(args[0])
-        trainSet = args[1]
+	trainSet = args[1]
 
 	if(taskNum < vari.CTRLBW_NUM):
-                ob2 = pyBigWig.open(vari.CTRLBW_NAMES[taskNum])
-        else:
-                ob2 = pyBigWig.open(vari.EXPBW_NAMES[taskNum-vari.CTRLBW_NUM])
+		ob2 = pyBigWig.open(vari.CTRLBW_NAMES[taskNum])
+	else:
+		ob2 = pyBigWig.open(vari.EXPBW_NAMES[taskNum-vari.CTRLBW_NUM])
 
 	ob2Values = []
-        for i in range(len(trainSet)):
+	for i in range(len(trainSet)):
 		regionChromo = trainSet[i][0]
-                regionStart = int(trainSet[i][1])
-                regionEnd = int(trainSet[i][2])
+		regionStart = int(trainSet[i][1])
+		regionEnd = int(trainSet[i][2])
 
-                binIdx = 0
-                while(binIdx < vari.BINSIZE):
-                        sub_regionStart = regionStart + binIdx
-                        sub_regionEnd = sub_regionStart + ( int( (regionEnd - sub_regionStart) / vari.BINSIZE ) * vari.BINSIZE )
+		binIdx = 0
+		while(binIdx < vari.BINSIZE):
+			sub_regionStart = regionStart + binIdx
+			sub_regionEnd = sub_regionStart + ( int( (regionEnd - sub_regionStart) / vari.BINSIZE ) * vari.BINSIZE )
 
-                        if(sub_regionEnd <= sub_regionStart):
-                                break
+			if(sub_regionEnd <= sub_regionStart):
+				break
 
-                        numBin = int((sub_regionEnd - sub_regionStart) / vari.BINSIZE)
+			numBin = int((sub_regionEnd - sub_regionStart) / vari.BINSIZE)
 
-                        temp = np.array(ob2.stats(regionChromo, sub_regionStart, sub_regionEnd, nBins=numBin, type="mean"))
-                        idx = np.where(temp==None)
-                        temp[idx] = 0
-                        temp = temp.tolist()
-                        ob2Values.extend(temp)
+			temp = np.array(ob2.stats(regionChromo, sub_regionStart, sub_regionEnd, nBins=numBin, type="mean"))
+			idx = np.where(temp==None)
+			temp[idx] = 0
+			temp = temp.tolist()
+			ob2Values.extend(temp)
 
-                        binIdx = binIdx + 1
+			binIdx = binIdx + 1
 
 	ob2.close()
 
-        model = sm.OLS(ob2Values, ob1Values).fit()
-        scaler = model.params[0]
+	model = sm.OLS(ob2Values, ob1Values).fit()
+	scaler = model.params[0]
 
 	return scaler
 
 
 def divideGenome():
-	binSize = 5000000
+	binSize = 50000
 
 	binSize = int( int( binSize / float(vari.BINSIZE) ) * vari.BINSIZE )	
 
@@ -458,18 +414,18 @@ def getResultBWHeader():
 	chromoInData = np.array(vari.REGION)[:,0]
 
 	chromoInData_unique = []
-        bw = pyBigWig.open(vari.CTRLBW_NAMES[0])
+	bw = pyBigWig.open(vari.CTRLBW_NAMES[0])
 
-        resultBWHeader = []
-        for i in range(len(chromoInData)):
-                chromo = chromoInData[i]
-                if(chromo in chromoInData_unique):
-                        continue
-                chromoInData_unique.extend([chromo])
-                chromoSize = bw.chroms(chromo)
-                resultBWHeader.append( (chromo, chromoSize) )
+	resultBWHeader = []
+	for i in range(len(chromoInData)):
+		chromo = chromoInData[i]
+		if(chromo in chromoInData_unique):
+			continue
+		chromoInData_unique.extend([chromo])
+		chromoSize = bw.chroms(chromo)
+		resultBWHeader.append( (chromo, chromoSize) )
 
-        return resultBWHeader
+	return resultBWHeader
 
 
 def mergeCorrectedBWfiles(args):
@@ -509,15 +465,11 @@ def mergeCorrectedBWfiles(args):
 	
 def run(args):
 
-	import psutil
-
 	start_time = time.time()
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
-	#args = getArgs().parse_args()
 	checkArgs(args)
 	vari.setGlobalVariables(args)
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
 
 		
 	###### SELECT TRAIN SETS
@@ -525,12 +477,10 @@ def run(args):
 	rcPercentile = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]		
 	trainSetMeta = getCandidateTrainSet(rcPercentile)
 	
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
 	print("-- RUNNING TIME of getting trainSetMeta : %s hour(s)" % ((time.time()-start_time)/3600) )
 
 	trainSet1, trainSet2 = selectTrainSetFromMeta(trainSetMeta)
 	del trainSetMeta
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
 	print("-- RUNNING TIME of selecting train set from trainSetMeta : %s hour(s)" % ((time.time()-start_time)/3600) )
 
 	###### NORMALIZING READ COUNTS
@@ -543,7 +493,6 @@ def run(args):
 	print("EXPBW: ")
 	print(vari.EXPSCALER)
 	print("\n\n")
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
 	print("-- RUNNING TIME of calculating scalers : %s hour(s)" % ((time.time()-start_time)/3600) )
 	
 
@@ -561,27 +510,27 @@ def run(args):
 	pool.join()
 	del pool, trainSet1
 	gc.collect()
-
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
 	print("-- RUNNING TIME of calculating 1st Train Cavariates : %s hour(s)" % ((time.time()-start_time)/3600) )
+
+
 
 	
 	### trainSet2
 	## SELECTING TRAINING SET
-        if(len(trainSet2) < vari.NUMPROCESS):
-                numProcess = len(trainSet2)
-        else:
-                numProcess = vari.NUMPROCESS
+	if(len(trainSet2) < vari.NUMPROCESS):
+		numProcess = len(trainSet2)
+	else:
+		numProcess = vari.NUMPROCESS
    
-        pool = multiprocessing.Pool(numProcess)
-        trainSetResult2 = pool.map_async(calculateOnebp.calculateTrainCovariates, trainSet2).get()
-        pool.close()
-        pool.join()
-        del pool, trainSet2
-        gc.collect()
+	pool = multiprocessing.Pool(numProcess)
+	trainSetResult2 = pool.map_async(calculateOnebp.calculateTrainCovariates, trainSet2).get()
+	pool.close()
+	pool.join()
+	del pool, trainSet2
+	gc.collect()
 	
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
-        print("-- RUNNING TIME of calculating 2nd Train Cavariates : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of calculating 2nd Train Cavariates : %s hour(s)" % ((time.time()-start_time)/3600) )
+
 
 
 	## PERFORM REGRESSION
@@ -595,18 +544,17 @@ def run(args):
 	vari.COEFCTRL = coefResult[0][0]
 	vari.COEFEXP = coefResult[0][1]
 	vari.COEFCTRL_HIGHRC = coefResult[1][0]
-        vari.COEFEXP_HIGHRC = coefResult[1][1]
+	vari.COEFEXP_HIGHRC = coefResult[1][1]
 	print("COEF_CTRL: ")
 	print(vari.COEFCTRL)
 	print("COEF_EXP: ")
 	print(vari.COEFEXP)
 	print("COEF_CTRL_HIGHRC: ")
-        print(vari.COEFCTRL_HIGHRC)
-        print("COEF_EXP_HIGHRC: ")
-        print(vari.COEFEXP_HIGHRC)
+	print(vari.COEFCTRL_HIGHRC)
+	print("COEF_EXP_HIGHRC: ")
+	print(vari.COEFEXP_HIGHRC)
 
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
-        print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-start_time)/3600) )
 
 	
 	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL	
@@ -614,21 +562,18 @@ def run(args):
 	task = divideGenome()	
 	
 	if(len(task) < vari.NUMPROCESS):
-                numProcess = len(task)
-        else:
-                numProcess = vari.NUMPROCESS
+		numProcess = len(task)
+	else:
+		numProcess = vari.NUMPROCESS
 
-	task = task[0:50]
 
 	pool = multiprocessing.Pool(numProcess)
 	resultMeta = pool.map_async(calculateOnebp.calculateTaskCovariates, task).get()
-	print(resultMeta)
 	pool.close()
-        pool.join()
+	pool.join()
 	del pool
-        gc.collect()
+	gc.collect()
 	
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)
 	print("-- RUNNING TIME of calculating Task covariates : %s hour(s)" % ((time.time()-start_time)/3600) )	
 
 
@@ -649,8 +594,6 @@ def run(args):
 
 	print("======  Completed Correcting Read Counts! \n\n")
 	
-	print("-- memory usage until here: %s" % psutil.Process(os.getpid()).memory_info().rss)	
 	print("-- RUNNING TIME: %s hour(s)" % ((time.time()-start_time)/3600) )
-
 
 

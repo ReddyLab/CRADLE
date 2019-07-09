@@ -15,7 +15,9 @@ import random
 import warnings
 import h5py
 
+
 from CRADLE.CorrectBias import vari
+
 
 def calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
 
@@ -140,8 +142,8 @@ def calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binE
 
 	f = h5py.File(covariFileName, "w", compression="gzip")
 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f')
-	
 
+	
 	for idx in range(start_idx, end_idx):
 		idx_covari = [0] * vari.COVARI_NUM
 		idx_covari_ptr = 0
@@ -782,7 +784,7 @@ def calculateTrainCovariates(args):
 		rcFileName = rcFile_temp.name		
 		rcFile_temp.close()
 
-		f = h5py.File(rcFileName, "w")
+		f = h5py.File(rcFileName, "w", compression="gzip")
 		rcFile = f.create_dataset("Y", (nBins, ), dtype='f')
 		
 		return_Line.extend([ rcFileName ])
@@ -895,18 +897,19 @@ def performRegression(covariFiles):
 	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
 
 	if(X_numRows < 50000):
-		idx = np.array(range(X_numRows))
+		idx = np.array(list(range(X_numRows)))
 	else:
-		idx = np.random.choice(np.array(range(X_numRows)), 50000, replace=False)
+		idx = np.random.choice(np.array(list(range(X_numRows))), 50000, replace=False)
 
 	cdef double [:] Y_view = np.zeros(X_numRows, dtype=np.float64)
 	for rep in range(vari.CTRLBW_NUM):
 		ptr = 0
+
 		for fileIdx in range(len(covariFiles)):
 			subfileName = covariFiles[fileIdx][rep+2]
 			f = h5py.File(subfileName, "r")
 
-			for rcIdx in range(f['Y'].shape[0]):
+			for rcIdx in range(f['Y'].shape[0]):	
 				Y_view[rcIdx+ptr] = float(f['Y'][rcIdx])
 
 			ptr = ptr + int(f['Y'].shape[0])
@@ -915,7 +918,11 @@ def performRegression(covariFiles):
 			os.remove(subfileName)
 
 
-		model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()		
+		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
+		if(len(deleteIdx) != 0):
+			model = sm.GLM(np.delete(np.array(Y_view).astype(int), deleteIdx), np.delete(np.array(X_view), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+		else:
+			model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()		
 
 		coef = model.params
 		COEFCTRL[rep, ] = coef
@@ -955,7 +962,11 @@ def performRegression(covariFiles):
 			f.close()
 			os.remove(subfileName)
 
-		model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
+		if(len(deleteIdx) != 0):
+			model = sm.GLM(np.delete(np.array(Y_view).astype(int), deleteIdx), np.delete(np.array(X_view), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+		else:
+			model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
 		coef = model.params
 		COEFEXP[rep, ] = coef
@@ -1067,6 +1078,7 @@ def edit5merProb(past_mer, oldBase, newBase):
 	elif(newBase=='T' or newBase=='t'):
 		base_info = base_info + 3
 
+	base_info = int(base_info)
 	mgw = vari.MGW[base_info][1]
 	prot = vari.PROT[base_info][1]
 
@@ -1112,7 +1124,7 @@ def findComple5merProb(mer5):
 
 def editComple5merProb(past_mer, oldBase, newBase):
 	base_info = past_mer
-	base_info = base_info / 4
+	base_info = int(base_info / 4)
 	subtract = -1
 
 	# newBase
@@ -1125,6 +1137,7 @@ def editComple5merProb(past_mer, oldBase, newBase):
 	elif(newBase=='T' or newBase=='t'):
 		base_info = base_info + np.power(4, 4) * 0
 
+	base_info = int(base_info)
 	mgw = vari.MGW[base_info][1]
 	prot = vari.PROT[base_info][1]
 
@@ -1250,12 +1263,12 @@ def correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastB
 	subfinalExpNames = [0] * vari.EXPBW_NUM
 
 	for i in range(vari.CTRLBW_NUM):
-		subfinalCtrl[i] = tempfile.NamedTemporaryFile(suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
+		subfinalCtrl[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
 		subfinalCtrlNames[i] = subfinalCtrl[i].name
 		subfinalCtrl[i].close()
 	
 	for i in range(vari.EXPBW_NUM):
-		subfinalExp[i] = tempfile.NamedTemporaryFile(suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
+		subfinalExp[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
 		subfinalExpNames[i] = subfinalExp[i].name
 		subfinalExp[i].close()
 
@@ -1267,6 +1280,8 @@ def correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastB
 			os.remove(subfinalCtrlNames[i])
 		for i in range(vari.EXPBW_NUM):
 			os.remove(subfinalExpNames[i])	
+
+		os.remove(covariFileName)
 
 		return [ [None] * vari.CTRLBW_NUM, [None] * vari.EXPBW_NUM, chromo ]  
 
@@ -1441,9 +1456,6 @@ def selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBin
 	else:
 		starts = np.arange(region_start, region_end, vari.BINSIZE)
 
-	## for checking : erase it later
-	if(nBins != len(starts)):
-		print("Something is wrong in 'def selectIdx' ")
 	
 	starts = starts[idx]
 

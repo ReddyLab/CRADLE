@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 import h5py
 import random
 
-from CRADLE.CorrectBiasStored import vari
 
+from CRADLE.CorrectBiasStored import vari
 
 def performRegression(trainSet):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
@@ -81,9 +81,9 @@ def performRegression(trainSet):
 		f.close()
 
 	if(X_numRows < 50000):
-		idx = np.array(range(X_numRows))
+		idx = np.array(list(range(X_numRows)))
 	else:
-		idx = np.random.choice(np.array(range(X_numRows)), 50000, replace=False)
+		idx = np.random.choice(np.array(list(range(X_numRows))), 50000, replace=False)
 
 	#### Get Y matrix
 	cdef double [:] Y_view = np.zeros(X_numRows, dtype=np.float64)
@@ -220,12 +220,12 @@ def correctReadCount(args):
 	subfinalExpNames = [0] * vari.EXPBW_NUM
 
 	for i in range(vari.CTRLBW_NUM):
-		subfinalCtrl[i] = tempfile.NamedTemporaryFile(suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
+		subfinalCtrl[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
 		subfinalCtrlNames[i] = subfinalCtrl[i].name
 		subfinalCtrl[i].close()
 
 	for i in range(vari.EXPBW_NUM):
-		subfinalExp[i] = tempfile.NamedTemporaryFile(suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
+		subfinalExp[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
 		subfinalExpNames[i] = subfinalExp[i].name
 		subfinalExp[i].close()
 
@@ -355,7 +355,7 @@ def selectIdx(chromo, analysis_start, analysis_end):
 	if(len(idx) == 0):
 		return np.array([]), np.array([]), np.array([])
 
-	starts = np.array(range(analysis_start, analysis_end))[idx]
+	starts = np.array(list(range(analysis_start, analysis_end)))[idx]
 
 	return idx, highRC_idx, starts
 

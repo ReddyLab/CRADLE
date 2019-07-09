@@ -10,61 +10,23 @@ import statsmodels.sandbox.stats.multicomp
 from CRADLE.CallPeak import vari
 from CRADLE.CallPeak import calculateRC
 
-import sys ## for test
-
-
-def getArgs():
-	parser = argparse.ArgumentParser()
-
-	### required
-	requiredArgs = parser.add_argument_group('Required Arguments')
-	
-	requiredArgs.add_argument('-ctrlbw', help="Ctrl bigwig files. Corrected bigwig files are recommended. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", nargs='+', required=True)
-
-	requiredArgs.add_argument('-expbw', help="Experimental bigwig files. Corrected bigwig files are recommended. Each file name should be spaced. ex) -expbw file1.bw file2.bw", nargs='+', required=True)
-
-	requiredArgs.add_argument('-l', help="Fragment length.", required=True)
-
-	requiredArgs.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced.", required=True)
-
-
-	requiredArgs.add_argument('-fdr', help="FDR level", required=True)
-
-	### optional  
-        optionalArgs = parser.add_argument_group('Optional Arguments')
-
-	optionalArgs.add_argument('-o', help="Output directoy")
-	
-	optionalArgs.add_argument('-bl', help="Blacklist regions")
-
-	optionalArgs.add_argument('-rbin', help="The size of bin used for defining regions")
-
-	optionalArgs.add_argument('-wbin', help="he size of bin used for testing differential activity")
-
-	return parser
 
 
 def run(args):
 
 	###### INITIALIZE PARAMETERS
-        print("======  INITIALIZING PARAMETERS ...\n")
-	#args = getArgs().parse_args()
+	print("======  INITIALIZING PARAMETERS ...\n")
 	vari.setGlobalVariables(args)	
-
-	global numProcess
-	numProcess = multiprocessing.cpu_count() -1
-	if(numProcess > 28):
-		numProcess = 28
 
 	
 	##### CALCULATE vari.FILTER_CUTOFF
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
 	region_1stchr = np.array(vari.REGION)
 	region_1stchr = region_1stchr[np.where(region_1stchr[:,0] == region_1stchr[0][0])].tolist()
-	if(len(region_1stchr) < numProcess):
+	if(len(region_1stchr) < vari.NUMPROCESS):
 		pool = multiprocessing.Pool(len(region_1stchr))
 	else:
-		pool = multiprocessing.Pool(numProcess)
+		pool = multiprocessing.Pool(vari.NUMPROCESS)
 
 	result_filter = pool.map_async(calculateRC.getVariance, region_1stchr).get()
 	pool.close()
@@ -98,11 +60,10 @@ def run(args):
 		if(regionSize > 3* np.power(10, 8)):
 			break
 
-	if(len(task_diff) < numProcess):
+	if(len(task_diff) < vari.NUMPROCESS):
 		pool = multiprocessing.Pool(len(task_diff))
 	else:
-		pool = multiprocessing.Pool(numProcess)
-	pool = multiprocessing.Pool(numProcess)
+		pool = multiprocessing.Pool(vari.NUMPROCESS)
 	result_diff = pool.map_async(calculateRC.getRegionCutoff, task_diff).get()
 	pool.close()
 	pool.join()
@@ -121,21 +82,15 @@ def run(args):
 	
 
 	# 2)  DEINING REGIONS WITH 'vari.REGION_CUTOFF'
-	pool = multiprocessing.Pool(numProcess)
+	if(len(vari.REGION) < vari.NUMPROCESS):
+		pool = multiprocessing.Pool(len(vari.REGION))
+	else:	
+		pool = multiprocessing.Pool(vari.NUMPROCESS)
 	result_region = pool.map_async(calculateRC.defineRegion, vari.REGION).get()		
 	pool.close()
-        pool.join()
-        gc.collect()
+	pool.join()
+	gc.collect()
 	
-
-	#### tentative_for_verification
-	output_filename = vari.OUTPUT_DIR + "/metaData1"
-	output_stream = open(output_filename, "w")
-	for i in range(len(result_region)):
-		if(result_region[i] != None):
-			output_stream.write(result_region[i] + "\n")
-	output_stream.close()
-
 
 	##### STATISTICAL TESTING FOR EACH REGION
 	print("======  PERFORMING STAITSTICAL TESTING FOR EACH REGION ...")
@@ -145,34 +100,35 @@ def run(args):
 			task_window.append(result_region[i])
 	del result_region
 
-	pool = multiprocessing.Pool(numProcess)
+	if(len(task_window) < vari.NUMPROCESS):
+		pool = multiprocessing.Pool(len(task_window))
+	else:
+		pool = multiprocessing.Pool(vari.NUMPROCESS)
 	result_ttest = pool.map_async(calculateRC.doWindowApproach, task_window).get()
 	pool.close()
-        pool.join()
+	pool.join()
 	
 
-        meta_filename = vari.OUTPUT_DIR + "/metaData_pvalues"
-        meta_stream = open(meta_filename, "w")
-        for i in range(len(result_ttest)):
-                if(result_ttest[i] != None):
-                        meta_stream.write(result_ttest[i] + "\n")
-        meta_stream.close()
+	meta_filename = vari.OUTPUT_DIR + "/metaData_pvalues"
+	meta_stream = open(meta_filename, "w")
+	for i in range(len(result_ttest)):
+		if(result_ttest[i] != None):
+			meta_stream.write(result_ttest[i] + "\n")
+	meta_stream.close()
 	del task_window, pool, result_ttest
 	
 
-	#meta_filename = vari.OUTPUT_DIR + "/metaData_pvalues"
-
 	##### CHOOSING THETA 
 	task_theta = [meta_filename]
-	pool = multiprocessing.Pool(numProcess)
+	pool = multiprocessing.Pool(1)
 	result_theta = pool.map_async(calculateRC.selectTheta, task_theta).get()
 	pool.close()
 	pool.join()
-	result_theta = result_theta[0]
 
-	vari.THETA = result_theta[0]
-	selectRegionNum = result_theta[1]
-	totalRegionNum = result_theta[2]	
+	vari.THETA = result_theta[0][0]
+	selectRegionNum = result_theta[0][1]
+	totalRegionNum = result_theta[0][2]	
+
 
 	##### FDR control
 	print("======  CALLING PEAKS ...")
@@ -210,20 +166,17 @@ def run(args):
 
 		if(len(selectRegionIdx) != 0):
 			task_callPeak.append([subfile_name, selectRegionIdx])
-		#else:
-			#print(subfile_name)
-			#os.remove(subfile_name)
-	
-	output_filename = vari.OUTPUT_DIR + "/selected_filenames" 
-	output_stream = open(output_filename, "w")
-	for i in range(len(task_callPeak)):
-		output_stream.write('\t'.join([str(x) for x in task_callPeak[i]]) + "\n")
-	output_stream.close()
+		else:
+			os.remove(subfile_name)
+	os.remove(meta_filename)	
 
-	pool = multiprocessing.Pool(numProcess)
+	if(len(task_callPeak) < vari.NUMPROCESS):
+		pool = multiprocessing.Pool(len(task_callPeak))
+	else:
+		pool = multiprocessing.Pool(vari.NUMPROCESS)
 	result_callPeak = pool.map_async(calculateRC.doFDRprocedure, task_callPeak).get()
 	pool.close()
-        pool.join()
+	pool.join()
 	
 	del pool, task_callPeak
 	gc.collect()
@@ -242,7 +195,7 @@ def run(args):
 			temp = input_file[j].split()
 			output_stream.write('\t'.join([str(x) for x in temp]) + "\n")
 		input_stream.close()
-		#os.remove(input_filename)
+		os.remove(input_filename)
 	output_stream.close()
 
 	print("======= COMPLETED! ===========")

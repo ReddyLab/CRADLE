@@ -1,5 +1,6 @@
 import os
 import numpy as np
+import multiprocessing
 
 def setGlobalVariables(args):
 
@@ -8,37 +9,38 @@ def setGlobalVariables(args):
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.fdr)
 	setBinSize(args.l, args.rbin, args.wbin)
+	setNumProcess(args.p)
 
 	return	
 
 
 def setInputFiles(ctrlbwFiles, expbwFiles):
 	global CTRLBW_NAMES
-        global EXPBW_NAMES
+	global EXPBW_NAMES
 
-        global CTRLBW_NUM
-        global EXPBW_NUM
-        global SAMPLE_NUM
+	global CTRLBW_NUM
+	global EXPBW_NUM
+	global SAMPLE_NUM
 
 	global ALL_ZERO
 
 	global NULL_STD
 
 	CTRLBW_NUM = len(ctrlbwFiles)
-        EXPBW_NUM = len(expbwFiles)
-        SAMPLE_NUM = CTRLBW_NUM + EXPBW_NUM
+	EXPBW_NUM = len(expbwFiles)
+	SAMPLE_NUM = CTRLBW_NUM + EXPBW_NUM
 
-        CTRLBW_NAMES = [0] * CTRLBW_NUM
-        for i in range(CTRLBW_NUM):
-                CTRLBW_NAMES[i] = ctrlbwFiles[i]
+	CTRLBW_NAMES = [0] * CTRLBW_NUM
+	for i in range(CTRLBW_NUM):
+		CTRLBW_NAMES[i] = ctrlbwFiles[i]
 
-        EXPBW_NAMES = [0] * EXPBW_NUM
-        for i in range(EXPBW_NUM):
-                EXPBW_NAMES[i] = expbwFiles[i]
+	EXPBW_NAMES = [0] * EXPBW_NUM
+	for i in range(EXPBW_NUM):
+		EXPBW_NAMES[i] = expbwFiles[i]
 
 	ALL_ZERO = [0] * SAMPLE_NUM	
 
-        return
+	return
 
 
 def setOutputDirectory(outputDir):
@@ -47,61 +49,64 @@ def setOutputDirectory(outputDir):
 	if(outputDir == None):
 		OUTPUT_DIR = os.getcwd() + "/" + "CRADE_peak_result"
 	else:
-        	OUTPUT_DIR = outputDir
-        os.makedirs(OUTPUT_DIR)
+		OUTPUT_DIR = outputDir
 
-        return
+	dirExist = os.path.isdir(OUTPUT_DIR)
+	if(dirExist == False):
+		os.makedirs(OUTPUT_DIR)
+
+	return
 
 def setAnlaysisRegion(region, bl):
-        global REGION
+	global REGION
 
-        REGION = []
-        input_filename = region
-        input_stream = open(input_filename)
-        input_file = input_stream.readlines()
+	REGION = []
+	input_filename = region
+	input_stream = open(input_filename)
+	input_file = input_stream.readlines()
 
-        for i in range(len(input_file)):
-                temp = input_file[i].split()
-                temp[1] = int(temp[1])
-                temp[2] = int(temp[2])
-                REGION.append(temp)
-        input_stream.close()
+	for i in range(len(input_file)):
+		temp = input_file[i].split()
+		temp[1] = int(temp[1])
+		temp[2] = int(temp[2])
+		REGION.append(temp)
+	input_stream.close()
 
 	if(len(REGION) > 1):
-        	REGION = np.array(REGION)
+		REGION = np.array(REGION)
 		REGION = REGION[np.lexsort(( REGION[:,1].astype(int), REGION[:,0])  ) ]
-        	REGION = REGION.tolist()
+		REGION = REGION.tolist()
 
 		region_merged = []
 		
 		pos = 0
-                pastChromo = REGION[pos][0]
-                pastStart = int(REGION[pos][1])
-                pastEnd = int(REGION[pos][2])
-                region_merged.append([ pastChromo, pastStart, pastEnd])
-                resultIdx = 0
+		pastChromo = REGION[pos][0]
+		pastStart = int(REGION[pos][1])
+		pastEnd = int(REGION[pos][2])
+		region_merged.append([ pastChromo, pastStart, pastEnd])
+		resultIdx = 0
 
-                pos = 1
-                while( pos < len(REGION) ):
-                        currChromo = REGION[pos][0]
-                        currStart = int(REGION[pos][1])
-                        currEnd = int(REGION[pos][2])
+		pos = 1
+		while( pos < len(REGION) ):
+			currChromo = REGION[pos][0]
+			currStart = int(REGION[pos][1])
+			currEnd = int(REGION[pos][2])
 
-                        if( (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd)):
-                                region_merged[resultIdx][2] = currEnd
-                                pos = pos + 1
-                                pastChromo = currChromo
-                                pastStart = currStart
-                                pastEnd = currEnd
-                        else:
-                                region_merged.append([currChromo, currStart, currEnd])
-                                resultIdx = resultIdx + 1
-                                pos = pos + 1
-                                pastChromo = currChromo
-                                pastStart = currStart
-                                pastEnd = currEnd
+			if( (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd)):
+				region_merged[resultIdx][2] = currEnd
+				pos = pos + 1
+				pastChromo = currChromo
+				pastStart = currStart
+				pastEnd = currEnd
+			else:
+				region_merged.append([currChromo, currStart, currEnd])
+				resultIdx = resultIdx + 1
+				pos = pos + 1
+				pastChromo = currChromo
+				pastStart = currStart
+				pastEnd = currEnd
 
-                REGION = region_merged
+		REGION = region_merged
 
 		
 	
@@ -149,8 +154,8 @@ def setAnlaysisRegion(region, bl):
 					resultIdx = resultIdx + 1	
 					pos = pos + 1 
 					pastChromo = currChromo
-                                        pastStart = currStart
-                                        pastEnd = currEnd
+					pastStart = currStart
+					pastEnd = currEnd
 			bl_region = np.array(bl_region)		
 
 		region_woBL = []
@@ -209,7 +214,7 @@ def setAnlaysisRegion(region, bl):
 	print("Anlaysis Region:")
 	print(REGION)	
 	
-        return
+	return
 
 
 def setFilterCriteria(fdr):
@@ -225,7 +230,7 @@ def setFilterCriteria(fdr):
 	FILTER_CUTOFFS = [0] * 10 ## theta: 0, 10, 20, 30,...., 90
 	
 
-        return
+	return
 
 
 def setBinSize(fragLen, binSize1, binSize2):
@@ -265,9 +270,24 @@ def setBinSize(fragLen, binSize1, binSize2):
 		
 		return
 	
-	#BINSIZE2 = int(float(BINSIZE1) / 2)
-	#SHIFTSIZE2 = int(float(BINSIZE2) / 2)
+	return
 
+
+def setNumProcess(numProcess):
+	global NUMPROCESS
+
+	system_cpus = int(multiprocessing.cpu_count())
+
+	if(numProcess == None):
+		NUMPROCESS = int(system_cpus / 2.0 )
+	else:
+		NUMPROCESS = int(numProcess)
+
+	if(NUMPROCESS > system_cpus):
+		print("ERROR: You specified too many cpus!")
+		sys.exit()
 
 	return
+
+
 

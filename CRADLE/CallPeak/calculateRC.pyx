@@ -1,20 +1,19 @@
 import numpy as np
-cimport numpy as np
-cimport cython
-import pyBigWig
 import statsmodels.formula.api as smf
 import statsmodels.sandbox.stats.multicomp
 import tempfile
 import os
 import scipy.stats
+import pyBigWig
 
 from CRADLE.CallPeak import vari
 
 import warnings
 
 def getVariance(region):
-	with np.warnings.catch_warnings():
-		np.warnings.filterwarnings('ignore', r'Degrees of freedom <= 0 for slice')	
+	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
+	warnings.filterwarnings('ignore', r'Mean of empty slice')
+	warnings.filterwarnings('ignore', r'Degrees of freedom <= 0 for slice')
 
 	regionChromo = region[0]
 	regionStart = int(region[1])
@@ -39,9 +38,7 @@ def getVariance(region):
 		totalRC.append(temp.tolist())		
 		bw.close()
 
-	with np.warnings.catch_warnings():
-		warnings.simplefilter("ignore", category=RuntimeWarning)
-		var = np.nanvar(np.array(totalRC), axis=0)	
+	var = np.nanvar(np.array(totalRC), axis=0)
 	var = np.array(var)
 	idx = np.where(np.isnan(var)==True)
 	var = np.delete(var, idx)
@@ -53,6 +50,8 @@ def getVariance(region):
 
 
 def getRegionCutoff(region):
+	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
+	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
 	regionChromo = region[0]
 	regionStart = int(region[1])
@@ -69,9 +68,7 @@ def getRegionCutoff(region):
 		sampleRC.append(temp.tolist())
 		bw.close()
 
-	with np.warnings.catch_warnings():
-		warnings.simplefilter("ignore", category=RuntimeWarning)
-		ctrlMean = np.nanmean(np.array(sampleRC), axis=0)
+	ctrlMean = np.nanmean(np.array(sampleRC), axis=0)
 
 	sampleRC = []
 	for rep in range(vari.EXPBW_NUM):
@@ -81,15 +78,10 @@ def getRegionCutoff(region):
 		sampleRC.append(temp.tolist())
 		bw.close()
 
-	with np.warnings.catch_warnings():
-		warnings.simplefilter("ignore", category=RuntimeWarning)
-		expMean = np.nanmean(np.array(sampleRC), axis=0)
+	expMean = np.nanmean(np.array(sampleRC), axis=0)
 	del sampleRC
 
-
-	with np.warnings.catch_warnings():
-		warnings.simplefilter("ignore", category=RuntimeWarning)
-		diff = np.array(np.absolute(expMean - ctrlMean))
+	diff = np.array(np.absolute(expMean - ctrlMean))
 	idx = np.where(np.isnan(diff)==True)
 	diff = np.delete(diff, idx)
 
@@ -101,6 +93,8 @@ def getRegionCutoff(region):
 
 
 def defineRegion(region):
+	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
+	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
 	analysis_chromo = region[0]
 	analysis_start = int(region[1])
@@ -139,10 +133,8 @@ def defineRegion(region):
 
 		sampleRC1.append(temp)
 		bw.close()
-
-	with np.warnings.catch_warnings():
-		warnings.simplefilter("ignore", category=RuntimeWarning)
-		ctrlMean = np.nanmean( np.array(sampleRC1), axis=0)
+	
+	ctrlMean = np.nanmean( np.array(sampleRC1), axis=0)
 	del sampleRC1
 
 	#### expMean
@@ -161,14 +153,14 @@ def defineRegion(region):
 		
 		sampleRC2.append(temp)
 		bw.close()
-	with np.warnings.catch_warnings():
-		warnings.simplefilter("ignore", category=RuntimeWarning)
-		expMean = np.nanmean( np.array(sampleRC2), axis=0)
+
+	expMean = np.nanmean( np.array(sampleRC2), axis=0)
 	del sampleRC2
 
 	#### diff
 	diff = np.array(expMean - ctrlMean, dtype=np.float64)
 	cdef double [:] diff_view = diff
+	del diff
 
 	idx = 0
 	pastGroupType = -2
@@ -277,7 +269,7 @@ def defineRegion(region):
 	if(len(definedRegion) == 0):
 		return None
 
-	subfile = tempfile.NamedTemporaryFile(dir=vari.OUTPUT_DIR, delete=False)
+	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=vari.OUTPUT_DIR, delete=False)
 	for line in definedRegion:
 		subfile.write('\t'.join([str(x) for x in line]) + "\n")
 	subfile.close()
@@ -293,11 +285,13 @@ def defineRegion(region):
 
 
 def doWindowApproach(arg):
+	warnings.simplefilter("ignore", category=RuntimeWarning)
+
 	input_filename = arg
 	input_stream = open(input_filename)
 	input_file = input_stream.readlines()
 
-	subfile = tempfile.NamedTemporaryFile(dir=vari.OUTPUT_DIR, delete=False)	
+	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=vari.OUTPUT_DIR, delete=False)	
 	simes_p = []
 	writtenRegionNum = 0
 
@@ -335,9 +329,7 @@ def doWindowApproach(arg):
 			else:
 				binEnd_idx = binStart_idx + vari.BINSIZE2
 
-			with np.warnings.catch_warnings():
-				warnings.simplefilter("ignore", category=RuntimeWarning)
-				rc = np.nanmean(totalRC[:,binStart_idx:binEnd_idx], axis=1)
+			rc = np.nanmean(totalRC[:,binStart_idx:binEnd_idx], axis=1)
 
 			if(len(np.where(np.isnan(rc) == True)[0]) > 0):
 				windowPvalue.extend([np.nan])
@@ -413,7 +405,7 @@ def doWindowApproach(arg):
 
 	subfile.close()
 
-	#os.remove(input_filename)
+	os.remove(input_filename)
 
 	if(writtenRegionNum == 0):
 		os.remove(subfile.name)
@@ -495,7 +487,7 @@ def doFDRprocedure(args):
 	input_stream = open(input_filename)
 	input_file = input_stream.readlines()
 
-	subfile = tempfile.NamedTemporaryFile(dir=vari.OUTPUT_DIR, delete=False)
+	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=vari.OUTPUT_DIR, delete=False)
 	
 	### open bw files to store diff value
 	ctrlBW = [0] * vari.CTRLBW_NUM
@@ -511,8 +503,8 @@ def doFDRprocedure(args):
 		regionChromo = regionInfo[0]
 		regionStart = int(regionInfo[1])		
 		regionEnd = int(regionInfo[2])
-		windowPvalue = map(float, regionInfo[5].split(","))
-		windowEnrich = map(float, regionInfo[6].split(","))
+		windowPvalue = list(map(float, regionInfo[5].split(",")))
+		windowEnrich = list(map(float, regionInfo[6].split(",")))
 		windowNum = len(windowPvalue)
 
 		windowPvalue = np.array(windowPvalue)
@@ -693,7 +685,7 @@ def doFDRprocedure(args):
 	for rep in range(vari.EXPBW_NUM):
 		expBW[rep].close()
 	
-	#os.remove(input_filename)
+	os.remove(input_filename)
 
 	return subfile.name
 
@@ -731,13 +723,13 @@ def truncateNan(peakStart, peakEnd, diff_pos):
 				if(i == (len(nanIdx)-1)):
 					strechLen = currPosIdx - nanPosStartIdx
 					if(strechLen >= 20):   ## Save it to the filter out list
-						filteredIdx.extend(range(nanPosStartIdx, (currPosIdx+1)))
+						filteredIdx.extend(list(range(nanPosStartIdx, (currPosIdx+1))))
 						break
 					if(nanPosStartIdx==0):  ## if np.nan stretch  exists in the beginning of the peak region
-						filteredIdx.extend(range(nanPosStartIdx, (currPosIdx+1)))
+						filteredIdx.extend(list(range(nanPosStartIdx, (currPosIdx+1))))
 						break
 					if(currPosIdx == (len(diff_pos)-1)):   ### if np.nan strech exists in the end of the peak region
-						filteredIdx.extend(range(nanPosStartIdx, (currPosIdx+1)))
+						filteredIdx.extend(list(range(nanPosStartIdx, (currPosIdx+1))))
 						break
 	
 				prevPosIdx = currPosIdx
@@ -746,9 +738,9 @@ def truncateNan(peakStart, peakEnd, diff_pos):
 				#### End a subfiltered
 				strechLen = prevPosIdx - nanPosStartIdx
 				if(strechLen >= 20):   ## Save it to the filter out list
-					filteredIdx.extend(range(nanPosStartIdx, (prevPosIdx+1)))
+					filteredIdx.extend(list(range(nanPosStartIdx, (prevPosIdx+1))))
 				if(nanPosStartIdx==0):
-					filteredIdx.extend(range(nanPosStartIdx, (prevPosIdx+1)))
+					filteredIdx.extend(list(range(nanPosStartIdx, (prevPosIdx+1))))
 		
 				if( (i == (len(nanIdx)-1)) and (currPosIdx == (len(diff_pos)-1))):
 					filteredIdx.extend([currPosIdx])
@@ -760,7 +752,7 @@ def truncateNan(peakStart, peakEnd, diff_pos):
 
 		##### Get subpeak regions
 		if(len(filteredIdx) > 0):
-			totalPosIdx = np.array(range(len(diff_pos)))
+			totalPosIdx = np.array(list(range(len(diff_pos))))
 			totalPosIdx = np.delete(totalPosIdx, filteredIdx)
 
 			subPeakStarts = []

@@ -1,6 +1,6 @@
 '''
 init.py
-Contact: Young-Soo Kim (kys91240@gmail.com)
+Contact: Young-Sook Kim (kys91240@gmail.com)
 '''
 
 
