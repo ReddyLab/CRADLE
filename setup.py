@@ -18,7 +18,7 @@ def main():
 	      packages = ['CorrectBias', 'CorrectBiasStored', 'CallPeak'], # package names
 	      package_dir = {'': 'CRADLE'}, # It calls ./CRADLE/CorrectBias/__init__.py
 	      scripts = ["bin/cradle"], # python scource code, intended to be started from the command line.
-	      install_required = [  
+	      install_requires = [  
 		       "numpy >= 1.14.3",
 		       "multiprocessing >= 0.70a1",
 		       "argparse >= 1.1",
@@ -33,7 +33,7 @@ def main():
 		              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
 			      Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"])
               ], ### 
-	      classifier = [
+	      classifiers = [
 			"Programming Language :: Python :: 2.7",
 			"Programming Language :: Python :: 3.6",
 			"License :: OSI Approved :: MIT License"
