@@ -1,11 +1,23 @@
 
+
 from setuptools import setup, Extension
 import numpy
+import subprocess 
+import sys
 
 def main():
 
 	#with open("README.md", "r") as fh:
 	#	long_description = fh.read()
+
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('numpy', '1.14.3')])
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('argparse', '1.1')])
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('py2bit', '0.3.0')]) 
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('pyBigWig', '0.3.11')])
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('statsmodels', '0.8.0')])
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('scipy', '1.0.1')])	
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('matplotlib', '1.5.3')]) 
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('h5py', '2.6.0')])
 
 	setup(name = "CRADLE",
 	      version = "0.1.0",
@@ -25,7 +37,7 @@ def main():
 		       "statsmodels >= 0.8.0",
 		       "scipy >= 1.0.1",
 		       "matplotlib >= 1.5.3",
-		       "h5py >= 2.6.0"
+		       "h5py >= 2.6.0",
                ], 
 	      ext_modules = [ Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]), 
 		              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
