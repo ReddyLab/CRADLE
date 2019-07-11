@@ -20,32 +20,14 @@ def main():
 
 	import numpy
 
-	try:
-		from Cython.Distutils import build_ext
-	except ImportError:
-		use_cython = False
-	else:
-		use_cython = True
-
-	cmdclass = { }
-	
-	if use_cython:
-		ext_modules = [
-			Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),		
-			Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
-                        Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
-                ]
-		cmdclass.update({ 'build_ext': build_ext })	
-	else:
-		ext_modules = [ 
-			      Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
-                              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
-                              Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
-                ]			
-
+	ext_modules = [
+		Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+		Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+		Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"])
+	]
 
 	setup(name = "CRADLE",
-	      version = "0.1.1",
+	      version = "0.1.2",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",
 	      #long_description = long_description,
 	      author = "Young-Sook Kim",
@@ -54,18 +36,7 @@ def main():
 	      packages = ['CRADLE', 'CRADLE.CorrectBias', 'CRADLE.CorrectBiasStored', 'CRADLE.CallPeak'], # package names
 	      package_dir = {'CRADLE': 'CRADLE'}, # It calls ./CRADLE/CorrectBias/__init__.py
 	      scripts = ["bin/cradle"], # python scource code, intended to be started from the command line.
-	      install_requires = [  
-		       "numpy >= 1.14.3",
-		       "argparse >= 1.1",
-                       "py2bit >= 0.3.0",
-		       "pyBigWig >= 0.3.11",
-		       "statsmodels >= 0.8.0",
-		       "scipy >= 1.0.1",
-		       "matplotlib >= 1.5.3",
-		       "h5py >= 2.6.0",
-               ], 
 	      ext_modules = ext_modules,
-	      cmdclass = cmdclass,
 	      classifiers = [
 			"Programming Language :: Python :: 2.7",
 			"Programming Language :: Python :: 3.6",
