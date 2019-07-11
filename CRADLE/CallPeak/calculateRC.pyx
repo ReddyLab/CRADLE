@@ -10,7 +10,7 @@ from CRADLE.CallPeak import vari
 
 import warnings
 
-def getVariance(region):
+cpdef getVariance(region):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 	warnings.filterwarnings('ignore', r'Degrees of freedom <= 0 for slice')
@@ -49,7 +49,7 @@ def getVariance(region):
 		return None
 
 
-def getRegionCutoff(region):
+cpdef getRegionCutoff(region):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
@@ -92,7 +92,7 @@ def getRegionCutoff(region):
 
 
 
-def defineRegion(region):
+cpdef defineRegion(region):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
@@ -162,7 +162,7 @@ def defineRegion(region):
 	cdef double [:] diff_view = diff
 	del diff
 
-	idx = 0
+	cdef int idx = 0
 	pastGroupType = -2
 	numRegion = 0
 	definedRegion = []
@@ -284,7 +284,7 @@ def defineRegion(region):
 
 
 
-def doWindowApproach(arg):
+cpdef doWindowApproach(arg):
 	warnings.simplefilter("ignore", category=RuntimeWarning)
 
 	input_filename = arg
@@ -414,7 +414,7 @@ def doWindowApproach(arg):
 		return subfile.name
 
 
-def doStatTesting(rc):
+cpdef doStatTesting(rc):
 	ctrl_rc = []
 	exp_rc = []
 
@@ -480,7 +480,7 @@ def doStatTesting(rc):
 
 
 
-def doFDRprocedure(args):
+cpdef doFDRprocedure(args):
 	input_filename = args[0]
 	selectRegionIdx = args[1]
 
@@ -689,7 +689,7 @@ def doFDRprocedure(args):
 
 	return subfile.name
 
-def testSubPeak(subpeak, binEnrichType):
+cpdef testSubPeak(subpeak, binEnrichType):
 	diff = int(subpeak[5])
 	
 	if(diff == 0):
@@ -702,7 +702,7 @@ def testSubPeak(subpeak, binEnrichType):
 	return True
 
 
-def truncateNan(peakStart, peakEnd, diff_pos):	
+cpdef truncateNan(peakStart, peakEnd, diff_pos):	
 	
 	idx = np.where(np.isnan(diff_pos)==False)[0]
 	if(len(idx) == len(diff_pos)):
@@ -798,7 +798,7 @@ def truncateNan(peakStart, peakEnd, diff_pos):
 
 
 
-def selectTheta(metaDataName):
+cpdef selectTheta(metaDataName):
 	input_filename = metaDataName
 	input_stream = open(input_filename)
 	input_file = input_stream.readlines()

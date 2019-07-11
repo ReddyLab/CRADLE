@@ -17,7 +17,7 @@ import random
 
 from CRADLE.CorrectBiasStored import vari
 
-def performRegression(trainSet):
+cpdef performRegression(trainSet):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 	
@@ -61,24 +61,33 @@ def performRegression(trainSet):
 	#### Get X matrix 
 	cdef double [:,:] X_view = np.ones((X_numRows, X_numCols), dtype=np.float64)
 
-	row_ptr = 0
+	cdef int row_ptr = 0
+	cdef int pos
+	cdef int j
+	cdef int analysis_start_this
+	cdef int analysis_end_this
+
 	for trainIdx in range(len(trainSet_new)):
 		chromo = trainSet_new[trainIdx][0]
-		analysis_start = int(trainSet_new[trainIdx][1])
-		analysis_end = int(trainSet_new[trainIdx][2])
+		analysis_start_this = int(trainSet_new[trainIdx][1])
+		analysis_end_this = int(trainSet_new[trainIdx][2])
 
 		hdfFileName = vari.COVARI_DIR + "/" + vari.COVARI_Name + "_" + chromo + ".hdf5"
 		f = h5py.File(hdfFileName, "r")
 
-		for pos in range(analysis_start, analysis_end):
+		pos = analysis_start_this
+		while(pos < analysis_end_this):
 			temp = f['covari'][pos-3] * vari.SELECT_COVARI
 			temp = temp[np.isnan(temp) == False]
-			
-			for j in range(vari.COVARI_NUM):
-				X_view[(row_ptr+pos-analysis_start), j+1] = temp[j]	
 
-		row_ptr = row_ptr + (analysis_end - analysis_start)
+			j = 0
+			while(j < vari.COVARI_NUM):
+				X_view[(row_ptr+pos-analysis_start_this), j+1] = temp[j]
+				j = j + 1
+			pos = pos + 1
+		row_ptr = row_ptr + (analysis_end_this - analysis_start_this)
 		f.close()
+
 
 	if(X_numRows < 50000):
 		idx = np.array(list(range(X_numRows)))
@@ -87,6 +96,9 @@ def performRegression(trainSet):
 
 	#### Get Y matrix
 	cdef double [:] Y_view = np.zeros(X_numRows, dtype=np.float64)
+	cdef int ptr
+	cdef int posIdx
+
 	for rep in range(vari.CTRLBW_NUM):
 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
 		
@@ -101,8 +113,10 @@ def performRegression(trainSet):
 			rc = rc / vari.CTRLSCALER[rep]
 
 			numPos = analysis_end - analysis_start
-			for posIdx in range(numPos):
+			posIdx = 0
+			while(posIdx < numPos):
 				Y_view[ptr+posIdx] = rc[posIdx]
+				posIdx = posIdx + 1
 
 			ptr = ptr + numPos
 		bw.close()
@@ -149,8 +163,10 @@ def performRegression(trainSet):
 			rc = rc / vari.EXPSCALER[rep]
 
 			numPos = analysis_end - analysis_start
-			for posIdx in range(numPos):
+			posIdx = 0
+			while(posIdx < numPos):
 				Y_view[ptr+posIdx] = rc[posIdx]
+				posIdx = posIdx +1
 
 			ptr = ptr + numPos
 		bw.close()
@@ -185,7 +201,7 @@ def performRegression(trainSet):
 	return COEFCTRL, COEFEXP
 
 
-def correctReadCount(args):
+cpdef correctReadCount(args):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
@@ -313,7 +329,7 @@ def correctReadCount(args):
 
 
 
-def selectIdx(chromo, analysis_start, analysis_end):
+cpdef selectIdx(chromo, analysis_start, analysis_end):
 	ctrlRC = []
 	for rep in range(vari.CTRLBW_NUM):
 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
@@ -361,7 +377,7 @@ def selectIdx(chromo, analysis_start, analysis_end):
 
 
 
-def writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):
+cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):
 	subfile = open(subfileName, "w")
 
 	tempSignalvals = tempSignalvals.astype(int)

@@ -19,7 +19,7 @@ import h5py
 from CRADLE.CorrectBias import vari
 
 
-def calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
+cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
 
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')		
@@ -303,7 +303,7 @@ def calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binE
 
 
 
-def calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
+cpdef calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')  
 
@@ -525,7 +525,7 @@ def calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binEnd
 
 
 
-def calculateTrainCovariates(args):
+cpdef calculateTrainCovariates(args):
 	### supress numpy nan-error message
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
@@ -823,7 +823,7 @@ def calculateTrainCovariates(args):
 	
 
 
-def calculateTaskCovariates(args):
+cpdef calculateTaskCovariates(args):
 	### supress numpy nan-error message
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
@@ -868,7 +868,7 @@ def calculateTaskCovariates(args):
 
 
 
-def performRegression(covariFiles):
+cpdef performRegression(covariFiles):
 	### Read covariates values (X)
 	X_numRows = 0
 	for i in range(len(covariFiles)):
@@ -877,15 +877,22 @@ def performRegression(covariFiles):
 
 	cdef double [:,:] X_view = np.ones((X_numRows, X_numCols), dtype=np.float64)
 
-	row_ptr = 0
+	cdef int row_ptr = 0
+	cdef int rowIdx 
+	cdef int col_ptr
+
 	for fileIdx in range(len(covariFiles)):
 		subfileName = covariFiles[fileIdx][0]
 		f = h5py.File(subfileName, "r")
 		
-		for rowIdx in range(f['X'].shape[0]):
+		rowIdx = 0
+		while(rowIdx < f['X'].shape[0]):
 			temp = f['X'][rowIdx]
-			for col_ptr in range(vari.COVARI_NUM): 
+			col_ptr = 0
+			while(col_ptr < vari.COVARI_NUM):
 				X_view[rowIdx + row_ptr, col_ptr+1] = float(temp[col_ptr])
+				col_ptr = col_ptr + 1
+			rowIdx = rowIdx + 1
 		row_ptr = row_ptr + int(covariFiles[fileIdx][1])
 
 		f.close()
@@ -902,6 +909,10 @@ def performRegression(covariFiles):
 		idx = np.random.choice(np.array(list(range(X_numRows))), 50000, replace=False)
 
 	cdef double [:] Y_view = np.zeros(X_numRows, dtype=np.float64)
+
+	cdef int ptr
+	cdef int rcIdx
+
 	for rep in range(vari.CTRLBW_NUM):
 		ptr = 0
 
@@ -909,8 +920,10 @@ def performRegression(covariFiles):
 			subfileName = covariFiles[fileIdx][rep+2]
 			f = h5py.File(subfileName, "r")
 
-			for rcIdx in range(f['Y'].shape[0]):	
+			rcIdx = 0
+			while(rcIdx < f['Y'].shape[0]):
 				Y_view[rcIdx+ptr] = float(f['Y'][rcIdx])
+				rcIdx = rcIdx + 1
 
 			ptr = ptr + int(f['Y'].shape[0])
 
@@ -954,8 +967,10 @@ def performRegression(covariFiles):
 			subfileName = covariFiles[fileIdx][rep+2+vari.CTRLBW_NUM]
 			f = h5py.File(subfileName, "r")
 
-			for rcIdx in range(f['Y'].shape[0]):
+			rcIdx = 0
+			while(rcIdx < f['Y'].shape[0]):
 				Y_view[rcIdx+ptr] = float(f['Y'][rcIdx])
+				rcIdx = rcIdx + 1
 
 			ptr = ptr + int(f['Y'].shape[0])
 
@@ -994,14 +1009,14 @@ def performRegression(covariFiles):
 	return COEFCTRL, COEFEXP
 
 
-def memoryView(value):
+cpdef memoryView(value):
 	cdef double [:] array_view
 	array_view = value
 
 	return array_view
 
 
-def makeMatrix_ContinuousFrag_train(binStart, binEnd, nBins):
+cpdef makeMatrix_ContinuousFrag_train(binStart, binEnd, nBins):
 
 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
 	for i in range(vari.FRAGLEN+1):
@@ -1015,7 +1030,7 @@ def makeMatrix_ContinuousFrag_train(binStart, binEnd, nBins):
 	return result
 
 
-def makeMatrix_ContinuousFrag(binStart, binEnd, nBins):
+cpdef makeMatrix_ContinuousFrag(binStart, binEnd, nBins):
 
 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
 	for i in range(vari.FRAGLEN+1):
@@ -1032,13 +1047,13 @@ def makeMatrix_ContinuousFrag(binStart, binEnd, nBins):
 	return result
 
 
-def makeMatrix_DiscreteFrag(binStart, binEnd, nBins):
+cpdef makeMatrix_DiscreteFrag(binStart, binEnd, nBins):
 	cdef double [:,:] result_view = np.zeros((nBins, vari.COVARI_NUM), dtype=np.float64)
 
 	return result_view
 
 
-def find5merProb(mer5):
+cpdef find5merProb(mer5):
 	base_info = 0
 	subtract = -1
 
@@ -1063,7 +1078,7 @@ def find5merProb(mer5):
 	return next_base_info, mgw, prot 
 
 
-def edit5merProb(past_mer, oldBase, newBase):
+cpdef edit5merProb(past_mer, oldBase, newBase):
 	base_info = past_mer
 	base_info = base_info * 4
 	subtract = -1
@@ -1097,7 +1112,7 @@ def edit5merProb(past_mer, oldBase, newBase):
 	return next_base_info, mgw, prot
 
 
-def findComple5merProb(mer5):
+cpdef findComple5merProb(mer5):
 	base_info = 0
 	subtract = -1
 
@@ -1122,7 +1137,7 @@ def findComple5merProb(mer5):
 	return next_base_info, mgw, prot
 
 
-def editComple5merProb(past_mer, oldBase, newBase):
+cpdef editComple5merProb(past_mer, oldBase, newBase):
 	base_info = past_mer
 	base_info = int(base_info / 4)
 	subtract = -1
@@ -1156,7 +1171,7 @@ def editComple5merProb(past_mer, oldBase, newBase):
 	return next_base_info, mgw, prot
 
 
-def findStartGibbs(seq, seqLen):
+cpdef findStartGibbs(seq, seqLen):
 	gibbs = 0
 	subtract = -1
 
@@ -1185,7 +1200,7 @@ def findStartGibbs(seq, seqLen):
 	return start_gibbs, gibbs
 
 
-def editStartGibbs(oldDimer, newDimer, past_start_gibbs):
+cpdef editStartGibbs(oldDimer, newDimer, past_start_gibbs):
 	gibbs = past_start_gibbs
 	subtract = -1
 
@@ -1226,7 +1241,7 @@ def editStartGibbs(oldDimer, newDimer, past_start_gibbs):
 	return start_gibbs, gibbs
 
 
-def convertGibbs(gibbs):
+cpdef convertGibbs(gibbs):
 	tm = gibbs / (vari.ENTROPY*(vari.FRAGLEN-1))
 	tm = (tm - vari.MIN_TM) / (vari.MAX_TM - vari.MIN_TM)
 
@@ -1242,7 +1257,7 @@ def convertGibbs(gibbs):
 	return anneal, denature
 
 
-def correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins):
+cpdef correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')	
 
@@ -1381,7 +1396,7 @@ def correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastB
 	return return_array
 
 
-def selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins):
+cpdef selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins):
 
 	ctrlRC = []
 	for rep in range(vari.CTRLBW_NUM):
@@ -1462,7 +1477,7 @@ def selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBin
 	return idx, highRC_idx, starts
 	
 
-def writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):
+cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):
 	subfile = open(subfileName, "w")
 	
 	tempSignalvals = tempSignalvals.astype(int)
