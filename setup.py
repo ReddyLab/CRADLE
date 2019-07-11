@@ -45,7 +45,7 @@ def main():
 
 
 	setup(name = "CRADLE",
-	      version = "0.1.0",
+	      version = "0.1.1",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",
 	      #long_description = long_description,
 	      author = "Young-Sook Kim",
