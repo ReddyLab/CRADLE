@@ -1,7 +1,6 @@
 
 
 from setuptools import setup, Extension
-import numpy
 import subprocess 
 import sys
 
@@ -18,6 +17,32 @@ def main():
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('scipy', '1.0.1')])	
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('matplotlib', '1.5.3')]) 
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('h5py', '2.6.0')])
+
+	import numpy
+
+	try:
+		from Cython.Distutils import build_ext
+	except ImportError:
+		use_cython = False
+	else:
+		use_cython = True
+
+	cmdclass = { }
+	
+	if use_cython:
+		ext_modules = [
+			Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),		
+			Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+                        Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+                ]
+                cmdclass.update({ 'build_ext': build_ext })	
+	else:
+		ext_modules = [ 
+			      Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+                              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+                              Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+                ]			
+
 
 	setup(name = "CRADLE",
 	      version = "0.1.0",
@@ -39,10 +64,8 @@ def main():
 		       "matplotlib >= 1.5.3",
 		       "h5py >= 2.6.0",
                ], 
-	      ext_modules = [ Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]), 
-		              Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
-			      Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.c'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"])
-              ], ### 
+	      ext_modules = ext_modules,
+	      cmdclass = cmdclass,
 	      classifiers = [
 			"Programming Language :: Python :: 2.7",
 			"Programming Language :: Python :: 3.6",
