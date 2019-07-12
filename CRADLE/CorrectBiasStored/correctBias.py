@@ -9,7 +9,6 @@ import random
 import pyBigWig
 import statsmodels.api as sm
 import gc
-import matplotlib.pyplot as plt
 import time
 import linecache
 import tempfile
