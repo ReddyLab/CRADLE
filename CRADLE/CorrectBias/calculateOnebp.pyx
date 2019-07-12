@@ -10,6 +10,8 @@ import py2bit
 import pyBigWig
 import warnings
 import statsmodels.api as sm
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import random
 import warnings
