@@ -47,7 +47,7 @@ def setOutputDirectory(outputDir):
 	global OUTPUT_DIR
 
 	if(outputDir == None):
-		OUTPUT_DIR = os.getcwd() + "/" + "CRADE_peak_result"
+		OUTPUT_DIR = os.getcwd() + "/" + "CRADLE_peak_result"
 	else:
 		OUTPUT_DIR = outputDir
 

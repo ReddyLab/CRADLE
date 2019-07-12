@@ -24,7 +24,7 @@ from CRADLE.CorrectBias import vari
 cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
 
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
-	warnings.filterwarnings('ignore', r'Mean of empty slice')		
+	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
 
 	###### CALCULATE INDEX VARIABLE
@@ -142,7 +142,11 @@ cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, bi
 	covariFileName = covariFile_temp.name
 	covariFile_temp.close()
 
-	f = h5py.File(covariFileName, "w", compression="gzip")
+	try:
+		f = h5py.File(covariFileName, "w", compression="gzip")
+	except TypeError:
+		f = h5py.File(covariFileName, "w")
+
 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f')
 
 	
@@ -412,7 +416,11 @@ cpdef calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binE
 	covariFileName = covariFile_temp.name
 	covariFile_temp.close()
 
-	f = h5py.File(covariFileName, "w", compression="gzip")
+	try:
+		f = h5py.File(covariFileName, "w", compression="gzip")
+	except TypeError:
+		f = h5py.File(covariFileName, "w")
+
 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f')
 
 	resultIdx = 0
@@ -620,7 +628,10 @@ cpdef calculateTrainCovariates(args):
 	covariFileName = covariFile_temp.name
 	covariFile_temp.close()
 
-	f = h5py.File(covariFileName, "w", compression="gzip")
+	try:
+		f = h5py.File(covariFileName, "w", compression="gzip")
+	except TypeError:
+		f = h5py.File(covariFileName, "w")
 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f')
 
 	for idx in range(start_idx, end_idx):
@@ -786,7 +797,11 @@ cpdef calculateTrainCovariates(args):
 		rcFileName = rcFile_temp.name		
 		rcFile_temp.close()
 
-		f = h5py.File(rcFileName, "w", compression="gzip")
+		try:
+			f = h5py.File(rcFileName, "w", compression="gzip")
+		except TypeError:
+			f = h5py.File(rcFileName, "w")
+
 		rcFile = f.create_dataset("Y", (nBins, ), dtype='f')
 		
 		return_Line.extend([ rcFileName ])

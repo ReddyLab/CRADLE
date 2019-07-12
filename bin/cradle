@@ -18,9 +18,9 @@ def getArgs():
 
 	correctBias_required.add_argument('-l', help="Fragment length.", required=True)
 
-	correctBias_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-sspaced", required=True)
+	correctBias_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000", required=True)
 
-	correctBias_required.add_argument('-biasType', help="Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type either shear or pcr, tb file is required. If you type map, mappability file and length of one sequenced end is required. If you type gquad, gquadruplex score is required.", nargs='+', required=True)
+	correctBias_required.add_argument('-biasType', help="Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type map, -mapFile and -kmer are required. If you type gquad, -gquadFile is required", nargs='+', required=True)
 
 	correctBias_required.add_argument('-faFile', help=".2bit file.", required=True)	
 	
@@ -28,23 +28,23 @@ def getArgs():
 	## optional
 	correctBias_optional = correctBias_parser.add_argument_group("Optional Args")	
 
-	correctBias_optional.add_argument('-binSize', help="The size of bin for correction. default=1", default=1)
+	correctBias_optional.add_argument('-binSize', help="The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)", default=1)
 
 	correctBias_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=10", default=10)
 
 	correctBias_optional.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")
 
-	correctBias_optional.add_argument('-kmer', help="The length of one sequencing end. Required when 'map' is in '-biasType'")
+	correctBias_optional.add_argument('-kmer', help="The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'")
 
-	correctBias_optional.add_argument('-gquadFile', help="Gqaudruplex file in bigwig format. Required when 'gquad' is in '-biasType'", nargs="+")
+	correctBias_optional.add_argument('-gquadFile', help="Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
 
 	correctBias_optional.add_argument('-gquadMax', help="The maximum gquad score. This is used to normalize Gquad score. default=78.6", default=78.6)
 	
-	correctBias_optional.add_argument('-o', help="Output directoy")
+	correctBias_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult")
 
 	correctBias_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
 
-	correctBias_optional.add_argument('-bl', help="Blacklist regions")
+	correctBias_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 
 
 
@@ -57,11 +57,11 @@ def getArgs():
 
 	correctBiasStored_required.add_argument('-expbw', help="Experimental bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -expbw file1.bw file2.bw", nargs='+', required=True)
 
-	correctBiasStored_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-sspaced", required=True)
+	correctBiasStored_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000", required=True)
 
-	correctBiasStored_required.add_argument('-biasType', help="Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type either shear or pcr, tb file is required. If you type map, mappability file and length of one sequenced end is required. If you type gquad, gquadruplex score is required.", nargs='+', required=True)
+	correctBiasStored_required.add_argument('-biasType', help="Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr.", nargs='+', required=True)
 
-	correctBiasStored_required.add_argument('-covariDir', help="the directory of hdf files that have covariate values", required=True)
+	correctBiasStored_required.add_argument('-covariDir', help="The directory of hdf files that have covariate values. The directory name of covariate files should be 'refGenome_fragLen(fragment length)_kmer(the length of sequenced reads)' ex) hg38_fragLen300_kmer36", required=True)
 
 	correctBiasStored_required.add_argument('-faFile', help=".2bit file.", required=True)
 
@@ -70,12 +70,11 @@ def getArgs():
 
 	correctBiasStored_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=10", default=10)
 
-	correctBiasStored_optional.add_argument('-o', help="Output directoy")
+	correctBiasStored_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.")
 
 	correctBiasStored_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
 
-	correctBiasStored_optional.add_argument('-bl', help="Blacklist regions")
-
+	correctBiasStored_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 
 
 	########### callPeak
@@ -89,20 +88,20 @@ def getArgs():
 
 	callPeak_required.add_argument('-l', help="Fragment length.", required=True)
 
-	callPeak_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced.", required=True)
+	callPeak_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000", required=True)
 
-	callPeak_required.add_argument('-fdr', help="FDR level", required=True)
+	callPeak_required.add_argument('-fdr', help="FDR control", required=True)
 
 	## optional
 	callPeak_optional = callPeak_parser.add_argument_group("Optional Args")
 
-	callPeak_optional.add_argument('-o', help="Output directoy")
+	callPeak_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_peak_result.")
 
-	callPeak_optional.add_argument('-bl', help="Blacklist regions")
+	callPeak_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 
-	callPeak_optional.add_argument('-rbin', help="The size of bin used for defining regions, default = (fragment length)*1.5")
+	callPeak_optional.add_argument('-rbin', help="The size of a bin used for defining regions. rbin cannot be smaller than wbin. default = (fragment length)*1.5")
 
-	callPeak_optional.add_argument('-wbin', help="he size of bin used for testing differential activity, default = rbin/6")
+	callPeak_optional.add_argument('-wbin', help="The size of a bin used for testing differential activity. wbin cannot be larger than rbin. default = rbin/6")
 
 	callPeak_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
 
