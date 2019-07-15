@@ -1,4 +1,5 @@
 # CRADLE
+CRADLE (Correcting Read counts and Analysis of DifferentiaLly Expressed regions) is a package that was developed to analyze STARR-seq data. CRADLE removes technical biases from sonication, PCR, mappability and G-quadruplex sturcture, and generates bigwigs files with corrected read counts. CRADLE then uses those corrected read counts and detects both activated and repressed enhancers. CRADLE will help to find enhancers with better accuracy and credibility. 
 
 
 ## Installation
@@ -7,7 +8,7 @@ You can install CRADLE either with using pip or git repository.
 ```
 pip install cradle
 ```
-recommend to install the newest version.
+Recommend to install the newest version.
 
 2) Using git repository
 ```
@@ -166,12 +167,14 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
      The size of a bin used for testing differential activity. wbin cannot be larger than rbin. default = rbin/6
   -  -p <br/>
      The number of cpus. default=(available cpus)/2
+  -  -d <br/>
+     The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=(fragment size)/ 2
 
 
 ## Tips on running CRADLE
-covariates are not very sensitive. 
+* We strongly recommend to use correctBias_stored when you have large regions becaus running correctBias might take too long time, especially when fragmen size is more than 500. Since little difference in fragment legnth and sequenced length doesn't significantly affect correction power, we recommend to download covariate files from syanpse and run 'correctBias_stored' if you can find fragment legnth and sequenced length that are close to your data. 
 
 ## References
 * DNAShape 
-* Mappability
-* G-quadruplex sturcture
+* Mappability 
+* G-quadruplex sturcture 
