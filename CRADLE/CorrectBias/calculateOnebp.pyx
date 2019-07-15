@@ -142,13 +142,8 @@ cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, bi
 	covariFileName = covariFile_temp.name
 	covariFile_temp.close()
 
-	try:
-		f = h5py.File(covariFileName, "w", compression="gzip")
-	except TypeError:
-		f = h5py.File(covariFileName, "w")
-
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f')
-
+	f = h5py.File(covariFileName, "w")
+	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 	
 	for idx in range(start_idx, end_idx):
 		idx_covari = [0] * vari.COVARI_NUM
@@ -416,12 +411,8 @@ cpdef calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binE
 	covariFileName = covariFile_temp.name
 	covariFile_temp.close()
 
-	try:
-		f = h5py.File(covariFileName, "w", compression="gzip")
-	except TypeError:
-		f = h5py.File(covariFileName, "w")
-
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f')
+	f = h5py.File(covariFileName, "w")
+	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	resultIdx = 0
 	while(resultIdx < nBins): # for each bin
@@ -628,11 +619,8 @@ cpdef calculateTrainCovariates(args):
 	covariFileName = covariFile_temp.name
 	covariFile_temp.close()
 
-	try:
-		f = h5py.File(covariFileName, "w", compression="gzip")
-	except TypeError:
-		f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f')
+	f = h5py.File(covariFileName, "w")
+	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	for idx in range(start_idx, end_idx):
 		idx_covari = [0] * vari.COVARI_NUM
@@ -797,12 +785,9 @@ cpdef calculateTrainCovariates(args):
 		rcFileName = rcFile_temp.name		
 		rcFile_temp.close()
 
-		try:
-			f = h5py.File(rcFileName, "w", compression="gzip")
-		except TypeError:
-			f = h5py.File(rcFileName, "w")
+		f = h5py.File(rcFileName, "w")
+		rcFile = f.create_dataset("Y", (nBins, ), dtype='f', compression="gzip")
 
-		rcFile = f.create_dataset("Y", (nBins, ), dtype='f')
 		
 		return_Line.extend([ rcFileName ])
 
