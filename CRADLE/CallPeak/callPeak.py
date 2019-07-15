@@ -11,6 +11,102 @@ from CRADLE.CallPeak import vari
 from CRADLE.CallPeak import calculateRC
 
 
+def mergePeaks(peak_result):
+
+	## open bigwig files to calculate effect size
+	ctrlBW = [0] * vari.CTRLBW_NUM
+	expBW = [0] * vari.EXPBW_NUM
+
+	for i in range(vari.CTRLBW_NUM):
+		ctrlBW[i] = pyBigWig.open(vari.CTRLBW_NAMES[i])
+	for i in range(vari.EXPBW_NUM):
+		expBW[i] = pyBigWig.open(vari.EXPBW_NAMES[i])
+
+	merged_peak = []
+
+	pastChromo = peak_result[0][0]
+	pastStart = int(peak_result[0][1])
+	pastEnd = int(peak_result[0][2])
+	pastEnrich = int(peak_result[0][3])
+	pvalues = [float(peak_result[0][4])]
+
+	merged_peak.append(peak_result[0])
+	resultIdx = 0
+
+	i = 1
+	while(i < len(peak_result)):
+		currChromo = peak_result[i][0]
+		currStart = int(peak_result[i][1])
+		currEnd = int(peak_result[i][2])
+		currEnrich = int(peak_result[i][3])
+		currpvalue = float(peak_result[i][4])
+
+		if( (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) < vari.DISTANCE)):
+			merged_peak[resultIdx][2] = currEnd
+			pvalues.extend([ currpvalue ])
+		else:
+			## update the continuous regions
+			merged_peak[resultIdx][4] = np.min(pvalues)
+			regionChromo = merged_peak[resultIdx][0]
+			regionStart = int(merged_peak[resultIdx][1])
+			regionEnd = int(merged_peak[resultIdx][2])
+
+			ctrlRC = []
+			for rep in range(vari.CTRLBW_NUM):
+				rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
+				ctrlRC.extend([rc])
+			ctrlRC_posMean = np.nanmean(ctrlRC)
+
+			expRC = []
+			for rep in range(vari.EXPBW_NUM):
+				rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
+				expRC.extend([rc])
+			expRC_posMean = np.nanmean(expRC)
+
+			diff_pos = int(expRC_posMean - ctrlRC_posMean)
+			merged_peak[resultIdx][5] = diff_pos
+
+			## start a new region
+			merged_peak.append(peak_result[i])
+			pvalues = [currpvalue]
+			resultIdx = resultIdx + 1
+
+		if(i == (len(peak_result) -1)):
+			merged_peak[resultIdx][4] = np.min(pvalues)
+			regionChromo = merged_peak[resultIdx][0]
+			regionStart = int(merged_peak[resultIdx][1])
+			regionEnd = int(merged_peak[resultIdx][2])
+
+			ctrlRC = []
+			for rep in range(vari.CTRLBW_NUM):
+				rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
+				ctrlRC.extend([rc])
+			ctrlRC_posMean = np.nanmean(ctrlRC)
+
+			expRC = []
+			for rep in range(vari.EXPBW_NUM):
+				rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
+				expRC.extend([rc])
+			expRC_posMean = np.nanmean(expRC)
+
+			diff_pos = int(expRC_posMean - ctrlRC_posMean)
+			merged_peak[resultIdx][5] = diff_pos
+
+		pastChromo = currChromo
+		pastStart = currStart
+		pastEnd = currEnd
+		pastEnrich = currEnrich
+
+		i = i + 1
+
+	for i in range(vari.CTRLBW_NUM):
+		ctrlBW[i].close()
+	for i in range(vari.EXPBW_NUM):
+		expBW[i].close()
+
+	return merged_peak
+
+
 
 def run(args):
 
@@ -181,11 +277,7 @@ def run(args):
 	del pool, task_callPeak
 	gc.collect()
 
-	
-	######## WRITE A RESULT FILE
-	output_filename = vari.OUTPUT_DIR + "/CRADE_peaks"
-	output_stream = open(output_filename, "w")
-
+	peak_result = []
 	for i in range(len(result_callPeak)):
 		input_filename = result_callPeak[i]
 		input_stream = open(input_filename)
@@ -193,10 +285,32 @@ def run(args):
 
 		for j in range(len(input_file)):
 			temp = input_file[j].split()
-			output_stream.write('\t'.join([str(x) for x in temp]) + "\n")
+			peak_result.append(temp)
 		input_stream.close()
 		os.remove(input_filename)
-	output_stream.close()
+
+	if(len(peak_result) == 0):
+		print("======= COMPLETED! ===========")
+		print("There is no peak detected.")
+		return
+
+	######## WRITE A RESULT FILE
+	if(vari.DISTANCE == 1):
+		output_filename = vari.OUTPUT_DIR + "/CRADE_peaks"
+		output_stream = open(output_filename, "w")
+
+		for i in range(len(peak_result)):
+			output_stream.write('\t'.join([str(x) for x in peak_result[i]]) + "\n")
+		output_stream.close()
+	else:
+		merged_peaks = mergePeaks(peak_result)
+
+		output_filename = vari.OUTPUT_DIR + "/CRADE_peaks"
+		output_stream = open(output_filename, "w")
+
+		for i in range(len(merged_peaks)):
+			output_stream.write('\t'.join([str(x) for x in merged_peaks[i]]) + "\n")
+		output_stream.close()
 
 	print("======= COMPLETED! ===========")
 	print("The peak result was saved in %s" % vari.OUTPUT_DIR)
