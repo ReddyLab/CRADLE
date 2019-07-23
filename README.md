@@ -117,7 +117,7 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
       Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. 
   -  -covariDir <br />
       The directory of hdf files that have covariate values. The directory name of covariate files should be 'refGenome_fragLen(fragment length)_kmer(the length of sequenced reads)' ex) hg38_fragLen300_kmer36
-  -  -faFile 
+  -  -faFile <br/>
       .2bit files. You can download .2bit files in UCSC genome browser. <br/> <br/> 
 
 * Optional Arguments
@@ -153,7 +153,7 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
       Fragment length
   -  -r <br /> 
       Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000
-  -  fdr <br />
+  -  -fdr <br />
      FDR control <br/> <br/>
 
 * Optional Arguments
@@ -171,10 +171,27 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
      The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=(fragment size)/ 2
 
 
+## How to download covariate files
+We uploaded pre-computed covariates files for human genome (hg19, hg38). Those files are required to run "correctBias_stored"
+1. Go to synapse (www.synapse.org)
+2. Register in the synapse. (You cannot download the files unless you register)
+3. Search covariate files with SynapseID, syn20369503. 
+
+## How to download human mappability and gquadruplex files
+We liftover mappability files[2] and G-quadruplex files[3] from hg19 to hg38. You can download both hg19 and hg38 mappability files and G-quadruplex files.
+1. Go to synapse (www.synapse.org)
+2. Register in the synapse. (You cannot download the files unless you register)
+3. Search covariate files with SynapseID, syn20369496. 
+
+
 ## Tips on running CRADLE
-* We strongly recommend to use correctBias_stored when you have large regions becaus running correctBias might take too long time, especially when fragmen size is more than 500. Since little difference in fragment legnth and sequenced length doesn't significantly affect correction power, we recommend to download covariate files from syanpse and run 'correctBias_stored' if you can find fragment legnth and sequenced length that are close to your data. 
+* We strongly recommend to use correctBias_stored when you have large regions because running "correctBias" might take too long time, especially when fragmen size is more than 500. Little difference in fragment legnth and sequenced length doesn't significantly affect correction power, so we recommend to download covariate files from syanpse and run 'correctBias_stored' if you can find fragment legnth and sequenced length that are close to your data. 
+
 
 ## References
-* DNAShape 
-* Mappability 
-* G-quadruplex sturcture 
+1) DNAShape <br /> 
+   Zhou T, Yang L, Lu Y, Dror I, Dantas Machado AC, Ghane T, Di Felice R, Rohs R.DNAshape: a method for the high-throughput prediction of DNA structural features on a genomic scale. Nucleic Acids Res. 2013 Jul;41(Web Server issue):W56-62. <br /> 
+2) Mappability <br /> 
+   Derrien T, Estellé J, Marco Sola S, Knowles DG, Raineri E, Guigó R, Ribeca P. Fast computation and applications of genome mappability. PLoS One. 2012;7(1):e30377. <br /> 
+3) G-quadruplex sturcture <br/>
+   Chambers VS, Marsico G, Boutell JM, Di Antonio M, Smith GP, Balasubramanian S. High-throughput sequencing of DNA G-quadruplex structures in the human genome.Nat Biotechnol. 2015 Aug;33(8):877-81.<br /> 
