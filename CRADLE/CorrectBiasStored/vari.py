@@ -13,6 +13,7 @@ def setGlobalVariables(args):
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.mi)
 	setNumProcess(args.p)
+	setOutputFormat(args.f)
 
 	return
 
@@ -307,4 +308,15 @@ def setNumProcess(numProcess):
 
 
 
+def setOutputFormat(oformat):
+	global OFORMAT
 
+	oformat = oformat.upper()
+	
+	if( (oformat != "BIGWIG") and (oformat != "BEDGRAPH") ):
+		print("ERROR: You have to type either bigwig or bedgraph")
+		sys.exit()
+	
+	OFORMAT = oformat
+
+	return

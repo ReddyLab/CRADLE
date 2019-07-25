@@ -3,12 +3,18 @@
 /* BEGIN: Cython Metadata
 {
     "distutils": {
-        "name": "calculateOnebp",
+        "extra_compile_args": [
+            "-fno-strict-aliasing"
+        ], 
+        "include_dirs": [
+            "/data/reddylab/software/miniconda2/envs/YoungSook2_test/lib/python2.7/site-packages/numpy/core/include"
+        ], 
+        "name": "CRADLE.CorrectBias.calculateOnebp", 
         "sources": [
-            "calculateOnebp.pyx"
+            "CRADLE/CorrectBias/calculateOnebp.pyx"
         ]
-    },
-    "module_name": "calculateOnebp"
+    }, 
+    "module_name": "CRADLE.CorrectBias.calculateOnebp"
 }
 END: Cython Metadata */
 
@@ -602,8 +608,8 @@ static CYTHON_INLINE float __PYX_NAN() {
   #endif
 #endif
 
-#define __PYX_HAVE__calculateOnebp
-#define __PYX_HAVE_API__calculateOnebp
+#define __PYX_HAVE__CRADLE__CorrectBias__calculateOnebp
+#define __PYX_HAVE_API__CRADLE__CorrectBias__calculateOnebp
 /* Early includes */
 #include "pythread.h"
 #include <string.h>
@@ -818,7 +824,7 @@ static const char *__pyx_filename;
 
 
 static const char *__pyx_f[] = {
-  "calculateOnebp.pyx",
+  "CRADLE/CorrectBias/calculateOnebp.pyx",
   "stringsource",
 };
 /* MemviewSliceStruct.proto */
@@ -1797,7 +1803,7 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp); /* proto*/
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value); /* proto*/
 
-/* Module declarations from 'calculateOnebp' */
+/* Module declarations from 'CRADLE.CorrectBias.calculateOnebp' */
 static PyTypeObject *__pyx_array_type = 0;
 static PyTypeObject *__pyx_MemviewEnum_type = 0;
 static PyTypeObject *__pyx_memoryview_type = 0;
@@ -1809,25 +1815,25 @@ static PyObject *contiguous = 0;
 static PyObject *indirect_contiguous = 0;
 static int __pyx_memoryview_thread_locks_used;
 static PyThread_type_lock __pyx_memoryview_thread_locks[8];
-static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_memoryView(PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateDiscreteFrag(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateTrainCovariates(PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateTaskCovariates(PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_performRegression(PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_DiscreteFrag(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_find5merProb(PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_edit5merProb(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findComple5merProb(PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editComple5merProb(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findStartGibbs(PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editStartGibbs(PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_convertGibbs(PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_correctReadCount(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_selectIdx(PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_writeBedFile(PyObject *, PyObject *, PyObject *, PyObject *, int __pyx_skip_dispatch); /*proto*/
 static struct __pyx_array_obj *__pyx_array_new(PyObject *, Py_ssize_t, char *, char *, char *); /*proto*/
 static void *__pyx_align_pointer(void *, size_t); /*proto*/
 static PyObject *__pyx_memoryview_new(PyObject *, int, int, __Pyx_TypeInfo *); /*proto*/
@@ -1862,11 +1868,11 @@ static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *, int, size
 static void __pyx_memoryview__slice_assign_scalar(char *, Py_ssize_t *, Py_ssize_t *, int, size_t, void *); /*proto*/
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *, PyObject *); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_double = { "double", NULL, sizeof(double), { 0 }, 0, 'R', 0, 0 };
-#define __Pyx_MODULE_NAME "calculateOnebp"
-extern int __pyx_module_is_main_calculateOnebp;
-int __pyx_module_is_main_calculateOnebp = 0;
+#define __Pyx_MODULE_NAME "CRADLE.CorrectBias.calculateOnebp"
+extern int __pyx_module_is_main_CRADLE__CorrectBias__calculateOnebp;
+int __pyx_module_is_main_CRADLE__CorrectBias__calculateOnebp = 0;
 
-/* Implementation of 'calculateOnebp' */
+/* Implementation of 'CRADLE.CorrectBias.calculateOnebp' */
 static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_open;
 static PyObject *__pyx_builtin_ValueError;
@@ -2430,25 +2436,25 @@ static PyObject *__pyx_n_s_xlim;
 static PyObject *__pyx_n_s_ylabel;
 static PyObject *__pyx_n_s_ylim;
 static PyObject *__pyx_n_s_zeros;
-static PyObject *__pyx_pf_14calculateOnebp_calculateContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_2calculateDiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_4calculateTrainCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_6calculateTaskCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_8performRegression(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFiles); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_10memoryView(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_value); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_12makeMatrix_ContinuousFrag_train(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_14makeMatrix_ContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_16makeMatrix_DiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_18find5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_20edit5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_22findComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_24editComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_26findStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_seq, PyObject *__pyx_v_seqLen); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_28editStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_oldDimer, PyObject *__pyx_v_newDimer, PyObject *__pyx_v_past_start_gibbs); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_30convertGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_gibbs); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_32correctReadCount(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFileName, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_lastBin, PyObject *__pyx_v_nBins); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_34selectIdx(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_region_start, PyObject *__pyx_v_region_end, PyObject *__pyx_v_lastBin_start, PyObject *__pyx_v_lastBin_end, PyObject *__pyx_v_nBins); /* proto */
-static PyObject *__pyx_pf_14calculateOnebp_36writeBedFile(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subfileName, PyObject *__pyx_v_tempStarts, PyObject *__pyx_v_tempSignalvals, PyObject *__pyx_v_analysis_end); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_2calculateDiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_4calculateTrainCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_6calculateTaskCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_8performRegression(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFiles); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_10memoryView(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_value); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_12makeMatrix_ContinuousFrag_train(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_14makeMatrix_ContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_16makeMatrix_DiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_18find5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_20edit5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_22findComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_24editComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_26findStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_seq, PyObject *__pyx_v_seqLen); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_28editStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_oldDimer, PyObject *__pyx_v_newDimer, PyObject *__pyx_v_past_start_gibbs); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_30convertGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_gibbs); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_32correctReadCount(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFileName, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_lastBin, PyObject *__pyx_v_nBins); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_34selectIdx(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_region_start, PyObject *__pyx_v_region_end, PyObject *__pyx_v_lastBin_start, PyObject *__pyx_v_lastBin_end, PyObject *__pyx_v_nBins); /* proto */
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_36writeBedFile(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subfileName, PyObject *__pyx_v_tempStarts, PyObject *__pyx_v_tempSignalvals, PyObject *__pyx_v_analysis_end); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __pyx_array_obj *__pyx_v_self, PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, PyObject *__pyx_v_format, PyObject *__pyx_v_mode, int __pyx_v_allocate_buffer); /* proto */
 static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(struct __pyx_array_obj *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struct __pyx_array_obj *__pyx_v_self); /* proto */
@@ -2545,7 +2551,7 @@ static PyObject *__pyx_tuple__36;
 static PyObject *__pyx_codeobj__37;
 /* Late includes */
 
-/* "calculateOnebp.pyx":24
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":24
  * 
  * 
  * cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):             # <<<<<<<<<<<<<<
@@ -2553,8 +2559,8 @@ static PyObject *__pyx_codeobj__37;
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_1calculateContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_1calculateContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_frag_start = NULL;
   PyObject *__pyx_v_frag_end = NULL;
   PyObject *__pyx_v_shear_start = NULL;
@@ -2640,7 +2646,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_INCREF(__pyx_v_nBins);
   __Pyx_INCREF(__pyx_v_lastBin);
 
-  /* "calculateOnebp.pyx":26
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":26
  * cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
  * 
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')             # <<<<<<<<<<<<<<
@@ -2657,7 +2663,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":27
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":27
  * 
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')             # <<<<<<<<<<<<<<
@@ -2674,7 +2680,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":31
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":31
  * 
  * 	###### CALCULATE INDEX VARIABLE
  * 	frag_start = binStart + 1 - vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -2695,7 +2701,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_frag_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":32
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":32
  * 	###### CALCULATE INDEX VARIABLE
  * 	frag_start = binStart + 1 - vari.FRAGLEN
  * 	frag_end = binEnd + vari.FRAGLEN  # not included             # <<<<<<<<<<<<<<
@@ -2713,7 +2719,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_frag_end = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":33
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":33
  * 	frag_start = binStart + 1 - vari.FRAGLEN
  * 	frag_end = binEnd + vari.FRAGLEN  # not included
  * 	shear_start = frag_start - 2             # <<<<<<<<<<<<<<
@@ -2725,7 +2731,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_shear_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":34
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":34
  * 	frag_end = binEnd + vari.FRAGLEN  # not included
  * 	shear_start = frag_start - 2
  * 	shear_end = frag_end + 2 # not included             # <<<<<<<<<<<<<<
@@ -2737,7 +2743,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_shear_end = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":36
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":36
  * 	shear_end = frag_end + 2 # not included
  * 
  * 	faFile = py2bit.open(vari.FA)             # <<<<<<<<<<<<<<
@@ -2773,7 +2779,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_faFile = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":37
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":37
  * 
  * 	faFile = py2bit.open(vari.FA)
  * 	chromoEnd = int(faFile.chroms(chromo))             # <<<<<<<<<<<<<<
@@ -2803,7 +2809,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_chromoEnd = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":39
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":39
  * 	chromoEnd = int(faFile.chroms(chromo))
  * 
  * 	if(shear_start < 1):             # <<<<<<<<<<<<<<
@@ -2815,7 +2821,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":40
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":40
  * 
  * 	if(shear_start < 1):
  * 		shear_start = 1             # <<<<<<<<<<<<<<
@@ -2825,7 +2831,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_INCREF(__pyx_int_1);
     __Pyx_DECREF_SET(__pyx_v_shear_start, __pyx_int_1);
 
-    /* "calculateOnebp.pyx":41
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":41
  * 	if(shear_start < 1):
  * 		shear_start = 1
  * 		frag_start = 3             # <<<<<<<<<<<<<<
@@ -2835,7 +2841,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_INCREF(__pyx_int_3);
     __Pyx_DECREF_SET(__pyx_v_frag_start, __pyx_int_3);
 
-    /* "calculateOnebp.pyx":42
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":42
  * 		shear_start = 1
  * 		frag_start = 3
  * 		binStart = max(binStart, frag_start)             # <<<<<<<<<<<<<<
@@ -2864,7 +2870,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_binStart, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":43
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":43
  * 		frag_start = 3
  * 		binStart = max(binStart, frag_start)
  * 		analysis_start = max(analysis_start, frag_start)             # <<<<<<<<<<<<<<
@@ -2893,7 +2899,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_analysis_start, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":46
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":46
  * 
  * 		###### EDIT BINSTART/ BINEND
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )             # <<<<<<<<<<<<<<
@@ -2920,7 +2926,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":47
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":47
  * 		###### EDIT BINSTART/ BINEND
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)             # <<<<<<<<<<<<<<
@@ -2944,7 +2950,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __pyx_v_leftValue = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":48
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":48
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -2957,7 +2963,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":49
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":49
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		if(leftValue != 0):
  * 			nBins = nBins + 1             # <<<<<<<<<<<<<<
@@ -2969,7 +2975,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":50
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":50
  * 		if(leftValue != 0):
  * 			nBins = nBins + 1
  * 			lastBin = True             # <<<<<<<<<<<<<<
@@ -2979,7 +2985,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_INCREF(Py_True);
       __Pyx_DECREF_SET(__pyx_v_lastBin, Py_True);
 
-      /* "calculateOnebp.pyx":51
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":51
  * 			nBins = nBins + 1
  * 			lastBin = True
  * 			binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )             # <<<<<<<<<<<<<<
@@ -3015,7 +3021,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_binEnd, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":48
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":48
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -3025,7 +3031,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       goto __pyx_L4;
     }
 
-    /* "calculateOnebp.pyx":53
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":53
  * 			binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )
  * 		else:
  * 			lastBin = False             # <<<<<<<<<<<<<<
@@ -3036,7 +3042,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_INCREF(Py_False);
       __Pyx_DECREF_SET(__pyx_v_lastBin, Py_False);
 
-      /* "calculateOnebp.pyx":54
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":54
  * 		else:
  * 			lastBin = False
  * 			binEnd = binStart + (nBins-1) * vari.BINSIZE             # <<<<<<<<<<<<<<
@@ -3062,7 +3068,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     }
     __pyx_L4:;
 
-    /* "calculateOnebp.pyx":56
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":56
  * 			binEnd = binStart + (nBins-1) * vari.BINSIZE
  * 
  * 		frag_end = binEnd + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -3080,7 +3086,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":57
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":57
  * 
  * 		frag_end = binEnd + vari.FRAGLEN
  * 		shear_end = frag_end + 2             # <<<<<<<<<<<<<<
@@ -3092,7 +3098,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":39
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":39
  * 	chromoEnd = int(faFile.chroms(chromo))
  * 
  * 	if(shear_start < 1):             # <<<<<<<<<<<<<<
@@ -3101,7 +3107,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":59
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":59
  * 		shear_end = frag_end + 2
  * 
  * 	if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -3113,7 +3119,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":60
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":60
  * 
  * 	if(shear_end > chromoEnd):
  * 		analysis_end_modified = min(analysis_end, chromoEnd - 2)  # not included             # <<<<<<<<<<<<<<
@@ -3142,7 +3148,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __pyx_v_analysis_end_modified = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":62
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":62
  * 		analysis_end_modified = min(analysis_end, chromoEnd - 2)  # not included
  * 
  * 		if(analysis_end_modified == analysis_end):             # <<<<<<<<<<<<<<
@@ -3154,7 +3160,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":63
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":63
  * 
  * 		if(analysis_end_modified == analysis_end):
  * 			shear_end = chromoEnd             # <<<<<<<<<<<<<<
@@ -3164,7 +3170,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_INCREF(__pyx_v_chromoEnd);
       __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_v_chromoEnd);
 
-      /* "calculateOnebp.pyx":64
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":64
  * 		if(analysis_end_modified == analysis_end):
  * 			shear_end = chromoEnd
  * 			frag_end = shear_end - 2             # <<<<<<<<<<<<<<
@@ -3176,7 +3182,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":62
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":62
  * 		analysis_end_modified = min(analysis_end, chromoEnd - 2)  # not included
  * 
  * 		if(analysis_end_modified == analysis_end):             # <<<<<<<<<<<<<<
@@ -3186,7 +3192,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       goto __pyx_L6;
     }
 
-    /* "calculateOnebp.pyx":66
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":66
  * 			frag_end = shear_end - 2
  * 		else:
  * 			analysis_end = analysis_end_modified             # <<<<<<<<<<<<<<
@@ -3197,7 +3203,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_INCREF(__pyx_v_analysis_end_modified);
       __Pyx_DECREF_SET(__pyx_v_analysis_end, __pyx_v_analysis_end_modified);
 
-      /* "calculateOnebp.pyx":69
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":69
  * 
  * 			###### EDIT BINSTART/ BINEND
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )             # <<<<<<<<<<<<<<
@@ -3224,7 +3230,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":70
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":70
  * 			###### EDIT BINSTART/ BINEND
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)             # <<<<<<<<<<<<<<
@@ -3248,7 +3254,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_leftValue, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":71
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":71
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 			if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -3261,7 +3267,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":72
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":72
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 			if(leftValue != 0):
  * 				nBins = nBins + 1             # <<<<<<<<<<<<<<
@@ -3273,7 +3279,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":73
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":73
  * 			if(leftValue != 0):
  * 				nBins = nBins + 1
  * 				lastBin = True             # <<<<<<<<<<<<<<
@@ -3283,7 +3289,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_INCREF(Py_True);
         __Pyx_DECREF_SET(__pyx_v_lastBin, Py_True);
 
-        /* "calculateOnebp.pyx":74
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":74
  * 				nBins = nBins + 1
  * 				lastBin = True
  * 				binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )             # <<<<<<<<<<<<<<
@@ -3319,7 +3325,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF_SET(__pyx_v_binEnd, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":71
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":71
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 			if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -3329,7 +3335,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         goto __pyx_L7;
       }
 
-      /* "calculateOnebp.pyx":76
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":76
  * 				binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )
  * 			else:
  * 				lastBin = False             # <<<<<<<<<<<<<<
@@ -3340,7 +3346,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_INCREF(Py_False);
         __Pyx_DECREF_SET(__pyx_v_lastBin, Py_False);
 
-        /* "calculateOnebp.pyx":77
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":77
  * 			else:
  * 				lastBin = False
  * 				binEnd = binStart + (nBins-1) * vari.BINSIZE             # <<<<<<<<<<<<<<
@@ -3366,7 +3372,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       }
       __pyx_L7:;
 
-      /* "calculateOnebp.pyx":79
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":79
  * 				binEnd = binStart + (nBins-1) * vari.BINSIZE
  * 
  * 			frag_end = binEnd + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -3384,7 +3390,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":80
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":80
  * 
  * 			frag_end = binEnd + vari.FRAGLEN
  * 			shear_end = frag_end + 2             # <<<<<<<<<<<<<<
@@ -3396,7 +3402,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":82
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":82
  * 			shear_end = frag_end + 2
  * 
  * 			if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -3408,7 +3414,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":83
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":83
  * 
  * 			if(shear_end > chromoEnd):
  * 				shear_end = chromoEnd             # <<<<<<<<<<<<<<
@@ -3418,7 +3424,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_INCREF(__pyx_v_chromoEnd);
         __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_v_chromoEnd);
 
-        /* "calculateOnebp.pyx":84
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":84
  * 			if(shear_end > chromoEnd):
  * 				shear_end = chromoEnd
  * 				frag_end = shear_end - 2             # <<<<<<<<<<<<<<
@@ -3430,7 +3436,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":82
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":82
  * 			shear_end = frag_end + 2
  * 
  * 			if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -3441,7 +3447,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     }
     __pyx_L6:;
 
-    /* "calculateOnebp.pyx":59
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":59
  * 		shear_end = frag_end + 2
  * 
  * 	if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -3450,19 +3456,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":87
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":87
  * 
  * 	###### GENERATE A RESULT MATRIX
  * 	result = makeMatrix_ContinuousFrag(binStart, binEnd, nBins)             # <<<<<<<<<<<<<<
  * 
  * 	###### GET SEQUENCE
  */
-  __pyx_t_1 = __pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 87, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":90
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":90
  * 
  * 	###### GET SEQUENCE
  * 	fa = faFile.sequence(chromo, (shear_start-1), (shear_end-1))             # <<<<<<<<<<<<<<
@@ -3530,7 +3536,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_fa = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":91
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":91
  * 	###### GET SEQUENCE
  * 	fa = faFile.sequence(chromo, (shear_start-1), (shear_end-1))
  * 	faFile.close()             # <<<<<<<<<<<<<<
@@ -3556,7 +3562,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":94
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":94
  * 
  * 	##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -3575,7 +3581,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":95
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":95
  * 	##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):
  * 		mapFile = pyBigWig.open(vari.MAPFILE)             # <<<<<<<<<<<<<<
@@ -3611,7 +3617,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __pyx_v_mapFile = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":96
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":96
  * 	if(vari.MAP == 1):
  * 		mapFile = pyBigWig.open(vari.MAPFILE)
  * 		mapValue = np.array(mapFile.values(chromo, frag_start, frag_end))             # <<<<<<<<<<<<<<
@@ -3692,7 +3698,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __pyx_v_mapValue = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":98
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":98
  * 		mapValue = np.array(mapFile.values(chromo, frag_start, frag_end))
  * 
  * 		mapValue[np.where(mapValue == 0)] = np.nan             # <<<<<<<<<<<<<<
@@ -3731,7 +3737,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":99
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":99
  * 
  * 		mapValue[np.where(mapValue == 0)] = np.nan
  * 		mapValue = np.log(mapValue)             # <<<<<<<<<<<<<<
@@ -3761,7 +3767,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_mapValue, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":100
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":100
  * 		mapValue[np.where(mapValue == 0)] = np.nan
  * 		mapValue = np.log(mapValue)
  * 		mapValue[np.where(np.isnan(mapValue) == True)] = float(-6)             # <<<<<<<<<<<<<<
@@ -3817,19 +3823,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":102
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":102
  * 		mapValue[np.where(np.isnan(mapValue) == True)] = float(-6)
  * 
  * 		mapValue_view = memoryView(mapValue)             # <<<<<<<<<<<<<<
  * 		mapFile.close()
  * 		del mapFile, mapValue
  */
-    __pyx_t_3 = __pyx_f_14calculateOnebp_memoryView(__pyx_v_mapValue, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(__pyx_v_mapValue, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 102, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_v_mapValue_view = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":103
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":103
  * 
  * 		mapValue_view = memoryView(mapValue)
  * 		mapFile.close()             # <<<<<<<<<<<<<<
@@ -3855,7 +3861,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":104
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":104
  * 		mapValue_view = memoryView(mapValue)
  * 		mapFile.close()
  * 		del mapFile, mapValue             # <<<<<<<<<<<<<<
@@ -3867,7 +3873,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_v_mapValue);
     __pyx_v_mapValue = NULL;
 
-    /* "calculateOnebp.pyx":94
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":94
  * 
  * 	##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -3876,7 +3882,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":106
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":106
  * 		del mapFile, mapValue
  * 
  * 	if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -3895,7 +3901,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":107
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":107
  * 
  * 	if(vari.GQUAD == 1):
  * 		gquadFile = [0] * len(vari.GQAUDFILE)             # <<<<<<<<<<<<<<
@@ -3921,7 +3927,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __pyx_v_gquadFile = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":108
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":108
  * 	if(vari.GQUAD == 1):
  * 		gquadFile = [0] * len(vari.GQAUDFILE)
  * 		gquadValue = [0] * len(vari.GQAUDFILE)             # <<<<<<<<<<<<<<
@@ -3947,7 +3953,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __pyx_v_gquadValue = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":110
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":110
  * 		gquadValue = [0] * len(vari.GQAUDFILE)
  * 
  * 		for i in range(len(vari.GQAUDFILE)):             # <<<<<<<<<<<<<<
@@ -3965,7 +3971,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
       __pyx_v_i = __pyx_t_11;
 
-      /* "calculateOnebp.pyx":111
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":111
  * 
  * 		for i in range(len(vari.GQAUDFILE)):
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])             # <<<<<<<<<<<<<<
@@ -4004,7 +4010,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       if (unlikely(__Pyx_SetItemInt(__pyx_v_gquadFile, __pyx_v_i, __pyx_t_4, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 111, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":112
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":112
  * 		for i in range(len(vari.GQAUDFILE)):
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
  * 			gquadValue[i] = gquadFile[i].values(chromo, frag_start, frag_end)             # <<<<<<<<<<<<<<
@@ -4067,7 +4073,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       if (unlikely(__Pyx_SetItemInt(__pyx_v_gquadValue, __pyx_v_i, __pyx_t_4, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1) < 0)) __PYX_ERR(0, 112, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":113
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":113
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
  * 			gquadValue[i] = gquadFile[i].values(chromo, frag_start, frag_end)
  * 			gquadFile[i].close()             # <<<<<<<<<<<<<<
@@ -4097,7 +4103,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
 
-    /* "calculateOnebp.pyx":115
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":115
  * 			gquadFile[i].close()
  * 
  * 		gquadValue = np.array(gquadValue)             # <<<<<<<<<<<<<<
@@ -4127,7 +4133,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":116
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":116
  * 
  * 		gquadValue = np.array(gquadValue)
  * 		gquadValue = np.nanmax(gquadValue, axis=0)             # <<<<<<<<<<<<<<
@@ -4155,7 +4161,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":117
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":117
  * 		gquadValue = np.array(gquadValue)
  * 		gquadValue = np.nanmax(gquadValue, axis=0)
  * 		gquadValue[np.where(gquadValue == 0)] = np.nan             # <<<<<<<<<<<<<<
@@ -4194,7 +4200,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":118
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":118
  * 		gquadValue = np.nanmax(gquadValue, axis=0)
  * 		gquadValue[np.where(gquadValue == 0)] = np.nan
  * 		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))             # <<<<<<<<<<<<<<
@@ -4236,7 +4242,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":120
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":120
  * 		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
  * 
  * 		gquadValue[np.where(np.isnan(gquadValue) == True)] = float(-5)             # <<<<<<<<<<<<<<
@@ -4292,19 +4298,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":121
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":121
  * 
  * 		gquadValue[np.where(np.isnan(gquadValue) == True)] = float(-5)
  * 		gquad_view = memoryView(gquadValue)             # <<<<<<<<<<<<<<
  * 
  * 		del gquadFile, gquadValue
  */
-    __pyx_t_2 = __pyx_f_14calculateOnebp_memoryView(__pyx_v_gquadValue, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(__pyx_v_gquadValue, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 121, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_v_gquad_view = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":123
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":123
  * 		gquad_view = memoryView(gquadValue)
  * 
  * 		del gquadFile, gquadValue             # <<<<<<<<<<<<<<
@@ -4316,7 +4322,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_v_gquadValue);
     __pyx_v_gquadValue = NULL;
 
-    /* "calculateOnebp.pyx":106
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":106
  * 		del mapFile, mapValue
  * 
  * 	if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -4325,7 +4331,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":127
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":127
  * 
  * 	##### INDEX IN 'fa'
  * 	start_idx = 2  # index in the fasta file (Included in the range)             # <<<<<<<<<<<<<<
@@ -4334,7 +4340,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
   __pyx_v_start_idx = 2;
 
-  /* "calculateOnebp.pyx":128
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":128
  * 	##### INDEX IN 'fa'
  * 	start_idx = 2  # index in the fasta file (Included in the range)
  * 	end_idx = (frag_end - vari.FRAGLEN) - shear_start + 1   # index in the fasta file (Not included in the range)             # <<<<<<<<<<<<<<
@@ -4358,7 +4364,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_end_idx = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":131
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":131
  * 
  * 	##### INITIALIZE VARIABLES
  * 	if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -4377,7 +4383,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":132
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":132
  * 	##### INITIALIZE VARIABLES
  * 	if(vari.SHEAR == 1):
  * 		past_mer1 = -1             # <<<<<<<<<<<<<<
@@ -4387,7 +4393,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_INCREF(__pyx_int_neg_1);
     __pyx_v_past_mer1 = __pyx_int_neg_1;
 
-    /* "calculateOnebp.pyx":133
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":133
  * 	if(vari.SHEAR == 1):
  * 		past_mer1 = -1
  * 		past_mer2 = -1             # <<<<<<<<<<<<<<
@@ -4397,7 +4403,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_INCREF(__pyx_int_neg_1);
     __pyx_v_past_mer2 = __pyx_int_neg_1;
 
-    /* "calculateOnebp.pyx":131
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":131
  * 
  * 	##### INITIALIZE VARIABLES
  * 	if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -4406,7 +4412,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":134
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":134
  * 		past_mer1 = -1
  * 		past_mer2 = -1
  * 	if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -4425,7 +4431,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":135
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":135
  * 		past_mer2 = -1
  * 	if(vari.PCR == 1):
  * 		past_start_gibbs = -1             # <<<<<<<<<<<<<<
@@ -4434,7 +4440,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
     __pyx_v_past_start_gibbs = -1L;
 
-    /* "calculateOnebp.pyx":134
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":134
  * 		past_mer1 = -1
  * 		past_mer2 = -1
  * 	if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -4443,7 +4449,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":137
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":137
  * 		past_start_gibbs = -1
  * 
  * 	result_startIdx = -1             # <<<<<<<<<<<<<<
@@ -4453,7 +4459,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_result_startIdx = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":138
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":138
  * 
  * 	result_startIdx = -1
  * 	result_endIdx = -1             # <<<<<<<<<<<<<<
@@ -4463,7 +4469,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_result_endIdx = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":141
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":141
  * 
  * 	##### STORE COVARI RESULTS
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)             # <<<<<<<<<<<<<<
@@ -4493,7 +4499,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_covariFile_temp = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":142
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":142
  * 	##### STORE COVARI RESULTS
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 	covariFileName = covariFile_temp.name             # <<<<<<<<<<<<<<
@@ -4505,7 +4511,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_covariFileName = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":143
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":143
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 	covariFileName = covariFile_temp.name
  * 	covariFile_temp.close()             # <<<<<<<<<<<<<<
@@ -4531,7 +4537,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":145
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":145
  * 	covariFile_temp.close()
  * 
  * 	f = h5py.File(covariFileName, "w")             # <<<<<<<<<<<<<<
@@ -4591,7 +4597,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_f = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":146
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":146
  * 
  * 	f = h5py.File(covariFileName, "w")
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")             # <<<<<<<<<<<<<<
@@ -4633,7 +4639,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __pyx_v_covariFile = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":148
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":148
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
  * 
  * 	for idx in range(start_idx, end_idx):             # <<<<<<<<<<<<<<
@@ -4696,7 +4702,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":149
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":149
  * 
  * 	for idx in range(start_idx, end_idx):
  * 		idx_covari = [0] * vari.COVARI_NUM             # <<<<<<<<<<<<<<
@@ -4722,7 +4728,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_XDECREF_SET(__pyx_v_idx_covari, ((PyObject*)__pyx_t_2));
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":150
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":150
  * 	for idx in range(start_idx, end_idx):
  * 		idx_covari = [0] * vari.COVARI_NUM
  * 		idx_covari_ptr = 0             # <<<<<<<<<<<<<<
@@ -4732,7 +4738,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_XDECREF_SET(__pyx_v_idx_covari_ptr, __pyx_int_0);
 
-    /* "calculateOnebp.pyx":152
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":152
  * 		idx_covari_ptr = 0
  * 
  * 		if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -4751,7 +4757,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":154
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":154
  * 		if(vari.SHEAR == 1):
  * 			###  mer1
  * 			mer1 = fa[(idx-2):(idx+3)]             # <<<<<<<<<<<<<<
@@ -4769,7 +4775,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_mer1, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":155
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":155
  * 			###  mer1
  * 			mer1 = fa[(idx-2):(idx+3)]
  * 			if('N' in mer1):             # <<<<<<<<<<<<<<
@@ -4780,7 +4786,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __pyx_t_13 = (__pyx_t_5 != 0);
       if (__pyx_t_13) {
 
-        /* "calculateOnebp.pyx":156
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":156
  * 			mer1 = fa[(idx-2):(idx+3)]
  * 			if('N' in mer1):
  * 				past_mer1 = -1             # <<<<<<<<<<<<<<
@@ -4790,7 +4796,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_INCREF(__pyx_int_neg_1);
         __Pyx_XDECREF_SET(__pyx_v_past_mer1, __pyx_int_neg_1);
 
-        /* "calculateOnebp.pyx":157
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":157
  * 			if('N' in mer1):
  * 				past_mer1 = -1
  * 				idx_mgw = vari.N_MGW             # <<<<<<<<<<<<<<
@@ -4805,7 +4811,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_idx_mgw, __pyx_t_8);
         __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":158
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":158
  * 				past_mer1 = -1
  * 				idx_mgw = vari.N_MGW
  * 				idx_prot = vari.N_PROT             # <<<<<<<<<<<<<<
@@ -4820,7 +4826,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_idx_prot, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":155
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":155
  * 			###  mer1
  * 			mer1 = fa[(idx-2):(idx+3)]
  * 			if('N' in mer1):             # <<<<<<<<<<<<<<
@@ -4830,7 +4836,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         goto __pyx_L18;
       }
 
-      /* "calculateOnebp.pyx":160
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":160
  * 				idx_prot = vari.N_PROT
  * 			else:
  * 				if(past_mer1 == -1): # there is no information on past_mer1             # <<<<<<<<<<<<<<
@@ -4845,14 +4851,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if (__pyx_t_13) {
 
-          /* "calculateOnebp.pyx":161
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":161
  * 			else:
  * 				if(past_mer1 == -1): # there is no information on past_mer1
  * 					past_mer1, idx_mgw, idx_prot = find5merProb(mer1)             # <<<<<<<<<<<<<<
  * 				else:
  * 					past_mer1, idx_mgw, idx_prot = edit5merProb(past_mer1, mer1[0], mer1[4])
  */
-          __pyx_t_6 = __pyx_f_14calculateOnebp_find5merProb(__pyx_v_mer1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
+          __pyx_t_6 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_find5merProb(__pyx_v_mer1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 161, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           if ((likely(PyTuple_CheckExact(__pyx_t_6))) || (PyList_CheckExact(__pyx_t_6))) {
             PyObject* sequence = __pyx_t_6;
@@ -4914,7 +4920,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_idx_prot, __pyx_t_4);
           __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":160
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":160
  * 				idx_prot = vari.N_PROT
  * 			else:
  * 				if(past_mer1 == -1): # there is no information on past_mer1             # <<<<<<<<<<<<<<
@@ -4924,7 +4930,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           goto __pyx_L19;
         }
 
-        /* "calculateOnebp.pyx":163
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":163
  * 					past_mer1, idx_mgw, idx_prot = find5merProb(mer1)
  * 				else:
  * 					past_mer1, idx_mgw, idx_prot = edit5merProb(past_mer1, mer1[0], mer1[4])             # <<<<<<<<<<<<<<
@@ -4937,7 +4943,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_mer1, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 163, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_2 = __pyx_f_14calculateOnebp_edit5merProb(__pyx_v_past_mer1, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
+          __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_edit5merProb(__pyx_v_past_mer1, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 163, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -5005,7 +5011,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       }
       __pyx_L18:;
 
-      /* "calculateOnebp.pyx":166
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":166
  * 
  * 			###  mer2
  * 			fragEnd_idx = idx + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -5023,7 +5029,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_fragEnd_idx, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":167
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":167
  * 			###  mer2
  * 			fragEnd_idx = idx + vari.FRAGLEN
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]             # <<<<<<<<<<<<<<
@@ -5041,7 +5047,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_mer2, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":168
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":168
  * 			fragEnd_idx = idx + vari.FRAGLEN
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 			if('N' in mer2):             # <<<<<<<<<<<<<<
@@ -5052,7 +5058,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __pyx_t_5 = (__pyx_t_13 != 0);
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":169
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":169
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 			if('N' in mer2):
  * 				past_mer2 = -1             # <<<<<<<<<<<<<<
@@ -5062,7 +5068,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_INCREF(__pyx_int_neg_1);
         __Pyx_XDECREF_SET(__pyx_v_past_mer2, __pyx_int_neg_1);
 
-        /* "calculateOnebp.pyx":170
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":170
  * 			if('N' in mer2):
  * 				past_mer2 = -1
  * 				idx_mgw = idx_mgw + vari.N_MGW             # <<<<<<<<<<<<<<
@@ -5080,7 +5086,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF_SET(__pyx_v_idx_mgw, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":171
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":171
  * 				past_mer2 = -1
  * 				idx_mgw = idx_mgw + vari.N_MGW
  * 				idx_prot = idx_prot + vari.N_PROT             # <<<<<<<<<<<<<<
@@ -5098,7 +5104,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF_SET(__pyx_v_idx_prot, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":168
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":168
  * 			fragEnd_idx = idx + vari.FRAGLEN
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 			if('N' in mer2):             # <<<<<<<<<<<<<<
@@ -5108,7 +5114,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         goto __pyx_L24;
       }
 
-      /* "calculateOnebp.pyx":173
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":173
  * 				idx_prot = idx_prot + vari.N_PROT
  * 			else:
  * 				if(past_mer2 == -1):             # <<<<<<<<<<<<<<
@@ -5123,14 +5129,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":174
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":174
  * 			else:
  * 				if(past_mer2 == -1):
  * 					past_mer2, add1, add2 = findComple5merProb(mer2)             # <<<<<<<<<<<<<<
  * 				else:
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  */
-          __pyx_t_6 = __pyx_f_14calculateOnebp_findComple5merProb(__pyx_v_mer2, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 174, __pyx_L1_error)
+          __pyx_t_6 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findComple5merProb(__pyx_v_mer2, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 174, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           if ((likely(PyTuple_CheckExact(__pyx_t_6))) || (PyList_CheckExact(__pyx_t_6))) {
             PyObject* sequence = __pyx_t_6;
@@ -5192,7 +5198,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_add2, __pyx_t_4);
           __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":173
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":173
  * 				idx_prot = idx_prot + vari.N_PROT
  * 			else:
  * 				if(past_mer2 == -1):             # <<<<<<<<<<<<<<
@@ -5202,7 +5208,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           goto __pyx_L25;
         }
 
-        /* "calculateOnebp.pyx":176
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":176
  * 					past_mer2, add1, add2 = findComple5merProb(mer2)
  * 				else:
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])             # <<<<<<<<<<<<<<
@@ -5215,7 +5221,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_mer2, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 176, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
-          __pyx_t_2 = __pyx_f_14calculateOnebp_editComple5merProb(__pyx_v_past_mer2, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
+          __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editComple5merProb(__pyx_v_past_mer2, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 176, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -5281,7 +5287,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __pyx_L25:;
 
-        /* "calculateOnebp.pyx":177
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":177
  * 				else:
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  * 				idx_mgw = idx_mgw + add1             # <<<<<<<<<<<<<<
@@ -5293,7 +5299,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF_SET(__pyx_v_idx_mgw, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":178
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":178
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  * 				idx_mgw = idx_mgw + add1
  * 				idx_prot = idx_prot + add2             # <<<<<<<<<<<<<<
@@ -5307,7 +5313,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       }
       __pyx_L24:;
 
-      /* "calculateOnebp.pyx":180
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":180
  * 				idx_prot = idx_prot + add2
  * 
  * 			idx_covari[idx_covari_ptr] = idx_mgw             # <<<<<<<<<<<<<<
@@ -5316,7 +5322,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_mgw) < 0)) __PYX_ERR(0, 180, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":181
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":181
  * 
  * 			idx_covari[idx_covari_ptr] = idx_mgw
  * 			idx_covari[idx_covari_ptr+1] = idx_prot             # <<<<<<<<<<<<<<
@@ -5328,7 +5334,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_t_2, __pyx_v_idx_prot) < 0)) __PYX_ERR(0, 181, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":182
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":182
  * 			idx_covari[idx_covari_ptr] = idx_mgw
  * 			idx_covari[idx_covari_ptr+1] = idx_prot
  * 			idx_covari_ptr = idx_covari_ptr + 2             # <<<<<<<<<<<<<<
@@ -5340,7 +5346,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":152
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":152
  * 		idx_covari_ptr = 0
  * 
  * 		if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -5349,7 +5355,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
     }
 
-    /* "calculateOnebp.pyx":185
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":185
  * 
  * 
  * 		if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -5368,7 +5374,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":186
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":186
  * 
  * 		if(vari.PCR == 1):
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]             # <<<<<<<<<<<<<<
@@ -5389,7 +5395,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_idx_fa, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "calculateOnebp.pyx":187
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":187
  * 		if(vari.PCR == 1):
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 			if(past_start_gibbs == -1):             # <<<<<<<<<<<<<<
@@ -5399,7 +5405,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __pyx_t_5 = ((__pyx_v_past_start_gibbs == -1L) != 0);
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":188
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":188
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 			if(past_start_gibbs == -1):
  * 				start_gibbs, gibbs = findStartGibbs(idx_fa, vari.FRAGLEN)             # <<<<<<<<<<<<<<
@@ -5411,7 +5417,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_FRAGLEN); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 188, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __pyx_t_8 = __pyx_f_14calculateOnebp_findStartGibbs(__pyx_v_idx_fa, __pyx_t_2, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 188, __pyx_L1_error)
+        __pyx_t_8 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findStartGibbs(__pyx_v_idx_fa, __pyx_t_2, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 188, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if ((likely(PyTuple_CheckExact(__pyx_t_8))) || (PyList_CheckExact(__pyx_t_8))) {
@@ -5465,7 +5471,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_gibbs, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":187
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":187
  * 		if(vari.PCR == 1):
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 			if(past_start_gibbs == -1):             # <<<<<<<<<<<<<<
@@ -5475,7 +5481,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         goto __pyx_L31;
       }
 
-      /* "calculateOnebp.pyx":190
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":190
  * 				start_gibbs, gibbs = findStartGibbs(idx_fa, vari.FRAGLEN)
  * 			else:
  * 				oldDimer = idx_fa[0:2].upper()             # <<<<<<<<<<<<<<
@@ -5506,7 +5512,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_oldDimer, __pyx_t_8);
         __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":191
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":191
  * 			else:
  * 				oldDimer = idx_fa[0:2].upper()
  * 				newDimer = idx_fa[(vari.FRAGLEN-2):vari.FRAGLEN].upper()             # <<<<<<<<<<<<<<
@@ -5551,7 +5557,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_newDimer, __pyx_t_8);
         __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":192
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":192
  * 				oldDimer = idx_fa[0:2].upper()
  * 				newDimer = idx_fa[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
  * 				start_gibbs, gibbs = editStartGibbs(oldDimer, newDimer, past_start_gibbs)             # <<<<<<<<<<<<<<
@@ -5560,7 +5566,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
         __pyx_t_8 = __Pyx_PyInt_From_long(__pyx_v_past_start_gibbs); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 192, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_4 = __pyx_f_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_t_8, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)
+        __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_t_8, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 192, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
@@ -5616,14 +5622,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       }
       __pyx_L31:;
 
-      /* "calculateOnebp.pyx":194
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":194
  * 				start_gibbs, gibbs = editStartGibbs(oldDimer, newDimer, past_start_gibbs)
  * 
  * 			idx_anneal, idx_denature = convertGibbs(gibbs)             # <<<<<<<<<<<<<<
  * 
  * 			idx_covari[idx_covari_ptr] = idx_anneal
  */
-      __pyx_t_4 = __pyx_f_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
+      __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 194, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
         PyObject* sequence = __pyx_t_4;
@@ -5676,7 +5682,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_idx_denature, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "calculateOnebp.pyx":196
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":196
  * 			idx_anneal, idx_denature = convertGibbs(gibbs)
  * 
  * 			idx_covari[idx_covari_ptr] = idx_anneal             # <<<<<<<<<<<<<<
@@ -5685,7 +5691,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_anneal) < 0)) __PYX_ERR(0, 196, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":197
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":197
  * 
  * 			idx_covari[idx_covari_ptr] = idx_anneal
  * 			idx_covari[idx_covari_ptr+1] = idx_denature             # <<<<<<<<<<<<<<
@@ -5697,7 +5703,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_t_4, __pyx_v_idx_denature) < 0)) __PYX_ERR(0, 197, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":198
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":198
  * 			idx_covari[idx_covari_ptr] = idx_anneal
  * 			idx_covari[idx_covari_ptr+1] = idx_denature
  * 			idx_covari_ptr = idx_covari_ptr + 2             # <<<<<<<<<<<<<<
@@ -5709,7 +5715,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":185
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":185
  * 
  * 
  * 		if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -5718,7 +5724,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
     }
 
-    /* "calculateOnebp.pyx":200
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":200
  * 			idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 		if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -5737,7 +5743,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":201
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":201
  * 
  * 		if(vari.MAP == 1):
  * 			map1 = mapValue_view[(idx-2)]             # <<<<<<<<<<<<<<
@@ -5753,7 +5759,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_map1, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "calculateOnebp.pyx":202
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":202
  * 		if(vari.MAP == 1):
  * 			map1 = mapValue_view[(idx-2)]
  * 			map2 = mapValue_view[(idx+vari.FRAGLEN-2-vari.KMER)]             # <<<<<<<<<<<<<<
@@ -5787,7 +5793,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_map2, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":203
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":203
  * 			map1 = mapValue_view[(idx-2)]
  * 			map2 = mapValue_view[(idx+vari.FRAGLEN-2-vari.KMER)]
  * 			idx_map = map1 + map2             # <<<<<<<<<<<<<<
@@ -5799,7 +5805,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_idx_map, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":205
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":205
  * 			idx_map = map1 + map2
  * 
  * 			idx_covari[idx_covari_ptr] = idx_map             # <<<<<<<<<<<<<<
@@ -5808,7 +5814,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_map) < 0)) __PYX_ERR(0, 205, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":206
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":206
  * 
  * 			idx_covari[idx_covari_ptr] = idx_map
  * 			idx_covari_ptr = idx_covari_ptr + 1             # <<<<<<<<<<<<<<
@@ -5820,7 +5826,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":200
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":200
  * 			idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 		if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -5829,7 +5835,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
     }
 
-    /* "calculateOnebp.pyx":208
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":208
  * 			idx_covari_ptr = idx_covari_ptr + 1
  * 
  * 		if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -5848,7 +5854,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":209
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":209
  * 
  * 		if(vari.GQUAD == 1):
  * 			idx_gquad = np.nanmax(np.asarray(gquad_view[(idx-2):(idx+vari.FRAGLEN-2)]))             # <<<<<<<<<<<<<<
@@ -5918,7 +5924,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_idx_gquad, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":211
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":211
  * 			idx_gquad = np.nanmax(np.asarray(gquad_view[(idx-2):(idx+vari.FRAGLEN-2)]))
  * 
  * 			idx_covari[idx_covari_ptr] = idx_gquad             # <<<<<<<<<<<<<<
@@ -5927,7 +5933,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_gquad) < 0)) __PYX_ERR(0, 211, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":212
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":212
  * 
  * 			idx_covari[idx_covari_ptr] = idx_gquad
  * 			idx_covari_ptr = idx_covari_ptr + 1             # <<<<<<<<<<<<<<
@@ -5939,7 +5945,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":208
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":208
  * 			idx_covari_ptr = idx_covari_ptr + 1
  * 
  * 		if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -5948,7 +5954,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
     }
 
-    /* "calculateOnebp.pyx":215
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":215
  * 
  * 		### DETERMINE WHICH ROWS TO EDIT IN RESULT MATRIX
  * 		thisFrag_start = idx + shear_start             # <<<<<<<<<<<<<<
@@ -5960,7 +5966,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_XDECREF_SET(__pyx_v_thisFrag_start, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":216
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":216
  * 		### DETERMINE WHICH ROWS TO EDIT IN RESULT MATRIX
  * 		thisFrag_start = idx + shear_start
  * 		thisFrag_end = thisFrag_start + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -5978,7 +5984,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_XDECREF_SET(__pyx_v_thisFrag_end, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":218
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":218
  * 		thisFrag_end = thisFrag_start + vari.FRAGLEN
  * 
  * 		if(result_startIdx == -1):             # <<<<<<<<<<<<<<
@@ -5991,7 +5997,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":219
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":219
  * 
  * 		if(result_startIdx == -1):
  * 			result_startIdx = 0             # <<<<<<<<<<<<<<
@@ -6001,7 +6007,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_INCREF(__pyx_int_0);
       __Pyx_DECREF_SET(__pyx_v_result_startIdx, __pyx_int_0);
 
-      /* "calculateOnebp.pyx":220
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":220
  * 		if(result_startIdx == -1):
  * 			result_startIdx = 0
  * 			result_endIdx = 1 # not included             # <<<<<<<<<<<<<<
@@ -6011,7 +6017,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_INCREF(__pyx_int_1);
       __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_int_1);
 
-      /* "calculateOnebp.pyx":221
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":221
  * 			result_startIdx = 0
  * 			result_endIdx = 1 # not included
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -6056,7 +6062,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":222
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":222
  * 			result_endIdx = 1 # not included
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):             # <<<<<<<<<<<<<<
@@ -6081,7 +6087,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (!__pyx_t_5) break;
 
-          /* "calculateOnebp.pyx":223
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":223
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1             # <<<<<<<<<<<<<<
@@ -6093,7 +6099,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":224
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":224
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -6111,7 +6117,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":225
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":225
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)             # <<<<<<<<<<<<<<
@@ -6132,7 +6138,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_6);
             __pyx_t_6 = 0;
 
-            /* "calculateOnebp.pyx":224
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":224
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -6141,7 +6147,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
           }
 
-          /* "calculateOnebp.pyx":226
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":226
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -6186,7 +6192,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":227
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":227
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):
  * 						break             # <<<<<<<<<<<<<<
@@ -6195,7 +6201,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
             goto __pyx_L43_break;
 
-            /* "calculateOnebp.pyx":226
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":226
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -6206,7 +6212,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __pyx_L43_break:;
 
-        /* "calculateOnebp.pyx":221
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":221
  * 			result_startIdx = 0
  * 			result_endIdx = 1 # not included
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -6215,7 +6221,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
       }
 
-      /* "calculateOnebp.pyx":228
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":228
  * 					if(np.isnan(result[result_endIdx, 0]) == True):
  * 						break
  * 			maxBinPos = binStart + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -6233,7 +6239,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_XDECREF_SET(__pyx_v_maxBinPos, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":229
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":229
  * 						break
  * 			maxBinPos = binStart + vari.FRAGLEN
  * 			numPoppedPos = 0             # <<<<<<<<<<<<<<
@@ -6243,7 +6249,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_INCREF(__pyx_int_0);
       __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_int_0);
 
-      /* "calculateOnebp.pyx":218
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":218
  * 		thisFrag_end = thisFrag_start + vari.FRAGLEN
  * 
  * 		if(result_startIdx == -1):             # <<<<<<<<<<<<<<
@@ -6253,7 +6259,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       goto __pyx_L40;
     }
 
-    /* "calculateOnebp.pyx":232
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":232
  * 		else:
  * 
  * 			while( result[result_startIdx, 0] < thisFrag_start ):             # <<<<<<<<<<<<<<
@@ -6279,7 +6285,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (!__pyx_t_5) break;
 
-        /* "calculateOnebp.pyx":234
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":234
  * 			while( result[result_startIdx, 0] < thisFrag_start ):
  * 				## pop the element
  * 				line = []             # <<<<<<<<<<<<<<
@@ -6291,7 +6297,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_1));
         __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":235
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":235
  * 				## pop the element
  * 				line = []
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -6349,7 +6355,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_1);
           __pyx_t_1 = 0;
 
-          /* "calculateOnebp.pyx":236
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":236
  * 				line = []
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					line.extend([ result[result_startIdx, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -6373,7 +6379,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           (void)(__pyx_t_18);
 
-          /* "calculateOnebp.pyx":237
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":237
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					line.extend([ result[result_startIdx, (covari_pos+1)]  ])
  * 					result[result_startIdx, (covari_pos+1)] = float(0)             # <<<<<<<<<<<<<<
@@ -6396,7 +6402,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "calculateOnebp.pyx":235
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":235
  * 				## pop the element
  * 				line = []
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -6406,7 +6412,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":238
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":238
  * 					line.extend([ result[result_startIdx, (covari_pos+1)]  ])
  * 					result[result_startIdx, (covari_pos+1)] = float(0)
  * 				covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -6416,7 +6422,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 238, __pyx_L1_error) }
         if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 238, __pyx_L1_error)
 
-        /* "calculateOnebp.pyx":241
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":241
  * 
  * 
  * 				numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -6429,7 +6435,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":242
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":242
  * 
  * 				numPoppedPos = numPoppedPos + 1
  * 				if(maxBinPos >= binEnd):             # <<<<<<<<<<<<<<
@@ -6442,7 +6448,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":243
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":243
  * 				numPoppedPos = numPoppedPos + 1
  * 				if(maxBinPos >= binEnd):
  * 					result[result_startIdx, 0] = np.nan             # <<<<<<<<<<<<<<
@@ -6466,7 +6472,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "calculateOnebp.pyx":242
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":242
  * 
  * 				numPoppedPos = numPoppedPos + 1
  * 				if(maxBinPos >= binEnd):             # <<<<<<<<<<<<<<
@@ -6476,7 +6482,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           goto __pyx_L50;
         }
 
-        /* "calculateOnebp.pyx":245
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":245
  * 					result[result_startIdx, 0] = np.nan
  * 				else:
  * 					result[result_startIdx, 0] = maxBinPos + 1             # <<<<<<<<<<<<<<
@@ -6499,7 +6505,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-          /* "calculateOnebp.pyx":246
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":246
  * 				else:
  * 					result[result_startIdx, 0] = maxBinPos + 1
  * 					maxBinPos = maxBinPos + 1             # <<<<<<<<<<<<<<
@@ -6514,7 +6520,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __pyx_L50:;
 
-        /* "calculateOnebp.pyx":248
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":248
  * 					maxBinPos = maxBinPos + 1
  * 
  * 				result_startIdx = result_startIdx + 1             # <<<<<<<<<<<<<<
@@ -6526,7 +6532,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF_SET(__pyx_v_result_startIdx, __pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":249
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":249
  * 
  * 				result_startIdx = result_startIdx + 1
  * 				if(result_startIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -6544,7 +6550,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":250
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":250
  * 				result_startIdx = result_startIdx + 1
  * 				if(result_startIdx > vari.FRAGLEN):
  * 					result_startIdx = result_startIdx - (vari.FRAGLEN+1)             # <<<<<<<<<<<<<<
@@ -6565,7 +6571,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF_SET(__pyx_v_result_startIdx, __pyx_t_6);
           __pyx_t_6 = 0;
 
-          /* "calculateOnebp.pyx":249
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":249
  * 
  * 				result_startIdx = result_startIdx + 1
  * 				if(result_startIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -6575,7 +6581,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
       }
 
-      /* "calculateOnebp.pyx":252
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":252
  * 					result_startIdx = result_startIdx - (vari.FRAGLEN+1)
  * 
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -6620,7 +6626,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":253
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":253
  * 
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):             # <<<<<<<<<<<<<<
@@ -6645,7 +6651,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (!__pyx_t_5) break;
 
-          /* "calculateOnebp.pyx":254
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":254
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1             # <<<<<<<<<<<<<<
@@ -6657,7 +6663,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":255
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":255
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -6675,7 +6681,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":256
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":256
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)             # <<<<<<<<<<<<<<
@@ -6696,7 +6702,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_6);
             __pyx_t_6 = 0;
 
-            /* "calculateOnebp.pyx":255
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":255
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -6705,7 +6711,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
           }
 
-          /* "calculateOnebp.pyx":257
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":257
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -6750,7 +6756,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":258
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":258
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):
  * 						break             # <<<<<<<<<<<<<<
@@ -6759,7 +6765,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
             goto __pyx_L54_break;
 
-            /* "calculateOnebp.pyx":257
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":257
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -6770,7 +6776,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __pyx_L54_break:;
 
-        /* "calculateOnebp.pyx":252
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":252
  * 					result_startIdx = result_startIdx - (vari.FRAGLEN+1)
  * 
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -6781,7 +6787,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     }
     __pyx_L40:;
 
-    /* "calculateOnebp.pyx":260
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":260
  * 						break
  * 
  * 		if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -6793,7 +6799,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":261
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":261
  * 
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -6862,7 +6868,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":262
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":262
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -6920,7 +6926,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_4);
           __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":263
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":263
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]             # <<<<<<<<<<<<<<
@@ -6960,7 +6966,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
 
-          /* "calculateOnebp.pyx":262
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":262
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -6970,7 +6976,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":261
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":261
  * 
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -6980,7 +6986,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":264
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":264
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7041,7 +7047,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":265
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":265
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7099,7 +7105,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_1);
           __pyx_t_1 = 0;
 
-          /* "calculateOnebp.pyx":266
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":266
  * 			for pos in range(0, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]             # <<<<<<<<<<<<<<
@@ -7139,7 +7145,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":265
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":265
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7149,7 +7155,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
 
-        /* "calculateOnebp.pyx":264
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":264
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7159,7 +7165,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":260
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":260
  * 						break
  * 
  * 		if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -7169,7 +7175,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       goto __pyx_L57;
     }
 
-    /* "calculateOnebp.pyx":268
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":268
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7231,7 +7237,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_15);
         __pyx_t_15 = 0;
 
-        /* "calculateOnebp.pyx":269
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":269
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7289,7 +7295,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_15);
           __pyx_t_15 = 0;
 
-          /* "calculateOnebp.pyx":270
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":270
  * 			for pos in range(result_startIdx, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]             # <<<<<<<<<<<<<<
@@ -7329,7 +7335,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":269
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":269
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7339,7 +7345,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":268
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":268
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7351,7 +7357,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     }
     __pyx_L57:;
 
-    /* "calculateOnebp.pyx":272
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":272
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 
  * 		if(idx == (end_idx-1)): # the last fragment             # <<<<<<<<<<<<<<
@@ -7366,7 +7372,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":274
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":274
  * 		if(idx == (end_idx-1)): # the last fragment
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -7378,7 +7384,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":275
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":275
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -7447,7 +7453,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":276
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":276
  * 			if(result_endIdx < result_startIdx):
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 					line = []             # <<<<<<<<<<<<<<
@@ -7459,7 +7465,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_8));
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":277
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":277
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7517,7 +7523,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_8);
             __pyx_t_8 = 0;
 
-            /* "calculateOnebp.pyx":278
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":278
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -7541,7 +7547,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
             (void)(__pyx_t_18);
 
-            /* "calculateOnebp.pyx":277
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":277
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7551,7 +7557,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           }
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":279
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":279
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])
  * 					covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -7561,7 +7567,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 279, __pyx_L1_error) }
           if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 279, __pyx_L1_error)
 
-          /* "calculateOnebp.pyx":281
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":281
  * 					covariFile[numPoppedPos] = line
  * 
  * 					numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -7574,7 +7580,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_4);
           __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":275
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":275
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -7584,7 +7590,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":283
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":283
  * 					numPoppedPos = numPoppedPos + 1
  * 
  * 				for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7645,7 +7651,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_4);
           __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":284
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":284
  * 
  * 				for pos in range(0, result_endIdx):
  * 					line = []             # <<<<<<<<<<<<<<
@@ -7657,7 +7663,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_4));
           __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":285
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":285
  * 				for pos in range(0, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7715,7 +7721,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_4);
             __pyx_t_4 = 0;
 
-            /* "calculateOnebp.pyx":286
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":286
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -7739,7 +7745,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
             (void)(__pyx_t_18);
 
-            /* "calculateOnebp.pyx":285
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":285
  * 				for pos in range(0, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7749,7 +7755,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           }
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":287
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":287
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])
  * 					covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -7759,7 +7765,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 287, __pyx_L1_error) }
           if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 287, __pyx_L1_error)
 
-          /* "calculateOnebp.pyx":289
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":289
  * 					covariFile[numPoppedPos] = line
  * 
  * 					numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -7772,7 +7778,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":283
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":283
  * 					numPoppedPos = numPoppedPos + 1
  * 
  * 				for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7782,7 +7788,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":274
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":274
  * 		if(idx == (end_idx-1)): # the last fragment
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -7792,7 +7798,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
         goto __pyx_L71;
       }
 
-      /* "calculateOnebp.pyx":291
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":291
  * 					numPoppedPos = numPoppedPos + 1
  * 			else:
  * 				for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7854,7 +7860,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":292
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":292
  * 			else:
  * 				for pos in range(result_startIdx, result_endIdx):
  * 					line = []             # <<<<<<<<<<<<<<
@@ -7866,7 +7872,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_8));
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":293
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":293
  * 				for pos in range(result_startIdx, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7924,7 +7930,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_8);
             __pyx_t_8 = 0;
 
-            /* "calculateOnebp.pyx":294
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":294
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -7948,7 +7954,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
             __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
             (void)(__pyx_t_18);
 
-            /* "calculateOnebp.pyx":293
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":293
  * 				for pos in range(result_startIdx, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -7958,7 +7964,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           }
           __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":295
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":295
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])
  * 					covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -7968,7 +7974,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 295, __pyx_L1_error) }
           if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 295, __pyx_L1_error)
 
-          /* "calculateOnebp.pyx":297
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":297
  * 					covariFile[numPoppedPos] = line
  * 
  * 					numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -7981,7 +7987,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
           __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_4);
           __pyx_t_4 = 0;
 
-          /* "calculateOnebp.pyx":291
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":291
  * 					numPoppedPos = numPoppedPos + 1
  * 			else:
  * 				for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -7993,7 +7999,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
       }
       __pyx_L71:;
 
-      /* "calculateOnebp.pyx":272
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":272
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 
  * 		if(idx == (end_idx-1)): # the last fragment             # <<<<<<<<<<<<<<
@@ -8002,7 +8008,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  */
     }
 
-    /* "calculateOnebp.pyx":148
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":148
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
  * 
  * 	for idx in range(start_idx, end_idx):             # <<<<<<<<<<<<<<
@@ -8012,7 +8018,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":299
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":299
  * 					numPoppedPos = numPoppedPos + 1
  * 
  * 	f.close()             # <<<<<<<<<<<<<<
@@ -8038,7 +8044,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":302
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":302
  * 
  * 
  * 	return correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins)             # <<<<<<<<<<<<<<
@@ -8046,13 +8052,13 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_3 = __pyx_f_14calculateOnebp_correctReadCount(__pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
+  __pyx_t_3 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_correctReadCount(__pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 302, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":24
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":24
  * 
  * 
  * cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):             # <<<<<<<<<<<<<<
@@ -8070,7 +8076,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_15);
   __Pyx_XDECREF(__pyx_t_16);
-  __Pyx_AddTraceback("calculateOnebp.calculateContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_frag_start);
@@ -8138,8 +8144,8 @@ static PyObject *__pyx_f_14calculateOnebp_calculateContinuousFrag(PyObject *__py
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_1calculateContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_1calculateContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_1calculateContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_1calculateContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_chromo = 0;
   PyObject *__pyx_v_analysis_start = 0;
   PyObject *__pyx_v_analysis_end = 0;
@@ -8242,24 +8248,24 @@ static PyObject *__pyx_pw_14calculateOnebp_1calculateContinuousFrag(PyObject *__
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("calculateContinuousFrag", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 24, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.calculateContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_calculateContinuousFrag(__pyx_self, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(__pyx_self, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_calculateContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("calculateContinuousFrag", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_calculateContinuousFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -8268,7 +8274,7 @@ static PyObject *__pyx_pf_14calculateOnebp_calculateContinuousFrag(CYTHON_UNUSED
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.calculateContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -8276,7 +8282,7 @@ static PyObject *__pyx_pf_14calculateOnebp_calculateContinuousFrag(CYTHON_UNUSED
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":307
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":307
  * 
  * 
  * cpdef calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):             # <<<<<<<<<<<<<<
@@ -8284,8 +8290,8 @@ static PyObject *__pyx_pf_14calculateOnebp_calculateContinuousFrag(CYTHON_UNUSED
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_3calculateDiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_3calculateDiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_frag_start = NULL;
   PyObject *__pyx_v_frag_end = NULL;
   PyObject *__pyx_v_shear_start = NULL;
@@ -8367,7 +8373,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_INCREF(__pyx_v_nBins);
   __Pyx_INCREF(__pyx_v_lastBin);
 
-  /* "calculateOnebp.pyx":308
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":308
  * 
  * cpdef calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')             # <<<<<<<<<<<<<<
@@ -8384,7 +8390,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":309
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":309
  * cpdef calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')             # <<<<<<<<<<<<<<
@@ -8401,7 +8407,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":313
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":313
  * 
  * 	###### CALCULATE INDEX VARIABLE
  * 	frag_start = binStart + 1 - vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -8422,7 +8428,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_frag_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":314
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":314
  * 	###### CALCULATE INDEX VARIABLE
  * 	frag_start = binStart + 1 - vari.FRAGLEN
  * 	frag_end = binEnd + vari.FRAGLEN  # not included             # <<<<<<<<<<<<<<
@@ -8440,7 +8446,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_frag_end = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":315
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":315
  * 	frag_start = binStart + 1 - vari.FRAGLEN
  * 	frag_end = binEnd + vari.FRAGLEN  # not included
  * 	shear_start = frag_start - 2             # <<<<<<<<<<<<<<
@@ -8452,7 +8458,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_shear_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":316
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":316
  * 	frag_end = binEnd + vari.FRAGLEN  # not included
  * 	shear_start = frag_start - 2
  * 	shear_end = frag_end + 2 # not included             # <<<<<<<<<<<<<<
@@ -8464,7 +8470,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_shear_end = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":318
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":318
  * 	shear_end = frag_end + 2 # not included
  * 
  * 	faFile = py2bit.open(vari.FA)             # <<<<<<<<<<<<<<
@@ -8500,7 +8506,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_faFile = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":319
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":319
  * 
  * 	faFile = py2bit.open(vari.FA)
  * 	chromoEnd = int(faFile.chroms(chromo))             # <<<<<<<<<<<<<<
@@ -8530,7 +8536,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_chromoEnd = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":321
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":321
  * 	chromoEnd = int(faFile.chroms(chromo))
  * 
  * 	if(shear_start < 1):             # <<<<<<<<<<<<<<
@@ -8542,7 +8548,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":322
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":322
  * 
  * 	if(shear_start < 1):
  * 		shear_start = 1             # <<<<<<<<<<<<<<
@@ -8552,7 +8558,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_INCREF(__pyx_int_1);
     __Pyx_DECREF_SET(__pyx_v_shear_start, __pyx_int_1);
 
-    /* "calculateOnebp.pyx":323
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":323
  * 	if(shear_start < 1):
  * 		shear_start = 1
  * 		frag_start = 3             # <<<<<<<<<<<<<<
@@ -8562,7 +8568,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_INCREF(__pyx_int_3);
     __Pyx_DECREF_SET(__pyx_v_frag_start, __pyx_int_3);
 
-    /* "calculateOnebp.pyx":324
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":324
  * 		shear_start = 1
  * 		frag_start = 3
  * 		binStart = max(binStart, frag_start)             # <<<<<<<<<<<<<<
@@ -8591,7 +8597,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_binStart, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":325
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":325
  * 		frag_start = 3
  * 		binStart = max(binStart, frag_start)
  * 		analysis_start = max(analysis_start, frag_start)             # <<<<<<<<<<<<<<
@@ -8620,7 +8626,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_analysis_start, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":328
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":328
  * 
  * 		###### EDIT BINSTART/ BINEND
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )             # <<<<<<<<<<<<<<
@@ -8647,7 +8653,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":329
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":329
  * 		###### EDIT BINSTART/ BINEND
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)             # <<<<<<<<<<<<<<
@@ -8671,7 +8677,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __pyx_v_leftValue = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":330
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":330
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -8684,7 +8690,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":331
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":331
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		if(leftValue != 0):
  * 			nBins = nBins + 1             # <<<<<<<<<<<<<<
@@ -8696,7 +8702,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":332
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":332
  * 		if(leftValue != 0):
  * 			nBins = nBins + 1
  * 			lastBin = True             # <<<<<<<<<<<<<<
@@ -8706,7 +8712,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(Py_True);
       __Pyx_DECREF_SET(__pyx_v_lastBin, Py_True);
 
-      /* "calculateOnebp.pyx":333
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":333
  * 			nBins = nBins + 1
  * 			lastBin = True
  * 			binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )             # <<<<<<<<<<<<<<
@@ -8742,7 +8748,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF_SET(__pyx_v_binEnd, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":330
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":330
  * 		nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -8752,7 +8758,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       goto __pyx_L4;
     }
 
-    /* "calculateOnebp.pyx":335
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":335
  * 			binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )
  * 		else:
  * 			lastBin = False             # <<<<<<<<<<<<<<
@@ -8763,7 +8769,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(Py_False);
       __Pyx_DECREF_SET(__pyx_v_lastBin, Py_False);
 
-      /* "calculateOnebp.pyx":336
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":336
  * 		else:
  * 			lastBin = False
  * 			binEnd = binStart + (nBins-1) * vari.BINSIZE             # <<<<<<<<<<<<<<
@@ -8789,7 +8795,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     }
     __pyx_L4:;
 
-    /* "calculateOnebp.pyx":338
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":338
  * 			binEnd = binStart + (nBins-1) * vari.BINSIZE
  * 
  * 		frag_end = binEnd + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -8807,7 +8813,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":339
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":339
  * 
  * 		frag_end = binEnd + vari.FRAGLEN
  * 		shear_end = frag_end + 2             # <<<<<<<<<<<<<<
@@ -8819,7 +8825,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":321
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":321
  * 	chromoEnd = int(faFile.chroms(chromo))
  * 
  * 	if(shear_start < 1):             # <<<<<<<<<<<<<<
@@ -8828,7 +8834,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
   }
 
-  /* "calculateOnebp.pyx":341
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":341
  * 		shear_end = frag_end + 2
  * 
  * 	if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -8840,7 +8846,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":342
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":342
  * 
  * 	if(shear_end > chromoEnd):
  * 		analysis_end_modified = min(analysis_end, chromoEnd - 2)  # not included             # <<<<<<<<<<<<<<
@@ -8869,7 +8875,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __pyx_v_analysis_end_modified = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":344
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":344
  * 		analysis_end_modified = min(analysis_end, chromoEnd - 2)  # not included
  * 
  * 		if(analysis_end_modified == analysis_end):             # <<<<<<<<<<<<<<
@@ -8881,7 +8887,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":345
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":345
  * 
  * 		if(analysis_end_modified == analysis_end):
  * 			shear_end = chromoEnd             # <<<<<<<<<<<<<<
@@ -8891,7 +8897,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(__pyx_v_chromoEnd);
       __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_v_chromoEnd);
 
-      /* "calculateOnebp.pyx":346
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":346
  * 		if(analysis_end_modified == analysis_end):
  * 			shear_end = chromoEnd
  * 			frag_end = shear_end - 2             # <<<<<<<<<<<<<<
@@ -8903,7 +8909,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":344
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":344
  * 		analysis_end_modified = min(analysis_end, chromoEnd - 2)  # not included
  * 
  * 		if(analysis_end_modified == analysis_end):             # <<<<<<<<<<<<<<
@@ -8913,7 +8919,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       goto __pyx_L6;
     }
 
-    /* "calculateOnebp.pyx":348
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":348
  * 			frag_end = shear_end - 2
  * 		else:
  * 			analysis_end = analysis_end_modified             # <<<<<<<<<<<<<<
@@ -8924,7 +8930,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(__pyx_v_analysis_end_modified);
       __Pyx_DECREF_SET(__pyx_v_analysis_end, __pyx_v_analysis_end_modified);
 
-      /* "calculateOnebp.pyx":351
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":351
  * 
  * 			###### EDIT BINSTART/ BINEND
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )             # <<<<<<<<<<<<<<
@@ -8951,7 +8957,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":352
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":352
  * 			###### EDIT BINSTART/ BINEND
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)             # <<<<<<<<<<<<<<
@@ -8975,7 +8981,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_XDECREF_SET(__pyx_v_leftValue, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":353
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":353
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 			if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -8988,7 +8994,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":354
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":354
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 			if(leftValue != 0):
  * 				nBins = nBins + 1             # <<<<<<<<<<<<<<
@@ -9000,7 +9006,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":355
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":355
  * 			if(leftValue != 0):
  * 				nBins = nBins + 1
  * 				lastBin = True             # <<<<<<<<<<<<<<
@@ -9010,7 +9016,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_INCREF(Py_True);
         __Pyx_DECREF_SET(__pyx_v_lastBin, Py_True);
 
-        /* "calculateOnebp.pyx":356
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":356
  * 				nBins = nBins + 1
  * 				lastBin = True
  * 				binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )             # <<<<<<<<<<<<<<
@@ -9046,7 +9052,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_DECREF_SET(__pyx_v_binEnd, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":353
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":353
  * 			nBins = int( (analysis_end-analysis_start) / float(vari.BINSIZE) )
  * 			leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 			if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -9056,7 +9062,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         goto __pyx_L7;
       }
 
-      /* "calculateOnebp.pyx":358
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":358
  * 				binEnd = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )
  * 			else:
  * 				lastBin = False             # <<<<<<<<<<<<<<
@@ -9067,7 +9073,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_INCREF(Py_False);
         __Pyx_DECREF_SET(__pyx_v_lastBin, Py_False);
 
-        /* "calculateOnebp.pyx":359
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":359
  * 			else:
  * 				lastBin = False
  * 				binEnd = binStart + (nBins-1) * vari.BINSIZE             # <<<<<<<<<<<<<<
@@ -9093,7 +9099,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       }
       __pyx_L7:;
 
-      /* "calculateOnebp.pyx":361
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":361
  * 				binEnd = binStart + (nBins-1) * vari.BINSIZE
  * 
  * 			frag_end = binEnd + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -9111,7 +9117,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":362
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":362
  * 
  * 			frag_end = binEnd + vari.FRAGLEN
  * 			shear_end = frag_end + 2             # <<<<<<<<<<<<<<
@@ -9123,7 +9129,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":364
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":364
  * 			shear_end = frag_end + 2
  * 
  * 			if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -9135,7 +9141,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":365
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":365
  * 
  * 			if(shear_end > chromoEnd):
  * 				shear_end = chromoEnd             # <<<<<<<<<<<<<<
@@ -9145,7 +9151,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_INCREF(__pyx_v_chromoEnd);
         __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_v_chromoEnd);
 
-        /* "calculateOnebp.pyx":366
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":366
  * 			if(shear_end > chromoEnd):
  * 				shear_end = chromoEnd
  * 				frag_end = shear_end - 2             # <<<<<<<<<<<<<<
@@ -9157,7 +9163,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":364
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":364
  * 			shear_end = frag_end + 2
  * 
  * 			if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -9168,7 +9174,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     }
     __pyx_L6:;
 
-    /* "calculateOnebp.pyx":341
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":341
  * 		shear_end = frag_end + 2
  * 
  * 	if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -9177,19 +9183,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
   }
 
-  /* "calculateOnebp.pyx":370
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":370
  * 
  * 	###### GENERATE A RESULT MATRIX
  * 	result = makeMatrix_DiscreteFrag(binStart, binEnd, nBins)             # <<<<<<<<<<<<<<
  * 
  * 	###### GET SEQUENCE
  */
-  __pyx_t_1 = __pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 370, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_DiscreteFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 370, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_result = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":373
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":373
  * 
  * 	###### GET SEQUENCE
  * 	fa = faFile.sequence(chromo, (shear_start-1), (shear_end-1))             # <<<<<<<<<<<<<<
@@ -9257,7 +9263,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_fa = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":374
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":374
  * 	###### GET SEQUENCE
  * 	fa = faFile.sequence(chromo, (shear_start-1), (shear_end-1))
  * 	faFile.close()             # <<<<<<<<<<<<<<
@@ -9283,7 +9289,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":377
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":377
  * 
  *         ##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -9302,7 +9308,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":378
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":378
  *         ##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):
  * 		mapFile = pyBigWig.open(vari.MAPFILE)             # <<<<<<<<<<<<<<
@@ -9338,7 +9344,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __pyx_v_mapFile = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":379
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":379
  * 	if(vari.MAP == 1):
  * 		mapFile = pyBigWig.open(vari.MAPFILE)
  * 		mapValue = np.array(mapFile.values(chromo, frag_start, frag_end))             # <<<<<<<<<<<<<<
@@ -9419,7 +9425,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __pyx_v_mapValue = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":381
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":381
  * 		mapValue = np.array(mapFile.values(chromo, frag_start, frag_end))
  * 
  * 		mapValue[np.where(mapValue == 0)] = np.nan             # <<<<<<<<<<<<<<
@@ -9458,7 +9464,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":382
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":382
  * 
  * 		mapValue[np.where(mapValue == 0)] = np.nan
  * 		mapValue = np.log(mapValue)             # <<<<<<<<<<<<<<
@@ -9488,7 +9494,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_mapValue, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":383
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":383
  * 		mapValue[np.where(mapValue == 0)] = np.nan
  * 		mapValue = np.log(mapValue)
  * 		mapValue[np.where(np.isnan(mapValue) == True)] = float(-6)             # <<<<<<<<<<<<<<
@@ -9544,19 +9550,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":385
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":385
  * 		mapValue[np.where(np.isnan(mapValue) == True)] = float(-6)
  * 
  * 		mapValue_view = memoryView(mapValue)             # <<<<<<<<<<<<<<
  * 		mapFile.close()
  * 		del mapFile, mapValue
  */
-    __pyx_t_3 = __pyx_f_14calculateOnebp_memoryView(__pyx_v_mapValue, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 385, __pyx_L1_error)
+    __pyx_t_3 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(__pyx_v_mapValue, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 385, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_v_mapValue_view = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":386
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":386
  * 
  * 		mapValue_view = memoryView(mapValue)
  * 		mapFile.close()             # <<<<<<<<<<<<<<
@@ -9582,7 +9588,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":387
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":387
  * 		mapValue_view = memoryView(mapValue)
  * 		mapFile.close()
  * 		del mapFile, mapValue             # <<<<<<<<<<<<<<
@@ -9594,7 +9600,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_v_mapValue);
     __pyx_v_mapValue = NULL;
 
-    /* "calculateOnebp.pyx":377
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":377
  * 
  *         ##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -9603,7 +9609,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
   }
 
-  /* "calculateOnebp.pyx":389
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":389
  * 		del mapFile, mapValue
  * 
  * 	if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -9622,7 +9628,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":390
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":390
  * 
  * 	if(vari.GQUAD == 1):
  * 		gquadFile = [0] * len(vari.GQAUDFILE)             # <<<<<<<<<<<<<<
@@ -9648,7 +9654,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __pyx_v_gquadFile = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":391
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":391
  * 	if(vari.GQUAD == 1):
  * 		gquadFile = [0] * len(vari.GQAUDFILE)
  * 		gquadValue = [0] * len(vari.GQAUDFILE)             # <<<<<<<<<<<<<<
@@ -9674,7 +9680,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __pyx_v_gquadValue = __pyx_t_3;
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":393
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":393
  * 		gquadValue = [0] * len(vari.GQAUDFILE)
  * 
  * 		for i in range(len(vari.GQAUDFILE)):             # <<<<<<<<<<<<<<
@@ -9692,7 +9698,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
       __pyx_v_i = __pyx_t_11;
 
-      /* "calculateOnebp.pyx":394
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":394
  * 
  * 		for i in range(len(vari.GQAUDFILE)):
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])             # <<<<<<<<<<<<<<
@@ -9731,7 +9737,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       if (unlikely(__Pyx_SetItemInt(__pyx_v_gquadFile, __pyx_v_i, __pyx_t_4, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 394, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":395
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":395
  * 		for i in range(len(vari.GQAUDFILE)):
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
  * 			gquadValue[i] = gquadFile[i].values(chromo, frag_start, frag_end)             # <<<<<<<<<<<<<<
@@ -9794,7 +9800,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       if (unlikely(__Pyx_SetItemInt(__pyx_v_gquadValue, __pyx_v_i, __pyx_t_4, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1) < 0)) __PYX_ERR(0, 395, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":396
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":396
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
  * 			gquadValue[i] = gquadFile[i].values(chromo, frag_start, frag_end)
  * 			gquadFile[i].close()             # <<<<<<<<<<<<<<
@@ -9824,7 +9830,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     }
 
-    /* "calculateOnebp.pyx":398
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":398
  * 			gquadFile[i].close()
  * 
  * 		gquadValue = np.array(gquadValue)             # <<<<<<<<<<<<<<
@@ -9854,7 +9860,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":399
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":399
  * 
  * 		gquadValue = np.array(gquadValue)
  * 		gquadValue = np.nanmax(gquadValue, axis=0)             # <<<<<<<<<<<<<<
@@ -9882,7 +9888,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":400
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":400
  * 		gquadValue = np.array(gquadValue)
  * 		gquadValue = np.nanmax(gquadValue, axis=0)
  * 		gquadValue[np.where(gquadValue == 0)] = np.nan             # <<<<<<<<<<<<<<
@@ -9921,7 +9927,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":401
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":401
  * 		gquadValue = np.nanmax(gquadValue, axis=0)
  * 		gquadValue[np.where(gquadValue == 0)] = np.nan
  * 		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))             # <<<<<<<<<<<<<<
@@ -9963,7 +9969,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":403
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":403
  * 		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
  * 
  * 		gquadValue[np.where(np.isnan(gquadValue) == True)] = float(-5)             # <<<<<<<<<<<<<<
@@ -10019,19 +10025,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":404
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":404
  * 
  * 		gquadValue[np.where(np.isnan(gquadValue) == True)] = float(-5)
  * 		gquad_view = memoryView(gquadValue)             # <<<<<<<<<<<<<<
  * 
  * 		del gquadFile, gquadValue
  */
-    __pyx_t_2 = __pyx_f_14calculateOnebp_memoryView(__pyx_v_gquadValue, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(__pyx_v_gquadValue, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 404, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_v_gquad_view = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":406
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":406
  * 		gquad_view = memoryView(gquadValue)
  * 
  * 		del gquadFile, gquadValue             # <<<<<<<<<<<<<<
@@ -10043,7 +10049,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_v_gquadValue);
     __pyx_v_gquadValue = NULL;
 
-    /* "calculateOnebp.pyx":389
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":389
  * 		del mapFile, mapValue
  * 
  * 	if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -10052,7 +10058,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
   }
 
-  /* "calculateOnebp.pyx":410
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":410
  * 
  * 	##### STORE COVARI RESULTS
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)             # <<<<<<<<<<<<<<
@@ -10082,7 +10088,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_covariFile_temp = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":411
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":411
  * 	##### STORE COVARI RESULTS
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 	covariFileName = covariFile_temp.name             # <<<<<<<<<<<<<<
@@ -10094,7 +10100,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_covariFileName = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":412
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":412
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 	covariFileName = covariFile_temp.name
  * 	covariFile_temp.close()             # <<<<<<<<<<<<<<
@@ -10120,7 +10126,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":414
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":414
  * 	covariFile_temp.close()
  * 
  * 	f = h5py.File(covariFileName, "w")             # <<<<<<<<<<<<<<
@@ -10180,7 +10186,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_f = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":415
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":415
  * 
  * 	f = h5py.File(covariFileName, "w")
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")             # <<<<<<<<<<<<<<
@@ -10222,7 +10228,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __pyx_v_covariFile = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":417
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":417
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
  * 
  * 	resultIdx = 0             # <<<<<<<<<<<<<<
@@ -10232,7 +10238,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_resultIdx = __pyx_int_0;
 
-  /* "calculateOnebp.pyx":418
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":418
  * 
  * 	resultIdx = 0
  * 	while(resultIdx < nBins): # for each bin             # <<<<<<<<<<<<<<
@@ -10245,7 +10251,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!__pyx_t_5) break;
 
-    /* "calculateOnebp.pyx":419
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":419
  * 	resultIdx = 0
  * 	while(resultIdx < nBins): # for each bin
  * 		if(resultIdx == (nBins-1)):             # <<<<<<<<<<<<<<
@@ -10260,7 +10266,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":420
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":420
  * 	while(resultIdx < nBins): # for each bin
  * 		if(resultIdx == (nBins-1)):
  * 			pos = binEnd             # <<<<<<<<<<<<<<
@@ -10270,7 +10276,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(__pyx_v_binEnd);
       __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_v_binEnd);
 
-      /* "calculateOnebp.pyx":419
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":419
  * 	resultIdx = 0
  * 	while(resultIdx < nBins): # for each bin
  * 		if(resultIdx == (nBins-1)):             # <<<<<<<<<<<<<<
@@ -10280,7 +10286,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       goto __pyx_L15;
     }
 
-    /* "calculateOnebp.pyx":422
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":422
  * 			pos = binEnd
  * 		else:
  * 			pos = binStart + resultIdx * vari.BINSIZE             # <<<<<<<<<<<<<<
@@ -10304,7 +10310,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     }
     __pyx_L15:;
 
-    /* "calculateOnebp.pyx":424
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":424
  * 			pos = binStart + resultIdx * vari.BINSIZE
  * 
  * 		thisBin_firstFragStart = pos + 1 - vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -10325,7 +10331,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_XDECREF_SET(__pyx_v_thisBin_firstFragStart, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":425
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":425
  * 
  * 		thisBin_firstFragStart = pos + 1 - vari.FRAGLEN
  * 		thisBin_lastFragStart = pos             # <<<<<<<<<<<<<<
@@ -10335,7 +10341,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_INCREF(__pyx_v_pos);
     __Pyx_XDECREF_SET(__pyx_v_thisBin_lastFragStart, __pyx_v_pos);
 
-    /* "calculateOnebp.pyx":427
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":427
  * 		thisBin_lastFragStart = pos
  * 
  * 		if(thisBin_firstFragStart < 3):             # <<<<<<<<<<<<<<
@@ -10347,7 +10353,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":428
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":428
  * 
  * 		if(thisBin_firstFragStart < 3):
  * 			thisBin_firstFragStart = 3             # <<<<<<<<<<<<<<
@@ -10357,7 +10363,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(__pyx_int_3);
       __Pyx_DECREF_SET(__pyx_v_thisBin_firstFragStart, __pyx_int_3);
 
-      /* "calculateOnebp.pyx":427
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":427
  * 		thisBin_lastFragStart = pos
  * 
  * 		if(thisBin_firstFragStart < 3):             # <<<<<<<<<<<<<<
@@ -10366,7 +10372,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
     }
 
-    /* "calculateOnebp.pyx":429
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":429
  * 		if(thisBin_firstFragStart < 3):
  * 			thisBin_firstFragStart = 3
  * 		if( (thisBin_lastFragStart + vari.FRAGLEN) > (chromoEnd - 2)):             # <<<<<<<<<<<<<<
@@ -10390,7 +10396,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":430
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":430
  * 			thisBin_firstFragStart = 3
  * 		if( (thisBin_lastFragStart + vari.FRAGLEN) > (chromoEnd - 2)):
  * 			thisBin_lastFragStart = chromoEnd - 2 - vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -10411,7 +10417,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF_SET(__pyx_v_thisBin_lastFragStart, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "calculateOnebp.pyx":429
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":429
  * 		if(thisBin_firstFragStart < 3):
  * 			thisBin_firstFragStart = 3
  * 		if( (thisBin_lastFragStart + vari.FRAGLEN) > (chromoEnd - 2)):             # <<<<<<<<<<<<<<
@@ -10420,7 +10426,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
     }
 
-    /* "calculateOnebp.pyx":432
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":432
  * 			thisBin_lastFragStart = chromoEnd - 2 - vari.FRAGLEN
  * 
  * 		thisBin_numFrag = thisBin_lastFragStart - thisBin_firstFragStart + 1             # <<<<<<<<<<<<<<
@@ -10435,7 +10441,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_XDECREF_SET(__pyx_v_thisBin_numFrag, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":434
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":434
  * 		thisBin_numFrag = thisBin_lastFragStart - thisBin_firstFragStart + 1
  * 
  * 		thisBin_firstFragStartIdx = thisBin_firstFragStart - shear_start             # <<<<<<<<<<<<<<
@@ -10447,7 +10453,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_XDECREF_SET(__pyx_v_thisBin_firstFragStartIdx, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":437
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":437
  * 
  * 		##### INITIALIZE VARIABLES
  * 		if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -10466,7 +10472,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":438
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":438
  * 		##### INITIALIZE VARIABLES
  * 		if(vari.SHEAR == 1):
  * 			past_mer1 = -1             # <<<<<<<<<<<<<<
@@ -10476,7 +10482,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(__pyx_int_neg_1);
       __Pyx_XDECREF_SET(__pyx_v_past_mer1, __pyx_int_neg_1);
 
-      /* "calculateOnebp.pyx":439
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":439
  * 		if(vari.SHEAR == 1):
  * 			past_mer1 = -1
  * 			past_mer2 = -1             # <<<<<<<<<<<<<<
@@ -10486,7 +10492,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(__pyx_int_neg_1);
       __Pyx_XDECREF_SET(__pyx_v_past_mer2, __pyx_int_neg_1);
 
-      /* "calculateOnebp.pyx":437
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":437
  * 
  * 		##### INITIALIZE VARIABLES
  * 		if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -10495,7 +10501,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
     }
 
-    /* "calculateOnebp.pyx":440
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":440
  * 			past_mer1 = -1
  * 			past_mer2 = -1
  * 		if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -10514,7 +10520,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":441
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":441
  * 			past_mer2 = -1
  * 		if(vari.PCR == 1):
  * 			past_start_gibbs = -1             # <<<<<<<<<<<<<<
@@ -10523,7 +10529,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
       __pyx_v_past_start_gibbs = -1L;
 
-      /* "calculateOnebp.pyx":440
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":440
  * 			past_mer1 = -1
  * 			past_mer2 = -1
  * 		if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -10532,7 +10538,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
     }
 
-    /* "calculateOnebp.pyx":443
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":443
  * 			past_start_gibbs = -1
  * 
  * 		line = [0.0] * vari.COVARI_NUM             # <<<<<<<<<<<<<<
@@ -10558,7 +10564,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":444
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":444
  * 
  * 		line = [0.0] * vari.COVARI_NUM
  * 		for binFragIdx in range(thisBin_numFrag):             # <<<<<<<<<<<<<<
@@ -10610,7 +10616,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_XDECREF_SET(__pyx_v_binFragIdx, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":445
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":445
  * 		line = [0.0] * vari.COVARI_NUM
  * 		for binFragIdx in range(thisBin_numFrag):
  * 			idx = thisBin_firstFragStartIdx + binFragIdx             # <<<<<<<<<<<<<<
@@ -10622,7 +10628,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":447
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":447
  * 			idx = thisBin_firstFragStartIdx + binFragIdx
  * 
  * 			idx_covari = [0] * vari.COVARI_NUM             # <<<<<<<<<<<<<<
@@ -10648,7 +10654,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_XDECREF_SET(__pyx_v_idx_covari, ((PyObject*)__pyx_t_3));
       __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":448
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":448
  * 
  * 			idx_covari = [0] * vari.COVARI_NUM
  * 			idx_covari_ptr = 0             # <<<<<<<<<<<<<<
@@ -10658,7 +10664,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_INCREF(__pyx_int_0);
       __Pyx_XDECREF_SET(__pyx_v_idx_covari_ptr, __pyx_int_0);
 
-      /* "calculateOnebp.pyx":450
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":450
  * 			idx_covari_ptr = 0
  * 
  * 			if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -10677,7 +10683,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":452
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":452
  * 			if(vari.SHEAR == 1):
  * 				###  mer1
  * 				mer1 = fa[(idx-2):(idx+3)]             # <<<<<<<<<<<<<<
@@ -10695,7 +10701,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_mer1, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":453
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":453
  * 				###  mer1
  * 				mer1 = fa[(idx-2):(idx+3)]
  * 				if('N' in mer1):             # <<<<<<<<<<<<<<
@@ -10706,7 +10712,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __pyx_t_13 = (__pyx_t_5 != 0);
         if (__pyx_t_13) {
 
-          /* "calculateOnebp.pyx":454
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":454
  * 				mer1 = fa[(idx-2):(idx+3)]
  * 				if('N' in mer1):
  * 					past_mer1 = -1             # <<<<<<<<<<<<<<
@@ -10716,7 +10722,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_INCREF(__pyx_int_neg_1);
           __Pyx_XDECREF_SET(__pyx_v_past_mer1, __pyx_int_neg_1);
 
-          /* "calculateOnebp.pyx":455
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":455
  * 				if('N' in mer1):
  * 					past_mer1 = -1
  * 					idx_mgw = vari.N_MGW             # <<<<<<<<<<<<<<
@@ -10731,7 +10737,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_XDECREF_SET(__pyx_v_idx_mgw, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":456
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":456
  * 					past_mer1 = -1
  * 					idx_mgw = vari.N_MGW
  * 					idx_prot = vari.N_PROT             # <<<<<<<<<<<<<<
@@ -10746,7 +10752,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_XDECREF_SET(__pyx_v_idx_prot, __pyx_t_6);
           __pyx_t_6 = 0;
 
-          /* "calculateOnebp.pyx":453
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":453
  * 				###  mer1
  * 				mer1 = fa[(idx-2):(idx+3)]
  * 				if('N' in mer1):             # <<<<<<<<<<<<<<
@@ -10756,7 +10762,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           goto __pyx_L23;
         }
 
-        /* "calculateOnebp.pyx":458
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":458
  * 					idx_prot = vari.N_PROT
  * 				else:
  * 					if(past_mer1 == -1): # there is no information on past_mer1             # <<<<<<<<<<<<<<
@@ -10771,14 +10777,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           if (__pyx_t_13) {
 
-            /* "calculateOnebp.pyx":459
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":459
  * 				else:
  * 					if(past_mer1 == -1): # there is no information on past_mer1
  * 						past_mer1, idx_mgw, idx_prot = find5merProb(mer1)             # <<<<<<<<<<<<<<
  * 					else:
  * 						past_mer1, idx_mgw, idx_prot = edit5merProb(past_mer1, mer1[0], mer1[4])
  */
-            __pyx_t_6 = __pyx_f_14calculateOnebp_find5merProb(__pyx_v_mer1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
+            __pyx_t_6 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_find5merProb(__pyx_v_mer1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 459, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             if ((likely(PyTuple_CheckExact(__pyx_t_6))) || (PyList_CheckExact(__pyx_t_6))) {
               PyObject* sequence = __pyx_t_6;
@@ -10840,7 +10846,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
             __Pyx_XDECREF_SET(__pyx_v_idx_prot, __pyx_t_4);
             __pyx_t_4 = 0;
 
-            /* "calculateOnebp.pyx":458
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":458
  * 					idx_prot = vari.N_PROT
  * 				else:
  * 					if(past_mer1 == -1): # there is no information on past_mer1             # <<<<<<<<<<<<<<
@@ -10850,7 +10856,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
             goto __pyx_L24;
           }
 
-          /* "calculateOnebp.pyx":461
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":461
  * 						past_mer1, idx_mgw, idx_prot = find5merProb(mer1)
  * 					else:
  * 						past_mer1, idx_mgw, idx_prot = edit5merProb(past_mer1, mer1[0], mer1[4])             # <<<<<<<<<<<<<<
@@ -10863,7 +10869,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
             __Pyx_GOTREF(__pyx_t_6);
             __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_mer1, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 461, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_3 = __pyx_f_14calculateOnebp_edit5merProb(__pyx_v_past_mer1, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 461, __pyx_L1_error)
+            __pyx_t_3 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_edit5merProb(__pyx_v_past_mer1, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 461, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_3);
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -10931,7 +10937,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         }
         __pyx_L23:;
 
-        /* "calculateOnebp.pyx":464
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":464
  * 
  *                         	###  mer2
  * 				fragEnd_idx = idx + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -10949,7 +10955,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_fragEnd_idx, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":465
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":465
  *                         	###  mer2
  * 				fragEnd_idx = idx + vari.FRAGLEN
  * 				mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]             # <<<<<<<<<<<<<<
@@ -10967,7 +10973,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_mer2, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":466
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":466
  * 				fragEnd_idx = idx + vari.FRAGLEN
  * 				mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 				if('N' in mer2):             # <<<<<<<<<<<<<<
@@ -10978,7 +10984,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __pyx_t_5 = (__pyx_t_13 != 0);
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":467
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":467
  * 				mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 				if('N' in mer2):
  * 					past_mer2 = -1             # <<<<<<<<<<<<<<
@@ -10988,7 +10994,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_INCREF(__pyx_int_neg_1);
           __Pyx_XDECREF_SET(__pyx_v_past_mer2, __pyx_int_neg_1);
 
-          /* "calculateOnebp.pyx":468
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":468
  * 				if('N' in mer2):
  * 					past_mer2 = -1
  * 					idx_mgw = idx_mgw + vari.N_MGW             # <<<<<<<<<<<<<<
@@ -11006,7 +11012,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_DECREF_SET(__pyx_v_idx_mgw, __pyx_t_6);
           __pyx_t_6 = 0;
 
-          /* "calculateOnebp.pyx":469
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":469
  * 					past_mer2 = -1
  * 					idx_mgw = idx_mgw + vari.N_MGW
  * 					idx_prot = idx_prot + vari.N_PROT             # <<<<<<<<<<<<<<
@@ -11024,7 +11030,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_DECREF_SET(__pyx_v_idx_prot, __pyx_t_6);
           __pyx_t_6 = 0;
 
-          /* "calculateOnebp.pyx":466
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":466
  * 				fragEnd_idx = idx + vari.FRAGLEN
  * 				mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 				if('N' in mer2):             # <<<<<<<<<<<<<<
@@ -11034,7 +11040,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           goto __pyx_L29;
         }
 
-        /* "calculateOnebp.pyx":471
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":471
  * 					idx_prot = idx_prot + vari.N_PROT
  * 				else:
  * 					if(past_mer2 == -1):             # <<<<<<<<<<<<<<
@@ -11049,14 +11055,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":472
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":472
  * 				else:
  * 					if(past_mer2 == -1):
  * 						past_mer2, add1, add2 = findComple5merProb(mer2)             # <<<<<<<<<<<<<<
  * 					else:
  * 						past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  */
-            __pyx_t_6 = __pyx_f_14calculateOnebp_findComple5merProb(__pyx_v_mer2, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 472, __pyx_L1_error)
+            __pyx_t_6 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findComple5merProb(__pyx_v_mer2, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 472, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_6);
             if ((likely(PyTuple_CheckExact(__pyx_t_6))) || (PyList_CheckExact(__pyx_t_6))) {
               PyObject* sequence = __pyx_t_6;
@@ -11118,7 +11124,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
             __Pyx_XDECREF_SET(__pyx_v_add2, __pyx_t_4);
             __pyx_t_4 = 0;
 
-            /* "calculateOnebp.pyx":471
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":471
  * 					idx_prot = idx_prot + vari.N_PROT
  * 				else:
  * 					if(past_mer2 == -1):             # <<<<<<<<<<<<<<
@@ -11128,7 +11134,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
             goto __pyx_L30;
           }
 
-          /* "calculateOnebp.pyx":474
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":474
  * 						past_mer2, add1, add2 = findComple5merProb(mer2)
  * 					else:
  * 						past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])             # <<<<<<<<<<<<<<
@@ -11141,7 +11147,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
             __Pyx_GOTREF(__pyx_t_6);
             __pyx_t_4 = __Pyx_GetItemInt(__pyx_v_mer2, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 474, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_4);
-            __pyx_t_3 = __pyx_f_14calculateOnebp_editComple5merProb(__pyx_v_past_mer2, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 474, __pyx_L1_error)
+            __pyx_t_3 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editComple5merProb(__pyx_v_past_mer2, __pyx_t_6, __pyx_t_4, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 474, __pyx_L1_error)
             __Pyx_GOTREF(__pyx_t_3);
             __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
             __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -11207,7 +11213,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           }
           __pyx_L30:;
 
-          /* "calculateOnebp.pyx":475
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":475
  * 					else:
  * 						past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  * 					idx_mgw = idx_mgw + add1             # <<<<<<<<<<<<<<
@@ -11219,7 +11225,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_DECREF_SET(__pyx_v_idx_mgw, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":476
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":476
  * 						past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  * 					idx_mgw = idx_mgw + add1
  * 					idx_prot = idx_prot + add2             # <<<<<<<<<<<<<<
@@ -11233,7 +11239,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         }
         __pyx_L29:;
 
-        /* "calculateOnebp.pyx":478
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":478
  * 					idx_prot = idx_prot + add2
  * 
  * 				idx_covari[idx_covari_ptr] = idx_mgw             # <<<<<<<<<<<<<<
@@ -11242,7 +11248,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
         if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_mgw) < 0)) __PYX_ERR(0, 478, __pyx_L1_error)
 
-        /* "calculateOnebp.pyx":479
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":479
  * 
  * 				idx_covari[idx_covari_ptr] = idx_mgw
  * 				idx_covari[idx_covari_ptr+1] = idx_prot             # <<<<<<<<<<<<<<
@@ -11254,7 +11260,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_t_3, __pyx_v_idx_prot) < 0)) __PYX_ERR(0, 479, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":480
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":480
  * 				idx_covari[idx_covari_ptr] = idx_mgw
  * 				idx_covari[idx_covari_ptr+1] = idx_prot
  * 				idx_covari_ptr = idx_covari_ptr + 2             # <<<<<<<<<<<<<<
@@ -11266,7 +11272,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":450
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":450
  * 			idx_covari_ptr = 0
  * 
  * 			if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -11275,7 +11281,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
       }
 
-      /* "calculateOnebp.pyx":482
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":482
  * 				idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 			if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -11294,7 +11300,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":483
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":483
  * 
  * 			if(vari.PCR == 1):
  * 				idx_fa = fa[idx:(idx+vari.FRAGLEN)]             # <<<<<<<<<<<<<<
@@ -11315,7 +11321,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_idx_fa, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":484
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":484
  * 			if(vari.PCR == 1):
  * 				idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 				if(past_start_gibbs == -1):             # <<<<<<<<<<<<<<
@@ -11325,7 +11331,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __pyx_t_5 = ((__pyx_v_past_start_gibbs == -1L) != 0);
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":485
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":485
  * 				idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 				if(past_start_gibbs == -1):
  * 					start_gibbs, gibbs = findStartGibbs(idx_fa, vari.FRAGLEN)             # <<<<<<<<<<<<<<
@@ -11337,7 +11343,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_FRAGLEN); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 485, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-          __pyx_t_2 = __pyx_f_14calculateOnebp_findStartGibbs(__pyx_v_idx_fa, __pyx_t_3, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 485, __pyx_L1_error)
+          __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findStartGibbs(__pyx_v_idx_fa, __pyx_t_3, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 485, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           if ((likely(PyTuple_CheckExact(__pyx_t_2))) || (PyList_CheckExact(__pyx_t_2))) {
@@ -11391,7 +11397,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_XDECREF_SET(__pyx_v_gibbs, __pyx_t_6);
           __pyx_t_6 = 0;
 
-          /* "calculateOnebp.pyx":484
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":484
  * 			if(vari.PCR == 1):
  * 				idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 				if(past_start_gibbs == -1):             # <<<<<<<<<<<<<<
@@ -11401,7 +11407,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           goto __pyx_L36;
         }
 
-        /* "calculateOnebp.pyx":487
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":487
  * 					start_gibbs, gibbs = findStartGibbs(idx_fa, vari.FRAGLEN)
  * 				else:
  * 					oldDimer = idx_fa[0:2].upper()             # <<<<<<<<<<<<<<
@@ -11432,7 +11438,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_XDECREF_SET(__pyx_v_oldDimer, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":488
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":488
  * 				else:
  * 					oldDimer = idx_fa[0:2].upper()
  * 					newDimer = idx_fa[(vari.FRAGLEN-2):vari.FRAGLEN].upper()             # <<<<<<<<<<<<<<
@@ -11477,7 +11483,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
           __Pyx_XDECREF_SET(__pyx_v_newDimer, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":489
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":489
  * 					oldDimer = idx_fa[0:2].upper()
  * 					newDimer = idx_fa[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
  * 					start_gibbs, gibbs = editStartGibbs(oldDimer, newDimer, past_start_gibbs)             # <<<<<<<<<<<<<<
@@ -11486,7 +11492,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
           __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v_past_start_gibbs); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 489, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_2);
-          __pyx_t_4 = __pyx_f_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_t_2, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 489, __pyx_L1_error)
+          __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_t_2, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 489, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
@@ -11542,14 +11548,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         }
         __pyx_L36:;
 
-        /* "calculateOnebp.pyx":491
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":491
  * 					start_gibbs, gibbs = editStartGibbs(oldDimer, newDimer, past_start_gibbs)
  * 
  * 				idx_anneal, idx_denature = convertGibbs(gibbs)             # <<<<<<<<<<<<<<
  * 
  * 				idx_covari[idx_covari_ptr] = idx_anneal
  */
-        __pyx_t_4 = __pyx_f_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 491, __pyx_L1_error)
+        __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 491, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         if ((likely(PyTuple_CheckExact(__pyx_t_4))) || (PyList_CheckExact(__pyx_t_4))) {
           PyObject* sequence = __pyx_t_4;
@@ -11602,7 +11608,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_idx_denature, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":493
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":493
  * 				idx_anneal, idx_denature = convertGibbs(gibbs)
  * 
  * 				idx_covari[idx_covari_ptr] = idx_anneal             # <<<<<<<<<<<<<<
@@ -11611,7 +11617,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
         if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_anneal) < 0)) __PYX_ERR(0, 493, __pyx_L1_error)
 
-        /* "calculateOnebp.pyx":494
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":494
  * 
  * 				idx_covari[idx_covari_ptr] = idx_anneal
  * 				idx_covari[idx_covari_ptr+1] = idx_denature             # <<<<<<<<<<<<<<
@@ -11623,7 +11629,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_t_4, __pyx_v_idx_denature) < 0)) __PYX_ERR(0, 494, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":495
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":495
  * 				idx_covari[idx_covari_ptr] = idx_anneal
  * 				idx_covari[idx_covari_ptr+1] = idx_denature
  * 				idx_covari_ptr = idx_covari_ptr + 2             # <<<<<<<<<<<<<<
@@ -11635,7 +11641,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":482
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":482
  * 				idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 			if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -11644,7 +11650,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
       }
 
-      /* "calculateOnebp.pyx":497
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":497
  * 				idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 			if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -11663,7 +11669,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":498
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":498
  * 
  * 			if(vari.MAP == 1):
  * 				map1 = mapValue_view[(idx-2)]             # <<<<<<<<<<<<<<
@@ -11679,7 +11685,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_map1, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":499
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":499
  * 			if(vari.MAP == 1):
  * 				map1 = mapValue_view[(idx-2)]
  * 				map2 = mapValue_view[(idx+vari.FRAGLEN-2-vari.KMER)]             # <<<<<<<<<<<<<<
@@ -11713,7 +11719,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_map2, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":500
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":500
  * 				map1 = mapValue_view[(idx-2)]
  * 				map2 = mapValue_view[(idx+vari.FRAGLEN-2-vari.KMER)]
  * 				idx_map = map1 + map2             # <<<<<<<<<<<<<<
@@ -11725,7 +11731,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_idx_map, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":502
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":502
  * 				idx_map = map1 + map2
  * 
  * 				idx_covari[idx_covari_ptr] = idx_map             # <<<<<<<<<<<<<<
@@ -11734,7 +11740,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
         if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_map) < 0)) __PYX_ERR(0, 502, __pyx_L1_error)
 
-        /* "calculateOnebp.pyx":503
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":503
  * 
  * 				idx_covari[idx_covari_ptr] = idx_map
  * 				idx_covari_ptr = idx_covari_ptr + 1             # <<<<<<<<<<<<<<
@@ -11746,7 +11752,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":497
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":497
  * 				idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 			if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -11755,7 +11761,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
       }
 
-      /* "calculateOnebp.pyx":505
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":505
  * 				idx_covari_ptr = idx_covari_ptr + 1
  * 
  * 			if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -11774,7 +11780,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":506
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":506
  * 
  * 			if(vari.GQUAD == 1):
  * 				idx_gquad = np.nanmax(np.asarray(gquad_view[(idx-2):(idx+vari.FRAGLEN-2)]))             # <<<<<<<<<<<<<<
@@ -11844,7 +11850,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_idx_gquad, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":508
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":508
  * 				idx_gquad = np.nanmax(np.asarray(gquad_view[(idx-2):(idx+vari.FRAGLEN-2)]))
  * 
  * 				idx_covari[idx_covari_ptr] = idx_gquad             # <<<<<<<<<<<<<<
@@ -11853,7 +11859,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
         if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_gquad) < 0)) __PYX_ERR(0, 508, __pyx_L1_error)
 
-        /* "calculateOnebp.pyx":509
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":509
  * 
  * 				idx_covari[idx_covari_ptr] = idx_gquad
  * 				idx_covari_ptr = idx_covari_ptr + 1             # <<<<<<<<<<<<<<
@@ -11865,7 +11871,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":505
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":505
  * 				idx_covari_ptr = idx_covari_ptr + 1
  * 
  * 			if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -11874,7 +11880,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
       }
 
-      /* "calculateOnebp.pyx":512
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":512
  * 
  * 
  * 			for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -11932,7 +11938,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":513
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":513
  * 
  * 			for covari_pos in range(vari.COVARI_NUM):
  * 				line[covari_pos] = line[covari_pos] + idx_covari[covari_pos]             # <<<<<<<<<<<<<<
@@ -11950,7 +11956,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
         if (unlikely(PyObject_SetItem(__pyx_v_line, __pyx_v_covari_pos, __pyx_t_1) < 0)) __PYX_ERR(0, 513, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":512
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":512
  * 
  * 
  * 			for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -11960,7 +11966,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
       }
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":444
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":444
  * 
  * 		line = [0.0] * vari.COVARI_NUM
  * 		for binFragIdx in range(thisBin_numFrag):             # <<<<<<<<<<<<<<
@@ -11970,7 +11976,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     }
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":515
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":515
  * 				line[covari_pos] = line[covari_pos] + idx_covari[covari_pos]
  * 
  * 		covariFile[resultIdx] = line             # <<<<<<<<<<<<<<
@@ -11979,7 +11985,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
     if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_resultIdx, __pyx_v_line) < 0)) __PYX_ERR(0, 515, __pyx_L1_error)
 
-    /* "calculateOnebp.pyx":517
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":517
  * 		covariFile[resultIdx] = line
  * 
  * 		resultIdx = resultIdx + 1             # <<<<<<<<<<<<<<
@@ -11991,7 +11997,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF_SET(__pyx_v_resultIdx, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":519
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":519
  * 		resultIdx = resultIdx + 1
  * 
  * 		if(resultIdx == nBins):             # <<<<<<<<<<<<<<
@@ -12003,7 +12009,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":520
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":520
  * 
  * 		if(resultIdx == nBins):
  * 			break             # <<<<<<<<<<<<<<
@@ -12012,7 +12018,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  */
       goto __pyx_L14_break;
 
-      /* "calculateOnebp.pyx":519
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":519
  * 		resultIdx = resultIdx + 1
  * 
  * 		if(resultIdx == nBins):             # <<<<<<<<<<<<<<
@@ -12023,7 +12029,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   }
   __pyx_L14_break:;
 
-  /* "calculateOnebp.pyx":522
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":522
  * 			break
  * 
  * 	f.close()             # <<<<<<<<<<<<<<
@@ -12049,7 +12055,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-  /* "calculateOnebp.pyx":524
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":524
  * 	f.close()
  * 
  * 	return correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins)             # <<<<<<<<<<<<<<
@@ -12057,13 +12063,13 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_8 = __pyx_f_14calculateOnebp_correctReadCount(__pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 524, __pyx_L1_error)
+  __pyx_t_8 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_correctReadCount(__pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 524, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_r = __pyx_t_8;
   __pyx_t_8 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":307
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":307
  * 
  * 
  * cpdef calculateDiscreteFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):             # <<<<<<<<<<<<<<
@@ -12081,7 +12087,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_15);
   __Pyx_XDECREF(__pyx_t_16);
-  __Pyx_AddTraceback("calculateOnebp.calculateDiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateDiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_frag_start);
@@ -12148,8 +12154,8 @@ static PyObject *__pyx_f_14calculateOnebp_calculateDiscreteFrag(PyObject *__pyx_
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_3calculateDiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_3calculateDiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_3calculateDiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_3calculateDiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_chromo = 0;
   PyObject *__pyx_v_analysis_start = 0;
   PyObject *__pyx_v_analysis_end = 0;
@@ -12252,24 +12258,24 @@ static PyObject *__pyx_pw_14calculateOnebp_3calculateDiscreteFrag(PyObject *__py
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("calculateDiscreteFrag", 1, 7, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 307, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.calculateDiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateDiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_2calculateDiscreteFrag(__pyx_self, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_2calculateDiscreteFrag(__pyx_self, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_2calculateDiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_2calculateDiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, PyObject *__pyx_v_lastBin) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("calculateDiscreteFrag", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_calculateDiscreteFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 307, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateDiscreteFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, __pyx_v_lastBin, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 307, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -12278,7 +12284,7 @@ static PyObject *__pyx_pf_14calculateOnebp_2calculateDiscreteFrag(CYTHON_UNUSED 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.calculateDiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateDiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -12286,7 +12292,7 @@ static PyObject *__pyx_pf_14calculateOnebp_2calculateDiscreteFrag(CYTHON_UNUSED 
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":529
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":529
  * 
  * 
  * cpdef calculateTrainCovariates(args):             # <<<<<<<<<<<<<<
@@ -12294,8 +12300,8 @@ static PyObject *__pyx_pf_14calculateOnebp_2calculateDiscreteFrag(CYTHON_UNUSED 
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_5calculateTrainCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__pyx_v_args, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_5calculateTrainCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateTrainCovariates(PyObject *__pyx_v_args, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_chromo = NULL;
   PyObject *__pyx_v_analysis_start = NULL;
   PyObject *__pyx_v_analysis_end = NULL;
@@ -12389,7 +12395,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   PyObject *(*__pyx_t_19)(PyObject *);
   __Pyx_RefNannySetupContext("calculateTrainCovariates", 0);
 
-  /* "calculateOnebp.pyx":531
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":531
  * cpdef calculateTrainCovariates(args):
  * 	### supress numpy nan-error message
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')             # <<<<<<<<<<<<<<
@@ -12406,7 +12412,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":532
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":532
  * 	### supress numpy nan-error message
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')             # <<<<<<<<<<<<<<
@@ -12423,7 +12429,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":534
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":534
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')
  * 
  * 	chromo = args[0]             # <<<<<<<<<<<<<<
@@ -12435,7 +12441,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_chromo = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":535
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":535
  * 
  * 	chromo = args[0]
  * 	analysis_start = int(args[1])  # Genomic coordinates(starts from 1)             # <<<<<<<<<<<<<<
@@ -12450,7 +12456,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_analysis_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":536
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":536
  * 	chromo = args[0]
  * 	analysis_start = int(args[1])  # Genomic coordinates(starts from 1)
  * 	analysis_end = int(args[2])  # not included             # <<<<<<<<<<<<<<
@@ -12465,7 +12471,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_analysis_end = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":538
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":538
  * 	analysis_end = int(args[2])  # not included
  * 
  * 	binStart = int((analysis_start + analysis_start + vari.BINSIZE) / float(2))             # <<<<<<<<<<<<<<
@@ -12495,7 +12501,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_binStart = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":539
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":539
  * 
  * 	binStart = int((analysis_start + analysis_start + vari.BINSIZE) / float(2))
  * 	binEnd = int((analysis_end - vari.BINSIZE + analysis_end) / float(2))             # <<<<<<<<<<<<<<
@@ -12525,7 +12531,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_binEnd = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":542
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":542
  * 
  * 	###### CALCULATE INDEX VARIABLE
  * 	frag_start = binStart + 1 - vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -12546,7 +12552,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_frag_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":543
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":543
  * 	###### CALCULATE INDEX VARIABLE
  * 	frag_start = binStart + 1 - vari.FRAGLEN
  * 	frag_end = binEnd + vari.FRAGLEN  # not included             # <<<<<<<<<<<<<<
@@ -12564,7 +12570,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_frag_end = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":544
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":544
  * 	frag_start = binStart + 1 - vari.FRAGLEN
  * 	frag_end = binEnd + vari.FRAGLEN  # not included
  * 	shear_start = frag_start - 2             # <<<<<<<<<<<<<<
@@ -12576,7 +12582,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_shear_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":545
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":545
  * 	frag_end = binEnd + vari.FRAGLEN  # not included
  * 	shear_start = frag_start - 2
  * 	shear_end = frag_end + 2 # not included             # <<<<<<<<<<<<<<
@@ -12588,7 +12594,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_shear_end = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":547
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":547
  * 	shear_end = frag_end + 2 # not included
  * 
  * 	faFile = py2bit.open(vari.FA)             # <<<<<<<<<<<<<<
@@ -12624,7 +12630,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_faFile = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":548
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":548
  * 
  * 	faFile = py2bit.open(vari.FA)
  * 	chromoEnd = int(faFile.chroms(chromo))             # <<<<<<<<<<<<<<
@@ -12654,7 +12660,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_chromoEnd = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":550
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":550
  * 	chromoEnd = int(faFile.chroms(chromo))
  * 
  * 	if(shear_start < 1):             # <<<<<<<<<<<<<<
@@ -12666,7 +12672,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":551
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":551
  * 
  * 	if(shear_start < 1):
  * 		shear_start = 1             # <<<<<<<<<<<<<<
@@ -12676,7 +12682,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_INCREF(__pyx_int_1);
     __Pyx_DECREF_SET(__pyx_v_shear_start, __pyx_int_1);
 
-    /* "calculateOnebp.pyx":552
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":552
  * 	if(shear_start < 1):
  * 		shear_start = 1
  * 		frag_start = 3             # <<<<<<<<<<<<<<
@@ -12686,7 +12692,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_INCREF(__pyx_int_3);
     __Pyx_DECREF_SET(__pyx_v_frag_start, __pyx_int_3);
 
-    /* "calculateOnebp.pyx":553
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":553
  * 		shear_start = 1
  * 		frag_start = 3
  * 		binStart = max(binStart, frag_start)             # <<<<<<<<<<<<<<
@@ -12715,7 +12721,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_binStart, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":554
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":554
  * 		frag_start = 3
  * 		binStart = max(binStart, frag_start)
  * 		analysis_start = max(analysis_start, frag_start)             # <<<<<<<<<<<<<<
@@ -12744,7 +12750,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_analysis_start, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":550
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":550
  * 	chromoEnd = int(faFile.chroms(chromo))
  * 
  * 	if(shear_start < 1):             # <<<<<<<<<<<<<<
@@ -12753,7 +12759,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
   }
 
-  /* "calculateOnebp.pyx":556
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":556
  * 		analysis_start = max(analysis_start, frag_start)
  * 
  * 	if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -12765,7 +12771,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":557
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":557
  * 
  * 	if(shear_end > chromoEnd):
  * 		shear_end = chromoEnd             # <<<<<<<<<<<<<<
@@ -12775,7 +12781,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_INCREF(__pyx_v_chromoEnd);
     __Pyx_DECREF_SET(__pyx_v_shear_end, __pyx_v_chromoEnd);
 
-    /* "calculateOnebp.pyx":558
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":558
  * 	if(shear_end > chromoEnd):
  * 		shear_end = chromoEnd
  * 		frag_end = shear_end - 2             # <<<<<<<<<<<<<<
@@ -12787,7 +12793,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_frag_end, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":559
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":559
  * 		shear_end = chromoEnd
  * 		frag_end = shear_end - 2
  * 		binEnd = min(binEnd, (frag_end-1))             # <<<<<<<<<<<<<<
@@ -12816,7 +12822,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_binEnd, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":560
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":560
  * 		frag_end = shear_end - 2
  * 		binEnd = min(binEnd, (frag_end-1))
  * 		analysis_end = min(analysis_end, frag_end)  # not included             # <<<<<<<<<<<<<<
@@ -12845,7 +12851,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_analysis_end, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":556
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":556
  * 		analysis_start = max(analysis_start, frag_start)
  * 
  * 	if(shear_end > chromoEnd):             # <<<<<<<<<<<<<<
@@ -12854,7 +12860,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
   }
 
-  /* "calculateOnebp.pyx":563
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":563
  * 
  * 	###### GENERATE A RESULT MATRIX
  * 	nBins = binEnd - binStart + 1             # <<<<<<<<<<<<<<
@@ -12869,19 +12875,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_nBins = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":564
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":564
  * 	###### GENERATE A RESULT MATRIX
  * 	nBins = binEnd - binStart + 1
  * 	result = makeMatrix_ContinuousFrag_train(binStart, binEnd, nBins)             # <<<<<<<<<<<<<<
  * 
  * 	###### GET SEQUENCE
  */
-  __pyx_t_2 = __pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 564, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag_train(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 564, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_v_result = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":567
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":567
  * 
  * 	###### GET SEQUENCE
  * 	fa = faFile.sequence(chromo, (shear_start-1), (shear_end-1))             # <<<<<<<<<<<<<<
@@ -12949,7 +12955,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_fa = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":568
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":568
  * 	###### GET SEQUENCE
  * 	fa = faFile.sequence(chromo, (shear_start-1), (shear_end-1))
  * 	faFile.close()             # <<<<<<<<<<<<<<
@@ -12975,7 +12981,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":571
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":571
  * 
  *         ##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -12994,7 +13000,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":572
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":572
  *         ##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):
  * 		mapFile = pyBigWig.open(vari.MAPFILE)             # <<<<<<<<<<<<<<
@@ -13030,7 +13036,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __pyx_v_mapFile = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":573
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":573
  * 	if(vari.MAP == 1):
  * 		mapFile = pyBigWig.open(vari.MAPFILE)
  * 		mapValue = np.array(mapFile.values(chromo, frag_start, frag_end))             # <<<<<<<<<<<<<<
@@ -13111,7 +13117,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __pyx_v_mapValue = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":575
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":575
  * 		mapValue = np.array(mapFile.values(chromo, frag_start, frag_end))
  * 
  * 		mapValue[np.where(mapValue == 0)] = np.nan             # <<<<<<<<<<<<<<
@@ -13150,7 +13156,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":576
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":576
  * 
  * 		mapValue[np.where(mapValue == 0)] = np.nan
  * 		mapValue = np.log(mapValue)             # <<<<<<<<<<<<<<
@@ -13180,7 +13186,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_mapValue, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":577
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":577
  * 		mapValue[np.where(mapValue == 0)] = np.nan
  * 		mapValue = np.log(mapValue)
  * 		mapValue[np.where(np.isnan(mapValue) == True)] = float(-6)             # <<<<<<<<<<<<<<
@@ -13236,19 +13242,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":579
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":579
  * 		mapValue[np.where(np.isnan(mapValue) == True)] = float(-6)
  * 
  * 		mapValue_view = memoryView(mapValue)             # <<<<<<<<<<<<<<
  * 		mapFile.close()
  * 		del mapFile, mapValue
  */
-    __pyx_t_1 = __pyx_f_14calculateOnebp_memoryView(__pyx_v_mapValue, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 579, __pyx_L1_error)
+    __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(__pyx_v_mapValue, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 579, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_v_mapValue_view = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":580
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":580
  * 
  * 		mapValue_view = memoryView(mapValue)
  * 		mapFile.close()             # <<<<<<<<<<<<<<
@@ -13274,7 +13280,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":581
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":581
  * 		mapValue_view = memoryView(mapValue)
  * 		mapFile.close()
  * 		del mapFile, mapValue             # <<<<<<<<<<<<<<
@@ -13286,7 +13292,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_v_mapValue);
     __pyx_v_mapValue = NULL;
 
-    /* "calculateOnebp.pyx":571
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":571
  * 
  *         ##### OPEN BIAS FILES
  * 	if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -13295,7 +13301,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
   }
 
-  /* "calculateOnebp.pyx":583
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":583
  * 		del mapFile, mapValue
  * 
  * 	if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -13314,7 +13320,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":584
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":584
  * 
  * 	if(vari.GQUAD == 1):
  * 		gquadFile = [0] * len(vari.GQAUDFILE)             # <<<<<<<<<<<<<<
@@ -13340,7 +13346,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __pyx_v_gquadFile = ((PyObject*)__pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":585
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":585
  * 	if(vari.GQUAD == 1):
  * 		gquadFile = [0] * len(vari.GQAUDFILE)
  * 		gquadValue = [0] * len(vari.GQAUDFILE)             # <<<<<<<<<<<<<<
@@ -13366,7 +13372,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __pyx_v_gquadValue = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":587
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":587
  * 		gquadValue = [0] * len(vari.GQAUDFILE)
  * 
  * 		for i in range(len(vari.GQAUDFILE)):             # <<<<<<<<<<<<<<
@@ -13384,7 +13390,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
       __pyx_v_i = __pyx_t_11;
 
-      /* "calculateOnebp.pyx":588
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":588
  * 
  * 		for i in range(len(vari.GQAUDFILE)):
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])             # <<<<<<<<<<<<<<
@@ -13423,7 +13429,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       if (unlikely(__Pyx_SetItemInt(__pyx_v_gquadFile, __pyx_v_i, __pyx_t_3, Py_ssize_t, 1, PyInt_FromSsize_t, 1, 1, 1) < 0)) __PYX_ERR(0, 588, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":589
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":589
  * 		for i in range(len(vari.GQAUDFILE)):
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
  * 			gquadValue[i] = gquadFile[i].values(chromo, frag_start, frag_end)             # <<<<<<<<<<<<<<
@@ -13486,7 +13492,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       if (unlikely(__Pyx_SetItemInt(__pyx_v_gquadValue, __pyx_v_i, __pyx_t_3, Py_ssize_t, 1, PyInt_FromSsize_t, 0, 1, 1) < 0)) __PYX_ERR(0, 589, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":590
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":590
  * 			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
  * 			gquadValue[i] = gquadFile[i].values(chromo, frag_start, frag_end)
  * 			gquadFile[i].close()             # <<<<<<<<<<<<<<
@@ -13516,7 +13522,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     }
 
-    /* "calculateOnebp.pyx":592
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":592
  * 			gquadFile[i].close()
  * 
  * 		gquadValue = np.array(gquadValue)             # <<<<<<<<<<<<<<
@@ -13546,7 +13552,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":593
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":593
  * 
  * 		gquadValue = np.array(gquadValue)
  * 		gquadValue = np.nanmax(gquadValue, axis=0)             # <<<<<<<<<<<<<<
@@ -13574,7 +13580,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":594
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":594
  * 		gquadValue = np.array(gquadValue)
  * 		gquadValue = np.nanmax(gquadValue, axis=0)
  * 		gquadValue[np.where(gquadValue == 0)] = np.nan             # <<<<<<<<<<<<<<
@@ -13613,7 +13619,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":595
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":595
  * 		gquadValue = np.nanmax(gquadValue, axis=0)
  * 		gquadValue[np.where(gquadValue == 0)] = np.nan
  * 		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))             # <<<<<<<<<<<<<<
@@ -13655,7 +13661,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_gquadValue, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":597
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":597
  * 		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
  * 
  * 		gquadValue[np.where(np.isnan(gquadValue) == True)] = float(-5)             # <<<<<<<<<<<<<<
@@ -13711,19 +13717,19 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":598
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":598
  * 
  * 		gquadValue[np.where(np.isnan(gquadValue) == True)] = float(-5)
  * 		gquad_view = memoryView(gquadValue)             # <<<<<<<<<<<<<<
  * 
  * 		del gquadFile, gquadValue
  */
-    __pyx_t_4 = __pyx_f_14calculateOnebp_memoryView(__pyx_v_gquadValue, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 598, __pyx_L1_error)
+    __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(__pyx_v_gquadValue, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 598, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_v_gquad_view = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":600
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":600
  * 		gquad_view = memoryView(gquadValue)
  * 
  * 		del gquadFile, gquadValue             # <<<<<<<<<<<<<<
@@ -13735,7 +13741,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_v_gquadValue);
     __pyx_v_gquadValue = NULL;
 
-    /* "calculateOnebp.pyx":583
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":583
  * 		del mapFile, mapValue
  * 
  * 	if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -13744,7 +13750,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
   }
 
-  /* "calculateOnebp.pyx":604
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":604
  * 
  * 	##### INDEX IN 'fa'
  * 	start_idx = 2  # index in the fasta file (Included in the range)             # <<<<<<<<<<<<<<
@@ -13753,7 +13759,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
   __pyx_v_start_idx = 2;
 
-  /* "calculateOnebp.pyx":605
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":605
  * 	##### INDEX IN 'fa'
  * 	start_idx = 2  # index in the fasta file (Included in the range)
  * 	end_idx = (frag_end - vari.FRAGLEN) - shear_start + 1   # index in the fasta file (Not included in the range)             # <<<<<<<<<<<<<<
@@ -13777,7 +13783,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_end_idx = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "calculateOnebp.pyx":608
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":608
  * 
  *         ##### INITIALIZE VARIABLES
  * 	if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -13796,7 +13802,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":609
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":609
  *         ##### INITIALIZE VARIABLES
  * 	if(vari.SHEAR == 1):
  * 		past_mer1 = -1             # <<<<<<<<<<<<<<
@@ -13806,7 +13812,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_INCREF(__pyx_int_neg_1);
     __pyx_v_past_mer1 = __pyx_int_neg_1;
 
-    /* "calculateOnebp.pyx":610
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":610
  * 	if(vari.SHEAR == 1):
  * 		past_mer1 = -1
  * 		past_mer2 = -1             # <<<<<<<<<<<<<<
@@ -13816,7 +13822,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_INCREF(__pyx_int_neg_1);
     __pyx_v_past_mer2 = __pyx_int_neg_1;
 
-    /* "calculateOnebp.pyx":608
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":608
  * 
  *         ##### INITIALIZE VARIABLES
  * 	if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -13825,7 +13831,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
   }
 
-  /* "calculateOnebp.pyx":611
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":611
  * 		past_mer1 = -1
  * 		past_mer2 = -1
  * 	if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -13844,7 +13850,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":612
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":612
  * 		past_mer2 = -1
  * 	if(vari.PCR == 1):
  * 		past_start_gibbs = -1             # <<<<<<<<<<<<<<
@@ -13853,7 +13859,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
     __pyx_v_past_start_gibbs = -1L;
 
-    /* "calculateOnebp.pyx":611
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":611
  * 		past_mer1 = -1
  * 		past_mer2 = -1
  * 	if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -13862,7 +13868,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
   }
 
-  /* "calculateOnebp.pyx":614
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":614
  * 		past_start_gibbs = -1
  * 
  * 	result_startIdx = -1             # <<<<<<<<<<<<<<
@@ -13872,7 +13878,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_result_startIdx = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":615
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":615
  * 
  * 	result_startIdx = -1
  * 	result_endIdx = -1             # <<<<<<<<<<<<<<
@@ -13882,7 +13888,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_result_endIdx = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":618
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":618
  * 
  * 	##### STORE COVARI RESULTS
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)             # <<<<<<<<<<<<<<
@@ -13912,7 +13918,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_covariFile_temp = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":619
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":619
  * 	##### STORE COVARI RESULTS
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 	covariFileName = covariFile_temp.name             # <<<<<<<<<<<<<<
@@ -13924,7 +13930,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_covariFileName = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":620
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":620
  * 	covariFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 	covariFileName = covariFile_temp.name
  * 	covariFile_temp.close()             # <<<<<<<<<<<<<<
@@ -13950,7 +13956,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":622
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":622
  * 	covariFile_temp.close()
  * 
  * 	f = h5py.File(covariFileName, "w")             # <<<<<<<<<<<<<<
@@ -14010,7 +14016,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_f = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":623
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":623
  * 
  * 	f = h5py.File(covariFileName, "w")
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")             # <<<<<<<<<<<<<<
@@ -14052,7 +14058,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_covariFile = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "calculateOnebp.pyx":625
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":625
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
  * 
  * 	for idx in range(start_idx, end_idx):             # <<<<<<<<<<<<<<
@@ -14115,7 +14121,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":626
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":626
  * 
  * 	for idx in range(start_idx, end_idx):
  * 		idx_covari = [0] * vari.COVARI_NUM             # <<<<<<<<<<<<<<
@@ -14141,7 +14147,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_idx_covari, ((PyObject*)__pyx_t_4));
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":627
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":627
  * 	for idx in range(start_idx, end_idx):
  * 		idx_covari = [0] * vari.COVARI_NUM
  * 		idx_covari_ptr = 0             # <<<<<<<<<<<<<<
@@ -14151,7 +14157,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_XDECREF_SET(__pyx_v_idx_covari_ptr, __pyx_int_0);
 
-    /* "calculateOnebp.pyx":629
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":629
  * 		idx_covari_ptr = 0
  * 
  * 		if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -14170,7 +14176,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":631
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":631
  * 		if(vari.SHEAR == 1):
  * 			###  mer1
  * 			mer1 = fa[(idx-2):(idx+3)]             # <<<<<<<<<<<<<<
@@ -14188,7 +14194,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_mer1, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":632
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":632
  * 			###  mer1
  * 			mer1 = fa[(idx-2):(idx+3)]
  * 			if('N' in mer1):             # <<<<<<<<<<<<<<
@@ -14199,7 +14205,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __pyx_t_13 = (__pyx_t_5 != 0);
       if (__pyx_t_13) {
 
-        /* "calculateOnebp.pyx":633
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":633
  * 			mer1 = fa[(idx-2):(idx+3)]
  * 			if('N' in mer1):
  * 				past_mer1 = -1             # <<<<<<<<<<<<<<
@@ -14209,7 +14215,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_INCREF(__pyx_int_neg_1);
         __Pyx_XDECREF_SET(__pyx_v_past_mer1, __pyx_int_neg_1);
 
-        /* "calculateOnebp.pyx":634
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":634
  * 			if('N' in mer1):
  * 				past_mer1 = -1
  * 				idx_mgw = vari.N_MGW             # <<<<<<<<<<<<<<
@@ -14224,7 +14230,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_idx_mgw, __pyx_t_8);
         __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":635
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":635
  * 				past_mer1 = -1
  * 				idx_mgw = vari.N_MGW
  * 				idx_prot = vari.N_PROT             # <<<<<<<<<<<<<<
@@ -14239,7 +14245,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_idx_prot, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":632
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":632
  * 			###  mer1
  * 			mer1 = fa[(idx-2):(idx+3)]
  * 			if('N' in mer1):             # <<<<<<<<<<<<<<
@@ -14249,7 +14255,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         goto __pyx_L14;
       }
 
-      /* "calculateOnebp.pyx":637
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":637
  * 				idx_prot = vari.N_PROT
  * 			else:
  * 				if(past_mer1 == -1): # there is no information on past_mer1             # <<<<<<<<<<<<<<
@@ -14264,14 +14270,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if (__pyx_t_13) {
 
-          /* "calculateOnebp.pyx":638
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":638
  * 			else:
  * 				if(past_mer1 == -1): # there is no information on past_mer1
  * 					past_mer1, idx_mgw, idx_prot = find5merProb(mer1)             # <<<<<<<<<<<<<<
  * 				else:
  * 					past_mer1, idx_mgw, idx_prot = edit5merProb(past_mer1, mer1[0], mer1[4])
  */
-          __pyx_t_6 = __pyx_f_14calculateOnebp_find5merProb(__pyx_v_mer1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 638, __pyx_L1_error)
+          __pyx_t_6 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_find5merProb(__pyx_v_mer1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 638, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           if ((likely(PyTuple_CheckExact(__pyx_t_6))) || (PyList_CheckExact(__pyx_t_6))) {
             PyObject* sequence = __pyx_t_6;
@@ -14333,7 +14339,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_idx_prot, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":637
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":637
  * 				idx_prot = vari.N_PROT
  * 			else:
  * 				if(past_mer1 == -1): # there is no information on past_mer1             # <<<<<<<<<<<<<<
@@ -14343,7 +14349,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           goto __pyx_L15;
         }
 
-        /* "calculateOnebp.pyx":640
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":640
  * 					past_mer1, idx_mgw, idx_prot = find5merProb(mer1)
  * 				else:
  * 					past_mer1, idx_mgw, idx_prot = edit5merProb(past_mer1, mer1[0], mer1[4])             # <<<<<<<<<<<<<<
@@ -14356,7 +14362,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_mer1, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 640, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
-          __pyx_t_4 = __pyx_f_14calculateOnebp_edit5merProb(__pyx_v_past_mer1, __pyx_t_6, __pyx_t_3, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 640, __pyx_L1_error)
+          __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_edit5merProb(__pyx_v_past_mer1, __pyx_t_6, __pyx_t_3, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 640, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -14424,7 +14430,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       }
       __pyx_L14:;
 
-      /* "calculateOnebp.pyx":643
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":643
  * 
  * 			##  mer2
  * 			fragEnd_idx = idx + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -14442,7 +14448,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_fragEnd_idx, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":644
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":644
  * 			##  mer2
  * 			fragEnd_idx = idx + vari.FRAGLEN
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]             # <<<<<<<<<<<<<<
@@ -14460,7 +14466,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_mer2, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":645
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":645
  * 			fragEnd_idx = idx + vari.FRAGLEN
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 			if('N' in mer2):             # <<<<<<<<<<<<<<
@@ -14471,7 +14477,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __pyx_t_5 = (__pyx_t_13 != 0);
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":646
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":646
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 			if('N' in mer2):
  * 				past_mer2 = -1             # <<<<<<<<<<<<<<
@@ -14481,7 +14487,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_INCREF(__pyx_int_neg_1);
         __Pyx_XDECREF_SET(__pyx_v_past_mer2, __pyx_int_neg_1);
 
-        /* "calculateOnebp.pyx":647
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":647
  * 			if('N' in mer2):
  * 				past_mer2 = -1
  * 				idx_mgw = idx_mgw + vari.N_MGW             # <<<<<<<<<<<<<<
@@ -14499,7 +14505,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF_SET(__pyx_v_idx_mgw, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":648
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":648
  * 				past_mer2 = -1
  * 				idx_mgw = idx_mgw + vari.N_MGW
  * 				idx_prot = idx_prot + vari.N_PROT             # <<<<<<<<<<<<<<
@@ -14517,7 +14523,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF_SET(__pyx_v_idx_prot, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":645
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":645
  * 			fragEnd_idx = idx + vari.FRAGLEN
  * 			mer2 = fa[(fragEnd_idx-3):(fragEnd_idx+2)]
  * 			if('N' in mer2):             # <<<<<<<<<<<<<<
@@ -14527,7 +14533,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         goto __pyx_L20;
       }
 
-      /* "calculateOnebp.pyx":650
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":650
  * 				idx_prot = idx_prot + vari.N_PROT
  * 			else:
  * 				if(past_mer2 == -1):             # <<<<<<<<<<<<<<
@@ -14542,14 +14548,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":651
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":651
  * 			else:
  * 				if(past_mer2 == -1):
  * 					past_mer2, add1, add2 = findComple5merProb(mer2)             # <<<<<<<<<<<<<<
  * 				else:
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  */
-          __pyx_t_6 = __pyx_f_14calculateOnebp_findComple5merProb(__pyx_v_mer2, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 651, __pyx_L1_error)
+          __pyx_t_6 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findComple5merProb(__pyx_v_mer2, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 651, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_6);
           if ((likely(PyTuple_CheckExact(__pyx_t_6))) || (PyList_CheckExact(__pyx_t_6))) {
             PyObject* sequence = __pyx_t_6;
@@ -14611,7 +14617,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_add2, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":650
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":650
  * 				idx_prot = idx_prot + vari.N_PROT
  * 			else:
  * 				if(past_mer2 == -1):             # <<<<<<<<<<<<<<
@@ -14621,7 +14627,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           goto __pyx_L21;
         }
 
-        /* "calculateOnebp.pyx":653
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":653
  * 					past_mer2, add1, add2 = findComple5merProb(mer2)
  * 				else:
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])             # <<<<<<<<<<<<<<
@@ -14634,7 +14640,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_GOTREF(__pyx_t_6);
           __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_mer2, 4, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 653, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_3);
-          __pyx_t_4 = __pyx_f_14calculateOnebp_editComple5merProb(__pyx_v_past_mer2, __pyx_t_6, __pyx_t_3, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 653, __pyx_L1_error)
+          __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editComple5merProb(__pyx_v_past_mer2, __pyx_t_6, __pyx_t_3, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 653, __pyx_L1_error)
           __Pyx_GOTREF(__pyx_t_4);
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -14700,7 +14706,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __pyx_L21:;
 
-        /* "calculateOnebp.pyx":654
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":654
  * 				else:
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  * 				idx_mgw = idx_mgw + add1             # <<<<<<<<<<<<<<
@@ -14712,7 +14718,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF_SET(__pyx_v_idx_mgw, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":655
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":655
  * 					past_mer2, add1, add2 = editComple5merProb(past_mer2, mer2[0], mer2[4])
  * 				idx_mgw = idx_mgw + add1
  * 				idx_prot = idx_prot + add2             # <<<<<<<<<<<<<<
@@ -14726,7 +14732,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       }
       __pyx_L20:;
 
-      /* "calculateOnebp.pyx":657
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":657
  * 				idx_prot = idx_prot + add2
  * 
  * 			idx_covari[idx_covari_ptr] = idx_mgw             # <<<<<<<<<<<<<<
@@ -14735,7 +14741,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_mgw) < 0)) __PYX_ERR(0, 657, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":658
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":658
  * 
  * 			idx_covari[idx_covari_ptr] = idx_mgw
  * 			idx_covari[idx_covari_ptr+1] = idx_prot             # <<<<<<<<<<<<<<
@@ -14747,7 +14753,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_t_4, __pyx_v_idx_prot) < 0)) __PYX_ERR(0, 658, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":659
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":659
  * 			idx_covari[idx_covari_ptr] = idx_mgw
  * 			idx_covari[idx_covari_ptr+1] = idx_prot
  * 			idx_covari_ptr = idx_covari_ptr + 2             # <<<<<<<<<<<<<<
@@ -14759,7 +14765,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":629
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":629
  * 		idx_covari_ptr = 0
  * 
  * 		if(vari.SHEAR == 1):             # <<<<<<<<<<<<<<
@@ -14768,7 +14774,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
     }
 
-    /* "calculateOnebp.pyx":662
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":662
  * 
  * 
  * 		if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -14787,7 +14793,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":663
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":663
  * 
  * 		if(vari.PCR == 1):
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]             # <<<<<<<<<<<<<<
@@ -14808,7 +14814,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_idx_fa, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "calculateOnebp.pyx":664
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":664
  * 		if(vari.PCR == 1):
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 			if(past_start_gibbs == -1):             # <<<<<<<<<<<<<<
@@ -14818,7 +14824,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __pyx_t_5 = ((__pyx_v_past_start_gibbs == -1L) != 0);
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":665
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":665
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 			if(past_start_gibbs == -1):
  * 				start_gibbs, gibbs = findStartGibbs(idx_fa, vari.FRAGLEN)             # <<<<<<<<<<<<<<
@@ -14830,7 +14836,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_8, __pyx_n_s_FRAGLEN); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 665, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-        __pyx_t_8 = __pyx_f_14calculateOnebp_findStartGibbs(__pyx_v_idx_fa, __pyx_t_4, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 665, __pyx_L1_error)
+        __pyx_t_8 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findStartGibbs(__pyx_v_idx_fa, __pyx_t_4, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 665, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if ((likely(PyTuple_CheckExact(__pyx_t_8))) || (PyList_CheckExact(__pyx_t_8))) {
@@ -14884,7 +14890,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_gibbs, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":664
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":664
  * 		if(vari.PCR == 1):
  * 			idx_fa = fa[idx:(idx+vari.FRAGLEN)]
  * 			if(past_start_gibbs == -1):             # <<<<<<<<<<<<<<
@@ -14894,7 +14900,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         goto __pyx_L27;
       }
 
-      /* "calculateOnebp.pyx":667
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":667
  * 				start_gibbs, gibbs = findStartGibbs(idx_fa, vari.FRAGLEN)
  * 			else:
  * 				oldDimer = idx_fa[0:2].upper()             # <<<<<<<<<<<<<<
@@ -14925,7 +14931,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_oldDimer, __pyx_t_8);
         __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":668
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":668
  * 			else:
  * 				oldDimer = idx_fa[0:2].upper()
  * 				newDimer = idx_fa[(vari.FRAGLEN-2):vari.FRAGLEN].upper()             # <<<<<<<<<<<<<<
@@ -14970,7 +14976,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_newDimer, __pyx_t_8);
         __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":669
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":669
  * 				oldDimer = idx_fa[0:2].upper()
  * 				newDimer = idx_fa[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
  * 				start_gibbs, gibbs = editStartGibbs(oldDimer, newDimer, past_start_gibbs)             # <<<<<<<<<<<<<<
@@ -14979,7 +14985,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
         __pyx_t_8 = __Pyx_PyInt_From_long(__pyx_v_past_start_gibbs); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 669, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_3 = __pyx_f_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_t_8, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 669, __pyx_L1_error)
+        __pyx_t_3 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_t_8, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 669, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         if ((likely(PyTuple_CheckExact(__pyx_t_3))) || (PyList_CheckExact(__pyx_t_3))) {
@@ -15035,14 +15041,14 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       }
       __pyx_L27:;
 
-      /* "calculateOnebp.pyx":671
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":671
  * 				start_gibbs, gibbs = editStartGibbs(oldDimer, newDimer, past_start_gibbs)
  * 
  * 			idx_anneal, idx_denature = convertGibbs(gibbs)             # <<<<<<<<<<<<<<
  * 
  * 			idx_covari[idx_covari_ptr] = idx_anneal
  */
-      __pyx_t_3 = __pyx_f_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 671, __pyx_L1_error)
+      __pyx_t_3 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 671, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       if ((likely(PyTuple_CheckExact(__pyx_t_3))) || (PyList_CheckExact(__pyx_t_3))) {
         PyObject* sequence = __pyx_t_3;
@@ -15095,7 +15101,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_idx_denature, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "calculateOnebp.pyx":673
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":673
  * 			idx_anneal, idx_denature = convertGibbs(gibbs)
  * 
  * 			idx_covari[idx_covari_ptr] = idx_anneal             # <<<<<<<<<<<<<<
@@ -15104,7 +15110,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_anneal) < 0)) __PYX_ERR(0, 673, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":674
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":674
  * 
  * 			idx_covari[idx_covari_ptr] = idx_anneal
  * 			idx_covari[idx_covari_ptr+1] = idx_denature             # <<<<<<<<<<<<<<
@@ -15116,7 +15122,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_t_3, __pyx_v_idx_denature) < 0)) __PYX_ERR(0, 674, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":675
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":675
  * 			idx_covari[idx_covari_ptr] = idx_anneal
  * 			idx_covari[idx_covari_ptr+1] = idx_denature
  * 			idx_covari_ptr = idx_covari_ptr + 2             # <<<<<<<<<<<<<<
@@ -15128,7 +15134,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":662
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":662
  * 
  * 
  * 		if(vari.PCR == 1):             # <<<<<<<<<<<<<<
@@ -15137,7 +15143,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
     }
 
-    /* "calculateOnebp.pyx":677
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":677
  * 			idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 		if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -15156,7 +15162,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":678
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":678
  * 
  * 		if(vari.MAP == 1):
  * 			map1 = mapValue_view[(idx-2)]             # <<<<<<<<<<<<<<
@@ -15172,7 +15178,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_map1, __pyx_t_8);
       __pyx_t_8 = 0;
 
-      /* "calculateOnebp.pyx":679
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":679
  * 		if(vari.MAP == 1):
  * 			map1 = mapValue_view[(idx-2)]
  * 			map2 = mapValue_view[(idx+vari.FRAGLEN-2-vari.KMER)]             # <<<<<<<<<<<<<<
@@ -15206,7 +15212,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_map2, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":680
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":680
  * 			map1 = mapValue_view[(idx-2)]
  * 			map2 = mapValue_view[(idx+vari.FRAGLEN-2-vari.KMER)]
  * 			idx_map = map1 + map2             # <<<<<<<<<<<<<<
@@ -15218,7 +15224,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_idx_map, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":682
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":682
  * 			idx_map = map1 + map2
  * 
  * 			idx_covari[idx_covari_ptr] = idx_map             # <<<<<<<<<<<<<<
@@ -15227,7 +15233,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_map) < 0)) __PYX_ERR(0, 682, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":683
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":683
  * 
  * 			idx_covari[idx_covari_ptr] = idx_map
  * 			idx_covari_ptr = idx_covari_ptr + 1             # <<<<<<<<<<<<<<
@@ -15239,7 +15245,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":677
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":677
  * 			idx_covari_ptr = idx_covari_ptr + 2
  * 
  * 		if(vari.MAP == 1):             # <<<<<<<<<<<<<<
@@ -15248,7 +15254,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
     }
 
-    /* "calculateOnebp.pyx":685
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":685
  * 			idx_covari_ptr = idx_covari_ptr + 1
  * 
  * 		if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -15267,7 +15273,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":686
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":686
  * 
  * 		if(vari.GQUAD == 1):
  * 			idx_gquad = np.nanmax(np.asarray(gquad_view[(idx-2):(idx+vari.FRAGLEN-2)]))             # <<<<<<<<<<<<<<
@@ -15337,7 +15343,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_idx_gquad, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":688
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":688
  * 			idx_gquad = np.nanmax(np.asarray(gquad_view[(idx-2):(idx+vari.FRAGLEN-2)]))
  * 
  * 			idx_covari[idx_covari_ptr] = idx_gquad             # <<<<<<<<<<<<<<
@@ -15346,7 +15352,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
       if (unlikely(PyObject_SetItem(__pyx_v_idx_covari, __pyx_v_idx_covari_ptr, __pyx_v_idx_gquad) < 0)) __PYX_ERR(0, 688, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":689
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":689
  * 
  * 			idx_covari[idx_covari_ptr] = idx_gquad
  * 			idx_covari_ptr = idx_covari_ptr + 1             # <<<<<<<<<<<<<<
@@ -15358,7 +15364,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF_SET(__pyx_v_idx_covari_ptr, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":685
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":685
  * 			idx_covari_ptr = idx_covari_ptr + 1
  * 
  * 		if(vari.GQUAD == 1):             # <<<<<<<<<<<<<<
@@ -15367,7 +15373,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
     }
 
-    /* "calculateOnebp.pyx":693
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":693
  * 
  * 		### DETERMINE WHICH ROWS TO EDIT IN RESULT MATRIX
  * 		thisFrag_start = idx + shear_start             # <<<<<<<<<<<<<<
@@ -15379,7 +15385,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_thisFrag_start, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":694
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":694
  * 		### DETERMINE WHICH ROWS TO EDIT IN RESULT MATRIX
  * 		thisFrag_start = idx + shear_start
  * 		thisFrag_end = thisFrag_start + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -15397,7 +15403,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_thisFrag_end, __pyx_t_6);
     __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":696
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":696
  * 		thisFrag_end = thisFrag_start + vari.FRAGLEN
  * 
  * 		if(result_startIdx == -1):             # <<<<<<<<<<<<<<
@@ -15410,7 +15416,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":697
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":697
  * 
  * 		if(result_startIdx == -1):
  * 			result_startIdx = 0             # <<<<<<<<<<<<<<
@@ -15420,7 +15426,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_INCREF(__pyx_int_0);
       __Pyx_DECREF_SET(__pyx_v_result_startIdx, __pyx_int_0);
 
-      /* "calculateOnebp.pyx":698
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":698
  * 		if(result_startIdx == -1):
  * 			result_startIdx = 0
  * 			result_endIdx = 1 # not include             # <<<<<<<<<<<<<<
@@ -15430,7 +15436,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_INCREF(__pyx_int_1);
       __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_int_1);
 
-      /* "calculateOnebp.pyx":699
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":699
  * 			result_startIdx = 0
  * 			result_endIdx = 1 # not include
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -15475,7 +15481,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":700
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":700
  * 			result_endIdx = 1 # not include
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):             # <<<<<<<<<<<<<<
@@ -15500,7 +15506,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (!__pyx_t_5) break;
 
-          /* "calculateOnebp.pyx":701
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":701
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1             # <<<<<<<<<<<<<<
@@ -15512,7 +15518,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":702
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":702
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -15530,7 +15536,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":703
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":703
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)             # <<<<<<<<<<<<<<
@@ -15551,7 +15557,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_6);
             __pyx_t_6 = 0;
 
-            /* "calculateOnebp.pyx":702
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":702
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -15560,7 +15566,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
           }
 
-          /* "calculateOnebp.pyx":704
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":704
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -15605,7 +15611,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":705
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":705
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):
  * 						break             # <<<<<<<<<<<<<<
@@ -15614,7 +15620,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
             goto __pyx_L39_break;
 
-            /* "calculateOnebp.pyx":704
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":704
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -15625,7 +15631,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __pyx_L39_break:;
 
-        /* "calculateOnebp.pyx":699
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":699
  * 			result_startIdx = 0
  * 			result_endIdx = 1 # not include
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -15634,7 +15640,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
       }
 
-      /* "calculateOnebp.pyx":706
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":706
  * 					if(np.isnan(result[result_endIdx, 0]) == True):
  * 						break
  * 			maxBinPos = binStart + vari.FRAGLEN             # <<<<<<<<<<<<<<
@@ -15652,7 +15658,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_maxBinPos, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":707
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":707
  * 						break
  * 			maxBinPos = binStart + vari.FRAGLEN
  * 			numPoppedPos = 0             # <<<<<<<<<<<<<<
@@ -15662,7 +15668,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_INCREF(__pyx_int_0);
       __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_int_0);
 
-      /* "calculateOnebp.pyx":696
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":696
  * 		thisFrag_end = thisFrag_start + vari.FRAGLEN
  * 
  * 		if(result_startIdx == -1):             # <<<<<<<<<<<<<<
@@ -15672,7 +15678,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       goto __pyx_L36;
     }
 
-    /* "calculateOnebp.pyx":709
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":709
  * 			numPoppedPos = 0
  * 		else:
  * 			while( result[result_startIdx, 0] < thisFrag_start ):             # <<<<<<<<<<<<<<
@@ -15698,7 +15704,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (!__pyx_t_5) break;
 
-        /* "calculateOnebp.pyx":711
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":711
  * 			while( result[result_startIdx, 0] < thisFrag_start ):
  * 				## pop the element
  * 				line = []             # <<<<<<<<<<<<<<
@@ -15710,7 +15716,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_2));
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":712
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":712
  * 				## pop the element
  * 				line = []
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -15768,7 +15774,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":713
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":713
  * 				line = []
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					line.extend([ result[result_startIdx, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -15792,7 +15798,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           (void)(__pyx_t_18);
 
-          /* "calculateOnebp.pyx":714
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":714
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					line.extend([ result[result_startIdx, (covari_pos+1)]  ])
  * 					result[result_startIdx, (covari_pos+1)] = float(0)             # <<<<<<<<<<<<<<
@@ -15815,7 +15821,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":712
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":712
  * 				## pop the element
  * 				line = []
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -15825,7 +15831,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":715
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":715
  * 					line.extend([ result[result_startIdx, (covari_pos+1)]  ])
  * 					result[result_startIdx, (covari_pos+1)] = float(0)
  * 				covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -15835,7 +15841,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 715, __pyx_L1_error) }
         if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 715, __pyx_L1_error)
 
-        /* "calculateOnebp.pyx":717
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":717
  * 				covariFile[numPoppedPos] = line
  * 
  * 				numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -15848,7 +15854,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_6);
         __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":718
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":718
  * 
  * 				numPoppedPos = numPoppedPos + 1
  * 				if(maxBinPos >= binEnd):             # <<<<<<<<<<<<<<
@@ -15861,7 +15867,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":719
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":719
  * 				numPoppedPos = numPoppedPos + 1
  * 				if(maxBinPos >= binEnd):
  * 					result[result_startIdx, 0] = np.nan             # <<<<<<<<<<<<<<
@@ -15885,7 +15891,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":718
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":718
  * 
  * 				numPoppedPos = numPoppedPos + 1
  * 				if(maxBinPos >= binEnd):             # <<<<<<<<<<<<<<
@@ -15895,7 +15901,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           goto __pyx_L46;
         }
 
-        /* "calculateOnebp.pyx":721
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":721
  * 					result[result_startIdx, 0] = np.nan
  * 				else:
  * 					result[result_startIdx, 0] = maxBinPos + 1             # <<<<<<<<<<<<<<
@@ -15918,7 +15924,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":722
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":722
  * 				else:
  * 					result[result_startIdx, 0] = maxBinPos + 1
  * 					maxBinPos = maxBinPos + 1             # <<<<<<<<<<<<<<
@@ -15933,7 +15939,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __pyx_L46:;
 
-        /* "calculateOnebp.pyx":724
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":724
  * 					maxBinPos = maxBinPos + 1
  * 
  * 				result_startIdx = result_startIdx + 1             # <<<<<<<<<<<<<<
@@ -15945,7 +15951,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF_SET(__pyx_v_result_startIdx, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":725
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":725
  * 
  * 				result_startIdx = result_startIdx + 1
  * 				if(result_startIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -15963,7 +15969,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":726
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":726
  * 				result_startIdx = result_startIdx + 1
  * 				if(result_startIdx > vari.FRAGLEN):
  * 					result_startIdx = result_startIdx - (vari.FRAGLEN+1)             # <<<<<<<<<<<<<<
@@ -15984,7 +15990,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF_SET(__pyx_v_result_startIdx, __pyx_t_6);
           __pyx_t_6 = 0;
 
-          /* "calculateOnebp.pyx":725
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":725
  * 
  * 				result_startIdx = result_startIdx + 1
  * 				if(result_startIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -15994,7 +16000,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
       }
 
-      /* "calculateOnebp.pyx":729
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":729
  * 
  * 
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -16039,7 +16045,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":730
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":730
  * 
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):             # <<<<<<<<<<<<<<
@@ -16064,7 +16070,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (!__pyx_t_5) break;
 
-          /* "calculateOnebp.pyx":731
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":731
  * 			if(np.isnan(result[result_endIdx, 0]) == False):
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1             # <<<<<<<<<<<<<<
@@ -16076,7 +16082,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":732
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":732
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -16094,7 +16100,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":733
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":733
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)             # <<<<<<<<<<<<<<
@@ -16115,7 +16121,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_DECREF_SET(__pyx_v_result_endIdx, __pyx_t_6);
             __pyx_t_6 = 0;
 
-            /* "calculateOnebp.pyx":732
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":732
  * 				while( result[result_endIdx, 0] < thisFrag_end):
  * 					result_endIdx = result_endIdx + 1
  * 					if(result_endIdx > vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -16124,7 +16130,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
           }
 
-          /* "calculateOnebp.pyx":734
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":734
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -16169,7 +16175,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           if (__pyx_t_5) {
 
-            /* "calculateOnebp.pyx":735
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":735
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):
  * 						break             # <<<<<<<<<<<<<<
@@ -16178,7 +16184,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
             goto __pyx_L50_break;
 
-            /* "calculateOnebp.pyx":734
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":734
  * 					if(result_endIdx > vari.FRAGLEN):
  * 						result_endIdx = result_endIdx - (vari.FRAGLEN+1)
  * 					if(np.isnan(result[result_endIdx, 0]) == True):             # <<<<<<<<<<<<<<
@@ -16189,7 +16195,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __pyx_L50_break:;
 
-        /* "calculateOnebp.pyx":729
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":729
  * 
  * 
  * 			if(np.isnan(result[result_endIdx, 0]) == False):             # <<<<<<<<<<<<<<
@@ -16200,7 +16206,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     }
     __pyx_L36:;
 
-    /* "calculateOnebp.pyx":738
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":738
  * 
  * 
  * 		if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -16212,7 +16218,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":739
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":739
  * 
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -16281,7 +16287,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":740
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":740
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16339,7 +16345,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":741
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":741
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]             # <<<<<<<<<<<<<<
@@ -16379,7 +16385,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
 
-          /* "calculateOnebp.pyx":740
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":740
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16389,7 +16395,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":739
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":739
  * 
  * 		if(result_endIdx < result_startIdx):
  * 			for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -16399,7 +16405,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":742
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":742
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -16460,7 +16466,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":743
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":743
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16518,7 +16524,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":744
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":744
  * 			for pos in range(0, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]             # <<<<<<<<<<<<<<
@@ -16558,7 +16564,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":743
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":743
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16568,7 +16574,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
 
-        /* "calculateOnebp.pyx":742
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":742
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 			for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -16578,7 +16584,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       }
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":738
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":738
  * 
  * 
  * 		if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -16588,7 +16594,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       goto __pyx_L53;
     }
 
-    /* "calculateOnebp.pyx":746
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":746
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -16650,7 +16656,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_15);
         __pyx_t_15 = 0;
 
-        /* "calculateOnebp.pyx":747
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":747
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16708,7 +16714,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_15);
           __pyx_t_15 = 0;
 
-          /* "calculateOnebp.pyx":748
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":748
  * 			for pos in range(result_startIdx, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]             # <<<<<<<<<<<<<<
@@ -16748,7 +16754,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":747
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":747
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):
  * 				for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16758,7 +16764,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":746
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":746
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 		else:
  * 			for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -16770,7 +16776,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     }
     __pyx_L53:;
 
-    /* "calculateOnebp.pyx":750
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":750
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 
  * 		if(idx == (end_idx-1)): # the last fragment             # <<<<<<<<<<<<<<
@@ -16785,7 +16791,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":752
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":752
  * 		if(idx == (end_idx-1)): # the last fragment
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -16797,7 +16803,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":753
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":753
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -16866,7 +16872,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":754
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":754
  * 			if(result_endIdx < result_startIdx):
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 					line = []             # <<<<<<<<<<<<<<
@@ -16878,7 +16884,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_8));
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":755
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":755
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16936,7 +16942,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_8);
             __pyx_t_8 = 0;
 
-            /* "calculateOnebp.pyx":756
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":756
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -16960,7 +16966,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
             (void)(__pyx_t_18);
 
-            /* "calculateOnebp.pyx":755
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":755
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -16970,7 +16976,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           }
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":757
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":757
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])
  * 					covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -16980,7 +16986,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 757, __pyx_L1_error) }
           if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 757, __pyx_L1_error)
 
-          /* "calculateOnebp.pyx":759
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":759
  * 					covariFile[numPoppedPos] = line
  * 
  * 					numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -16993,7 +16999,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":753
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":753
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):
  * 				for pos in range(result_startIdx, (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -17003,7 +17009,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":761
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":761
  * 					numPoppedPos = numPoppedPos + 1
  * 
  * 				for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -17064,7 +17070,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":762
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":762
  * 
  * 				for pos in range(0, result_endIdx):
  * 					line = []             # <<<<<<<<<<<<<<
@@ -17076,7 +17082,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_3));
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":763
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":763
  * 				for pos in range(0, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -17134,7 +17140,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_3);
             __pyx_t_3 = 0;
 
-            /* "calculateOnebp.pyx":764
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":764
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -17158,7 +17164,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
             (void)(__pyx_t_18);
 
-            /* "calculateOnebp.pyx":763
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":763
  * 				for pos in range(0, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -17168,7 +17174,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           }
           __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":765
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":765
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])
  * 					covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -17178,7 +17184,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 765, __pyx_L1_error) }
           if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 765, __pyx_L1_error)
 
-          /* "calculateOnebp.pyx":767
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":767
  * 					covariFile[numPoppedPos] = line
  * 
  * 					numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -17191,7 +17197,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":761
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":761
  * 					numPoppedPos = numPoppedPos + 1
  * 
  * 				for pos in range(0, result_endIdx):             # <<<<<<<<<<<<<<
@@ -17201,7 +17207,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-        /* "calculateOnebp.pyx":752
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":752
  * 		if(idx == (end_idx-1)): # the last fragment
  * 			### pop the rest of positions that are not np.nan
  * 			if(result_endIdx < result_startIdx):             # <<<<<<<<<<<<<<
@@ -17211,7 +17217,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         goto __pyx_L67;
       }
 
-      /* "calculateOnebp.pyx":769
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":769
  * 					numPoppedPos = numPoppedPos + 1
  * 			else:
  * 				for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -17273,7 +17279,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_8);
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":770
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":770
  * 			else:
  * 				for pos in range(result_startIdx, result_endIdx):
  * 					line = []             # <<<<<<<<<<<<<<
@@ -17285,7 +17291,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_8));
           __pyx_t_8 = 0;
 
-          /* "calculateOnebp.pyx":771
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":771
  * 				for pos in range(result_startIdx, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -17343,7 +17349,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_XDECREF_SET(__pyx_v_covari_pos, __pyx_t_8);
             __pyx_t_8 = 0;
 
-            /* "calculateOnebp.pyx":772
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":772
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])             # <<<<<<<<<<<<<<
@@ -17367,7 +17373,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
             __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
             (void)(__pyx_t_18);
 
-            /* "calculateOnebp.pyx":771
+            /* "CRADLE/CorrectBias/calculateOnebp.pyx":771
  * 				for pos in range(result_startIdx, result_endIdx):
  * 					line = []
  * 					for covari_pos in range(vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -17377,7 +17383,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           }
           __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":773
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":773
  * 					for covari_pos in range(vari.COVARI_NUM):
  * 						line.extend([ result[pos, (covari_pos+1)]  ])
  * 					covariFile[numPoppedPos] = line             # <<<<<<<<<<<<<<
@@ -17387,7 +17393,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           if (unlikely(!__pyx_v_numPoppedPos)) { __Pyx_RaiseUnboundLocalError("numPoppedPos"); __PYX_ERR(0, 773, __pyx_L1_error) }
           if (unlikely(PyObject_SetItem(__pyx_v_covariFile, __pyx_v_numPoppedPos, __pyx_v_line) < 0)) __PYX_ERR(0, 773, __pyx_L1_error)
 
-          /* "calculateOnebp.pyx":775
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":775
  * 					covariFile[numPoppedPos] = line
  * 
  * 					numPoppedPos = numPoppedPos + 1             # <<<<<<<<<<<<<<
@@ -17400,7 +17406,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_numPoppedPos, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":769
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":769
  * 					numPoppedPos = numPoppedPos + 1
  * 			else:
  * 				for pos in range(result_startIdx, result_endIdx):             # <<<<<<<<<<<<<<
@@ -17412,7 +17418,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       }
       __pyx_L67:;
 
-      /* "calculateOnebp.pyx":750
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":750
  * 					result[pos, covari_pos+1] = result[pos, covari_pos+1] + idx_covari[covari_pos]
  * 
  * 		if(idx == (end_idx-1)): # the last fragment             # <<<<<<<<<<<<<<
@@ -17421,7 +17427,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
     }
 
-    /* "calculateOnebp.pyx":625
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":625
  * 	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
  * 
  * 	for idx in range(start_idx, end_idx):             # <<<<<<<<<<<<<<
@@ -17431,7 +17437,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":777
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":777
  * 					numPoppedPos = numPoppedPos + 1
  * 
  * 	f.close()             # <<<<<<<<<<<<<<
@@ -17457,7 +17463,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":779
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":779
  * 	f.close()
  * 
  * 	return_Line = [covariFileName, numPoppedPos]             # <<<<<<<<<<<<<<
@@ -17476,7 +17482,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_v_return_Line = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":783
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":783
  * 
  * 	### output read counts
  * 	for rep in range(vari.SAMPLE_NUM):             # <<<<<<<<<<<<<<
@@ -17534,7 +17540,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_rep, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":784
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":784
  * 	### output read counts
  * 	for rep in range(vari.SAMPLE_NUM):
  * 		rcFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)             # <<<<<<<<<<<<<<
@@ -17564,7 +17570,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_rcFile_temp, __pyx_t_15);
     __pyx_t_15 = 0;
 
-    /* "calculateOnebp.pyx":785
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":785
  * 	for rep in range(vari.SAMPLE_NUM):
  * 		rcFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 		rcFileName = rcFile_temp.name             # <<<<<<<<<<<<<<
@@ -17576,7 +17582,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_rcFileName, __pyx_t_15);
     __pyx_t_15 = 0;
 
-    /* "calculateOnebp.pyx":786
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":786
  * 		rcFile_temp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
  * 		rcFileName = rcFile_temp.name
  * 		rcFile_temp.close()             # <<<<<<<<<<<<<<
@@ -17602,7 +17608,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_15); __pyx_t_15 = 0;
 
-    /* "calculateOnebp.pyx":788
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":788
  * 		rcFile_temp.close()
  * 
  * 		f = h5py.File(rcFileName, "w")             # <<<<<<<<<<<<<<
@@ -17662,7 +17668,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF_SET(__pyx_v_f, __pyx_t_15);
     __pyx_t_15 = 0;
 
-    /* "calculateOnebp.pyx":789
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":789
  * 
  * 		f = h5py.File(rcFileName, "w")
  * 		rcFile = f.create_dataset("Y", (nBins, ), dtype='f', compression="gzip")             # <<<<<<<<<<<<<<
@@ -17696,7 +17702,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_rcFile, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":792
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":792
  * 
  * 
  * 		return_Line.extend([ rcFileName ])             # <<<<<<<<<<<<<<
@@ -17705,7 +17711,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
     __pyx_t_18 = __Pyx_PyList_Append(__pyx_v_return_Line, __pyx_v_rcFileName); if (unlikely(__pyx_t_18 == ((int)-1))) __PYX_ERR(0, 792, __pyx_L1_error)
 
-    /* "calculateOnebp.pyx":794
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":794
  * 		return_Line.extend([ rcFileName ])
  * 
  * 		if(rep < vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -17723,7 +17729,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":795
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":795
  * 
  * 		if(rep < vari.CTRLBW_NUM):
  * 			bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])             # <<<<<<<<<<<<<<
@@ -17762,7 +17768,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_bw, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":794
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":794
  * 		return_Line.extend([ rcFileName ])
  * 
  * 		if(rep < vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -17772,7 +17778,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       goto __pyx_L82;
     }
 
-    /* "calculateOnebp.pyx":797
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":797
  * 			bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
  * 		else:
  * 			bw = pyBigWig.open(vari.EXPBW_NAMES[rep-vari.CTRLBW_NUM])             # <<<<<<<<<<<<<<
@@ -17823,7 +17829,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     }
     __pyx_L82:;
 
-    /* "calculateOnebp.pyx":799
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":799
  * 			bw = pyBigWig.open(vari.EXPBW_NAMES[rep-vari.CTRLBW_NUM])
  * 
  * 		temp = np.array(bw.values(chromo, analysis_start, analysis_end))             # <<<<<<<<<<<<<<
@@ -17904,7 +17910,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":800
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":800
  * 
  * 		temp = np.array(bw.values(chromo, analysis_start, analysis_end))
  * 		numPos = len(temp)             # <<<<<<<<<<<<<<
@@ -17914,7 +17920,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __pyx_t_10 = PyObject_Length(__pyx_v_temp); if (unlikely(__pyx_t_10 == ((Py_ssize_t)-1))) __PYX_ERR(0, 800, __pyx_L1_error)
     __pyx_v_numPos = __pyx_t_10;
 
-    /* "calculateOnebp.pyx":803
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":803
  * 
  * 
  * 		for binIdx in range(nBins):             # <<<<<<<<<<<<<<
@@ -17966,7 +17972,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_XDECREF_SET(__pyx_v_binIdx, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":804
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":804
  * 
  * 		for binIdx in range(nBins):
  * 			if(rep < vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -17984,7 +17990,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":805
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":805
  * 		for binIdx in range(nBins):
  * 			if(rep < vari.CTRLBW_NUM):
  * 				if( (binIdx + vari.BINSIZE) >= numPos):             # <<<<<<<<<<<<<<
@@ -18008,7 +18014,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":806
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":806
  * 			if(rep < vari.CTRLBW_NUM):
  * 				if( (binIdx + vari.BINSIZE) >= numPos):
  * 					rc = np.nanmean(temp[binIdx:]) / float(vari.CTRLSCALER[rep])             # <<<<<<<<<<<<<<
@@ -18056,7 +18062,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_rc, __pyx_t_1);
           __pyx_t_1 = 0;
 
-          /* "calculateOnebp.pyx":805
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":805
  * 		for binIdx in range(nBins):
  * 			if(rep < vari.CTRLBW_NUM):
  * 				if( (binIdx + vari.BINSIZE) >= numPos):             # <<<<<<<<<<<<<<
@@ -18066,7 +18072,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           goto __pyx_L86;
         }
 
-        /* "calculateOnebp.pyx":808
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":808
  * 					rc = np.nanmean(temp[binIdx:]) / float(vari.CTRLSCALER[rep])
  * 				else:
  * 					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.CTRLSCALER[rep])             # <<<<<<<<<<<<<<
@@ -18126,7 +18132,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         }
         __pyx_L86:;
 
-        /* "calculateOnebp.pyx":804
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":804
  * 
  * 		for binIdx in range(nBins):
  * 			if(rep < vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -18136,7 +18142,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         goto __pyx_L85;
       }
 
-      /* "calculateOnebp.pyx":810
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":810
  * 					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.CTRLSCALER[rep])
  * 			else:
  * 				if( (binIdx + vari.BINSIZE) >= numPos):             # <<<<<<<<<<<<<<
@@ -18161,7 +18167,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         if (__pyx_t_5) {
 
-          /* "calculateOnebp.pyx":811
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":811
  * 			else:
  * 				if( (binIdx + vari.BINSIZE) >= numPos):
  * 					rc = np.nanmean(temp[binIdx:]) / float(vari.EXPSCALER[rep-vari.CTRLBW_NUM])             # <<<<<<<<<<<<<<
@@ -18218,7 +18224,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           __Pyx_XDECREF_SET(__pyx_v_rc, __pyx_t_3);
           __pyx_t_3 = 0;
 
-          /* "calculateOnebp.pyx":810
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":810
  * 					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.CTRLSCALER[rep])
  * 			else:
  * 				if( (binIdx + vari.BINSIZE) >= numPos):             # <<<<<<<<<<<<<<
@@ -18228,7 +18234,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
           goto __pyx_L87;
         }
 
-        /* "calculateOnebp.pyx":813
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":813
  * 					rc = np.nanmean(temp[binIdx:]) / float(vari.EXPSCALER[rep-vari.CTRLBW_NUM])
  * 				else:
  * 					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.EXPSCALER[rep-vari.CTRLBW_NUM])             # <<<<<<<<<<<<<<
@@ -18299,7 +18305,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       }
       __pyx_L85:;
 
-      /* "calculateOnebp.pyx":815
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":815
  * 					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.EXPSCALER[rep-vari.CTRLBW_NUM])
  * 
  * 			if(np.isnan(rc) == True):             # <<<<<<<<<<<<<<
@@ -18332,7 +18338,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_5) {
 
-        /* "calculateOnebp.pyx":816
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":816
  * 
  * 			if(np.isnan(rc) == True):
  * 				rc = float(0)             # <<<<<<<<<<<<<<
@@ -18344,7 +18350,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
         __Pyx_DECREF_SET(__pyx_v_rc, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":815
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":815
  * 					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.EXPSCALER[rep-vari.CTRLBW_NUM])
  * 
  * 			if(np.isnan(rc) == True):             # <<<<<<<<<<<<<<
@@ -18353,7 +18359,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
       }
 
-      /* "calculateOnebp.pyx":818
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":818
  * 				rc = float(0)
  * 
  * 			rcFile[binIdx] = rc             # <<<<<<<<<<<<<<
@@ -18362,7 +18368,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
  */
       if (unlikely(PyObject_SetItem(__pyx_v_rcFile, __pyx_v_binIdx, __pyx_v_rc) < 0)) __PYX_ERR(0, 818, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":803
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":803
  * 
  * 
  * 		for binIdx in range(nBins):             # <<<<<<<<<<<<<<
@@ -18372,7 +18378,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":821
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":821
  * 
  * 
  * 		f.close()             # <<<<<<<<<<<<<<
@@ -18398,7 +18404,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":822
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":822
  * 
  * 		f.close()
  * 		bw.close()             # <<<<<<<<<<<<<<
@@ -18424,7 +18430,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":783
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":783
  * 
  * 	### output read counts
  * 	for rep in range(vari.SAMPLE_NUM):             # <<<<<<<<<<<<<<
@@ -18434,7 +18440,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":824
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":824
  * 		bw.close()
  * 
  * 	return return_Line             # <<<<<<<<<<<<<<
@@ -18446,7 +18452,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __pyx_r = __pyx_v_return_Line;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":529
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":529
  * 
  * 
  * cpdef calculateTrainCovariates(args):             # <<<<<<<<<<<<<<
@@ -18464,7 +18470,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_15);
   __Pyx_XDECREF(__pyx_t_16);
-  __Pyx_AddTraceback("calculateOnebp.calculateTrainCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateTrainCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_chromo);
@@ -18539,25 +18545,25 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTrainCovariates(PyObject *__p
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_5calculateTrainCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_5calculateTrainCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_5calculateTrainCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_5calculateTrainCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calculateTrainCovariates (wrapper)", 0);
-  __pyx_r = __pyx_pf_14calculateOnebp_4calculateTrainCovariates(__pyx_self, ((PyObject *)__pyx_v_args));
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_4calculateTrainCovariates(__pyx_self, ((PyObject *)__pyx_v_args));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_4calculateTrainCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_4calculateTrainCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("calculateTrainCovariates", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_calculateTrainCovariates(__pyx_v_args, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 529, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateTrainCovariates(__pyx_v_args, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 529, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -18566,7 +18572,7 @@ static PyObject *__pyx_pf_14calculateOnebp_4calculateTrainCovariates(CYTHON_UNUS
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.calculateTrainCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateTrainCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -18574,7 +18580,7 @@ static PyObject *__pyx_pf_14calculateOnebp_4calculateTrainCovariates(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":828
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":828
  * 
  * 
  * cpdef calculateTaskCovariates(args):             # <<<<<<<<<<<<<<
@@ -18582,8 +18588,8 @@ static PyObject *__pyx_pf_14calculateOnebp_4calculateTrainCovariates(CYTHON_UNUS
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_7calculateTaskCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__pyx_v_args, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_7calculateTaskCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateTaskCovariates(PyObject *__pyx_v_args, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_chromo = NULL;
   PyObject *__pyx_v_analysis_start = NULL;
   PyObject *__pyx_v_analysis_end = NULL;
@@ -18602,7 +18608,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("calculateTaskCovariates", 0);
 
-  /* "calculateOnebp.pyx":830
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":830
  * cpdef calculateTaskCovariates(args):
  * 	### supress numpy nan-error message
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')             # <<<<<<<<<<<<<<
@@ -18619,7 +18625,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":831
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":831
  * 	### supress numpy nan-error message
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')             # <<<<<<<<<<<<<<
@@ -18636,7 +18642,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":833
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":833
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')
  * 
  * 	chromo = args[0]             # <<<<<<<<<<<<<<
@@ -18648,7 +18654,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __pyx_v_chromo = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":834
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":834
  * 
  * 	chromo = args[0]
  * 	analysis_start = int(args[1])  # Genomic coordinates(starts from 1)             # <<<<<<<<<<<<<<
@@ -18663,7 +18669,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __pyx_v_analysis_start = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":835
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":835
  * 	chromo = args[0]
  * 	analysis_start = int(args[1])  # Genomic coordinates(starts from 1)
  * 	analysis_end = int(args[2])             # <<<<<<<<<<<<<<
@@ -18678,7 +18684,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __pyx_v_analysis_end = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":838
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":838
  * 
  * 	#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
  * 	if( (analysis_start + vari.BINSIZE) >= analysis_end):             # <<<<<<<<<<<<<<
@@ -18699,7 +18705,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":839
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":839
  * 	#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
  * 	if( (analysis_start + vari.BINSIZE) >= analysis_end):
  * 		firstBinPos = int((analysis_start + analysis_end) / float(2))             # <<<<<<<<<<<<<<
@@ -18720,7 +18726,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __pyx_v_firstBinPos = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":840
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":840
  * 	if( (analysis_start + vari.BINSIZE) >= analysis_end):
  * 		firstBinPos = int((analysis_start + analysis_end) / float(2))
  * 		lastBinPos = firstBinPos             # <<<<<<<<<<<<<<
@@ -18730,7 +18736,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __Pyx_INCREF(__pyx_v_firstBinPos);
     __pyx_v_lastBinPos = __pyx_v_firstBinPos;
 
-    /* "calculateOnebp.pyx":841
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":841
  * 		firstBinPos = int((analysis_start + analysis_end) / float(2))
  * 		lastBinPos = firstBinPos
  * 		nBins = 1             # <<<<<<<<<<<<<<
@@ -18740,7 +18746,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __Pyx_INCREF(__pyx_int_1);
     __pyx_v_nBins = __pyx_int_1;
 
-    /* "calculateOnebp.pyx":842
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":842
  * 		lastBinPos = firstBinPos
  * 		nBins = 1
  * 		lastBin = False             # <<<<<<<<<<<<<<
@@ -18749,7 +18755,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
  */
     __pyx_v_lastBin = 0;
 
-    /* "calculateOnebp.pyx":843
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":843
  * 		nBins = 1
  * 		lastBin = False
  * 		result = calculateContinuousFrag(chromo, analysis_start, analysis_end, firstBinPos, lastBinPos, nBins, lastBin)             # <<<<<<<<<<<<<<
@@ -18758,13 +18764,13 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
  */
     __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_v_lastBin); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 843, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_4 = __pyx_f_14calculateOnebp_calculateContinuousFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_firstBinPos, __pyx_v_lastBinPos, __pyx_v_nBins, __pyx_t_1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 843, __pyx_L1_error)
+    __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_firstBinPos, __pyx_v_lastBinPos, __pyx_v_nBins, __pyx_t_1, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 843, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_result = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":844
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":844
  * 		lastBin = False
  * 		result = calculateContinuousFrag(chromo, analysis_start, analysis_end, firstBinPos, lastBinPos, nBins, lastBin)
  * 		return result             # <<<<<<<<<<<<<<
@@ -18776,7 +18782,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __pyx_r = __pyx_v_result;
     goto __pyx_L0;
 
-    /* "calculateOnebp.pyx":838
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":838
  * 
  * 	#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
  * 	if( (analysis_start + vari.BINSIZE) >= analysis_end):             # <<<<<<<<<<<<<<
@@ -18785,7 +18791,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":846
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":846
  * 		return result
  * 
  * 	firstBinPos = int((2*analysis_start + vari.BINSIZE) / float(2))             # <<<<<<<<<<<<<<
@@ -18815,7 +18821,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __pyx_v_firstBinPos = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":847
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":847
  * 
  * 	firstBinPos = int((2*analysis_start + vari.BINSIZE) / float(2))
  * 	if( (analysis_start + 2*vari.BINSIZE) > analysis_end):             # <<<<<<<<<<<<<<
@@ -18839,7 +18845,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":848
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":848
  * 	firstBinPos = int((2*analysis_start + vari.BINSIZE) / float(2))
  * 	if( (analysis_start + 2*vari.BINSIZE) > analysis_end):
  * 		secondBinPos = int((analysis_start + vari.BINSIZE + analysis_end) / float(2))             # <<<<<<<<<<<<<<
@@ -18869,7 +18875,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __pyx_v_secondBinPos = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":849
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":849
  * 	if( (analysis_start + 2*vari.BINSIZE) > analysis_end):
  * 		secondBinPos = int((analysis_start + vari.BINSIZE + analysis_end) / float(2))
  * 		lastBinPos = secondBinPos             # <<<<<<<<<<<<<<
@@ -18879,7 +18885,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __Pyx_INCREF(__pyx_v_secondBinPos);
     __pyx_v_lastBinPos = __pyx_v_secondBinPos;
 
-    /* "calculateOnebp.pyx":850
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":850
  * 		secondBinPos = int((analysis_start + vari.BINSIZE + analysis_end) / float(2))
  * 		lastBinPos = secondBinPos
  * 		nBins = 2             # <<<<<<<<<<<<<<
@@ -18889,7 +18895,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __Pyx_INCREF(__pyx_int_2);
     __pyx_v_nBins = __pyx_int_2;
 
-    /* "calculateOnebp.pyx":851
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":851
  * 		lastBinPos = secondBinPos
  * 		nBins = 2
  * 		lastBin = True             # <<<<<<<<<<<<<<
@@ -18898,7 +18904,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
  */
     __pyx_v_lastBin = 1;
 
-    /* "calculateOnebp.pyx":847
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":847
  * 
  * 	firstBinPos = int((2*analysis_start + vari.BINSIZE) / float(2))
  * 	if( (analysis_start + 2*vari.BINSIZE) > analysis_end):             # <<<<<<<<<<<<<<
@@ -18908,7 +18914,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     goto __pyx_L4;
   }
 
-  /* "calculateOnebp.pyx":853
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":853
  * 		lastBin = True
  * 	else:
  * 		secondBinPos = int((2*analysis_start + 3 * vari.BINSIZE) / float(2))             # <<<<<<<<<<<<<<
@@ -18942,7 +18948,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __pyx_v_secondBinPos = __pyx_t_1;
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":854
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":854
  * 	else:
  * 		secondBinPos = int((2*analysis_start + 3 * vari.BINSIZE) / float(2))
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)             # <<<<<<<<<<<<<<
@@ -18966,7 +18972,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __pyx_v_leftValue = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":855
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":855
  * 		secondBinPos = int((2*analysis_start + 3 * vari.BINSIZE) / float(2))
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		nBins = int((analysis_end - analysis_start) / float(vari.BINSIZE))             # <<<<<<<<<<<<<<
@@ -18993,7 +18999,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __pyx_v_nBins = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":856
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":856
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		nBins = int((analysis_end - analysis_start) / float(vari.BINSIZE))
  * 		if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -19006,7 +19012,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":857
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":857
  * 		nBins = int((analysis_end - analysis_start) / float(vari.BINSIZE))
  * 		if(leftValue != 0):
  * 			nBins = nBins + 1             # <<<<<<<<<<<<<<
@@ -19018,7 +19024,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
       __Pyx_DECREF_SET(__pyx_v_nBins, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":858
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":858
  * 		if(leftValue != 0):
  * 			nBins = nBins + 1
  * 			lastBin = True             # <<<<<<<<<<<<<<
@@ -19027,7 +19033,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
  */
       __pyx_v_lastBin = 1;
 
-      /* "calculateOnebp.pyx":859
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":859
  * 			nBins = nBins + 1
  * 			lastBin = True
  * 			lastBinPos = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )  ## should be included in the analysis             # <<<<<<<<<<<<<<
@@ -19063,7 +19069,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
       __pyx_v_lastBinPos = __pyx_t_4;
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":856
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":856
  * 		leftValue = (analysis_end - analysis_start) % int(vari.BINSIZE)
  * 		nBins = int((analysis_end - analysis_start) / float(vari.BINSIZE))
  * 		if(leftValue != 0):             # <<<<<<<<<<<<<<
@@ -19073,7 +19079,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":861
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":861
  * 			lastBinPos = int( (analysis_start + (nBins-1) * vari.BINSIZE + analysis_end) / float(2) )  ## should be included in the analysis
  * 		else:
  * 			lastBin = False             # <<<<<<<<<<<<<<
@@ -19083,7 +19089,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     /*else*/ {
       __pyx_v_lastBin = 0;
 
-      /* "calculateOnebp.pyx":862
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":862
  * 		else:
  * 			lastBin = False
  * 			lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis             # <<<<<<<<<<<<<<
@@ -19111,7 +19117,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   }
   __pyx_L4:;
 
-  /* "calculateOnebp.pyx":864
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":864
  * 			lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
  * 
  * 	if( (secondBinPos-firstBinPos) <= vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -19132,7 +19138,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":865
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":865
  * 
  * 	if( (secondBinPos-firstBinPos) <= vari.FRAGLEN):
  * 		result = calculateContinuousFrag(chromo, analysis_start, analysis_end, firstBinPos, lastBinPos, nBins, lastBin)             # <<<<<<<<<<<<<<
@@ -19141,13 +19147,13 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
  */
     __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_lastBin); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 865, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __pyx_f_14calculateOnebp_calculateContinuousFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_firstBinPos, __pyx_v_lastBinPos, __pyx_v_nBins, __pyx_t_2, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 865, __pyx_L1_error)
+    __pyx_t_4 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateContinuousFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_firstBinPos, __pyx_v_lastBinPos, __pyx_v_nBins, __pyx_t_2, 0); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 865, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_result = __pyx_t_4;
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":866
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":866
  * 	if( (secondBinPos-firstBinPos) <= vari.FRAGLEN):
  * 		result = calculateContinuousFrag(chromo, analysis_start, analysis_end, firstBinPos, lastBinPos, nBins, lastBin)
  * 		return result             # <<<<<<<<<<<<<<
@@ -19159,7 +19165,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     __pyx_r = __pyx_v_result;
     goto __pyx_L0;
 
-    /* "calculateOnebp.pyx":864
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":864
  * 			lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
  * 
  * 	if( (secondBinPos-firstBinPos) <= vari.FRAGLEN):             # <<<<<<<<<<<<<<
@@ -19168,7 +19174,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
  */
   }
 
-  /* "calculateOnebp.pyx":868
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":868
  * 		return result
  * 	else:
  * 		result = calculateDiscreteFrag(chromo, analysis_start, analysis_end, firstBinPos, lastBinPos, nBins, lastBin)             # <<<<<<<<<<<<<<
@@ -19178,13 +19184,13 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   /*else*/ {
     __pyx_t_4 = __Pyx_PyBool_FromLong(__pyx_v_lastBin); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 868, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
-    __pyx_t_2 = __pyx_f_14calculateOnebp_calculateDiscreteFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_firstBinPos, __pyx_v_lastBinPos, __pyx_v_nBins, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 868, __pyx_L1_error)
+    __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateDiscreteFrag(__pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_firstBinPos, __pyx_v_lastBinPos, __pyx_v_nBins, __pyx_t_4, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 868, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_v_result = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":869
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":869
  * 	else:
  * 		result = calculateDiscreteFrag(chromo, analysis_start, analysis_end, firstBinPos, lastBinPos, nBins, lastBin)
  * 		return result             # <<<<<<<<<<<<<<
@@ -19197,7 +19203,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
     goto __pyx_L0;
   }
 
-  /* "calculateOnebp.pyx":828
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":828
  * 
  * 
  * cpdef calculateTaskCovariates(args):             # <<<<<<<<<<<<<<
@@ -19210,7 +19216,7 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("calculateOnebp.calculateTaskCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateTaskCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_chromo);
@@ -19228,25 +19234,25 @@ static PyObject *__pyx_f_14calculateOnebp_calculateTaskCovariates(PyObject *__py
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_7calculateTaskCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_7calculateTaskCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_7calculateTaskCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_7calculateTaskCovariates(PyObject *__pyx_self, PyObject *__pyx_v_args) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("calculateTaskCovariates (wrapper)", 0);
-  __pyx_r = __pyx_pf_14calculateOnebp_6calculateTaskCovariates(__pyx_self, ((PyObject *)__pyx_v_args));
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_6calculateTaskCovariates(__pyx_self, ((PyObject *)__pyx_v_args));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_6calculateTaskCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_6calculateTaskCovariates(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_args) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("calculateTaskCovariates", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_calculateTaskCovariates(__pyx_v_args, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 828, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_calculateTaskCovariates(__pyx_v_args, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 828, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -19255,7 +19261,7 @@ static PyObject *__pyx_pf_14calculateOnebp_6calculateTaskCovariates(CYTHON_UNUSE
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.calculateTaskCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.calculateTaskCovariates", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -19263,7 +19269,7 @@ static PyObject *__pyx_pf_14calculateOnebp_6calculateTaskCovariates(CYTHON_UNUSE
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":873
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":873
  * 
  * 
  * cpdef performRegression(covariFiles):             # <<<<<<<<<<<<<<
@@ -19271,8 +19277,8 @@ static PyObject *__pyx_pf_14calculateOnebp_6calculateTaskCovariates(CYTHON_UNUSE
  * 	X_numRows = 0
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_9performRegression(PyObject *__pyx_self, PyObject *__pyx_v_covariFiles); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_covariFiles, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_9performRegression(PyObject *__pyx_self, PyObject *__pyx_v_covariFiles); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_performRegression(PyObject *__pyx_v_covariFiles, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_X_numRows = NULL;
   Py_ssize_t __pyx_v_i;
   PyObject *__pyx_v_X_numCols = NULL;
@@ -19327,7 +19333,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   Py_ssize_t __pyx_t_24;
   __Pyx_RefNannySetupContext("performRegression", 0);
 
-  /* "calculateOnebp.pyx":875
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":875
  * cpdef performRegression(covariFiles):
  * 	### Read covariates values (X)
  * 	X_numRows = 0             # <<<<<<<<<<<<<<
@@ -19337,7 +19343,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_X_numRows = __pyx_int_0;
 
-  /* "calculateOnebp.pyx":876
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":876
  * 	### Read covariates values (X)
  * 	X_numRows = 0
  * 	for i in range(len(covariFiles)):             # <<<<<<<<<<<<<<
@@ -19349,7 +19355,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
 
-    /* "calculateOnebp.pyx":877
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":877
  * 	X_numRows = 0
  * 	for i in range(len(covariFiles)):
  * 		X_numRows = X_numRows + int(covariFiles[i][1])             # <<<<<<<<<<<<<<
@@ -19371,7 +19377,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __pyx_t_5 = 0;
   }
 
-  /* "calculateOnebp.pyx":878
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":878
  * 	for i in range(len(covariFiles)):
  * 		X_numRows = X_numRows + int(covariFiles[i][1])
  * 	X_numCols = vari.COVARI_NUM + 1             # <<<<<<<<<<<<<<
@@ -19389,7 +19395,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __pyx_v_X_numCols = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "calculateOnebp.pyx":880
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":880
  * 	X_numCols = vari.COVARI_NUM + 1
  * 
  * 	cdef double [:,:] X_view = np.ones((X_numRows, X_numCols), dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -19434,7 +19440,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
 
-  /* "calculateOnebp.pyx":882
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":882
  * 	cdef double [:,:] X_view = np.ones((X_numRows, X_numCols), dtype=np.float64)
  * 
  * 	cdef int row_ptr = 0             # <<<<<<<<<<<<<<
@@ -19443,7 +19449,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
  */
   __pyx_v_row_ptr = 0;
 
-  /* "calculateOnebp.pyx":886
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":886
  * 	cdef int col_ptr
  * 
  * 	for fileIdx in range(len(covariFiles)):             # <<<<<<<<<<<<<<
@@ -19455,7 +19461,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_fileIdx = __pyx_t_3;
 
-    /* "calculateOnebp.pyx":887
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":887
  * 
  * 	for fileIdx in range(len(covariFiles)):
  * 		subfileName = covariFiles[fileIdx][0]             # <<<<<<<<<<<<<<
@@ -19470,7 +19476,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_subfileName, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":888
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":888
  * 	for fileIdx in range(len(covariFiles)):
  * 		subfileName = covariFiles[fileIdx][0]
  * 		f = h5py.File(subfileName, "r")             # <<<<<<<<<<<<<<
@@ -19530,7 +19536,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_f, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":890
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":890
  * 		f = h5py.File(subfileName, "r")
  * 
  * 		rowIdx = 0             # <<<<<<<<<<<<<<
@@ -19539,7 +19545,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
  */
     __pyx_v_rowIdx = 0;
 
-    /* "calculateOnebp.pyx":891
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":891
  * 
  * 		rowIdx = 0
  * 		while(rowIdx < f['X'].shape[0]):             # <<<<<<<<<<<<<<
@@ -19564,7 +19570,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (!__pyx_t_11) break;
 
-      /* "calculateOnebp.pyx":892
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":892
  * 		rowIdx = 0
  * 		while(rowIdx < f['X'].shape[0]):
  * 			temp = f['X'][rowIdx]             # <<<<<<<<<<<<<<
@@ -19579,7 +19585,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_6);
       __pyx_t_6 = 0;
 
-      /* "calculateOnebp.pyx":893
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":893
  * 		while(rowIdx < f['X'].shape[0]):
  * 			temp = f['X'][rowIdx]
  * 			col_ptr = 0             # <<<<<<<<<<<<<<
@@ -19588,7 +19594,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
  */
       __pyx_v_col_ptr = 0;
 
-      /* "calculateOnebp.pyx":894
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":894
  * 			temp = f['X'][rowIdx]
  * 			col_ptr = 0
  * 			while(col_ptr < vari.COVARI_NUM):             # <<<<<<<<<<<<<<
@@ -19610,7 +19616,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         if (!__pyx_t_11) break;
 
-        /* "calculateOnebp.pyx":895
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":895
  * 			col_ptr = 0
  * 			while(col_ptr < vari.COVARI_NUM):
  * 				X_view[rowIdx + row_ptr, col_ptr+1] = float(temp[col_ptr])             # <<<<<<<<<<<<<<
@@ -19638,7 +19644,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         }
         *((double *) ( /* dim=1 */ (( /* dim=0 */ (__pyx_v_X_view.data + __pyx_t_13 * __pyx_v_X_view.strides[0]) ) + __pyx_t_14 * __pyx_v_X_view.strides[1]) )) = __pyx_t_12;
 
-        /* "calculateOnebp.pyx":896
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":896
  * 			while(col_ptr < vari.COVARI_NUM):
  * 				X_view[rowIdx + row_ptr, col_ptr+1] = float(temp[col_ptr])
  * 				col_ptr = col_ptr + 1             # <<<<<<<<<<<<<<
@@ -19648,7 +19654,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         __pyx_v_col_ptr = (__pyx_v_col_ptr + 1);
       }
 
-      /* "calculateOnebp.pyx":897
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":897
  * 				X_view[rowIdx + row_ptr, col_ptr+1] = float(temp[col_ptr])
  * 				col_ptr = col_ptr + 1
  * 			rowIdx = rowIdx + 1             # <<<<<<<<<<<<<<
@@ -19658,7 +19664,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __pyx_v_rowIdx = (__pyx_v_rowIdx + 1);
     }
 
-    /* "calculateOnebp.pyx":898
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":898
  * 				col_ptr = col_ptr + 1
  * 			rowIdx = rowIdx + 1
  * 		row_ptr = row_ptr + int(covariFiles[fileIdx][1])             # <<<<<<<<<<<<<<
@@ -19683,7 +19689,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_v_row_ptr = __pyx_t_10;
 
-    /* "calculateOnebp.pyx":900
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":900
  * 		row_ptr = row_ptr + int(covariFiles[fileIdx][1])
  * 
  * 		f.close()             # <<<<<<<<<<<<<<
@@ -19709,7 +19715,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":901
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":901
  * 
  * 		f.close()
  * 		os.remove(subfileName)             # <<<<<<<<<<<<<<
@@ -19739,7 +19745,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
 
-  /* "calculateOnebp.pyx":905
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":905
  * 
  * 	### COEFFICIENTS
  * 	COEFCTRL = np.zeros((vari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -19794,7 +19800,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __pyx_v_COEFCTRL = __pyx_t_7;
   __pyx_t_7 = 0;
 
-  /* "calculateOnebp.pyx":906
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":906
  * 	### COEFFICIENTS
  * 	COEFCTRL = np.zeros((vari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
  * 	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -19849,7 +19855,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __pyx_v_COEFEXP = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "calculateOnebp.pyx":908
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":908
  * 	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
  * 
  * 	if(X_numRows < 50000):             # <<<<<<<<<<<<<<
@@ -19861,7 +19867,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (__pyx_t_11) {
 
-    /* "calculateOnebp.pyx":909
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":909
  * 
  * 	if(X_numRows < 50000):
  * 		idx = np.array(list(range(X_numRows)))             # <<<<<<<<<<<<<<
@@ -19897,7 +19903,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __pyx_v_idx = __pyx_t_5;
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":908
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":908
  * 	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
  * 
  * 	if(X_numRows < 50000):             # <<<<<<<<<<<<<<
@@ -19907,7 +19913,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     goto __pyx_L11;
   }
 
-  /* "calculateOnebp.pyx":911
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":911
  * 		idx = np.array(list(range(X_numRows)))
  * 	else:
  * 		idx = np.random.choice(np.array(list(range(X_numRows))), 50000, replace=False)             # <<<<<<<<<<<<<<
@@ -19970,7 +19976,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   }
   __pyx_L11:;
 
-  /* "calculateOnebp.pyx":913
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":913
  * 		idx = np.random.choice(np.array(list(range(X_numRows))), 50000, replace=False)
  * 
  * 	cdef double [:] Y_view = np.zeros(X_numRows, dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -20007,7 +20013,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __pyx_t_15.memview = NULL;
   __pyx_t_15.data = NULL;
 
-  /* "calculateOnebp.pyx":918
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":918
  * 	cdef int rcIdx
  * 
  * 	for rep in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -20065,7 +20071,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_rep, __pyx_t_8);
     __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":919
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":919
  * 
  * 	for rep in range(vari.CTRLBW_NUM):
  * 		ptr = 0             # <<<<<<<<<<<<<<
@@ -20074,7 +20080,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
  */
     __pyx_v_ptr = 0;
 
-    /* "calculateOnebp.pyx":921
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":921
  * 		ptr = 0
  * 
  * 		for fileIdx in range(len(covariFiles)):             # <<<<<<<<<<<<<<
@@ -20086,7 +20092,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_3; __pyx_t_17+=1) {
       __pyx_v_fileIdx = __pyx_t_17;
 
-      /* "calculateOnebp.pyx":922
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":922
  * 
  * 		for fileIdx in range(len(covariFiles)):
  * 			subfileName = covariFiles[fileIdx][rep+2]             # <<<<<<<<<<<<<<
@@ -20104,7 +20110,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_XDECREF_SET(__pyx_v_subfileName, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":923
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":923
  * 		for fileIdx in range(len(covariFiles)):
  * 			subfileName = covariFiles[fileIdx][rep+2]
  * 			f = h5py.File(subfileName, "r")             # <<<<<<<<<<<<<<
@@ -20164,7 +20170,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_XDECREF_SET(__pyx_v_f, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":925
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":925
  * 			f = h5py.File(subfileName, "r")
  * 
  * 			rcIdx = 0             # <<<<<<<<<<<<<<
@@ -20173,7 +20179,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
  */
       __pyx_v_rcIdx = 0;
 
-      /* "calculateOnebp.pyx":926
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":926
  * 
  * 			rcIdx = 0
  * 			while(rcIdx < f['Y'].shape[0]):             # <<<<<<<<<<<<<<
@@ -20198,7 +20204,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
         if (!__pyx_t_11) break;
 
-        /* "calculateOnebp.pyx":927
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":927
  * 			rcIdx = 0
  * 			while(rcIdx < f['Y'].shape[0]):
  * 				Y_view[rcIdx+ptr] = float(f['Y'][rcIdx])             # <<<<<<<<<<<<<<
@@ -20224,7 +20230,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         }
         *((double *) ( /* dim=0 */ (__pyx_v_Y_view.data + __pyx_t_18 * __pyx_v_Y_view.strides[0]) )) = __pyx_t_12;
 
-        /* "calculateOnebp.pyx":928
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":928
  * 			while(rcIdx < f['Y'].shape[0]):
  * 				Y_view[rcIdx+ptr] = float(f['Y'][rcIdx])
  * 				rcIdx = rcIdx + 1             # <<<<<<<<<<<<<<
@@ -20234,7 +20240,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         __pyx_v_rcIdx = (__pyx_v_rcIdx + 1);
       }
 
-      /* "calculateOnebp.pyx":930
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":930
  * 				rcIdx = rcIdx + 1
  * 
  * 			ptr = ptr + int(f['Y'].shape[0])             # <<<<<<<<<<<<<<
@@ -20262,7 +20268,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_ptr = __pyx_t_10;
 
-      /* "calculateOnebp.pyx":932
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":932
  * 			ptr = ptr + int(f['Y'].shape[0])
  * 
  * 			f.close()             # <<<<<<<<<<<<<<
@@ -20288,7 +20294,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "calculateOnebp.pyx":933
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":933
  * 
  * 			f.close()
  * 			os.remove(subfileName)             # <<<<<<<<<<<<<<
@@ -20318,7 +20324,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     }
 
-    /* "calculateOnebp.pyx":936
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":936
  * 
  * 
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]             # <<<<<<<<<<<<<<
@@ -20466,7 +20472,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_deleteIdx, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":937
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":937
  * 
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
  * 		if(len(deleteIdx) != 0):             # <<<<<<<<<<<<<<
@@ -20477,7 +20483,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __pyx_t_11 = ((__pyx_t_2 != 0) != 0);
     if (__pyx_t_11) {
 
-      /* "calculateOnebp.pyx":938
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":938
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
  * 		if(len(deleteIdx) != 0):
  * 			model = sm.GLM(np.delete(np.array(Y_view).astype(int), deleteIdx), np.delete(np.array(X_view), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()             # <<<<<<<<<<<<<<
@@ -20694,7 +20700,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_XDECREF_SET(__pyx_v_model, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":937
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":937
  * 
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
  * 		if(len(deleteIdx) != 0):             # <<<<<<<<<<<<<<
@@ -20704,7 +20710,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       goto __pyx_L18;
     }
 
-    /* "calculateOnebp.pyx":940
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":940
  * 			model = sm.GLM(np.delete(np.array(Y_view).astype(int), deleteIdx), np.delete(np.array(X_view), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
  * 		else:
  * 			model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()             # <<<<<<<<<<<<<<
@@ -20851,7 +20857,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     }
     __pyx_L18:;
 
-    /* "calculateOnebp.pyx":942
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":942
  * 			model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
  * 
  * 		coef = model.params             # <<<<<<<<<<<<<<
@@ -20863,7 +20869,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_coef, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":943
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":943
  * 
  * 		coef = model.params
  * 		COEFCTRL[rep, ] = coef             # <<<<<<<<<<<<<<
@@ -20878,7 +20884,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     if (unlikely(PyObject_SetItem(__pyx_v_COEFCTRL, __pyx_t_7, __pyx_v_coef) < 0)) __PYX_ERR(0, 943, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":944
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":944
  * 		coef = model.params
  * 		COEFCTRL[rep, ] = coef
  * 		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]             # <<<<<<<<<<<<<<
@@ -20970,7 +20976,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_corr, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":945
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":945
  * 		COEFCTRL[rep, ] = coef
  * 		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]
  * 		corr = np.round(corr, 2)             # <<<<<<<<<<<<<<
@@ -21030,7 +21036,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF_SET(__pyx_v_corr, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":948
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":948
  * 
  * 		## PLOT
  * 		maxi1 = np.nanmax(model.fittedvalues[idx])             # <<<<<<<<<<<<<<
@@ -21066,7 +21072,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_maxi1, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":949
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":949
  * 		## PLOT
  * 		maxi1 = np.nanmax(model.fittedvalues[idx])
  * 		maxi2 = np.nanmax(np.array(Y_view)[idx])             # <<<<<<<<<<<<<<
@@ -21123,7 +21129,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_maxi2, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":950
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":950
  * 		maxi1 = np.nanmax(model.fittedvalues[idx])
  * 		maxi2 = np.nanmax(np.array(Y_view)[idx])
  * 		maxi = max(maxi1, maxi2)             # <<<<<<<<<<<<<<
@@ -21152,7 +21158,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_maxi, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":952
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":952
  * 		maxi = max(maxi1, maxi2)
  * 
  * 		figName = vari.OUTPUT_DIR + "/ctrl_rep" + str(rep+1) + ".png"             # <<<<<<<<<<<<<<
@@ -21182,7 +21188,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_figName, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":953
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":953
  * 
  * 		figName = vari.OUTPUT_DIR + "/ctrl_rep" + str(rep+1) + ".png"
  * 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)             # <<<<<<<<<<<<<<
@@ -21245,7 +21251,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":954
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":954
  * 		figName = vari.OUTPUT_DIR + "/ctrl_rep" + str(rep+1) + ".png"
  * 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
  * 		plt.text((maxi-25), 10, corr, ha='center', va='center')             # <<<<<<<<<<<<<<
@@ -21281,7 +21287,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":955
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":955
  * 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
  * 		plt.text((maxi-25), 10, corr, ha='center', va='center')
  * 		plt.xlabel("observed")             # <<<<<<<<<<<<<<
@@ -21310,7 +21316,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":956
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":956
  * 		plt.text((maxi-25), 10, corr, ha='center', va='center')
  * 		plt.xlabel("observed")
  * 		plt.ylabel("predicted")             # <<<<<<<<<<<<<<
@@ -21339,7 +21345,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":957
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":957
  * 		plt.xlabel("observed")
  * 		plt.ylabel("predicted")
  * 		plt.xlim(0, maxi)             # <<<<<<<<<<<<<<
@@ -21398,7 +21404,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":958
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":958
  * 		plt.ylabel("predicted")
  * 		plt.xlim(0, maxi)
  * 		plt.ylim(0, maxi)             # <<<<<<<<<<<<<<
@@ -21457,7 +21463,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":959
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":959
  * 		plt.xlim(0, maxi)
  * 		plt.ylim(0, maxi)
  * 		plt.plot([0, maxi], [0, maxi], 'k-', color='r')             # <<<<<<<<<<<<<<
@@ -21506,7 +21512,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":960
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":960
  * 		plt.ylim(0, maxi)
  * 		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
  * 		plt.gca().set_aspect('equal', adjustable='box')             # <<<<<<<<<<<<<<
@@ -21545,7 +21551,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":961
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":961
  * 		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
  * 		plt.gca().set_aspect('equal', adjustable='box')
  * 		plt.savefig(figName)             # <<<<<<<<<<<<<<
@@ -21574,7 +21580,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":962
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":962
  * 		plt.gca().set_aspect('equal', adjustable='box')
  * 		plt.savefig(figName)
  * 		plt.close()             # <<<<<<<<<<<<<<
@@ -21603,7 +21609,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":963
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":963
  * 		plt.savefig(figName)
  * 		plt.close()
  * 		plt.clf()             # <<<<<<<<<<<<<<
@@ -21632,7 +21638,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-    /* "calculateOnebp.pyx":918
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":918
  * 	cdef int rcIdx
  * 
  * 	for rep in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -21642,7 +21648,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "calculateOnebp.pyx":966
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":966
  * 
  * 
  * 	for rep in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -21700,7 +21706,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_rep, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":967
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":967
  * 
  * 	for rep in range(vari.EXPBW_NUM):
  * 		ptr = 0             # <<<<<<<<<<<<<<
@@ -21709,7 +21715,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
  */
     __pyx_v_ptr = 0;
 
-    /* "calculateOnebp.pyx":968
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":968
  * 	for rep in range(vari.EXPBW_NUM):
  * 		ptr = 0
  * 		for fileIdx in range(len(covariFiles)):             # <<<<<<<<<<<<<<
@@ -21721,7 +21727,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     for (__pyx_t_17 = 0; __pyx_t_17 < __pyx_t_3; __pyx_t_17+=1) {
       __pyx_v_fileIdx = __pyx_t_17;
 
-      /* "calculateOnebp.pyx":969
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":969
  * 		ptr = 0
  * 		for fileIdx in range(len(covariFiles)):
  * 			subfileName = covariFiles[fileIdx][rep+2+vari.CTRLBW_NUM]             # <<<<<<<<<<<<<<
@@ -21748,7 +21754,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_XDECREF_SET(__pyx_v_subfileName, __pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "calculateOnebp.pyx":970
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":970
  * 		for fileIdx in range(len(covariFiles)):
  * 			subfileName = covariFiles[fileIdx][rep+2+vari.CTRLBW_NUM]
  * 			f = h5py.File(subfileName, "r")             # <<<<<<<<<<<<<<
@@ -21808,7 +21814,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_XDECREF_SET(__pyx_v_f, __pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "calculateOnebp.pyx":972
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":972
  * 			f = h5py.File(subfileName, "r")
  * 
  * 			rcIdx = 0             # <<<<<<<<<<<<<<
@@ -21817,7 +21823,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
  */
       __pyx_v_rcIdx = 0;
 
-      /* "calculateOnebp.pyx":973
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":973
  * 
  * 			rcIdx = 0
  * 			while(rcIdx < f['Y'].shape[0]):             # <<<<<<<<<<<<<<
@@ -21842,7 +21848,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         if (!__pyx_t_11) break;
 
-        /* "calculateOnebp.pyx":974
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":974
  * 			rcIdx = 0
  * 			while(rcIdx < f['Y'].shape[0]):
  * 				Y_view[rcIdx+ptr] = float(f['Y'][rcIdx])             # <<<<<<<<<<<<<<
@@ -21868,7 +21874,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         }
         *((double *) ( /* dim=0 */ (__pyx_v_Y_view.data + __pyx_t_24 * __pyx_v_Y_view.strides[0]) )) = __pyx_t_12;
 
-        /* "calculateOnebp.pyx":975
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":975
  * 			while(rcIdx < f['Y'].shape[0]):
  * 				Y_view[rcIdx+ptr] = float(f['Y'][rcIdx])
  * 				rcIdx = rcIdx + 1             # <<<<<<<<<<<<<<
@@ -21878,7 +21884,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
         __pyx_v_rcIdx = (__pyx_v_rcIdx + 1);
       }
 
-      /* "calculateOnebp.pyx":977
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":977
  * 				rcIdx = rcIdx + 1
  * 
  * 			ptr = ptr + int(f['Y'].shape[0])             # <<<<<<<<<<<<<<
@@ -21906,7 +21912,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __pyx_v_ptr = __pyx_t_10;
 
-      /* "calculateOnebp.pyx":979
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":979
  * 			ptr = ptr + int(f['Y'].shape[0])
  * 
  * 			f.close()             # <<<<<<<<<<<<<<
@@ -21932,7 +21938,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":980
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":980
  * 
  * 			f.close()
  * 			os.remove(subfileName)             # <<<<<<<<<<<<<<
@@ -21962,7 +21968,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     }
 
-    /* "calculateOnebp.pyx":982
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":982
  * 			os.remove(subfileName)
  * 
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]             # <<<<<<<<<<<<<<
@@ -22110,7 +22116,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_deleteIdx, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":983
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":983
  * 
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
  * 		if(len(deleteIdx) != 0):             # <<<<<<<<<<<<<<
@@ -22121,7 +22127,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __pyx_t_11 = ((__pyx_t_2 != 0) != 0);
     if (__pyx_t_11) {
 
-      /* "calculateOnebp.pyx":984
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":984
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
  * 		if(len(deleteIdx) != 0):
  * 			model = sm.GLM(np.delete(np.array(Y_view).astype(int), deleteIdx), np.delete(np.array(X_view), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()             # <<<<<<<<<<<<<<
@@ -22338,7 +22344,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       __Pyx_XDECREF_SET(__pyx_v_model, __pyx_t_5);
       __pyx_t_5 = 0;
 
-      /* "calculateOnebp.pyx":983
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":983
  * 
  * 		deleteIdx = np.where( (np.array(Y_view) < np.finfo(np.float32).min) | (np.array(Y_view) > np.finfo(np.float32).max))[0]
  * 		if(len(deleteIdx) != 0):             # <<<<<<<<<<<<<<
@@ -22348,7 +22354,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
       goto __pyx_L25;
     }
 
-    /* "calculateOnebp.pyx":986
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":986
  * 			model = sm.GLM(np.delete(np.array(Y_view).astype(int), deleteIdx), np.delete(np.array(X_view), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
  * 		else:
  * 			model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()             # <<<<<<<<<<<<<<
@@ -22495,7 +22501,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     }
     __pyx_L25:;
 
-    /* "calculateOnebp.pyx":988
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":988
  * 			model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
  * 
  * 		coef = model.params             # <<<<<<<<<<<<<<
@@ -22507,7 +22513,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_coef, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":989
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":989
  * 
  * 		coef = model.params
  * 		COEFEXP[rep, ] = coef             # <<<<<<<<<<<<<<
@@ -22522,7 +22528,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     if (unlikely(PyObject_SetItem(__pyx_v_COEFEXP, __pyx_t_5, __pyx_v_coef) < 0)) __PYX_ERR(0, 989, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":990
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":990
  * 		coef = model.params
  * 		COEFEXP[rep, ] = coef
  * 		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]             # <<<<<<<<<<<<<<
@@ -22614,7 +22620,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_corr, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":991
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":991
  * 		COEFEXP[rep, ] = coef
  * 		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]
  * 		corr = np.round(corr, 2)             # <<<<<<<<<<<<<<
@@ -22674,7 +22680,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF_SET(__pyx_v_corr, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":994
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":994
  * 
  * 		## PLOT
  * 		maxi1 = np.nanmax(model.fittedvalues[idx])             # <<<<<<<<<<<<<<
@@ -22710,7 +22716,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_maxi1, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":995
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":995
  * 		## PLOT
  * 		maxi1 = np.nanmax(model.fittedvalues[idx])
  * 		maxi2 = np.nanmax(np.array(Y_view)[idx])             # <<<<<<<<<<<<<<
@@ -22767,7 +22773,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_maxi2, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":996
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":996
  * 		maxi1 = np.nanmax(model.fittedvalues[idx])
  * 		maxi2 = np.nanmax(np.array(Y_view)[idx])
  * 		maxi = max(maxi1, maxi2)             # <<<<<<<<<<<<<<
@@ -22796,7 +22802,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_maxi, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":998
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":998
  * 		maxi = max(maxi1, maxi2)
  * 
  * 		figName = vari.OUTPUT_DIR + "/exp_rep" + str(rep+1) + ".png"             # <<<<<<<<<<<<<<
@@ -22826,7 +22832,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_XDECREF_SET(__pyx_v_figName, __pyx_t_5);
     __pyx_t_5 = 0;
 
-    /* "calculateOnebp.pyx":999
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":999
  * 
  * 		figName = vari.OUTPUT_DIR + "/exp_rep" + str(rep+1) + ".png"
  * 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)             # <<<<<<<<<<<<<<
@@ -22889,7 +22895,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":1000
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1000
  * 		figName = vari.OUTPUT_DIR + "/exp_rep" + str(rep+1) + ".png"
  * 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
  * 		plt.text((maxi-25), 10, corr, ha='center', va='center')             # <<<<<<<<<<<<<<
@@ -22925,7 +22931,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1001
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1001
  * 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
  * 		plt.text((maxi-25), 10, corr, ha='center', va='center')
  * 		plt.xlabel("observed")             # <<<<<<<<<<<<<<
@@ -22954,7 +22960,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1002
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1002
  * 		plt.text((maxi-25), 10, corr, ha='center', va='center')
  * 		plt.xlabel("observed")
  * 		plt.ylabel("predicted")             # <<<<<<<<<<<<<<
@@ -22983,7 +22989,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1003
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1003
  * 		plt.xlabel("observed")
  * 		plt.ylabel("predicted")
  * 		plt.xlim(0, maxi)             # <<<<<<<<<<<<<<
@@ -23042,7 +23048,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1004
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1004
  * 		plt.ylabel("predicted")
  * 		plt.xlim(0, maxi)
  * 		plt.ylim(0, maxi)             # <<<<<<<<<<<<<<
@@ -23101,7 +23107,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1005
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1005
  * 		plt.xlim(0, maxi)
  * 		plt.ylim(0, maxi)
  * 		plt.plot([0, maxi], [0, maxi], 'k-', color='r')             # <<<<<<<<<<<<<<
@@ -23150,7 +23156,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1006
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1006
  * 		plt.ylim(0, maxi)
  * 		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
  * 		plt.gca().set_aspect('equal', adjustable='box')             # <<<<<<<<<<<<<<
@@ -23189,7 +23195,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":1007
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1007
  * 		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
  * 		plt.gca().set_aspect('equal', adjustable='box')
  * 		plt.savefig(figName)             # <<<<<<<<<<<<<<
@@ -23218,7 +23224,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":1008
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1008
  * 		plt.gca().set_aspect('equal', adjustable='box')
  * 		plt.savefig(figName)
  * 		plt.close()             # <<<<<<<<<<<<<<
@@ -23247,7 +23253,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":1009
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1009
  * 		plt.savefig(figName)
  * 		plt.close()
  * 		plt.clf()             # <<<<<<<<<<<<<<
@@ -23276,7 +23282,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":966
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":966
  * 
  * 
  * 	for rep in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -23286,7 +23292,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   }
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":1011
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1011
  * 		plt.clf()
  * 
  * 	return COEFCTRL, COEFEXP             # <<<<<<<<<<<<<<
@@ -23306,7 +23312,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __pyx_t_6 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":873
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":873
  * 
  * 
  * cpdef performRegression(covariFiles):             # <<<<<<<<<<<<<<
@@ -23328,7 +23334,7 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
   __Pyx_XDECREF(__pyx_t_21);
   __Pyx_XDECREF(__pyx_t_22);
   __Pyx_XDECREF(__pyx_t_23);
-  __Pyx_AddTraceback("calculateOnebp.performRegression", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.performRegression", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_X_numRows);
@@ -23356,25 +23362,25 @@ static PyObject *__pyx_f_14calculateOnebp_performRegression(PyObject *__pyx_v_co
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_9performRegression(PyObject *__pyx_self, PyObject *__pyx_v_covariFiles); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_9performRegression(PyObject *__pyx_self, PyObject *__pyx_v_covariFiles) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_9performRegression(PyObject *__pyx_self, PyObject *__pyx_v_covariFiles); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_9performRegression(PyObject *__pyx_self, PyObject *__pyx_v_covariFiles) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("performRegression (wrapper)", 0);
-  __pyx_r = __pyx_pf_14calculateOnebp_8performRegression(__pyx_self, ((PyObject *)__pyx_v_covariFiles));
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_8performRegression(__pyx_self, ((PyObject *)__pyx_v_covariFiles));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_8performRegression(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFiles) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_8performRegression(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFiles) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("performRegression", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_performRegression(__pyx_v_covariFiles, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 873, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_performRegression(__pyx_v_covariFiles, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 873, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -23383,7 +23389,7 @@ static PyObject *__pyx_pf_14calculateOnebp_8performRegression(CYTHON_UNUSED PyOb
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.performRegression", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.performRegression", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -23391,7 +23397,7 @@ static PyObject *__pyx_pf_14calculateOnebp_8performRegression(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1014
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1014
  * 
  * 
  * cpdef memoryView(value):             # <<<<<<<<<<<<<<
@@ -23399,8 +23405,8 @@ static PyObject *__pyx_pf_14calculateOnebp_8performRegression(CYTHON_UNUSED PyOb
  * 	array_view = value
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_11memoryView(PyObject *__pyx_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_memoryView(PyObject *__pyx_v_value, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_11memoryView(PyObject *__pyx_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(PyObject *__pyx_v_value, CYTHON_UNUSED int __pyx_skip_dispatch) {
   __Pyx_memviewslice __pyx_v_array_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -23408,7 +23414,7 @@ static PyObject *__pyx_f_14calculateOnebp_memoryView(PyObject *__pyx_v_value, CY
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("memoryView", 0);
 
-  /* "calculateOnebp.pyx":1016
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1016
  * cpdef memoryView(value):
  * 	cdef double [:] array_view
  * 	array_view = value             # <<<<<<<<<<<<<<
@@ -23420,7 +23426,7 @@ static PyObject *__pyx_f_14calculateOnebp_memoryView(PyObject *__pyx_v_value, CY
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
 
-  /* "calculateOnebp.pyx":1018
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1018
  * 	array_view = value
  * 
  * 	return array_view             # <<<<<<<<<<<<<<
@@ -23434,7 +23440,7 @@ static PyObject *__pyx_f_14calculateOnebp_memoryView(PyObject *__pyx_v_value, CY
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1014
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1014
  * 
  * 
  * cpdef memoryView(value):             # <<<<<<<<<<<<<<
@@ -23446,7 +23452,7 @@ static PyObject *__pyx_f_14calculateOnebp_memoryView(PyObject *__pyx_v_value, CY
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("calculateOnebp.memoryView", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.memoryView", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_array_view, 1);
@@ -23456,25 +23462,25 @@ static PyObject *__pyx_f_14calculateOnebp_memoryView(PyObject *__pyx_v_value, CY
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_11memoryView(PyObject *__pyx_self, PyObject *__pyx_v_value); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_11memoryView(PyObject *__pyx_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_11memoryView(PyObject *__pyx_self, PyObject *__pyx_v_value); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_11memoryView(PyObject *__pyx_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("memoryView (wrapper)", 0);
-  __pyx_r = __pyx_pf_14calculateOnebp_10memoryView(__pyx_self, ((PyObject *)__pyx_v_value));
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_10memoryView(__pyx_self, ((PyObject *)__pyx_v_value));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_10memoryView(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_value) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_10memoryView(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("memoryView", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_memoryView(__pyx_v_value, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1014, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_memoryView(__pyx_v_value, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1014, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -23483,7 +23489,7 @@ static PyObject *__pyx_pf_14calculateOnebp_10memoryView(CYTHON_UNUSED PyObject *
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.memoryView", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.memoryView", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -23491,7 +23497,7 @@ static PyObject *__pyx_pf_14calculateOnebp_10memoryView(CYTHON_UNUSED PyObject *
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1021
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1021
  * 
  * 
  * cpdef makeMatrix_ContinuousFrag_train(binStart, binEnd, nBins):             # <<<<<<<<<<<<<<
@@ -23499,8 +23505,8 @@ static PyObject *__pyx_pf_14calculateOnebp_10memoryView(CYTHON_UNUSED PyObject *
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_13makeMatrix_ContinuousFrag_train(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, CYTHON_UNUSED PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_13makeMatrix_ContinuousFrag_train(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, CYTHON_UNUSED PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_result = NULL;
   PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_v_pos = NULL;
@@ -23516,7 +23522,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("makeMatrix_ContinuousFrag_train", 0);
 
-  /* "calculateOnebp.pyx":1023
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1023
  * cpdef makeMatrix_ContinuousFrag_train(binStart, binEnd, nBins):
  * 
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -23574,7 +23580,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
   __pyx_v_result = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "calculateOnebp.pyx":1024
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1024
  * 
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  * 	for i in range(vari.FRAGLEN+1):             # <<<<<<<<<<<<<<
@@ -23635,7 +23641,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1025
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1025
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  * 	for i in range(vari.FRAGLEN+1):
  * 		pos = binStart + i             # <<<<<<<<<<<<<<
@@ -23647,7 +23653,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
     __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1027
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1027
  * 		pos = binStart + i
  * 
  * 		if(pos > binEnd):             # <<<<<<<<<<<<<<
@@ -23659,7 +23665,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     if (__pyx_t_8) {
 
-      /* "calculateOnebp.pyx":1028
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1028
  * 
  * 		if(pos > binEnd):
  * 			result[i, 0] = np.nan             # <<<<<<<<<<<<<<
@@ -23683,7 +23689,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":1027
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1027
  * 		pos = binStart + i
  * 
  * 		if(pos > binEnd):             # <<<<<<<<<<<<<<
@@ -23693,7 +23699,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1030
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1030
  * 			result[i, 0] = np.nan
  * 		else:
  * 			result[i, 0] = pos             # <<<<<<<<<<<<<<
@@ -23714,7 +23720,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
     }
     __pyx_L5:;
 
-    /* "calculateOnebp.pyx":1024
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1024
  * 
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  * 	for i in range(vari.FRAGLEN+1):             # <<<<<<<<<<<<<<
@@ -23724,7 +23730,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "calculateOnebp.pyx":1032
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1032
  * 			result[i, 0] = pos
  * 
  * 	return result             # <<<<<<<<<<<<<<
@@ -23736,7 +23742,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1021
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1021
  * 
  * 
  * cpdef makeMatrix_ContinuousFrag_train(binStart, binEnd, nBins):             # <<<<<<<<<<<<<<
@@ -23751,7 +23757,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_ContinuousFrag_train", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_ContinuousFrag_train", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_result);
@@ -23763,8 +23769,8 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(PyObje
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_13makeMatrix_ContinuousFrag_train(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_13makeMatrix_ContinuousFrag_train(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_13makeMatrix_ContinuousFrag_train(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_13makeMatrix_ContinuousFrag_train(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_binStart = 0;
   PyObject *__pyx_v_binEnd = 0;
   PyObject *__pyx_v_nBins = 0;
@@ -23823,24 +23829,24 @@ static PyObject *__pyx_pw_14calculateOnebp_13makeMatrix_ContinuousFrag_train(PyO
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("makeMatrix_ContinuousFrag_train", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1021, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_ContinuousFrag_train", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_ContinuousFrag_train", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_12makeMatrix_ContinuousFrag_train(__pyx_self, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_12makeMatrix_ContinuousFrag_train(__pyx_self, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_12makeMatrix_ContinuousFrag_train(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_12makeMatrix_ContinuousFrag_train(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("makeMatrix_ContinuousFrag_train", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag_train(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1021, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag_train(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1021, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -23849,7 +23855,7 @@ static PyObject *__pyx_pf_14calculateOnebp_12makeMatrix_ContinuousFrag_train(CYT
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_ContinuousFrag_train", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_ContinuousFrag_train", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -23857,7 +23863,7 @@ static PyObject *__pyx_pf_14calculateOnebp_12makeMatrix_ContinuousFrag_train(CYT
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1035
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1035
  * 
  * 
  * cpdef makeMatrix_ContinuousFrag(binStart, binEnd, nBins):             # <<<<<<<<<<<<<<
@@ -23865,8 +23871,8 @@ static PyObject *__pyx_pf_14calculateOnebp_12makeMatrix_ContinuousFrag_train(CYT
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_15makeMatrix_ContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_15makeMatrix_ContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_result = NULL;
   PyObject *__pyx_v_i = NULL;
   PyObject *__pyx_v_pos = NULL;
@@ -23882,7 +23888,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
   int __pyx_t_8;
   __Pyx_RefNannySetupContext("makeMatrix_ContinuousFrag", 0);
 
-  /* "calculateOnebp.pyx":1037
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1037
  * cpdef makeMatrix_ContinuousFrag(binStart, binEnd, nBins):
  * 
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -23940,7 +23946,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
   __pyx_v_result = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "calculateOnebp.pyx":1038
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1038
  * 
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  * 	for i in range(vari.FRAGLEN+1):             # <<<<<<<<<<<<<<
@@ -24001,7 +24007,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1039
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1039
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  * 	for i in range(vari.FRAGLEN+1):
  * 		pos = binStart + i * vari.BINSIZE             # <<<<<<<<<<<<<<
@@ -24022,7 +24028,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
     __Pyx_XDECREF_SET(__pyx_v_pos, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":1041
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1041
  * 		pos = binStart + i * vari.BINSIZE
  * 
  * 		if(pos > binEnd):             # <<<<<<<<<<<<<<
@@ -24034,7 +24040,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     if (__pyx_t_8) {
 
-      /* "calculateOnebp.pyx":1042
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1042
  * 
  * 		if(pos > binEnd):
  * 			result[i, 0] = np.nan             # <<<<<<<<<<<<<<
@@ -24058,7 +24064,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":1041
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1041
  * 		pos = binStart + i * vari.BINSIZE
  * 
  * 		if(pos > binEnd):             # <<<<<<<<<<<<<<
@@ -24068,7 +24074,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1044
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1044
  * 			result[i, 0] = np.nan
  * 		else:
  * 			result[i, 0] = pos             # <<<<<<<<<<<<<<
@@ -24089,7 +24095,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
     }
     __pyx_L5:;
 
-    /* "calculateOnebp.pyx":1038
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1038
  * 
  * 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
  * 	for i in range(vari.FRAGLEN+1):             # <<<<<<<<<<<<<<
@@ -24099,7 +24105,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
   }
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-  /* "calculateOnebp.pyx":1046
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1046
  * 			result[i, 0] = pos
  * 
  * 	if(nBins == (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -24120,7 +24126,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   if (__pyx_t_8) {
 
-    /* "calculateOnebp.pyx":1047
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1047
  * 
  * 	if(nBins == (vari.FRAGLEN+1)):
  * 		result[vari.FRAGLEN, 0] = binEnd             # <<<<<<<<<<<<<<
@@ -24143,7 +24149,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
     if (unlikely(PyObject_SetItem(__pyx_v_result, __pyx_t_4, __pyx_v_binEnd) < 0)) __PYX_ERR(0, 1047, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1046
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1046
  * 			result[i, 0] = pos
  * 
  * 	if(nBins == (vari.FRAGLEN+1)):             # <<<<<<<<<<<<<<
@@ -24152,7 +24158,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
  */
   }
 
-  /* "calculateOnebp.pyx":1049
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1049
  * 		result[vari.FRAGLEN, 0] = binEnd
  * 
  * 	return result             # <<<<<<<<<<<<<<
@@ -24164,7 +24170,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1035
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1035
  * 
  * 
  * cpdef makeMatrix_ContinuousFrag(binStart, binEnd, nBins):             # <<<<<<<<<<<<<<
@@ -24179,7 +24185,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_ContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_ContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_result);
@@ -24191,8 +24197,8 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(PyObject *__
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_15makeMatrix_ContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_15makeMatrix_ContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_15makeMatrix_ContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_15makeMatrix_ContinuousFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_binStart = 0;
   PyObject *__pyx_v_binEnd = 0;
   PyObject *__pyx_v_nBins = 0;
@@ -24251,24 +24257,24 @@ static PyObject *__pyx_pw_14calculateOnebp_15makeMatrix_ContinuousFrag(PyObject 
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("makeMatrix_ContinuousFrag", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1035, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_ContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_ContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_14makeMatrix_ContinuousFrag(__pyx_self, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_14makeMatrix_ContinuousFrag(__pyx_self, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_14makeMatrix_ContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_14makeMatrix_ContinuousFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("makeMatrix_ContinuousFrag", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_makeMatrix_ContinuousFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1035, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_ContinuousFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1035, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -24277,7 +24283,7 @@ static PyObject *__pyx_pf_14calculateOnebp_14makeMatrix_ContinuousFrag(CYTHON_UN
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_ContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_ContinuousFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -24285,7 +24291,7 @@ static PyObject *__pyx_pf_14calculateOnebp_14makeMatrix_ContinuousFrag(CYTHON_UN
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1052
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1052
  * 
  * 
  * cpdef makeMatrix_DiscreteFrag(binStart, binEnd, nBins):             # <<<<<<<<<<<<<<
@@ -24293,8 +24299,8 @@ static PyObject *__pyx_pf_14calculateOnebp_14makeMatrix_ContinuousFrag(CYTHON_UN
  * 
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_17makeMatrix_DiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(CYTHON_UNUSED PyObject *__pyx_v_binStart, CYTHON_UNUSED PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_17makeMatrix_DiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_DiscreteFrag(CYTHON_UNUSED PyObject *__pyx_v_binStart, CYTHON_UNUSED PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
   __Pyx_memviewslice __pyx_v_result_view = { 0, 0, { 0 }, { 0 }, { 0 } };
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -24306,7 +24312,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(CYTHON_UNUSED 
   __Pyx_memviewslice __pyx_t_6 = { 0, 0, { 0 }, { 0 }, { 0 } };
   __Pyx_RefNannySetupContext("makeMatrix_DiscreteFrag", 0);
 
-  /* "calculateOnebp.pyx":1053
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1053
  * 
  * cpdef makeMatrix_DiscreteFrag(binStart, binEnd, nBins):
  * 	cdef double [:,:] result_view = np.zeros((nBins, vari.COVARI_NUM), dtype=np.float64)             # <<<<<<<<<<<<<<
@@ -24356,7 +24362,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(CYTHON_UNUSED 
   __pyx_t_6.memview = NULL;
   __pyx_t_6.data = NULL;
 
-  /* "calculateOnebp.pyx":1055
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1055
  * 	cdef double [:,:] result_view = np.zeros((nBins, vari.COVARI_NUM), dtype=np.float64)
  * 
  * 	return result_view             # <<<<<<<<<<<<<<
@@ -24370,7 +24376,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(CYTHON_UNUSED 
   __pyx_t_5 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1052
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1052
  * 
  * 
  * cpdef makeMatrix_DiscreteFrag(binStart, binEnd, nBins):             # <<<<<<<<<<<<<<
@@ -24386,7 +24392,7 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(CYTHON_UNUSED 
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
   __PYX_XDEC_MEMVIEW(&__pyx_t_6, 1);
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_DiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_DiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_result_view, 1);
@@ -24396,8 +24402,8 @@ static PyObject *__pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(CYTHON_UNUSED 
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_17makeMatrix_DiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_17makeMatrix_DiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_17makeMatrix_DiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_17makeMatrix_DiscreteFrag(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_binStart = 0;
   PyObject *__pyx_v_binEnd = 0;
   PyObject *__pyx_v_nBins = 0;
@@ -24456,24 +24462,24 @@ static PyObject *__pyx_pw_14calculateOnebp_17makeMatrix_DiscreteFrag(PyObject *_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("makeMatrix_DiscreteFrag", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1052, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_DiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_DiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_16makeMatrix_DiscreteFrag(__pyx_self, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_16makeMatrix_DiscreteFrag(__pyx_self, __pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_16makeMatrix_DiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_16makeMatrix_DiscreteFrag(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_binStart, PyObject *__pyx_v_binEnd, PyObject *__pyx_v_nBins) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("makeMatrix_DiscreteFrag", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_makeMatrix_DiscreteFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1052, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_makeMatrix_DiscreteFrag(__pyx_v_binStart, __pyx_v_binEnd, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1052, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -24482,7 +24488,7 @@ static PyObject *__pyx_pf_14calculateOnebp_16makeMatrix_DiscreteFrag(CYTHON_UNUS
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.makeMatrix_DiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.makeMatrix_DiscreteFrag", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -24490,7 +24496,7 @@ static PyObject *__pyx_pf_14calculateOnebp_16makeMatrix_DiscreteFrag(CYTHON_UNUS
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1058
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1058
  * 
  * 
  * cpdef find5merProb(mer5):             # <<<<<<<<<<<<<<
@@ -24498,8 +24504,8 @@ static PyObject *__pyx_pf_14calculateOnebp_16makeMatrix_DiscreteFrag(CYTHON_UNUS
  * 	subtract = -1
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_19find5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_19find5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_base_info = NULL;
   PyObject *__pyx_v_subtract = NULL;
   PyObject *__pyx_v_i = NULL;
@@ -24519,7 +24525,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("find5merProb", 0);
 
-  /* "calculateOnebp.pyx":1059
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1059
  * 
  * cpdef find5merProb(mer5):
  * 	base_info = 0             # <<<<<<<<<<<<<<
@@ -24529,7 +24535,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_base_info = __pyx_int_0;
 
-  /* "calculateOnebp.pyx":1060
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1060
  * cpdef find5merProb(mer5):
  * 	base_info = 0
  * 	subtract = -1             # <<<<<<<<<<<<<<
@@ -24539,7 +24545,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_subtract = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":1062
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1062
  * 	subtract = -1
  * 
  * 	for i in range(5):             # <<<<<<<<<<<<<<
@@ -24552,7 +24558,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1063
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1063
  * 
  * 	for i in range(5):
  * 		if(mer5[i]=='A' or mer5[i]=='a'):             # <<<<<<<<<<<<<<
@@ -24576,7 +24582,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1064
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1064
  * 	for i in range(5):
  * 		if(mer5[i]=='A' or mer5[i]=='a'):
  * 			base_info = base_info + np.power(4, 4-i) * 0             # <<<<<<<<<<<<<<
@@ -24646,7 +24652,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1063
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1063
  * 
  * 	for i in range(5):
  * 		if(mer5[i]=='A' or mer5[i]=='a'):             # <<<<<<<<<<<<<<
@@ -24656,7 +24662,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1065
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1065
  * 		if(mer5[i]=='A' or mer5[i]=='a'):
  * 			base_info = base_info + np.power(4, 4-i) * 0
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):             # <<<<<<<<<<<<<<
@@ -24680,7 +24686,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     __pyx_L8_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1066
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1066
  * 			base_info = base_info + np.power(4, 4-i) * 0
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):
  * 			base_info = base_info + np.power(4, 4-i) * 1             # <<<<<<<<<<<<<<
@@ -24750,7 +24756,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1065
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1065
  * 		if(mer5[i]=='A' or mer5[i]=='a'):
  * 			base_info = base_info + np.power(4, 4-i) * 0
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):             # <<<<<<<<<<<<<<
@@ -24760,7 +24766,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1067
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1067
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):
  * 			base_info = base_info + np.power(4, 4-i) * 1
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):             # <<<<<<<<<<<<<<
@@ -24784,7 +24790,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     __pyx_L10_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1068
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1068
  * 			base_info = base_info + np.power(4, 4-i) * 1
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):
  * 			base_info = base_info + np.power(4, 4-i) * 2             # <<<<<<<<<<<<<<
@@ -24854,7 +24860,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1067
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1067
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):
  * 			base_info = base_info + np.power(4, 4-i) * 1
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):             # <<<<<<<<<<<<<<
@@ -24864,7 +24870,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1069
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1069
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):
  * 			base_info = base_info + np.power(4, 4-i) * 2
  * 		elif(mer5[i]=='T' or mer5[i]=='t'):             # <<<<<<<<<<<<<<
@@ -24888,7 +24894,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     __pyx_L12_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1070
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1070
  * 			base_info = base_info + np.power(4, 4-i) * 2
  * 		elif(mer5[i]=='T' or mer5[i]=='t'):
  * 			base_info = base_info + np.power(4, 4-i) * 3             # <<<<<<<<<<<<<<
@@ -24958,7 +24964,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1069
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1069
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):
  * 			base_info = base_info + np.power(4, 4-i) * 2
  * 		elif(mer5[i]=='T' or mer5[i]=='t'):             # <<<<<<<<<<<<<<
@@ -24968,7 +24974,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     }
     __pyx_L5:;
 
-    /* "calculateOnebp.pyx":1072
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1072
  * 			base_info = base_info + np.power(4, 4-i) * 3
  * 
  * 		if(i==0):             # <<<<<<<<<<<<<<
@@ -24981,7 +24987,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1073
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1073
  * 
  * 		if(i==0):
  * 			subtract = base_info             # <<<<<<<<<<<<<<
@@ -24991,7 +24997,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
       __Pyx_INCREF(__pyx_v_base_info);
       __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_v_base_info);
 
-      /* "calculateOnebp.pyx":1072
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1072
  * 			base_info = base_info + np.power(4, 4-i) * 3
  * 
  * 		if(i==0):             # <<<<<<<<<<<<<<
@@ -25001,7 +25007,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
     }
   }
 
-  /* "calculateOnebp.pyx":1075
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1075
  * 			subtract = base_info
  * 
  * 	mgw = vari.MGW[base_info][1]             # <<<<<<<<<<<<<<
@@ -25022,7 +25028,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   __pyx_v_mgw = __pyx_t_5;
   __pyx_t_5 = 0;
 
-  /* "calculateOnebp.pyx":1076
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1076
  * 
  * 	mgw = vari.MGW[base_info][1]
  * 	prot = vari.PROT[base_info][1]             # <<<<<<<<<<<<<<
@@ -25043,7 +25049,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   __pyx_v_prot = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1078
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1078
  * 	prot = vari.PROT[base_info][1]
  * 
  * 	next_base_info = base_info - subtract             # <<<<<<<<<<<<<<
@@ -25055,7 +25061,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   __pyx_v_next_base_info = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1080
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1080
  * 	next_base_info = base_info - subtract
  * 
  * 	return next_base_info, mgw, prot             # <<<<<<<<<<<<<<
@@ -25078,7 +25084,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1058
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1058
  * 
  * 
  * cpdef find5merProb(mer5):             # <<<<<<<<<<<<<<
@@ -25093,7 +25099,7 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("calculateOnebp.find5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.find5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_base_info);
@@ -25108,25 +25114,25 @@ static PyObject *__pyx_f_14calculateOnebp_find5merProb(PyObject *__pyx_v_mer5, C
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_19find5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_19find5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_19find5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_19find5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("find5merProb (wrapper)", 0);
-  __pyx_r = __pyx_pf_14calculateOnebp_18find5merProb(__pyx_self, ((PyObject *)__pyx_v_mer5));
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_18find5merProb(__pyx_self, ((PyObject *)__pyx_v_mer5));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_18find5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_18find5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("find5merProb", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_find5merProb(__pyx_v_mer5, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1058, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_find5merProb(__pyx_v_mer5, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1058, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -25135,7 +25141,7 @@ static PyObject *__pyx_pf_14calculateOnebp_18find5merProb(CYTHON_UNUSED PyObject
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.find5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.find5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -25143,7 +25149,7 @@ static PyObject *__pyx_pf_14calculateOnebp_18find5merProb(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1083
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1083
  * 
  * 
  * cpdef edit5merProb(past_mer, oldBase, newBase):             # <<<<<<<<<<<<<<
@@ -25151,8 +25157,8 @@ static PyObject *__pyx_pf_14calculateOnebp_18find5merProb(CYTHON_UNUSED PyObject
  * 	base_info = base_info * 4
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_21edit5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_21edit5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_base_info = NULL;
   PyObject *__pyx_v_subtract = NULL;
   PyObject *__pyx_v_mgw = NULL;
@@ -25166,7 +25172,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("edit5merProb", 0);
 
-  /* "calculateOnebp.pyx":1084
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1084
  * 
  * cpdef edit5merProb(past_mer, oldBase, newBase):
  * 	base_info = past_mer             # <<<<<<<<<<<<<<
@@ -25176,7 +25182,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __Pyx_INCREF(__pyx_v_past_mer);
   __pyx_v_base_info = __pyx_v_past_mer;
 
-  /* "calculateOnebp.pyx":1085
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1085
  * cpdef edit5merProb(past_mer, oldBase, newBase):
  * 	base_info = past_mer
  * 	base_info = base_info * 4             # <<<<<<<<<<<<<<
@@ -25188,7 +25194,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1086
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1086
  * 	base_info = past_mer
  * 	base_info = base_info * 4
  * 	subtract = -1             # <<<<<<<<<<<<<<
@@ -25198,7 +25204,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_subtract = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":1089
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1089
  * 
  * 	## newBase
  * 	if(newBase=='A' or newBase=='a'):             # <<<<<<<<<<<<<<
@@ -25216,7 +25222,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1090
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1090
  * 	## newBase
  * 	if(newBase=='A' or newBase=='a'):
  * 		base_info = base_info + 0             # <<<<<<<<<<<<<<
@@ -25228,7 +25234,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1089
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1089
  * 
  * 	## newBase
  * 	if(newBase=='A' or newBase=='a'):             # <<<<<<<<<<<<<<
@@ -25238,7 +25244,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1091
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1091
  * 	if(newBase=='A' or newBase=='a'):
  * 		base_info = base_info + 0
  * 	elif(newBase=='C' or newBase=='c'):             # <<<<<<<<<<<<<<
@@ -25256,7 +25262,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L6_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1092
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1092
  * 		base_info = base_info + 0
  * 	elif(newBase=='C' or newBase=='c'):
  * 		base_info = base_info + 1             # <<<<<<<<<<<<<<
@@ -25268,7 +25274,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1091
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1091
  * 	if(newBase=='A' or newBase=='a'):
  * 		base_info = base_info + 0
  * 	elif(newBase=='C' or newBase=='c'):             # <<<<<<<<<<<<<<
@@ -25278,7 +25284,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1093
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1093
  * 	elif(newBase=='C' or newBase=='c'):
  * 		base_info = base_info + 1
  * 	elif(newBase=='G' or newBase=='g'):             # <<<<<<<<<<<<<<
@@ -25296,7 +25302,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L8_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1094
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1094
  * 		base_info = base_info + 1
  * 	elif(newBase=='G' or newBase=='g'):
  * 		base_info = base_info + 2             # <<<<<<<<<<<<<<
@@ -25308,7 +25314,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1093
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1093
  * 	elif(newBase=='C' or newBase=='c'):
  * 		base_info = base_info + 1
  * 	elif(newBase=='G' or newBase=='g'):             # <<<<<<<<<<<<<<
@@ -25318,7 +25324,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1095
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1095
  * 	elif(newBase=='G' or newBase=='g'):
  * 		base_info = base_info + 2
  * 	elif(newBase=='T' or newBase=='t'):             # <<<<<<<<<<<<<<
@@ -25336,7 +25342,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L10_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1096
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1096
  * 		base_info = base_info + 2
  * 	elif(newBase=='T' or newBase=='t'):
  * 		base_info = base_info + 3             # <<<<<<<<<<<<<<
@@ -25348,7 +25354,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1095
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1095
  * 	elif(newBase=='G' or newBase=='g'):
  * 		base_info = base_info + 2
  * 	elif(newBase=='T' or newBase=='t'):             # <<<<<<<<<<<<<<
@@ -25358,7 +25364,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   }
   __pyx_L3:;
 
-  /* "calculateOnebp.pyx":1098
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1098
  * 		base_info = base_info + 3
  * 
  * 	base_info = int(base_info)             # <<<<<<<<<<<<<<
@@ -25370,7 +25376,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1099
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1099
  * 
  * 	base_info = int(base_info)
  * 	mgw = vari.MGW[base_info][1]             # <<<<<<<<<<<<<<
@@ -25391,7 +25397,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_v_mgw = __pyx_t_4;
   __pyx_t_4 = 0;
 
-  /* "calculateOnebp.pyx":1100
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1100
  * 	base_info = int(base_info)
  * 	mgw = vari.MGW[base_info][1]
  * 	prot = vari.PROT[base_info][1]             # <<<<<<<<<<<<<<
@@ -25412,7 +25418,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_v_prot = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1103
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1103
  * 
  * 	## subtract oldBase
  * 	if(oldBase=='A' or oldBase=='a'):             # <<<<<<<<<<<<<<
@@ -25430,7 +25436,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L13_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1104
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1104
  * 	## subtract oldBase
  * 	if(oldBase=='A' or oldBase=='a'):
  * 		subtract = np.power(4, 4) * 0             # <<<<<<<<<<<<<<
@@ -25451,7 +25457,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1103
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1103
  * 
  * 	## subtract oldBase
  * 	if(oldBase=='A' or oldBase=='a'):             # <<<<<<<<<<<<<<
@@ -25461,7 +25467,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     goto __pyx_L12;
   }
 
-  /* "calculateOnebp.pyx":1105
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1105
  * 	if(oldBase=='A' or oldBase=='a'):
  * 		subtract = np.power(4, 4) * 0
  * 	elif(oldBase=='C' or oldBase=='c'):             # <<<<<<<<<<<<<<
@@ -25479,7 +25485,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L15_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1106
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1106
  * 		subtract = np.power(4, 4) * 0
  * 	elif(oldBase=='C' or oldBase=='c'):
  * 		subtract = np.power(4, 4) * 1             # <<<<<<<<<<<<<<
@@ -25500,7 +25506,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1105
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1105
  * 	if(oldBase=='A' or oldBase=='a'):
  * 		subtract = np.power(4, 4) * 0
  * 	elif(oldBase=='C' or oldBase=='c'):             # <<<<<<<<<<<<<<
@@ -25510,7 +25516,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     goto __pyx_L12;
   }
 
-  /* "calculateOnebp.pyx":1107
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1107
  * 	elif(oldBase=='C' or oldBase=='c'):
  * 		subtract = np.power(4, 4) * 1
  * 	elif(oldBase=='G' or oldBase=='g'):             # <<<<<<<<<<<<<<
@@ -25528,7 +25534,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L17_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1108
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1108
  * 		subtract = np.power(4, 4) * 1
  * 	elif(oldBase=='G' or oldBase=='g'):
  * 		subtract = np.power(4, 4) * 2             # <<<<<<<<<<<<<<
@@ -25549,7 +25555,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1107
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1107
  * 	elif(oldBase=='C' or oldBase=='c'):
  * 		subtract = np.power(4, 4) * 1
  * 	elif(oldBase=='G' or oldBase=='g'):             # <<<<<<<<<<<<<<
@@ -25559,7 +25565,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     goto __pyx_L12;
   }
 
-  /* "calculateOnebp.pyx":1109
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1109
  * 	elif(oldBase=='G' or oldBase=='g'):
  * 		subtract = np.power(4, 4) * 2
  * 	elif(oldBase=='T' or oldBase=='t'):             # <<<<<<<<<<<<<<
@@ -25577,7 +25583,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L19_bool_binop_done:;
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1110
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1110
  * 		subtract = np.power(4, 4) * 2
  * 	elif(oldBase=='T' or oldBase=='t'):
  * 		subtract = np.power(4, 4) * 3             # <<<<<<<<<<<<<<
@@ -25598,7 +25604,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1109
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1109
  * 	elif(oldBase=='G' or oldBase=='g'):
  * 		subtract = np.power(4, 4) * 2
  * 	elif(oldBase=='T' or oldBase=='t'):             # <<<<<<<<<<<<<<
@@ -25608,7 +25614,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   }
   __pyx_L12:;
 
-  /* "calculateOnebp.pyx":1112
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1112
  * 		subtract = np.power(4, 4) * 3
  * 
  * 	next_base_info = base_info - subtract             # <<<<<<<<<<<<<<
@@ -25620,7 +25626,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_v_next_base_info = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1114
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1114
  * 	next_base_info = base_info - subtract
  * 
  * 	return next_base_info, mgw, prot             # <<<<<<<<<<<<<<
@@ -25643,7 +25649,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1083
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1083
  * 
  * 
  * cpdef edit5merProb(past_mer, oldBase, newBase):             # <<<<<<<<<<<<<<
@@ -25655,7 +25661,7 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("calculateOnebp.edit5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.edit5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_base_info);
@@ -25669,8 +25675,8 @@ static PyObject *__pyx_f_14calculateOnebp_edit5merProb(PyObject *__pyx_v_past_me
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_21edit5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_21edit5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_21edit5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_21edit5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_past_mer = 0;
   PyObject *__pyx_v_oldBase = 0;
   PyObject *__pyx_v_newBase = 0;
@@ -25729,24 +25735,24 @@ static PyObject *__pyx_pw_14calculateOnebp_21edit5merProb(PyObject *__pyx_self, 
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("edit5merProb", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1083, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.edit5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.edit5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_20edit5merProb(__pyx_self, __pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_20edit5merProb(__pyx_self, __pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_20edit5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_20edit5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("edit5merProb", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_edit5merProb(__pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1083, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_edit5merProb(__pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1083, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -25755,7 +25761,7 @@ static PyObject *__pyx_pf_14calculateOnebp_20edit5merProb(CYTHON_UNUSED PyObject
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.edit5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.edit5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -25763,7 +25769,7 @@ static PyObject *__pyx_pf_14calculateOnebp_20edit5merProb(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1117
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1117
  * 
  * 
  * cpdef findComple5merProb(mer5):             # <<<<<<<<<<<<<<
@@ -25771,8 +25777,8 @@ static PyObject *__pyx_pf_14calculateOnebp_20edit5merProb(CYTHON_UNUSED PyObject
  * 	subtract = -1
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_23findComple5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_mer5, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_23findComple5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_mer5, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_base_info = NULL;
   PyObject *__pyx_v_subtract = NULL;
   PyObject *__pyx_v_i = NULL;
@@ -25791,7 +25797,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("findComple5merProb", 0);
 
-  /* "calculateOnebp.pyx":1118
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1118
  * 
  * cpdef findComple5merProb(mer5):
  * 	base_info = 0             # <<<<<<<<<<<<<<
@@ -25801,7 +25807,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_base_info = __pyx_int_0;
 
-  /* "calculateOnebp.pyx":1119
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1119
  * cpdef findComple5merProb(mer5):
  * 	base_info = 0
  * 	subtract = -1             # <<<<<<<<<<<<<<
@@ -25811,7 +25817,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_subtract = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":1121
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1121
  * 	subtract = -1
  * 
  * 	for i in range(5):             # <<<<<<<<<<<<<<
@@ -25824,7 +25830,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1122
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1122
  * 
  * 	for i in range(5):
  * 		if(mer5[i]=='A' or mer5[i]=='a'):             # <<<<<<<<<<<<<<
@@ -25848,7 +25854,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1123
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1123
  * 	for i in range(5):
  * 		if(mer5[i]=='A' or mer5[i]=='a'):
  * 			base_info = base_info + np.power(4, i) * 3             # <<<<<<<<<<<<<<
@@ -25914,7 +25920,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1122
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1122
  * 
  * 	for i in range(5):
  * 		if(mer5[i]=='A' or mer5[i]=='a'):             # <<<<<<<<<<<<<<
@@ -25924,7 +25930,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1124
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1124
  * 		if(mer5[i]=='A' or mer5[i]=='a'):
  * 			base_info = base_info + np.power(4, i) * 3
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):             # <<<<<<<<<<<<<<
@@ -25948,7 +25954,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     __pyx_L8_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1125
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1125
  * 			base_info = base_info + np.power(4, i) * 3
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):
  * 			base_info = base_info + np.power(4, i) * 2             # <<<<<<<<<<<<<<
@@ -26014,7 +26020,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1124
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1124
  * 		if(mer5[i]=='A' or mer5[i]=='a'):
  * 			base_info = base_info + np.power(4, i) * 3
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):             # <<<<<<<<<<<<<<
@@ -26024,7 +26030,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1126
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1126
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):
  * 			base_info = base_info + np.power(4, i) * 2
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):             # <<<<<<<<<<<<<<
@@ -26048,7 +26054,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     __pyx_L10_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1127
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1127
  * 			base_info = base_info + np.power(4, i) * 2
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):
  * 			base_info = base_info + np.power(4, i) * 1             # <<<<<<<<<<<<<<
@@ -26114,7 +26120,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1126
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1126
  * 		elif(mer5[i]=='C' or mer5[i]=='c'):
  * 			base_info = base_info + np.power(4, i) * 2
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):             # <<<<<<<<<<<<<<
@@ -26124,7 +26130,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1128
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1128
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):
  * 			base_info = base_info + np.power(4, i) * 1
  * 		elif(mer5[i]=='T' or mer5[i]=='t'):             # <<<<<<<<<<<<<<
@@ -26148,7 +26154,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     __pyx_L12_bool_binop_done:;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1129
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1129
  * 			base_info = base_info + np.power(4, i) * 1
  * 		elif(mer5[i]=='T' or mer5[i]=='t'):
  * 			base_info = base_info + np.power(4, i) * 0             # <<<<<<<<<<<<<<
@@ -26214,7 +26220,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1128
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1128
  * 		elif(mer5[i]=='G' or mer5[i]=='g'):
  * 			base_info = base_info + np.power(4, i) * 1
  * 		elif(mer5[i]=='T' or mer5[i]=='t'):             # <<<<<<<<<<<<<<
@@ -26224,7 +26230,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     }
     __pyx_L5:;
 
-    /* "calculateOnebp.pyx":1131
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1131
  * 			base_info = base_info + np.power(4, i) * 0
  * 
  * 		if(i==0):             # <<<<<<<<<<<<<<
@@ -26237,7 +26243,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1132
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1132
  * 
  * 		if(i==0):
  * 			subtract = base_info             # <<<<<<<<<<<<<<
@@ -26247,7 +26253,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
       __Pyx_INCREF(__pyx_v_base_info);
       __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_v_base_info);
 
-      /* "calculateOnebp.pyx":1131
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1131
  * 			base_info = base_info + np.power(4, i) * 0
  * 
  * 		if(i==0):             # <<<<<<<<<<<<<<
@@ -26257,7 +26263,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
     }
   }
 
-  /* "calculateOnebp.pyx":1134
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1134
  * 			subtract = base_info
  * 
  * 	mgw = vari.MGW[base_info][1]             # <<<<<<<<<<<<<<
@@ -26278,7 +26284,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   __pyx_v_mgw = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":1135
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1135
  * 
  * 	mgw = vari.MGW[base_info][1]
  * 	prot = vari.PROT[base_info][1]             # <<<<<<<<<<<<<<
@@ -26299,7 +26305,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   __pyx_v_prot = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1137
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1137
  * 	prot = vari.PROT[base_info][1]
  * 
  * 	next_base_info = base_info - subtract             # <<<<<<<<<<<<<<
@@ -26311,7 +26317,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   __pyx_v_next_base_info = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1139
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1139
  * 	next_base_info = base_info - subtract
  * 
  * 	return next_base_info, mgw, prot             # <<<<<<<<<<<<<<
@@ -26334,7 +26340,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1117
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1117
  * 
  * 
  * cpdef findComple5merProb(mer5):             # <<<<<<<<<<<<<<
@@ -26348,7 +26354,7 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_8);
-  __Pyx_AddTraceback("calculateOnebp.findComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.findComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_base_info);
@@ -26363,25 +26369,25 @@ static PyObject *__pyx_f_14calculateOnebp_findComple5merProb(PyObject *__pyx_v_m
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_23findComple5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_23findComple5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_23findComple5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_23findComple5merProb(PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("findComple5merProb (wrapper)", 0);
-  __pyx_r = __pyx_pf_14calculateOnebp_22findComple5merProb(__pyx_self, ((PyObject *)__pyx_v_mer5));
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_22findComple5merProb(__pyx_self, ((PyObject *)__pyx_v_mer5));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_22findComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_22findComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_mer5) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("findComple5merProb", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_findComple5merProb(__pyx_v_mer5, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1117, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findComple5merProb(__pyx_v_mer5, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1117, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -26390,7 +26396,7 @@ static PyObject *__pyx_pf_14calculateOnebp_22findComple5merProb(CYTHON_UNUSED Py
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.findComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.findComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -26398,7 +26404,7 @@ static PyObject *__pyx_pf_14calculateOnebp_22findComple5merProb(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1142
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1142
  * 
  * 
  * cpdef editComple5merProb(past_mer, oldBase, newBase):             # <<<<<<<<<<<<<<
@@ -26406,8 +26412,8 @@ static PyObject *__pyx_pf_14calculateOnebp_22findComple5merProb(CYTHON_UNUSED Py
  * 	base_info = int(base_info / 4)
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_25editComple5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_25editComple5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_base_info = NULL;
   PyObject *__pyx_v_subtract = NULL;
   PyObject *__pyx_v_mgw = NULL;
@@ -26421,7 +26427,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("editComple5merProb", 0);
 
-  /* "calculateOnebp.pyx":1143
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1143
  * 
  * cpdef editComple5merProb(past_mer, oldBase, newBase):
  * 	base_info = past_mer             # <<<<<<<<<<<<<<
@@ -26431,7 +26437,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __Pyx_INCREF(__pyx_v_past_mer);
   __pyx_v_base_info = __pyx_v_past_mer;
 
-  /* "calculateOnebp.pyx":1144
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1144
  * cpdef editComple5merProb(past_mer, oldBase, newBase):
  * 	base_info = past_mer
  * 	base_info = int(base_info / 4)             # <<<<<<<<<<<<<<
@@ -26446,7 +26452,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1145
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1145
  * 	base_info = past_mer
  * 	base_info = int(base_info / 4)
  * 	subtract = -1             # <<<<<<<<<<<<<<
@@ -26456,7 +26462,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_subtract = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":1148
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1148
  * 
  * 	# newBase
  * 	if(newBase=='A' or newBase=='a'):             # <<<<<<<<<<<<<<
@@ -26474,7 +26480,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1149
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1149
  * 	# newBase
  * 	if(newBase=='A' or newBase=='a'):
  * 		base_info = base_info + np.power(4, 4) * 3             # <<<<<<<<<<<<<<
@@ -26498,7 +26504,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1148
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1148
  * 
  * 	# newBase
  * 	if(newBase=='A' or newBase=='a'):             # <<<<<<<<<<<<<<
@@ -26508,7 +26514,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1150
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1150
  * 	if(newBase=='A' or newBase=='a'):
  * 		base_info = base_info + np.power(4, 4) * 3
  * 	elif(newBase=='C' or newBase=='c'):             # <<<<<<<<<<<<<<
@@ -26526,7 +26532,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L6_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1151
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1151
  * 		base_info = base_info + np.power(4, 4) * 3
  * 	elif(newBase=='C' or newBase=='c'):
  * 		base_info = base_info + np.power(4, 4) * 2             # <<<<<<<<<<<<<<
@@ -26550,7 +26556,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1150
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1150
  * 	if(newBase=='A' or newBase=='a'):
  * 		base_info = base_info + np.power(4, 4) * 3
  * 	elif(newBase=='C' or newBase=='c'):             # <<<<<<<<<<<<<<
@@ -26560,7 +26566,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1152
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1152
  * 	elif(newBase=='C' or newBase=='c'):
  * 		base_info = base_info + np.power(4, 4) * 2
  * 	elif(newBase=='G' or newBase=='g'):             # <<<<<<<<<<<<<<
@@ -26578,7 +26584,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L8_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1153
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1153
  * 		base_info = base_info + np.power(4, 4) * 2
  * 	elif(newBase=='G' or newBase=='g'):
  * 		base_info = base_info + np.power(4, 4) * 1             # <<<<<<<<<<<<<<
@@ -26602,7 +26608,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1152
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1152
  * 	elif(newBase=='C' or newBase=='c'):
  * 		base_info = base_info + np.power(4, 4) * 2
  * 	elif(newBase=='G' or newBase=='g'):             # <<<<<<<<<<<<<<
@@ -26612,7 +26618,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1154
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1154
  * 	elif(newBase=='G' or newBase=='g'):
  * 		base_info = base_info + np.power(4, 4) * 1
  * 	elif(newBase=='T' or newBase=='t'):             # <<<<<<<<<<<<<<
@@ -26630,7 +26636,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L10_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1155
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1155
  * 		base_info = base_info + np.power(4, 4) * 1
  * 	elif(newBase=='T' or newBase=='t'):
  * 		base_info = base_info + np.power(4, 4) * 0             # <<<<<<<<<<<<<<
@@ -26654,7 +26660,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1154
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1154
  * 	elif(newBase=='G' or newBase=='g'):
  * 		base_info = base_info + np.power(4, 4) * 1
  * 	elif(newBase=='T' or newBase=='t'):             # <<<<<<<<<<<<<<
@@ -26664,7 +26670,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   }
   __pyx_L3:;
 
-  /* "calculateOnebp.pyx":1157
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1157
  * 		base_info = base_info + np.power(4, 4) * 0
  * 
  * 	base_info = int(base_info)             # <<<<<<<<<<<<<<
@@ -26676,7 +26682,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __Pyx_DECREF_SET(__pyx_v_base_info, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1158
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1158
  * 
  * 	base_info = int(base_info)
  * 	mgw = vari.MGW[base_info][1]             # <<<<<<<<<<<<<<
@@ -26697,7 +26703,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_v_mgw = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1159
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1159
  * 	base_info = int(base_info)
  * 	mgw = vari.MGW[base_info][1]
  * 	prot = vari.PROT[base_info][1]             # <<<<<<<<<<<<<<
@@ -26718,7 +26724,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_v_prot = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1162
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1162
  * 
  * 	## subtract oldBase
  * 	if(oldBase=='A' or oldBase=='a'):             # <<<<<<<<<<<<<<
@@ -26736,7 +26742,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L13_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1163
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1163
  * 	## subtract oldBase
  * 	if(oldBase=='A' or oldBase=='a'):
  * 		subtract = 3             # <<<<<<<<<<<<<<
@@ -26746,7 +26752,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_INCREF(__pyx_int_3);
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_int_3);
 
-    /* "calculateOnebp.pyx":1162
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1162
  * 
  * 	## subtract oldBase
  * 	if(oldBase=='A' or oldBase=='a'):             # <<<<<<<<<<<<<<
@@ -26756,7 +26762,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     goto __pyx_L12;
   }
 
-  /* "calculateOnebp.pyx":1164
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1164
  * 	if(oldBase=='A' or oldBase=='a'):
  * 		subtract = 3
  * 	elif(oldBase=='C' or oldBase=='c'):             # <<<<<<<<<<<<<<
@@ -26774,7 +26780,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L15_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1165
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1165
  * 		subtract = 3
  * 	elif(oldBase=='C' or oldBase=='c'):
  * 		subtract = 2             # <<<<<<<<<<<<<<
@@ -26784,7 +26790,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_INCREF(__pyx_int_2);
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_int_2);
 
-    /* "calculateOnebp.pyx":1164
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1164
  * 	if(oldBase=='A' or oldBase=='a'):
  * 		subtract = 3
  * 	elif(oldBase=='C' or oldBase=='c'):             # <<<<<<<<<<<<<<
@@ -26794,7 +26800,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     goto __pyx_L12;
   }
 
-  /* "calculateOnebp.pyx":1166
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1166
  * 	elif(oldBase=='C' or oldBase=='c'):
  * 		subtract = 2
  * 	elif(oldBase=='G' or oldBase=='g'):             # <<<<<<<<<<<<<<
@@ -26812,7 +26818,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L17_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1167
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1167
  * 		subtract = 2
  * 	elif(oldBase=='G' or oldBase=='g'):
  * 		subtract = 1             # <<<<<<<<<<<<<<
@@ -26822,7 +26828,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_INCREF(__pyx_int_1);
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_int_1);
 
-    /* "calculateOnebp.pyx":1166
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1166
  * 	elif(oldBase=='C' or oldBase=='c'):
  * 		subtract = 2
  * 	elif(oldBase=='G' or oldBase=='g'):             # <<<<<<<<<<<<<<
@@ -26832,7 +26838,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     goto __pyx_L12;
   }
 
-  /* "calculateOnebp.pyx":1168
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1168
  * 	elif(oldBase=='G' or oldBase=='g'):
  * 		subtract = 1
  * 	elif(oldBase=='T' or oldBase=='t'):             # <<<<<<<<<<<<<<
@@ -26850,7 +26856,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L19_bool_binop_done:;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1169
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1169
  * 		subtract = 1
  * 	elif(oldBase=='T' or oldBase=='t'):
  * 		subtract = 0             # <<<<<<<<<<<<<<
@@ -26860,7 +26866,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_int_0);
 
-    /* "calculateOnebp.pyx":1168
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1168
  * 	elif(oldBase=='G' or oldBase=='g'):
  * 		subtract = 1
  * 	elif(oldBase=='T' or oldBase=='t'):             # <<<<<<<<<<<<<<
@@ -26870,7 +26876,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   }
   __pyx_L12:;
 
-  /* "calculateOnebp.pyx":1171
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1171
  * 		subtract = 0
  * 
  * 	next_base_info = base_info - subtract             # <<<<<<<<<<<<<<
@@ -26882,7 +26888,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_v_next_base_info = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1173
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1173
  * 	next_base_info = base_info - subtract
  * 
  * 	return next_base_info, mgw, prot             # <<<<<<<<<<<<<<
@@ -26905,7 +26911,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1142
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1142
  * 
  * 
  * cpdef editComple5merProb(past_mer, oldBase, newBase):             # <<<<<<<<<<<<<<
@@ -26917,7 +26923,7 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_AddTraceback("calculateOnebp.editComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.editComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_base_info);
@@ -26931,8 +26937,8 @@ static PyObject *__pyx_f_14calculateOnebp_editComple5merProb(PyObject *__pyx_v_p
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_25editComple5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_25editComple5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_25editComple5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_25editComple5merProb(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_past_mer = 0;
   PyObject *__pyx_v_oldBase = 0;
   PyObject *__pyx_v_newBase = 0;
@@ -26991,24 +26997,24 @@ static PyObject *__pyx_pw_14calculateOnebp_25editComple5merProb(PyObject *__pyx_
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("editComple5merProb", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1142, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.editComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.editComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_24editComple5merProb(__pyx_self, __pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_24editComple5merProb(__pyx_self, __pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_24editComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_24editComple5merProb(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_past_mer, PyObject *__pyx_v_oldBase, PyObject *__pyx_v_newBase) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("editComple5merProb", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_editComple5merProb(__pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1142, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editComple5merProb(__pyx_v_past_mer, __pyx_v_oldBase, __pyx_v_newBase, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1142, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -27017,7 +27023,7 @@ static PyObject *__pyx_pf_14calculateOnebp_24editComple5merProb(CYTHON_UNUSED Py
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.editComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.editComple5merProb", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -27025,7 +27031,7 @@ static PyObject *__pyx_pf_14calculateOnebp_24editComple5merProb(CYTHON_UNUSED Py
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1176
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1176
  * 
  * 
  * cpdef findStartGibbs(seq, seqLen):             # <<<<<<<<<<<<<<
@@ -27033,8 +27039,8 @@ static PyObject *__pyx_pf_14calculateOnebp_24editComple5merProb(CYTHON_UNUSED Py
  * 	subtract = -1
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_27findStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, PyObject *__pyx_v_seqLen, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_27findStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, PyObject *__pyx_v_seqLen, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_gibbs = NULL;
   PyObject *__pyx_v_subtract = NULL;
   PyObject *__pyx_v_i = NULL;
@@ -27058,7 +27064,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("findStartGibbs", 0);
 
-  /* "calculateOnebp.pyx":1177
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1177
  * 
  * cpdef findStartGibbs(seq, seqLen):
  * 	gibbs = 0             # <<<<<<<<<<<<<<
@@ -27068,7 +27074,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_gibbs = __pyx_int_0;
 
-  /* "calculateOnebp.pyx":1178
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1178
  * cpdef findStartGibbs(seq, seqLen):
  * 	gibbs = 0
  * 	subtract = -1             # <<<<<<<<<<<<<<
@@ -27078,7 +27084,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_subtract = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":1180
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1180
  * 	subtract = -1
  * 
  * 	for i in range(seqLen-1):             # <<<<<<<<<<<<<<
@@ -27133,7 +27139,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1181
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1181
  * 
  * 	for i in range(seqLen-1):
  * 		dimer = seq[i:(i+2)].upper()             # <<<<<<<<<<<<<<
@@ -27166,7 +27172,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
     __Pyx_XDECREF_SET(__pyx_v_dimer, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1182
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1182
  * 	for i in range(seqLen-1):
  * 		dimer = seq[i:(i+2)].upper()
  * 		if( 'N' in dimer):             # <<<<<<<<<<<<<<
@@ -27177,7 +27183,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
     __pyx_t_8 = (__pyx_t_7 != 0);
     if (__pyx_t_8) {
 
-      /* "calculateOnebp.pyx":1183
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1183
  * 		dimer = seq[i:(i+2)].upper()
  * 		if( 'N' in dimer):
  * 			gibbs = gibbs + vari.N_GIBBS             # <<<<<<<<<<<<<<
@@ -27195,7 +27201,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
       __Pyx_DECREF_SET(__pyx_v_gibbs, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1182
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1182
  * 	for i in range(seqLen-1):
  * 		dimer = seq[i:(i+2)].upper()
  * 		if( 'N' in dimer):             # <<<<<<<<<<<<<<
@@ -27205,7 +27211,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1185
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1185
  * 			gibbs = gibbs + vari.N_GIBBS
  * 		else:
  * 			dimer_idx = 0             # <<<<<<<<<<<<<<
@@ -27216,7 +27222,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
       __Pyx_INCREF(__pyx_int_0);
       __Pyx_XDECREF_SET(__pyx_v_dimer_idx, __pyx_int_0);
 
-      /* "calculateOnebp.pyx":1186
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1186
  * 		else:
  * 			dimer_idx = 0
  * 			for j in range(2):             # <<<<<<<<<<<<<<
@@ -27229,7 +27235,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
         __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_2);
         __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":1187
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1187
  * 			dimer_idx = 0
  * 			for j in range(2):
  * 				if(dimer[j]=='A'):             # <<<<<<<<<<<<<<
@@ -27242,7 +27248,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (__pyx_t_8) {
 
-          /* "calculateOnebp.pyx":1188
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1188
  * 			for j in range(2):
  * 				if(dimer[j]=='A'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 0             # <<<<<<<<<<<<<<
@@ -27312,7 +27318,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
           __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":1187
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1187
  * 			dimer_idx = 0
  * 			for j in range(2):
  * 				if(dimer[j]=='A'):             # <<<<<<<<<<<<<<
@@ -27322,7 +27328,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
           goto __pyx_L8;
         }
 
-        /* "calculateOnebp.pyx":1189
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1189
  * 				if(dimer[j]=='A'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 				elif(dimer[j]=='C'):             # <<<<<<<<<<<<<<
@@ -27335,7 +27341,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (__pyx_t_8) {
 
-          /* "calculateOnebp.pyx":1190
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1190
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 				elif(dimer[j]=='C'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 1             # <<<<<<<<<<<<<<
@@ -27405,7 +27411,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
           __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":1189
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1189
  * 				if(dimer[j]=='A'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 				elif(dimer[j]=='C'):             # <<<<<<<<<<<<<<
@@ -27415,7 +27421,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
           goto __pyx_L8;
         }
 
-        /* "calculateOnebp.pyx":1191
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1191
  * 				elif(dimer[j]=='C'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 				elif(dimer[j]=='G'):             # <<<<<<<<<<<<<<
@@ -27428,7 +27434,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (__pyx_t_8) {
 
-          /* "calculateOnebp.pyx":1192
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1192
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 				elif(dimer[j]=='G'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 2             # <<<<<<<<<<<<<<
@@ -27498,7 +27504,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
           __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":1191
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1191
  * 				elif(dimer[j]=='C'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 				elif(dimer[j]=='G'):             # <<<<<<<<<<<<<<
@@ -27508,7 +27514,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
           goto __pyx_L8;
         }
 
-        /* "calculateOnebp.pyx":1193
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1193
  * 				elif(dimer[j]=='G'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 				elif(dimer[j]=='T'):             # <<<<<<<<<<<<<<
@@ -27521,7 +27527,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         if (__pyx_t_8) {
 
-          /* "calculateOnebp.pyx":1194
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1194
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 				elif(dimer[j]=='T'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 3             # <<<<<<<<<<<<<<
@@ -27591,7 +27597,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
           __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_2);
           __pyx_t_2 = 0;
 
-          /* "calculateOnebp.pyx":1193
+          /* "CRADLE/CorrectBias/calculateOnebp.pyx":1193
  * 				elif(dimer[j]=='G'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 				elif(dimer[j]=='T'):             # <<<<<<<<<<<<<<
@@ -27602,7 +27608,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
         __pyx_L8:;
       }
 
-      /* "calculateOnebp.pyx":1195
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1195
  * 				elif(dimer[j]=='T'):
  * 					dimer_idx = dimer_idx + np.power(4, 1-j) * 3
  * 			gibbs = gibbs + vari.GIBBS[dimer_idx][1]             # <<<<<<<<<<<<<<
@@ -27628,7 +27634,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
     }
     __pyx_L5:;
 
-    /* "calculateOnebp.pyx":1197
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1197
  * 			gibbs = gibbs + vari.GIBBS[dimer_idx][1]
  * 
  * 		if(i==0):             # <<<<<<<<<<<<<<
@@ -27641,7 +27647,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_8) {
 
-      /* "calculateOnebp.pyx":1198
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1198
  * 
  * 		if(i==0):
  * 			subtract = gibbs             # <<<<<<<<<<<<<<
@@ -27651,7 +27657,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
       __Pyx_INCREF(__pyx_v_gibbs);
       __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_v_gibbs);
 
-      /* "calculateOnebp.pyx":1197
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1197
  * 			gibbs = gibbs + vari.GIBBS[dimer_idx][1]
  * 
  * 		if(i==0):             # <<<<<<<<<<<<<<
@@ -27660,7 +27666,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
  */
     }
 
-    /* "calculateOnebp.pyx":1180
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1180
  * 	subtract = -1
  * 
  * 	for i in range(seqLen-1):             # <<<<<<<<<<<<<<
@@ -27670,7 +27676,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1200
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1200
  * 			subtract = gibbs
  * 
  * 	start_gibbs = gibbs - subtract             # <<<<<<<<<<<<<<
@@ -27682,7 +27688,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
   __pyx_v_start_gibbs = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1202
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1202
  * 	start_gibbs = gibbs - subtract
  * 
  * 	return start_gibbs, gibbs             # <<<<<<<<<<<<<<
@@ -27702,7 +27708,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1176
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1176
  * 
  * 
  * cpdef findStartGibbs(seq, seqLen):             # <<<<<<<<<<<<<<
@@ -27718,7 +27724,7 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_10);
   __Pyx_XDECREF(__pyx_t_12);
-  __Pyx_AddTraceback("calculateOnebp.findStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.findStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_gibbs);
@@ -27734,8 +27740,8 @@ static PyObject *__pyx_f_14calculateOnebp_findStartGibbs(PyObject *__pyx_v_seq, 
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_27findStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_27findStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_27findStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_27findStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_seq = 0;
   PyObject *__pyx_v_seqLen = 0;
   PyObject *__pyx_r = 0;
@@ -27783,24 +27789,24 @@ static PyObject *__pyx_pw_14calculateOnebp_27findStartGibbs(PyObject *__pyx_self
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("findStartGibbs", 1, 2, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1176, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.findStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.findStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_26findStartGibbs(__pyx_self, __pyx_v_seq, __pyx_v_seqLen);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_26findStartGibbs(__pyx_self, __pyx_v_seq, __pyx_v_seqLen);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_26findStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_seq, PyObject *__pyx_v_seqLen) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_26findStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_seq, PyObject *__pyx_v_seqLen) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("findStartGibbs", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_findStartGibbs(__pyx_v_seq, __pyx_v_seqLen, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1176, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_findStartGibbs(__pyx_v_seq, __pyx_v_seqLen, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -27809,7 +27815,7 @@ static PyObject *__pyx_pf_14calculateOnebp_26findStartGibbs(CYTHON_UNUSED PyObje
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.findStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.findStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -27817,7 +27823,7 @@ static PyObject *__pyx_pf_14calculateOnebp_26findStartGibbs(CYTHON_UNUSED PyObje
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1205
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1205
  * 
  * 
  * cpdef editStartGibbs(oldDimer, newDimer, past_start_gibbs):             # <<<<<<<<<<<<<<
@@ -27825,8 +27831,8 @@ static PyObject *__pyx_pf_14calculateOnebp_26findStartGibbs(CYTHON_UNUSED PyObje
  * 	subtract = -1
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_29editStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDimer, PyObject *__pyx_v_newDimer, PyObject *__pyx_v_past_start_gibbs, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_29editStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDimer, PyObject *__pyx_v_newDimer, PyObject *__pyx_v_past_start_gibbs, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_gibbs = NULL;
   PyObject *__pyx_v_subtract = NULL;
   PyObject *__pyx_v_dimer_idx = NULL;
@@ -27845,7 +27851,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("editStartGibbs", 0);
 
-  /* "calculateOnebp.pyx":1206
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1206
  * 
  * cpdef editStartGibbs(oldDimer, newDimer, past_start_gibbs):
  * 	gibbs = past_start_gibbs             # <<<<<<<<<<<<<<
@@ -27855,7 +27861,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   __Pyx_INCREF(__pyx_v_past_start_gibbs);
   __pyx_v_gibbs = __pyx_v_past_start_gibbs;
 
-  /* "calculateOnebp.pyx":1207
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1207
  * cpdef editStartGibbs(oldDimer, newDimer, past_start_gibbs):
  * 	gibbs = past_start_gibbs
  * 	subtract = -1             # <<<<<<<<<<<<<<
@@ -27865,7 +27871,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   __Pyx_INCREF(__pyx_int_neg_1);
   __pyx_v_subtract = __pyx_int_neg_1;
 
-  /* "calculateOnebp.pyx":1210
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1210
  * 
  * 	# newDimer
  * 	if( 'N' in newDimer):             # <<<<<<<<<<<<<<
@@ -27876,7 +27882,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
 
-    /* "calculateOnebp.pyx":1211
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1211
  * 	# newDimer
  * 	if( 'N' in newDimer):
  * 		gibbs = gibbs + vari.N_GIBBS             # <<<<<<<<<<<<<<
@@ -27894,7 +27900,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
     __Pyx_DECREF_SET(__pyx_v_gibbs, __pyx_t_3);
     __pyx_t_3 = 0;
 
-    /* "calculateOnebp.pyx":1210
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1210
  * 
  * 	# newDimer
  * 	if( 'N' in newDimer):             # <<<<<<<<<<<<<<
@@ -27904,7 +27910,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1213
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1213
  * 		gibbs = gibbs + vari.N_GIBBS
  * 	else:
  * 		dimer_idx = 0             # <<<<<<<<<<<<<<
@@ -27915,7 +27921,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
     __Pyx_INCREF(__pyx_int_0);
     __pyx_v_dimer_idx = __pyx_int_0;
 
-    /* "calculateOnebp.pyx":1214
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1214
  * 	else:
  * 		dimer_idx = 0
  * 		for j in range(2):             # <<<<<<<<<<<<<<
@@ -27928,7 +27934,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_3);
       __pyx_t_3 = 0;
 
-      /* "calculateOnebp.pyx":1215
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1215
  * 		dimer_idx = 0
  * 		for j in range(2):
  * 			if(newDimer[j]=='A'):             # <<<<<<<<<<<<<<
@@ -27941,7 +27947,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_2) {
 
-        /* "calculateOnebp.pyx":1216
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1216
  * 		for j in range(2):
  * 			if(newDimer[j]=='A'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0             # <<<<<<<<<<<<<<
@@ -28011,7 +28017,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":1215
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1215
  * 		dimer_idx = 0
  * 		for j in range(2):
  * 			if(newDimer[j]=='A'):             # <<<<<<<<<<<<<<
@@ -28021,7 +28027,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         goto __pyx_L6;
       }
 
-      /* "calculateOnebp.pyx":1217
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1217
  * 			if(newDimer[j]=='A'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 			elif(newDimer[j]=='C'):             # <<<<<<<<<<<<<<
@@ -28034,7 +28040,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_2) {
 
-        /* "calculateOnebp.pyx":1218
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1218
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 			elif(newDimer[j]=='C'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1             # <<<<<<<<<<<<<<
@@ -28104,7 +28110,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":1217
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1217
  * 			if(newDimer[j]=='A'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 			elif(newDimer[j]=='C'):             # <<<<<<<<<<<<<<
@@ -28114,7 +28120,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         goto __pyx_L6;
       }
 
-      /* "calculateOnebp.pyx":1219
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1219
  * 			elif(newDimer[j]=='C'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 			elif(newDimer[j]=='G'):             # <<<<<<<<<<<<<<
@@ -28127,7 +28133,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_2) {
 
-        /* "calculateOnebp.pyx":1220
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1220
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 			elif(newDimer[j]=='G'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2             # <<<<<<<<<<<<<<
@@ -28197,7 +28203,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":1219
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1219
  * 			elif(newDimer[j]=='C'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 			elif(newDimer[j]=='G'):             # <<<<<<<<<<<<<<
@@ -28207,7 +28213,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         goto __pyx_L6;
       }
 
-      /* "calculateOnebp.pyx":1221
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1221
  * 			elif(newDimer[j]=='G'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 			elif(newDimer[j]=='T'):             # <<<<<<<<<<<<<<
@@ -28220,7 +28226,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       if (__pyx_t_2) {
 
-        /* "calculateOnebp.pyx":1222
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1222
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 			elif(newDimer[j]=='T'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 3             # <<<<<<<<<<<<<<
@@ -28290,7 +28296,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_3);
         __pyx_t_3 = 0;
 
-        /* "calculateOnebp.pyx":1221
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1221
  * 			elif(newDimer[j]=='G'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 			elif(newDimer[j]=='T'):             # <<<<<<<<<<<<<<
@@ -28301,7 +28307,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __pyx_L6:;
     }
 
-    /* "calculateOnebp.pyx":1223
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1223
  * 			elif(newDimer[j]=='T'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 3
  * 		gibbs = gibbs + vari.GIBBS[dimer_idx][1]             # <<<<<<<<<<<<<<
@@ -28327,7 +28333,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   }
   __pyx_L3:;
 
-  /* "calculateOnebp.pyx":1226
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1226
  * 
  * 	## remove the old dimer for the next iteration
  * 	if( 'N' in oldDimer):             # <<<<<<<<<<<<<<
@@ -28338,7 +28344,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
 
-    /* "calculateOnebp.pyx":1227
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1227
  * 	## remove the old dimer for the next iteration
  * 	if( 'N' in oldDimer):
  * 		subtract = vari.N_GIBBS             # <<<<<<<<<<<<<<
@@ -28353,7 +28359,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
     __Pyx_DECREF_SET(__pyx_v_subtract, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1226
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1226
  * 
  * 	## remove the old dimer for the next iteration
  * 	if( 'N' in oldDimer):             # <<<<<<<<<<<<<<
@@ -28363,7 +28369,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
     goto __pyx_L7;
   }
 
-  /* "calculateOnebp.pyx":1229
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1229
  * 		subtract = vari.N_GIBBS
  * 	else:
  * 		dimer_idx = 0             # <<<<<<<<<<<<<<
@@ -28374,7 +28380,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
     __Pyx_INCREF(__pyx_int_0);
     __Pyx_XDECREF_SET(__pyx_v_dimer_idx, __pyx_int_0);
 
-    /* "calculateOnebp.pyx":1230
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1230
  * 	else:
  * 		dimer_idx = 0
  * 		for j in range(2):             # <<<<<<<<<<<<<<
@@ -28387,7 +28393,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_XDECREF_SET(__pyx_v_j, __pyx_t_4);
       __pyx_t_4 = 0;
 
-      /* "calculateOnebp.pyx":1231
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1231
  * 		dimer_idx = 0
  * 		for j in range(2):
  * 			if(oldDimer[j]=='A'):             # <<<<<<<<<<<<<<
@@ -28400,7 +28406,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_1) {
 
-        /* "calculateOnebp.pyx":1232
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1232
  * 		for j in range(2):
  * 			if(oldDimer[j]=='A'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0             # <<<<<<<<<<<<<<
@@ -28470,7 +28476,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":1231
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1231
  * 		dimer_idx = 0
  * 		for j in range(2):
  * 			if(oldDimer[j]=='A'):             # <<<<<<<<<<<<<<
@@ -28480,7 +28486,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         goto __pyx_L10;
       }
 
-      /* "calculateOnebp.pyx":1233
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1233
  * 			if(oldDimer[j]=='A'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 			elif(oldDimer[j]=='C'):             # <<<<<<<<<<<<<<
@@ -28493,7 +28499,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_1) {
 
-        /* "calculateOnebp.pyx":1234
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1234
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 			elif(oldDimer[j]=='C'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1             # <<<<<<<<<<<<<<
@@ -28563,7 +28569,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":1233
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1233
  * 			if(oldDimer[j]=='A'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 0
  * 			elif(oldDimer[j]=='C'):             # <<<<<<<<<<<<<<
@@ -28573,7 +28579,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         goto __pyx_L10;
       }
 
-      /* "calculateOnebp.pyx":1235
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1235
  * 			elif(oldDimer[j]=='C'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 			elif(oldDimer[j]=='G'):             # <<<<<<<<<<<<<<
@@ -28586,7 +28592,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_1) {
 
-        /* "calculateOnebp.pyx":1236
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1236
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 			elif(oldDimer[j]=='G'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2             # <<<<<<<<<<<<<<
@@ -28656,7 +28662,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":1235
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1235
  * 			elif(oldDimer[j]=='C'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 1
  * 			elif(oldDimer[j]=='G'):             # <<<<<<<<<<<<<<
@@ -28666,7 +28672,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         goto __pyx_L10;
       }
 
-      /* "calculateOnebp.pyx":1237
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1237
  * 			elif(oldDimer[j]=='G'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 			elif(oldDimer[j]=='T'):             # <<<<<<<<<<<<<<
@@ -28679,7 +28685,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (__pyx_t_1) {
 
-        /* "calculateOnebp.pyx":1238
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1238
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 			elif(oldDimer[j]=='T'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 3             # <<<<<<<<<<<<<<
@@ -28749,7 +28755,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
         __Pyx_DECREF_SET(__pyx_v_dimer_idx, __pyx_t_4);
         __pyx_t_4 = 0;
 
-        /* "calculateOnebp.pyx":1237
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1237
  * 			elif(oldDimer[j]=='G'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 2
  * 			elif(oldDimer[j]=='T'):             # <<<<<<<<<<<<<<
@@ -28760,7 +28766,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
       __pyx_L10:;
     }
 
-    /* "calculateOnebp.pyx":1239
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1239
  * 			elif(oldDimer[j]=='T'):
  * 				dimer_idx = dimer_idx + np.power(4, 1-j) * 3
  * 		subtract = vari.GIBBS[dimer_idx][1]             # <<<<<<<<<<<<<<
@@ -28783,7 +28789,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   }
   __pyx_L7:;
 
-  /* "calculateOnebp.pyx":1241
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1241
  * 		subtract = vari.GIBBS[dimer_idx][1]
  * 
  * 	start_gibbs = gibbs - subtract             # <<<<<<<<<<<<<<
@@ -28795,7 +28801,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   __pyx_v_start_gibbs = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":1243
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1243
  * 	start_gibbs = gibbs - subtract
  * 
  * 	return start_gibbs, gibbs             # <<<<<<<<<<<<<<
@@ -28815,7 +28821,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1205
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1205
  * 
  * 
  * cpdef editStartGibbs(oldDimer, newDimer, past_start_gibbs):             # <<<<<<<<<<<<<<
@@ -28830,7 +28836,7 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_9);
-  __Pyx_AddTraceback("calculateOnebp.editStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.editStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_gibbs);
@@ -28844,8 +28850,8 @@ static PyObject *__pyx_f_14calculateOnebp_editStartGibbs(PyObject *__pyx_v_oldDi
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_29editStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_29editStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_29editStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_29editStartGibbs(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_oldDimer = 0;
   PyObject *__pyx_v_newDimer = 0;
   PyObject *__pyx_v_past_start_gibbs = 0;
@@ -28904,24 +28910,24 @@ static PyObject *__pyx_pw_14calculateOnebp_29editStartGibbs(PyObject *__pyx_self
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("editStartGibbs", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1205, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.editStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.editStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_28editStartGibbs(__pyx_self, __pyx_v_oldDimer, __pyx_v_newDimer, __pyx_v_past_start_gibbs);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_28editStartGibbs(__pyx_self, __pyx_v_oldDimer, __pyx_v_newDimer, __pyx_v_past_start_gibbs);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_28editStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_oldDimer, PyObject *__pyx_v_newDimer, PyObject *__pyx_v_past_start_gibbs) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_28editStartGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_oldDimer, PyObject *__pyx_v_newDimer, PyObject *__pyx_v_past_start_gibbs) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("editStartGibbs", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_v_past_start_gibbs, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1205, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_editStartGibbs(__pyx_v_oldDimer, __pyx_v_newDimer, __pyx_v_past_start_gibbs, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1205, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -28930,7 +28936,7 @@ static PyObject *__pyx_pf_14calculateOnebp_28editStartGibbs(CYTHON_UNUSED PyObje
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.editStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.editStartGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -28938,7 +28944,7 @@ static PyObject *__pyx_pf_14calculateOnebp_28editStartGibbs(CYTHON_UNUSED PyObje
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1246
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1246
  * 
  * 
  * cpdef convertGibbs(gibbs):             # <<<<<<<<<<<<<<
@@ -28946,8 +28952,8 @@ static PyObject *__pyx_pf_14calculateOnebp_28editStartGibbs(CYTHON_UNUSED PyObje
  * 	tm = (tm - vari.MIN_TM) / (vari.MAX_TM - vari.MIN_TM)
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_31convertGibbs(PyObject *__pyx_self, PyObject *__pyx_v_gibbs); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_31convertGibbs(PyObject *__pyx_self, PyObject *__pyx_v_gibbs); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_tm = NULL;
   PyObject *__pyx_v_anneal = NULL;
   PyObject *__pyx_v_denature = NULL;
@@ -28959,7 +28965,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("convertGibbs", 0);
 
-  /* "calculateOnebp.pyx":1247
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1247
  * 
  * cpdef convertGibbs(gibbs):
  * 	tm = gibbs / (vari.ENTROPY*(vari.FRAGLEN-1))             # <<<<<<<<<<<<<<
@@ -28989,7 +28995,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __pyx_v_tm = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1248
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1248
  * cpdef convertGibbs(gibbs):
  * 	tm = gibbs / (vari.ENTROPY*(vari.FRAGLEN-1))
  * 	tm = (tm - vari.MIN_TM) / (vari.MAX_TM - vari.MIN_TM)             # <<<<<<<<<<<<<<
@@ -29025,7 +29031,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __Pyx_DECREF_SET(__pyx_v_tm, __pyx_t_4);
   __pyx_t_4 = 0;
 
-  /* "calculateOnebp.pyx":1251
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1251
  * 
  * 	## anneal
  * 	anneal = ( math.exp(tm) - vari.PARA1 ) * vari.PARA2             # <<<<<<<<<<<<<<
@@ -29073,7 +29079,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __pyx_v_anneal = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":1252
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1252
  * 	## anneal
  * 	anneal = ( math.exp(tm) - vari.PARA1 ) * vari.PARA2
  * 	anneal = np.log(anneal)             # <<<<<<<<<<<<<<
@@ -29103,7 +29109,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __Pyx_DECREF_SET(__pyx_v_anneal, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":1255
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1255
  * 
  * 	## denature
  * 	tm = tm - 1             # <<<<<<<<<<<<<<
@@ -29115,7 +29121,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __Pyx_DECREF_SET(__pyx_v_tm, __pyx_t_3);
   __pyx_t_3 = 0;
 
-  /* "calculateOnebp.pyx":1256
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1256
  * 	## denature
  * 	tm = tm - 1
  * 	denature = ( math.exp( tm*(-1) ) - vari.PARA1 ) * vari.PARA2             # <<<<<<<<<<<<<<
@@ -29166,7 +29172,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __pyx_v_denature = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1257
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1257
  * 	tm = tm - 1
  * 	denature = ( math.exp( tm*(-1) ) - vari.PARA1 ) * vari.PARA2
  * 	denature = math.log(denature)             # <<<<<<<<<<<<<<
@@ -29196,7 +29202,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __Pyx_DECREF_SET(__pyx_v_denature, __pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1259
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1259
  * 	denature = math.log(denature)
  * 
  * 	return anneal, denature             # <<<<<<<<<<<<<<
@@ -29216,7 +29222,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1246
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1246
  * 
  * 
  * cpdef convertGibbs(gibbs):             # <<<<<<<<<<<<<<
@@ -29230,7 +29236,7 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_AddTraceback("calculateOnebp.convertGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.convertGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_tm);
@@ -29242,25 +29248,25 @@ static PyObject *__pyx_f_14calculateOnebp_convertGibbs(PyObject *__pyx_v_gibbs, 
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_31convertGibbs(PyObject *__pyx_self, PyObject *__pyx_v_gibbs); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_31convertGibbs(PyObject *__pyx_self, PyObject *__pyx_v_gibbs) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_31convertGibbs(PyObject *__pyx_self, PyObject *__pyx_v_gibbs); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_31convertGibbs(PyObject *__pyx_self, PyObject *__pyx_v_gibbs) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("convertGibbs (wrapper)", 0);
-  __pyx_r = __pyx_pf_14calculateOnebp_30convertGibbs(__pyx_self, ((PyObject *)__pyx_v_gibbs));
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_30convertGibbs(__pyx_self, ((PyObject *)__pyx_v_gibbs));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_30convertGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_gibbs) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_30convertGibbs(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_gibbs) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("convertGibbs", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1246, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_convertGibbs(__pyx_v_gibbs, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1246, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -29269,7 +29275,7 @@ static PyObject *__pyx_pf_14calculateOnebp_30convertGibbs(CYTHON_UNUSED PyObject
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.convertGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.convertGibbs", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -29277,7 +29283,7 @@ static PyObject *__pyx_pf_14calculateOnebp_30convertGibbs(CYTHON_UNUSED PyObject
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1262
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1262
  * 
  * 
  * cpdef correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins):             # <<<<<<<<<<<<<<
@@ -29285,8 +29291,8 @@ static PyObject *__pyx_pf_14calculateOnebp_30convertGibbs(CYTHON_UNUSED PyObject
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_33correctReadCount(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_covariFileName, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_lastBin, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_33correctReadCount(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_correctReadCount(PyObject *__pyx_v_covariFileName, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_lastBin, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_region_start = NULL;
   PyObject *__pyx_v_region_end = NULL;
   PyObject *__pyx_v_lastBin_start = NULL;
@@ -29326,7 +29332,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   Py_ssize_t __pyx_t_14;
   __Pyx_RefNannySetupContext("correctReadCount", 0);
 
-  /* "calculateOnebp.pyx":1263
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1263
  * 
  * cpdef correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins):
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')             # <<<<<<<<<<<<<<
@@ -29343,7 +29349,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1264
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1264
  * cpdef correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins):
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')             # <<<<<<<<<<<<<<
@@ -29360,7 +29366,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1266
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1266
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')
  * 
  * 	region_start = analysis_start             # <<<<<<<<<<<<<<
@@ -29370,7 +29376,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __Pyx_INCREF(__pyx_v_analysis_start);
   __pyx_v_region_start = __pyx_v_analysis_start;
 
-  /* "calculateOnebp.pyx":1267
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1267
  * 
  * 	region_start = analysis_start
  * 	if(lastBin == False):             # <<<<<<<<<<<<<<
@@ -29382,7 +29388,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1268
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1268
  * 	region_start = analysis_start
  * 	if(lastBin == False):
  * 		region_end = analysis_start + vari.BINSIZE * nBins             # <<<<<<<<<<<<<<
@@ -29403,7 +29409,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __pyx_v_region_end = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1269
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1269
  * 	if(lastBin == False):
  * 		region_end = analysis_start + vari.BINSIZE * nBins
  * 		lastBin_start = None             # <<<<<<<<<<<<<<
@@ -29413,7 +29419,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_INCREF(Py_None);
     __pyx_v_lastBin_start = Py_None;
 
-    /* "calculateOnebp.pyx":1270
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1270
  * 		region_end = analysis_start + vari.BINSIZE * nBins
  * 		lastBin_start = None
  * 		lastBin_end = None             # <<<<<<<<<<<<<<
@@ -29423,7 +29429,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_INCREF(Py_None);
     __pyx_v_lastBin_end = Py_None;
 
-    /* "calculateOnebp.pyx":1267
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1267
  * 
  * 	region_start = analysis_start
  * 	if(lastBin == False):             # <<<<<<<<<<<<<<
@@ -29433,7 +29439,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     goto __pyx_L3;
   }
 
-  /* "calculateOnebp.pyx":1272
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1272
  * 		lastBin_end = None
  * 	else: # lastBin == True
  * 		region_end = analysis_start + vari.BINSIZE * (nBins-1)             # <<<<<<<<<<<<<<
@@ -29458,7 +29464,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __pyx_v_region_end = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1273
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1273
  * 	else: # lastBin == True
  * 		region_end = analysis_start + vari.BINSIZE * (nBins-1)
  * 		lastBin_start = region_end             # <<<<<<<<<<<<<<
@@ -29468,7 +29474,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_INCREF(__pyx_v_region_end);
     __pyx_v_lastBin_start = __pyx_v_region_end;
 
-    /* "calculateOnebp.pyx":1274
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1274
  * 		region_end = analysis_start + vari.BINSIZE * (nBins-1)
  * 		lastBin_start = region_end
  * 		lastBin_end = analysis_end             # <<<<<<<<<<<<<<
@@ -29480,7 +29486,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   }
   __pyx_L3:;
 
-  /* "calculateOnebp.pyx":1277
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1277
  * 
  * 	## OUTPUT FILES
  * 	subfinalCtrl = [0] * vari.CTRLBW_NUM             # <<<<<<<<<<<<<<
@@ -29506,7 +29512,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_v_subfinalCtrl = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1278
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1278
  * 	## OUTPUT FILES
  * 	subfinalCtrl = [0] * vari.CTRLBW_NUM
  * 	subfinalCtrlNames = [0] * vari.CTRLBW_NUM             # <<<<<<<<<<<<<<
@@ -29532,7 +29538,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_v_subfinalCtrlNames = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1279
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1279
  * 	subfinalCtrl = [0] * vari.CTRLBW_NUM
  * 	subfinalCtrlNames = [0] * vari.CTRLBW_NUM
  * 	subfinalExp = [0] * vari.EXPBW_NUM             # <<<<<<<<<<<<<<
@@ -29558,7 +29564,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_v_subfinalExp = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1280
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1280
  * 	subfinalCtrlNames = [0] * vari.CTRLBW_NUM
  * 	subfinalExp = [0] * vari.EXPBW_NUM
  * 	subfinalExpNames = [0] * vari.EXPBW_NUM             # <<<<<<<<<<<<<<
@@ -29584,7 +29590,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_v_subfinalExpNames = ((PyObject*)__pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1282
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1282
  * 	subfinalExpNames = [0] * vari.EXPBW_NUM
  * 
  * 	for i in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -29642,7 +29648,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1283
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1283
  * 
  * 	for i in range(vari.CTRLBW_NUM):
  * 		subfinalCtrl[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)             # <<<<<<<<<<<<<<
@@ -29673,7 +29679,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     if (unlikely(PyObject_SetItem(__pyx_v_subfinalCtrl, __pyx_v_i, __pyx_t_8) < 0)) __PYX_ERR(0, 1283, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-    /* "calculateOnebp.pyx":1284
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1284
  * 	for i in range(vari.CTRLBW_NUM):
  * 		subfinalCtrl[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
  * 		subfinalCtrlNames[i] = subfinalCtrl[i].name             # <<<<<<<<<<<<<<
@@ -29688,7 +29694,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     if (unlikely(PyObject_SetItem(__pyx_v_subfinalCtrlNames, __pyx_v_i, __pyx_t_2) < 0)) __PYX_ERR(0, 1284, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1285
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1285
  * 		subfinalCtrl[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
  * 		subfinalCtrlNames[i] = subfinalCtrl[i].name
  * 		subfinalCtrl[i].close()             # <<<<<<<<<<<<<<
@@ -29717,7 +29723,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1282
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1282
  * 	subfinalExpNames = [0] * vari.EXPBW_NUM
  * 
  * 	for i in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -29727,7 +29733,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-  /* "calculateOnebp.pyx":1287
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1287
  * 		subfinalCtrl[i].close()
  * 
  * 	for i in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -29785,7 +29791,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_4);
     __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1288
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1288
  * 
  * 	for i in range(vari.EXPBW_NUM):
  * 		subfinalExp[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)             # <<<<<<<<<<<<<<
@@ -29816,7 +29822,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     if (unlikely(PyObject_SetItem(__pyx_v_subfinalExp, __pyx_v_i, __pyx_t_7) < 0)) __PYX_ERR(0, 1288, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":1289
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1289
  * 	for i in range(vari.EXPBW_NUM):
  * 		subfinalExp[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
  * 		subfinalExpNames[i] = subfinalExp[i].name             # <<<<<<<<<<<<<<
@@ -29831,7 +29837,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     if (unlikely(PyObject_SetItem(__pyx_v_subfinalExpNames, __pyx_v_i, __pyx_t_4) < 0)) __PYX_ERR(0, 1289, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1290
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1290
  * 		subfinalExp[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
  * 		subfinalExpNames[i] = subfinalExp[i].name
  * 		subfinalExp[i].close()             # <<<<<<<<<<<<<<
@@ -29860,7 +29866,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
 
-    /* "calculateOnebp.pyx":1287
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1287
  * 		subfinalCtrl[i].close()
  * 
  * 	for i in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -29870,14 +29876,14 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1293
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1293
  * 
  * 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > FILTERVALUE
  * 	selectedIdx, highRC_idx, starts = selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins)             # <<<<<<<<<<<<<<
  * 
  * 	if(len(selectedIdx) == 0):
  */
-  __pyx_t_2 = __pyx_f_14calculateOnebp_selectIdx(__pyx_v_chromo, __pyx_v_region_start, __pyx_v_region_end, __pyx_v_lastBin_start, __pyx_v_lastBin_end, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1293, __pyx_L1_error)
+  __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_selectIdx(__pyx_v_chromo, __pyx_v_region_start, __pyx_v_region_end, __pyx_v_lastBin_start, __pyx_v_lastBin_end, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1293, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if ((likely(PyTuple_CheckExact(__pyx_t_2))) || (PyList_CheckExact(__pyx_t_2))) {
     PyObject* sequence = __pyx_t_2;
@@ -29939,7 +29945,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_v_starts = __pyx_t_7;
   __pyx_t_7 = 0;
 
-  /* "calculateOnebp.pyx":1295
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1295
  * 	selectedIdx, highRC_idx, starts = selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins)
  * 
  * 	if(len(selectedIdx) == 0):             # <<<<<<<<<<<<<<
@@ -29950,7 +29956,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_t_3 = ((__pyx_t_5 == 0) != 0);
   if (__pyx_t_3) {
 
-    /* "calculateOnebp.pyx":1296
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1296
  * 
  * 	if(len(selectedIdx) == 0):
  * 		for i in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -30008,7 +30014,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1297
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1297
  * 	if(len(selectedIdx) == 0):
  * 		for i in range(vari.CTRLBW_NUM):
  * 			os.remove(subfinalCtrlNames[i])             # <<<<<<<<<<<<<<
@@ -30040,7 +30046,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1296
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1296
  * 
  * 	if(len(selectedIdx) == 0):
  * 		for i in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -30050,7 +30056,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     }
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":1298
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1298
  * 		for i in range(vari.CTRLBW_NUM):
  * 			os.remove(subfinalCtrlNames[i])
  * 		for i in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -30108,7 +30114,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":1299
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1299
  * 			os.remove(subfinalCtrlNames[i])
  * 		for i in range(vari.EXPBW_NUM):
  * 			os.remove(subfinalExpNames[i])             # <<<<<<<<<<<<<<
@@ -30140,7 +30146,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":1298
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1298
  * 		for i in range(vari.CTRLBW_NUM):
  * 			os.remove(subfinalCtrlNames[i])
  * 		for i in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -30150,7 +30156,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     }
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1301
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1301
  * 			os.remove(subfinalExpNames[i])
  * 
  * 		os.remove(covariFileName)             # <<<<<<<<<<<<<<
@@ -30179,7 +30185,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1303
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1303
  * 		os.remove(covariFileName)
  * 
  * 		return [ [None] * vari.CTRLBW_NUM, [None] * vari.EXPBW_NUM, chromo ]             # <<<<<<<<<<<<<<
@@ -30234,7 +30240,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __pyx_t_7 = 0;
     goto __pyx_L0;
 
-    /* "calculateOnebp.pyx":1295
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1295
  * 	selectedIdx, highRC_idx, starts = selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins)
  * 
  * 	if(len(selectedIdx) == 0):             # <<<<<<<<<<<<<<
@@ -30243,7 +30249,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
  */
   }
 
-  /* "calculateOnebp.pyx":1306
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1306
  * 
  * 
  * 	f = h5py.File(covariFileName, "r")             # <<<<<<<<<<<<<<
@@ -30303,7 +30309,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_v_f = __pyx_t_7;
   __pyx_t_7 = 0;
 
-  /* "calculateOnebp.pyx":1308
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1308
  * 	f = h5py.File(covariFileName, "r")
  * 
  * 	for rep in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -30361,7 +30367,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_rep, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":1310
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1310
  * 	for rep in range(vari.CTRLBW_NUM):
  * 		## observed read counts
  * 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])             # <<<<<<<<<<<<<<
@@ -30400,7 +30406,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_bw, __pyx_t_7);
     __pyx_t_7 = 0;
 
-    /* "calculateOnebp.pyx":1311
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1311
  * 		## observed read counts
  * 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
  * 		if(lastBin == True):             # <<<<<<<<<<<<<<
@@ -30412,7 +30418,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1312
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1312
  * 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
  * 		if(lastBin == True):
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))             # <<<<<<<<<<<<<<
@@ -30468,7 +30474,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_rcArr, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":1313
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1313
  * 		if(lastBin == True):
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			rcArr[np.where(rcArr==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -30503,7 +30509,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":1314
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1314
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			rcArr[np.where(rcArr==None)] = float(0)
  * 			rcArr = rcArr.tolist()             # <<<<<<<<<<<<<<
@@ -30530,7 +30536,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":1316
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1316
  * 			rcArr = rcArr.tolist()
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]             # <<<<<<<<<<<<<<
@@ -30565,7 +30571,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_last_value, __pyx_t_11);
       __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1317
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1317
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -30577,7 +30583,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       if (__pyx_t_3) {
 
-        /* "calculateOnebp.pyx":1318
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1318
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):
  * 				last_value = float(0)             # <<<<<<<<<<<<<<
@@ -30589,7 +30595,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         __Pyx_DECREF_SET(__pyx_v_last_value, __pyx_t_11);
         __pyx_t_11 = 0;
 
-        /* "calculateOnebp.pyx":1317
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1317
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -30598,7 +30604,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
  */
       }
 
-      /* "calculateOnebp.pyx":1319
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1319
  * 			if(last_value == None):
  * 				last_value = float(0)
  * 			rcArr.extend([last_value])             # <<<<<<<<<<<<<<
@@ -30630,7 +30636,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1320
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1320
  * 				last_value = float(0)
  * 			rcArr.extend([last_value])
  * 			rcArr = np.array(rcArr)             # <<<<<<<<<<<<<<
@@ -30660,7 +30666,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_11);
       __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1311
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1311
  * 		## observed read counts
  * 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
  * 		if(lastBin == True):             # <<<<<<<<<<<<<<
@@ -30670,7 +30676,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       goto __pyx_L17;
     }
 
-    /* "calculateOnebp.pyx":1322
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1322
  * 			rcArr = np.array(rcArr)
  * 		else:
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))             # <<<<<<<<<<<<<<
@@ -30724,7 +30730,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_rcArr, __pyx_t_11);
       __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1323
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1323
  * 		else:
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))
  * 			rcArr[np.where(rcArr==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -30761,7 +30767,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     }
     __pyx_L17:;
 
-    /* "calculateOnebp.pyx":1324
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1324
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))
  * 			rcArr[np.where(rcArr==None)] = float(0)
  * 		rcArr = rcArr / vari.CTRLSCALER[rep]             # <<<<<<<<<<<<<<
@@ -30782,7 +30788,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_12);
     __pyx_t_12 = 0;
 
-    /* "calculateOnebp.pyx":1325
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1325
  * 			rcArr[np.where(rcArr==None)] = float(0)
  * 		rcArr = rcArr / vari.CTRLSCALER[rep]
  * 		bw.close()             # <<<<<<<<<<<<<<
@@ -30808,7 +30814,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-    /* "calculateOnebp.pyx":1328
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1328
  * 
  * 		## predicted read counts
  * 		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFCTRL[rep, 1:], axis=1) + vari.COEFCTRL[rep, 0])             # <<<<<<<<<<<<<<
@@ -30904,7 +30910,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_prdvals, __pyx_t_12);
     __pyx_t_12 = 0;
 
-    /* "calculateOnebp.pyx":1329
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1329
  * 		## predicted read counts
  * 		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFCTRL[rep, 1:], axis=1) + vari.COEFCTRL[rep, 0])
  * 		prdvals[highRC_idx] = np.exp(np.sum(f['X'][0:][highRC_idx] * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])             # <<<<<<<<<<<<<<
@@ -31003,7 +31009,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     if (unlikely(PyObject_SetItem(__pyx_v_prdvals, __pyx_v_highRC_idx, __pyx_t_12) < 0)) __PYX_ERR(0, 1329, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
 
-    /* "calculateOnebp.pyx":1331
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1331
  * 		prdvals[highRC_idx] = np.exp(np.sum(f['X'][0:][highRC_idx] * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])
  * 
  * 		rcArr = rcArr - prdvals             # <<<<<<<<<<<<<<
@@ -31015,7 +31021,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_12);
     __pyx_t_12 = 0;
 
-    /* "calculateOnebp.pyx":1332
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1332
  * 
  * 		rcArr = rcArr - prdvals
  * 		rcArr = rcArr[selectedIdx]             # <<<<<<<<<<<<<<
@@ -31027,7 +31033,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_12);
     __pyx_t_12 = 0;
 
-    /* "calculateOnebp.pyx":1334
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1334
  * 		rcArr = rcArr[selectedIdx]
  * 
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))             # <<<<<<<<<<<<<<
@@ -31124,7 +31130,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_12);
     __pyx_t_12 = 0;
 
-    /* "calculateOnebp.pyx":1335
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1335
  * 
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
  * 		if(len(idx[0]) > 0):             # <<<<<<<<<<<<<<
@@ -31138,7 +31144,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __pyx_t_3 = ((__pyx_t_14 > 0) != 0);
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1336
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1336
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
  * 		if(len(idx[0]) > 0):
  * 			tempStarts = np.delete(starts, idx)             # <<<<<<<<<<<<<<
@@ -31198,7 +31204,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_tempStarts, __pyx_t_12);
       __pyx_t_12 = 0;
 
-      /* "calculateOnebp.pyx":1337
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1337
  * 		if(len(idx[0]) > 0):
  * 			tempStarts = np.delete(starts, idx)
  * 			rcArr = np.delete(rcArr, idx)             # <<<<<<<<<<<<<<
@@ -31258,7 +31264,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_12);
       __pyx_t_12 = 0;
 
-      /* "calculateOnebp.pyx":1338
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1338
  * 			tempStarts = np.delete(starts, idx)
  * 			rcArr = np.delete(rcArr, idx)
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -31269,7 +31275,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __pyx_t_3 = ((__pyx_t_14 > 0) != 0);
       if (__pyx_t_3) {
 
-        /* "calculateOnebp.pyx":1339
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1339
  * 			rcArr = np.delete(rcArr, idx)
  * 			if(len(rcArr) > 0):
  * 				writeBedFile(subfinalCtrlNames[rep], tempStarts, rcArr, analysis_end)             # <<<<<<<<<<<<<<
@@ -31278,12 +31284,12 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
  */
         __pyx_t_12 = __Pyx_PyObject_GetItem(__pyx_v_subfinalCtrlNames, __pyx_v_rep); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 1339, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_12);
-        __pyx_t_8 = __pyx_f_14calculateOnebp_writeBedFile(__pyx_t_12, __pyx_v_tempStarts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1339, __pyx_L1_error)
+        __pyx_t_8 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_writeBedFile(__pyx_t_12, __pyx_v_tempStarts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1339, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":1338
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1338
  * 			tempStarts = np.delete(starts, idx)
  * 			rcArr = np.delete(rcArr, idx)
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -31293,7 +31299,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         goto __pyx_L20;
       }
 
-      /* "calculateOnebp.pyx":1341
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1341
  * 				writeBedFile(subfinalCtrlNames[rep], tempStarts, rcArr, analysis_end)
  * 			else:
  * 				os.remove(subfinalCtrlNames[rep])             # <<<<<<<<<<<<<<
@@ -31326,7 +31332,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
 
-        /* "calculateOnebp.pyx":1342
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1342
  * 			else:
  * 				os.remove(subfinalCtrlNames[rep])
  * 				subfinalCtrlNames[rep] = None             # <<<<<<<<<<<<<<
@@ -31337,7 +31343,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       }
       __pyx_L20:;
 
-      /* "calculateOnebp.pyx":1335
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1335
  * 
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
  * 		if(len(idx[0]) > 0):             # <<<<<<<<<<<<<<
@@ -31347,7 +31353,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       goto __pyx_L19;
     }
 
-    /* "calculateOnebp.pyx":1344
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1344
  * 				subfinalCtrlNames[rep] = None
  * 		else:
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -31359,7 +31365,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __pyx_t_3 = ((__pyx_t_14 > 0) != 0);
       if (__pyx_t_3) {
 
-        /* "calculateOnebp.pyx":1345
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1345
  * 		else:
  * 			if(len(rcArr) > 0):
  * 				writeBedFile(subfinalCtrlNames[rep], starts, rcArr, analysis_end)             # <<<<<<<<<<<<<<
@@ -31368,12 +31374,12 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
  */
         __pyx_t_8 = __Pyx_PyObject_GetItem(__pyx_v_subfinalCtrlNames, __pyx_v_rep); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 1345, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_8);
-        __pyx_t_7 = __pyx_f_14calculateOnebp_writeBedFile(__pyx_t_8, __pyx_v_starts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1345, __pyx_L1_error)
+        __pyx_t_7 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_writeBedFile(__pyx_t_8, __pyx_v_starts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 1345, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "calculateOnebp.pyx":1344
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1344
  * 				subfinalCtrlNames[rep] = None
  * 		else:
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -31383,7 +31389,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         goto __pyx_L21;
       }
 
-      /* "calculateOnebp.pyx":1347
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1347
  * 				writeBedFile(subfinalCtrlNames[rep], starts, rcArr, analysis_end)
  * 			else:
  * 				os.remove(subfinalCtrlNames[rep])             # <<<<<<<<<<<<<<
@@ -31416,7 +31422,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-        /* "calculateOnebp.pyx":1348
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1348
  * 			else:
  * 				os.remove(subfinalCtrlNames[rep])
  * 				subfinalCtrlNames[rep] = None             # <<<<<<<<<<<<<<
@@ -31429,7 +31435,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     }
     __pyx_L19:;
 
-    /* "calculateOnebp.pyx":1308
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1308
  * 	f = h5py.File(covariFileName, "r")
  * 
  * 	for rep in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -31439,7 +31445,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1350
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1350
  * 				subfinalCtrlNames[rep] = None
  * 
  * 	for rep in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -31497,7 +31503,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_rep, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1352
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1352
  * 	for rep in range(vari.EXPBW_NUM):
  * 		## observed read counts
  * 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])             # <<<<<<<<<<<<<<
@@ -31536,7 +31542,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_bw, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1353
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1353
  * 		## observed read counts
  * 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
  * 		if(lastBin == True):             # <<<<<<<<<<<<<<
@@ -31548,7 +31554,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1354
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1354
  * 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
  * 		if(lastBin == True):
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))             # <<<<<<<<<<<<<<
@@ -31604,7 +31610,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_rcArr, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1355
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1355
  * 		if(lastBin == True):
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			rcArr[np.where(rcArr==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -31639,7 +31645,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1356
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1356
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			rcArr[np.where(rcArr==None)] = float(0)
  * 			rcArr = rcArr.tolist()             # <<<<<<<<<<<<<<
@@ -31666,7 +31672,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_2);
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1358
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1358
  * 			rcArr = rcArr.tolist()
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]             # <<<<<<<<<<<<<<
@@ -31701,7 +31707,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_last_value, __pyx_t_11);
       __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1359
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1359
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -31713,7 +31719,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
       if (__pyx_t_3) {
 
-        /* "calculateOnebp.pyx":1360
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1360
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):
  * 				last_value = float(0)             # <<<<<<<<<<<<<<
@@ -31725,7 +31731,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         __Pyx_DECREF_SET(__pyx_v_last_value, __pyx_t_11);
         __pyx_t_11 = 0;
 
-        /* "calculateOnebp.pyx":1359
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1359
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -31734,7 +31740,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
  */
       }
 
-      /* "calculateOnebp.pyx":1361
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1361
  * 			if(last_value == None):
  * 				last_value = float(0)
  * 			rcArr.extend([last_value])             # <<<<<<<<<<<<<<
@@ -31766,7 +31772,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
       __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1362
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1362
  * 				last_value = float(0)
  * 			rcArr.extend([last_value])
  * 			rcArr = np.array(rcArr)             # <<<<<<<<<<<<<<
@@ -31796,7 +31802,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_11);
       __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1353
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1353
  * 		## observed read counts
  * 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
  * 		if(lastBin == True):             # <<<<<<<<<<<<<<
@@ -31806,7 +31812,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       goto __pyx_L24;
     }
 
-    /* "calculateOnebp.pyx":1364
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1364
  * 			rcArr = np.array(rcArr)
  * 		else:
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))             # <<<<<<<<<<<<<<
@@ -31860,7 +31866,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_rcArr, __pyx_t_11);
       __pyx_t_11 = 0;
 
-      /* "calculateOnebp.pyx":1365
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1365
  * 		else:
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))
  * 			rcArr[np.where(rcArr==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -31897,7 +31903,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     }
     __pyx_L24:;
 
-    /* "calculateOnebp.pyx":1366
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1366
  * 			rcArr = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))
  * 			rcArr[np.where(rcArr==None)] = float(0)
  * 		rcArr = rcArr / vari.EXPSCALER[rep]             # <<<<<<<<<<<<<<
@@ -31918,7 +31924,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_13);
     __pyx_t_13 = 0;
 
-    /* "calculateOnebp.pyx":1367
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1367
  * 			rcArr[np.where(rcArr==None)] = float(0)
  * 		rcArr = rcArr / vari.EXPSCALER[rep]
  * 		bw.close()             # <<<<<<<<<<<<<<
@@ -31944,7 +31950,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-    /* "calculateOnebp.pyx":1371
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1371
  * 
  * 		## predicted read counts
  * 		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFEXP[rep, 1:], axis=1) + vari.COEFEXP[rep, 0])             # <<<<<<<<<<<<<<
@@ -32040,7 +32046,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_prdvals, __pyx_t_13);
     __pyx_t_13 = 0;
 
-    /* "calculateOnebp.pyx":1372
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1372
  * 		## predicted read counts
  * 		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFEXP[rep, 1:], axis=1) + vari.COEFEXP[rep, 0])
  * 		prdvals[highRC_idx] = np.exp(np.sum(f['X'][0:][highRC_idx] * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])             # <<<<<<<<<<<<<<
@@ -32139,7 +32145,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     if (unlikely(PyObject_SetItem(__pyx_v_prdvals, __pyx_v_highRC_idx, __pyx_t_13) < 0)) __PYX_ERR(0, 1372, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
 
-    /* "calculateOnebp.pyx":1374
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1374
  * 		prdvals[highRC_idx] = np.exp(np.sum(f['X'][0:][highRC_idx] * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])
  * 
  * 		rcArr = rcArr - prdvals             # <<<<<<<<<<<<<<
@@ -32151,7 +32157,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_13);
     __pyx_t_13 = 0;
 
-    /* "calculateOnebp.pyx":1375
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1375
  * 
  * 		rcArr = rcArr - prdvals
  * 		rcArr = rcArr[selectedIdx]             # <<<<<<<<<<<<<<
@@ -32163,7 +32169,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_13);
     __pyx_t_13 = 0;
 
-    /* "calculateOnebp.pyx":1377
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1377
  * 		rcArr = rcArr[selectedIdx]
  * 
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))             # <<<<<<<<<<<<<<
@@ -32260,7 +32266,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __Pyx_XDECREF_SET(__pyx_v_idx, __pyx_t_13);
     __pyx_t_13 = 0;
 
-    /* "calculateOnebp.pyx":1378
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1378
  * 
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
  * 		if(len(idx[0]) > 0):             # <<<<<<<<<<<<<<
@@ -32274,7 +32280,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     __pyx_t_3 = ((__pyx_t_14 > 0) != 0);
     if (__pyx_t_3) {
 
-      /* "calculateOnebp.pyx":1379
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1379
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
  * 		if(len(idx[0]) > 0):
  * 			tempStarts = np.delete(starts, idx)             # <<<<<<<<<<<<<<
@@ -32334,7 +32340,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_XDECREF_SET(__pyx_v_tempStarts, __pyx_t_13);
       __pyx_t_13 = 0;
 
-      /* "calculateOnebp.pyx":1380
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1380
  * 		if(len(idx[0]) > 0):
  * 			tempStarts = np.delete(starts, idx)
  * 			rcArr = np.delete(rcArr, idx)             # <<<<<<<<<<<<<<
@@ -32394,7 +32400,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __Pyx_DECREF_SET(__pyx_v_rcArr, __pyx_t_13);
       __pyx_t_13 = 0;
 
-      /* "calculateOnebp.pyx":1381
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1381
  * 			tempStarts = np.delete(starts, idx)
  * 			rcArr = np.delete(rcArr, idx)
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -32405,7 +32411,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __pyx_t_3 = ((__pyx_t_14 > 0) != 0);
       if (__pyx_t_3) {
 
-        /* "calculateOnebp.pyx":1382
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1382
  * 			rcArr = np.delete(rcArr, idx)
  * 			if(len(rcArr) > 0):
  * 				writeBedFile(subfinalExpNames[rep], tempStarts, rcArr, analysis_end)             # <<<<<<<<<<<<<<
@@ -32414,12 +32420,12 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
  */
         __pyx_t_13 = __Pyx_PyObject_GetItem(__pyx_v_subfinalExpNames, __pyx_v_rep); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 1382, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_13);
-        __pyx_t_1 = __pyx_f_14calculateOnebp_writeBedFile(__pyx_t_13, __pyx_v_tempStarts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1382, __pyx_L1_error)
+        __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_writeBedFile(__pyx_t_13, __pyx_v_tempStarts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1382, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":1381
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1381
  * 			tempStarts = np.delete(starts, idx)
  * 			rcArr = np.delete(rcArr, idx)
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -32429,7 +32435,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         goto __pyx_L27;
       }
 
-      /* "calculateOnebp.pyx":1384
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1384
  * 				writeBedFile(subfinalExpNames[rep], tempStarts, rcArr, analysis_end)
  * 			else:
  * 				os.remove(subfinalExpNames[rep])             # <<<<<<<<<<<<<<
@@ -32462,7 +32468,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":1385
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1385
  * 			else:
  * 				os.remove(subfinalExpNames[rep])
  * 				subfinalExpNames[rep] = None             # <<<<<<<<<<<<<<
@@ -32473,7 +32479,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       }
       __pyx_L27:;
 
-      /* "calculateOnebp.pyx":1378
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1378
  * 
  * 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
  * 		if(len(idx[0]) > 0):             # <<<<<<<<<<<<<<
@@ -32483,7 +32489,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       goto __pyx_L26;
     }
 
-    /* "calculateOnebp.pyx":1387
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1387
  * 				subfinalExpNames[rep] = None
  * 		else:
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -32495,7 +32501,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
       __pyx_t_3 = ((__pyx_t_14 > 0) != 0);
       if (__pyx_t_3) {
 
-        /* "calculateOnebp.pyx":1388
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1388
  * 		else:
  * 			if(len(rcArr) > 0):
  * 				writeBedFile(subfinalExpNames[rep], starts, rcArr, analysis_end)             # <<<<<<<<<<<<<<
@@ -32504,12 +32510,12 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
  */
         __pyx_t_1 = __Pyx_PyObject_GetItem(__pyx_v_subfinalExpNames, __pyx_v_rep); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1388, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_1);
-        __pyx_t_2 = __pyx_f_14calculateOnebp_writeBedFile(__pyx_t_1, __pyx_v_starts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1388, __pyx_L1_error)
+        __pyx_t_2 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_writeBedFile(__pyx_t_1, __pyx_v_starts, __pyx_v_rcArr, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 1388, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_2);
         __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":1387
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1387
  * 				subfinalExpNames[rep] = None
  * 		else:
  * 			if(len(rcArr) > 0):             # <<<<<<<<<<<<<<
@@ -32519,7 +32525,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         goto __pyx_L28;
       }
 
-      /* "calculateOnebp.pyx":1390
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1390
  * 				writeBedFile(subfinalExpNames[rep], starts, rcArr, analysis_end)
  * 			else:
  * 				os.remove(subfinalExpNames[rep])             # <<<<<<<<<<<<<<
@@ -32552,7 +32558,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
         __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
         __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-        /* "calculateOnebp.pyx":1391
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1391
  * 			else:
  * 				os.remove(subfinalExpNames[rep])
  * 				subfinalExpNames[rep] = None             # <<<<<<<<<<<<<<
@@ -32565,7 +32571,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
     }
     __pyx_L26:;
 
-    /* "calculateOnebp.pyx":1350
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1350
  * 				subfinalCtrlNames[rep] = None
  * 
  * 	for rep in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -32575,7 +32581,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   }
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "calculateOnebp.pyx":1393
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1393
  * 				subfinalExpNames[rep] = None
  * 
  * 	f.close()             # <<<<<<<<<<<<<<
@@ -32601,7 +32607,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "calculateOnebp.pyx":1394
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1394
  * 
  * 	f.close()
  * 	os.remove(covariFileName)             # <<<<<<<<<<<<<<
@@ -32630,7 +32636,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __Pyx_DECREF(__pyx_t_13); __pyx_t_13 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
 
-  /* "calculateOnebp.pyx":1396
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1396
  * 	os.remove(covariFileName)
  * 
  * 	return_array = [subfinalCtrlNames, subfinalExpNames, chromo]             # <<<<<<<<<<<<<<
@@ -32651,7 +32657,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_v_return_array = ((PyObject*)__pyx_t_7);
   __pyx_t_7 = 0;
 
-  /* "calculateOnebp.pyx":1398
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1398
  * 	return_array = [subfinalCtrlNames, subfinalExpNames, chromo]
  * 
  * 	return return_array             # <<<<<<<<<<<<<<
@@ -32663,7 +32669,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __pyx_r = __pyx_v_return_array;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1262
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1262
  * 
  * 
  * cpdef correctReadCount(covariFileName, chromo, analysis_start, analysis_end, lastBin, nBins):             # <<<<<<<<<<<<<<
@@ -32681,7 +32687,7 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
   __Pyx_XDECREF(__pyx_t_11);
   __Pyx_XDECREF(__pyx_t_12);
   __Pyx_XDECREF(__pyx_t_13);
-  __Pyx_AddTraceback("calculateOnebp.correctReadCount", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.correctReadCount", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_region_start);
@@ -32711,8 +32717,8 @@ static PyObject *__pyx_f_14calculateOnebp_correctReadCount(PyObject *__pyx_v_cov
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_33correctReadCount(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_33correctReadCount(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_33correctReadCount(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_33correctReadCount(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_covariFileName = 0;
   PyObject *__pyx_v_chromo = 0;
   PyObject *__pyx_v_analysis_start = 0;
@@ -32804,24 +32810,24 @@ static PyObject *__pyx_pw_14calculateOnebp_33correctReadCount(PyObject *__pyx_se
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("correctReadCount", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1262, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.correctReadCount", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.correctReadCount", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_32correctReadCount(__pyx_self, __pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_32correctReadCount(__pyx_self, __pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_32correctReadCount(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFileName, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_lastBin, PyObject *__pyx_v_nBins) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_32correctReadCount(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_covariFileName, PyObject *__pyx_v_chromo, PyObject *__pyx_v_analysis_start, PyObject *__pyx_v_analysis_end, PyObject *__pyx_v_lastBin, PyObject *__pyx_v_nBins) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("correctReadCount", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_correctReadCount(__pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1262, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_correctReadCount(__pyx_v_covariFileName, __pyx_v_chromo, __pyx_v_analysis_start, __pyx_v_analysis_end, __pyx_v_lastBin, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1262, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -32830,7 +32836,7 @@ static PyObject *__pyx_pf_14calculateOnebp_32correctReadCount(CYTHON_UNUSED PyOb
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.correctReadCount", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.correctReadCount", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -32838,7 +32844,7 @@ static PyObject *__pyx_pf_14calculateOnebp_32correctReadCount(CYTHON_UNUSED PyOb
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1401
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1401
  * 
  * 
  * cpdef selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins):             # <<<<<<<<<<<<<<
@@ -32846,8 +32852,8 @@ static PyObject *__pyx_pf_14calculateOnebp_32correctReadCount(CYTHON_UNUSED PyOb
  * 	ctrlRC = []
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_35selectIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, PyObject *__pyx_v_region_start, PyObject *__pyx_v_region_end, PyObject *__pyx_v_lastBin_start, PyObject *__pyx_v_lastBin_end, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_35selectIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, PyObject *__pyx_v_region_start, PyObject *__pyx_v_region_end, PyObject *__pyx_v_lastBin_start, PyObject *__pyx_v_lastBin_end, PyObject *__pyx_v_nBins, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_ctrlRC = NULL;
   PyObject *__pyx_v_rep = NULL;
   PyObject *__pyx_v_bw = NULL;
@@ -32878,7 +32884,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   int __pyx_t_12;
   __Pyx_RefNannySetupContext("selectIdx", 0);
 
-  /* "calculateOnebp.pyx":1403
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1403
  * cpdef selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins):
  * 
  * 	ctrlRC = []             # <<<<<<<<<<<<<<
@@ -32890,7 +32896,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_v_ctrlRC = __pyx_t_1;
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1404
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1404
  * 
  * 	ctrlRC = []
  * 	for rep in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -32948,7 +32954,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_XDECREF_SET(__pyx_v_rep, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1405
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1405
  * 	ctrlRC = []
  * 	for rep in range(vari.CTRLBW_NUM):
  * 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])             # <<<<<<<<<<<<<<
@@ -32987,7 +32993,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_XDECREF_SET(__pyx_v_bw, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1407
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1407
  * 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
  * 
  * 		if(lastBin_start != None):             # <<<<<<<<<<<<<<
@@ -32999,7 +33005,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_8) {
 
-      /* "calculateOnebp.pyx":1408
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1408
  * 
  * 		if(lastBin_start != None):
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))             # <<<<<<<<<<<<<<
@@ -33055,7 +33061,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1409
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1409
  * 		if(lastBin_start != None):
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			temp[np.where(temp==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -33090,7 +33096,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1410
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1410
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			temp[np.where(temp==None)] = float(0)
  * 			temp = temp.tolist()             # <<<<<<<<<<<<<<
@@ -33117,7 +33123,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF_SET(__pyx_v_temp, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1412
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1412
  * 			temp = temp.tolist()
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]             # <<<<<<<<<<<<<<
@@ -33152,7 +33158,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_XDECREF_SET(__pyx_v_last_value, __pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "calculateOnebp.pyx":1413
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1413
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -33164,7 +33170,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       if (__pyx_t_8) {
 
-        /* "calculateOnebp.pyx":1414
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1414
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):
  * 				last_value = float(0)             # <<<<<<<<<<<<<<
@@ -33176,7 +33182,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
         __Pyx_DECREF_SET(__pyx_v_last_value, __pyx_t_9);
         __pyx_t_9 = 0;
 
-        /* "calculateOnebp.pyx":1413
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1413
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -33185,7 +33191,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
  */
       }
 
-      /* "calculateOnebp.pyx":1415
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1415
  * 			if(last_value == None):
  * 				last_value = float(0)
  * 			temp.extend([last_value])             # <<<<<<<<<<<<<<
@@ -33217,7 +33223,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-      /* "calculateOnebp.pyx":1416
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1416
  * 				last_value = float(0)
  * 			temp.extend([last_value])
  * 			temp = np.array(temp)             # <<<<<<<<<<<<<<
@@ -33247,7 +33253,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF_SET(__pyx_v_temp, __pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "calculateOnebp.pyx":1407
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1407
  * 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
  * 
  * 		if(lastBin_start != None):             # <<<<<<<<<<<<<<
@@ -33257,7 +33263,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       goto __pyx_L5;
     }
 
-    /* "calculateOnebp.pyx":1418
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1418
  * 			temp = np.array(temp)
  * 		else:
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))             # <<<<<<<<<<<<<<
@@ -33311,7 +33317,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_9);
       __pyx_t_9 = 0;
 
-      /* "calculateOnebp.pyx":1419
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1419
  * 		else:
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))
  * 			temp[np.where(temp==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -33348,7 +33354,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     }
     __pyx_L5:;
 
-    /* "calculateOnebp.pyx":1421
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1421
  * 			temp[np.where(temp==None)] = float(0)
  * 
  * 		bw.close()             # <<<<<<<<<<<<<<
@@ -33374,7 +33380,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "calculateOnebp.pyx":1422
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1422
  * 
  * 		bw.close()
  * 		ctrlRC.append(temp.tolist())             # <<<<<<<<<<<<<<
@@ -33401,7 +33407,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __pyx_t_11 = __Pyx_PyObject_Append(__pyx_v_ctrlRC, __pyx_t_9); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 1422, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-    /* "calculateOnebp.pyx":1424
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1424
  * 		ctrlRC.append(temp.tolist())
  * 
  * 		if(rep == 0):             # <<<<<<<<<<<<<<
@@ -33414,7 +33420,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
     if (__pyx_t_8) {
 
-      /* "calculateOnebp.pyx":1425
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1425
  * 
  * 		if(rep == 0):
  * 			rc_sum = temp             # <<<<<<<<<<<<<<
@@ -33424,7 +33430,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_INCREF(__pyx_v_temp);
       __Pyx_XDECREF_SET(__pyx_v_rc_sum, __pyx_v_temp);
 
-      /* "calculateOnebp.pyx":1426
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1426
  * 		if(rep == 0):
  * 			rc_sum = temp
  * 			highRC_idx = np.where(temp > vari.HIGHRC)[0]             # <<<<<<<<<<<<<<
@@ -33465,7 +33471,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_XDECREF_SET(__pyx_v_highRC_idx, __pyx_t_7);
       __pyx_t_7 = 0;
 
-      /* "calculateOnebp.pyx":1424
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1424
  * 		ctrlRC.append(temp.tolist())
  * 
  * 		if(rep == 0):             # <<<<<<<<<<<<<<
@@ -33475,7 +33481,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       goto __pyx_L7;
     }
 
-    /* "calculateOnebp.pyx":1429
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1429
  * 
  * 		else:
  * 			rc_sum = rc_sum + temp             # <<<<<<<<<<<<<<
@@ -33491,7 +33497,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     }
     __pyx_L7:;
 
-    /* "calculateOnebp.pyx":1404
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1404
  * 
  * 	ctrlRC = []
  * 	for rep in range(vari.CTRLBW_NUM):             # <<<<<<<<<<<<<<
@@ -33501,7 +33507,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1431
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1431
  * 			rc_sum = rc_sum + temp
  * 
  * 	ctrlRC = np.nanmean(ctrlRC, axis=0)             # <<<<<<<<<<<<<<
@@ -33529,7 +33535,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __Pyx_DECREF_SET(__pyx_v_ctrlRC, __pyx_t_10);
   __pyx_t_10 = 0;
 
-  /* "calculateOnebp.pyx":1432
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1432
  * 
  * 	ctrlRC = np.nanmean(ctrlRC, axis=0)
  * 	idx1 = np.where(ctrlRC > 0)[0].tolist()             # <<<<<<<<<<<<<<
@@ -33582,7 +33588,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_v_idx1 = __pyx_t_10;
   __pyx_t_10 = 0;
 
-  /* "calculateOnebp.pyx":1434
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1434
  * 	idx1 = np.where(ctrlRC > 0)[0].tolist()
  * 
  * 	expRC = []             # <<<<<<<<<<<<<<
@@ -33594,7 +33600,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_v_expRC = __pyx_t_10;
   __pyx_t_10 = 0;
 
-  /* "calculateOnebp.pyx":1435
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1435
  * 
  * 	expRC = []
  * 	for rep in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -33652,7 +33658,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_XDECREF_SET(__pyx_v_rep, __pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "calculateOnebp.pyx":1436
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1436
  * 	expRC = []
  * 	for rep in range(vari.EXPBW_NUM):
  * 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])             # <<<<<<<<<<<<<<
@@ -33691,7 +33697,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_XDECREF_SET(__pyx_v_bw, __pyx_t_10);
     __pyx_t_10 = 0;
 
-    /* "calculateOnebp.pyx":1438
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1438
  * 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
  * 
  * 		if(lastBin_start != None):             # <<<<<<<<<<<<<<
@@ -33703,7 +33709,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
     if (__pyx_t_8) {
 
-      /* "calculateOnebp.pyx":1439
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1439
  * 
  * 		if(lastBin_start != None):
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))             # <<<<<<<<<<<<<<
@@ -33759,7 +33765,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "calculateOnebp.pyx":1440
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1440
  * 		if(lastBin_start != None):
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			temp[np.where(temp==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -33794,7 +33800,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
-      /* "calculateOnebp.pyx":1441
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1441
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=(nBins-1)))
  * 			temp[np.where(temp==None)] = float(0)
  * 			temp = temp.tolist()             # <<<<<<<<<<<<<<
@@ -33821,7 +33827,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF_SET(__pyx_v_temp, __pyx_t_10);
       __pyx_t_10 = 0;
 
-      /* "calculateOnebp.pyx":1443
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1443
  * 			temp = temp.tolist()
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]             # <<<<<<<<<<<<<<
@@ -33856,7 +33862,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_XDECREF_SET(__pyx_v_last_value, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1444
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1444
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -33868,7 +33874,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
       if (__pyx_t_8) {
 
-        /* "calculateOnebp.pyx":1445
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1445
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):
  * 				last_value = float(0)             # <<<<<<<<<<<<<<
@@ -33880,7 +33886,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
         __Pyx_DECREF_SET(__pyx_v_last_value, __pyx_t_1);
         __pyx_t_1 = 0;
 
-        /* "calculateOnebp.pyx":1444
+        /* "CRADLE/CorrectBias/calculateOnebp.pyx":1444
  * 
  * 			last_value = bw.stats(chromo, lastBin_start, lastBin_end, type="mean", nBins=1)[0]
  * 			if(last_value == None):             # <<<<<<<<<<<<<<
@@ -33889,7 +33895,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
  */
       }
 
-      /* "calculateOnebp.pyx":1446
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1446
  * 			if(last_value == None):
  * 				last_value = float(0)
  * 			temp.extend([last_value])             # <<<<<<<<<<<<<<
@@ -33921,7 +33927,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1447
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1447
  * 				last_value = float(0)
  * 			temp.extend([last_value])
  * 			temp = np.array(temp)             # <<<<<<<<<<<<<<
@@ -33951,7 +33957,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_DECREF_SET(__pyx_v_temp, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1438
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1438
  * 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
  * 
  * 		if(lastBin_start != None):             # <<<<<<<<<<<<<<
@@ -33961,7 +33967,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       goto __pyx_L10;
     }
 
-    /* "calculateOnebp.pyx":1449
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1449
  * 			temp = np.array(temp)
  * 		else:
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))             # <<<<<<<<<<<<<<
@@ -34015,7 +34021,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
       __Pyx_XDECREF_SET(__pyx_v_temp, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1450
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1450
  * 		else:
  * 			temp = np.array(bw.stats(chromo, region_start, region_end, type="mean", nBins=nBins))
  * 			temp[np.where(temp==None)] = float(0)             # <<<<<<<<<<<<<<
@@ -34052,7 +34058,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     }
     __pyx_L10:;
 
-    /* "calculateOnebp.pyx":1452
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1452
  * 			temp[np.where(temp==None)] = float(0)
  * 
  * 		bw.close()             # <<<<<<<<<<<<<<
@@ -34078,7 +34084,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1453
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1453
  * 
  * 		bw.close()
  * 		expRC.append(temp.tolist())             # <<<<<<<<<<<<<<
@@ -34105,7 +34111,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __pyx_t_11 = __Pyx_PyObject_Append(__pyx_v_expRC, __pyx_t_1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(0, 1453, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1455
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1455
  * 		expRC.append(temp.tolist())
  * 
  * 		rc_sum = rc_sum + temp             # <<<<<<<<<<<<<<
@@ -34118,7 +34124,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_XDECREF_SET(__pyx_v_rc_sum, __pyx_t_1);
     __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1435
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1435
  * 
  * 	expRC = []
  * 	for rep in range(vari.EXPBW_NUM):             # <<<<<<<<<<<<<<
@@ -34128,7 +34134,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   }
   __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
 
-  /* "calculateOnebp.pyx":1457
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1457
  * 		rc_sum = rc_sum + temp
  * 
  * 	expRC = np.nanmean(expRC, axis=0)             # <<<<<<<<<<<<<<
@@ -34156,7 +34162,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __Pyx_DECREF_SET(__pyx_v_expRC, __pyx_t_6);
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":1458
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1458
  * 
  * 	expRC = np.nanmean(expRC, axis=0)
  * 	idx2 = np.where(expRC > 0)[0].tolist()             # <<<<<<<<<<<<<<
@@ -34209,7 +34215,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_v_idx2 = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":1459
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1459
  * 	expRC = np.nanmean(expRC, axis=0)
  * 	idx2 = np.where(expRC > 0)[0].tolist()
  * 	idx3 = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()             # <<<<<<<<<<<<<<
@@ -34269,7 +34275,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_v_idx3 = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":1461
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1461
  * 	idx3 = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()
  * 
  * 	idx_temp = np.intersect1d(idx1, idx2)             # <<<<<<<<<<<<<<
@@ -34329,7 +34335,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_v_idx_temp = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":1462
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1462
  * 
  * 	idx_temp = np.intersect1d(idx1, idx2)
  * 	idx = np.intersect1d(idx_temp, idx3)             # <<<<<<<<<<<<<<
@@ -34389,7 +34395,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_v_idx = __pyx_t_6;
   __pyx_t_6 = 0;
 
-  /* "calculateOnebp.pyx":1465
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1465
  * 
  * 
  * 	if(len(idx) == 0):             # <<<<<<<<<<<<<<
@@ -34400,7 +34406,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_t_8 = ((__pyx_t_3 == 0) != 0);
   if (__pyx_t_8) {
 
-    /* "calculateOnebp.pyx":1466
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1466
  * 
  * 	if(len(idx) == 0):
  * 		return np.array([]), np.array([]), np.array([])             # <<<<<<<<<<<<<<
@@ -34492,7 +34498,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __pyx_t_2 = 0;
     goto __pyx_L0;
 
-    /* "calculateOnebp.pyx":1465
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1465
  * 
  * 
  * 	if(len(idx) == 0):             # <<<<<<<<<<<<<<
@@ -34501,7 +34507,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
  */
   }
 
-  /* "calculateOnebp.pyx":1468
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1468
  * 		return np.array([]), np.array([]), np.array([])
  * 
  * 	if(lastBin_start != None):             # <<<<<<<<<<<<<<
@@ -34513,7 +34519,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_t_8) {
 
-    /* "calculateOnebp.pyx":1469
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1469
  * 
  * 	if(lastBin_start != None):
  * 		starts = np.arange(region_start, region_end, vari.BINSIZE)             # <<<<<<<<<<<<<<
@@ -34583,7 +34589,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __pyx_v_starts = __pyx_t_2;
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1470
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1470
  * 	if(lastBin_start != None):
  * 		starts = np.arange(region_start, region_end, vari.BINSIZE)
  * 		starts = starts.tolist()             # <<<<<<<<<<<<<<
@@ -34610,7 +34616,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF_SET(__pyx_v_starts, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1471
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1471
  * 		starts = np.arange(region_start, region_end, vari.BINSIZE)
  * 		starts = starts.tolist()
  * 		starts.extend([region_end])             # <<<<<<<<<<<<<<
@@ -34642,7 +34648,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1472
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1472
  * 		starts = starts.tolist()
  * 		starts.extend([region_end])
  * 		starts = np.array(starts)             # <<<<<<<<<<<<<<
@@ -34672,7 +34678,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     __Pyx_DECREF_SET(__pyx_v_starts, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1468
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1468
  * 		return np.array([]), np.array([]), np.array([])
  * 
  * 	if(lastBin_start != None):             # <<<<<<<<<<<<<<
@@ -34682,7 +34688,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
     goto __pyx_L13;
   }
 
-  /* "calculateOnebp.pyx":1474
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1474
  * 		starts = np.array(starts)
  * 	else:
  * 		starts = np.arange(region_start, region_end, vari.BINSIZE)             # <<<<<<<<<<<<<<
@@ -34755,7 +34761,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   }
   __pyx_L13:;
 
-  /* "calculateOnebp.pyx":1477
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1477
  * 
  * 
  * 	starts = starts[idx]             # <<<<<<<<<<<<<<
@@ -34767,7 +34773,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __Pyx_DECREF_SET(__pyx_v_starts, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1479
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1479
  * 	starts = starts[idx]
  * 
  * 	return idx, highRC_idx, starts             # <<<<<<<<<<<<<<
@@ -34791,7 +34797,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __pyx_t_2 = 0;
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1401
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1401
  * 
  * 
  * cpdef selectIdx(chromo, region_start, region_end, lastBin_start, lastBin_end, nBins):             # <<<<<<<<<<<<<<
@@ -34808,7 +34814,7 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
   __Pyx_XDECREF(__pyx_t_7);
   __Pyx_XDECREF(__pyx_t_9);
   __Pyx_XDECREF(__pyx_t_10);
-  __Pyx_AddTraceback("calculateOnebp.selectIdx", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.selectIdx", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_ctrlRC);
@@ -34831,8 +34837,8 @@ static PyObject *__pyx_f_14calculateOnebp_selectIdx(PyObject *__pyx_v_chromo, Py
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_35selectIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_35selectIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_35selectIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_35selectIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_chromo = 0;
   PyObject *__pyx_v_region_start = 0;
   PyObject *__pyx_v_region_end = 0;
@@ -34924,24 +34930,24 @@ static PyObject *__pyx_pw_14calculateOnebp_35selectIdx(PyObject *__pyx_self, PyO
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("selectIdx", 1, 6, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1401, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.selectIdx", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.selectIdx", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_34selectIdx(__pyx_self, __pyx_v_chromo, __pyx_v_region_start, __pyx_v_region_end, __pyx_v_lastBin_start, __pyx_v_lastBin_end, __pyx_v_nBins);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_34selectIdx(__pyx_self, __pyx_v_chromo, __pyx_v_region_start, __pyx_v_region_end, __pyx_v_lastBin_start, __pyx_v_lastBin_end, __pyx_v_nBins);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_34selectIdx(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_region_start, PyObject *__pyx_v_region_end, PyObject *__pyx_v_lastBin_start, PyObject *__pyx_v_lastBin_end, PyObject *__pyx_v_nBins) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_34selectIdx(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_chromo, PyObject *__pyx_v_region_start, PyObject *__pyx_v_region_end, PyObject *__pyx_v_lastBin_start, PyObject *__pyx_v_lastBin_end, PyObject *__pyx_v_nBins) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("selectIdx", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_selectIdx(__pyx_v_chromo, __pyx_v_region_start, __pyx_v_region_end, __pyx_v_lastBin_start, __pyx_v_lastBin_end, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1401, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_selectIdx(__pyx_v_chromo, __pyx_v_region_start, __pyx_v_region_end, __pyx_v_lastBin_start, __pyx_v_lastBin_end, __pyx_v_nBins, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1401, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -34950,7 +34956,7 @@ static PyObject *__pyx_pf_14calculateOnebp_34selectIdx(CYTHON_UNUSED PyObject *_
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.selectIdx", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.selectIdx", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -34958,7 +34964,7 @@ static PyObject *__pyx_pf_14calculateOnebp_34selectIdx(CYTHON_UNUSED PyObject *_
   return __pyx_r;
 }
 
-/* "calculateOnebp.pyx":1482
+/* "CRADLE/CorrectBias/calculateOnebp.pyx":1482
  * 
  * 
  * cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):             # <<<<<<<<<<<<<<
@@ -34966,8 +34972,8 @@ static PyObject *__pyx_pf_14calculateOnebp_34selectIdx(CYTHON_UNUSED PyObject *_
  * 
  */
 
-static PyObject *__pyx_pw_14calculateOnebp_37writeBedFile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfileName, PyObject *__pyx_v_tempStarts, PyObject *__pyx_v_tempSignalvals, PyObject *__pyx_v_analysis_end, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_37writeBedFile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfileName, PyObject *__pyx_v_tempStarts, PyObject *__pyx_v_tempSignalvals, PyObject *__pyx_v_analysis_end, CYTHON_UNUSED int __pyx_skip_dispatch) {
   PyObject *__pyx_v_subfile = NULL;
   Py_ssize_t __pyx_v_numIdx;
   PyObject *__pyx_v_idx = NULL;
@@ -34990,7 +34996,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __Pyx_RefNannySetupContext("writeBedFile", 0);
   __Pyx_INCREF(__pyx_v_tempSignalvals);
 
-  /* "calculateOnebp.pyx":1483
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1483
  * 
  * cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):
  * 	subfile = open(subfileName, "w")             # <<<<<<<<<<<<<<
@@ -35011,7 +35017,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __pyx_v_subfile = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1485
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1485
  * 	subfile = open(subfileName, "w")
  * 
  * 	tempSignalvals = tempSignalvals.astype(int)             # <<<<<<<<<<<<<<
@@ -35038,7 +35044,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __Pyx_DECREF_SET(__pyx_v_tempSignalvals, __pyx_t_2);
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1486
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1486
  * 
  * 	tempSignalvals = tempSignalvals.astype(int)
  * 	numIdx = len(tempSignalvals)             # <<<<<<<<<<<<<<
@@ -35048,7 +35054,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __pyx_t_4 = PyObject_Length(__pyx_v_tempSignalvals); if (unlikely(__pyx_t_4 == ((Py_ssize_t)-1))) __PYX_ERR(0, 1486, __pyx_L1_error)
   __pyx_v_numIdx = __pyx_t_4;
 
-  /* "calculateOnebp.pyx":1488
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1488
  * 	numIdx = len(tempSignalvals)
  * 
  * 	idx = 0             # <<<<<<<<<<<<<<
@@ -35058,7 +35064,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __Pyx_INCREF(__pyx_int_0);
   __pyx_v_idx = __pyx_int_0;
 
-  /* "calculateOnebp.pyx":1489
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1489
  * 
  * 	idx = 0
  * 	prevStart = tempStarts[idx]             # <<<<<<<<<<<<<<
@@ -35070,7 +35076,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __pyx_v_prevStart = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1490
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1490
  * 	idx = 0
  * 	prevStart = tempStarts[idx]
  * 	prevRC = tempSignalvals[idx]             # <<<<<<<<<<<<<<
@@ -35082,7 +35088,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __pyx_v_prevRC = __pyx_t_2;
   __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1491
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1491
  * 	prevStart = tempStarts[idx]
  * 	prevRC = tempSignalvals[idx]
  * 	line = [prevStart, (prevStart + vari.BINSIZE), prevRC]             # <<<<<<<<<<<<<<
@@ -35111,7 +35117,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __pyx_v_line = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":1492
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1492
  * 	prevRC = tempSignalvals[idx]
  * 	line = [prevStart, (prevStart + vari.BINSIZE), prevRC]
  * 	if(numIdx == 1):             # <<<<<<<<<<<<<<
@@ -35121,7 +35127,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __pyx_t_5 = ((__pyx_v_numIdx == 1) != 0);
   if (__pyx_t_5) {
 
-    /* "calculateOnebp.pyx":1493
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1493
  * 	line = [prevStart, (prevStart + vari.BINSIZE), prevRC]
  * 	if(numIdx == 1):
  * 		subfile.write('\t'.join([str(x) for x in line]) + "\n")             # <<<<<<<<<<<<<<
@@ -35173,7 +35179,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1494
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1494
  * 	if(numIdx == 1):
  * 		subfile.write('\t'.join([str(x) for x in line]) + "\n")
  * 		subfile.close()             # <<<<<<<<<<<<<<
@@ -35199,7 +35205,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-    /* "calculateOnebp.pyx":1495
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1495
  * 		subfile.write('\t'.join([str(x) for x in line]) + "\n")
  * 		subfile.close()
  * 		return             # <<<<<<<<<<<<<<
@@ -35210,7 +35216,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
 
-    /* "calculateOnebp.pyx":1492
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1492
  * 	prevRC = tempSignalvals[idx]
  * 	line = [prevStart, (prevStart + vari.BINSIZE), prevRC]
  * 	if(numIdx == 1):             # <<<<<<<<<<<<<<
@@ -35219,7 +35225,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
  */
   }
 
-  /* "calculateOnebp.pyx":1497
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1497
  * 		return
  * 
  * 	idx = 1             # <<<<<<<<<<<<<<
@@ -35229,7 +35235,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __Pyx_INCREF(__pyx_int_1);
   __Pyx_DECREF_SET(__pyx_v_idx, __pyx_int_1);
 
-  /* "calculateOnebp.pyx":1498
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1498
  * 
  * 	idx = 1
  * 	while(idx < numIdx):             # <<<<<<<<<<<<<<
@@ -35245,7 +35251,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     if (!__pyx_t_5) break;
 
-    /* "calculateOnebp.pyx":1499
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1499
  * 	idx = 1
  * 	while(idx < numIdx):
  * 		currStart = tempStarts[idx]             # <<<<<<<<<<<<<<
@@ -35257,7 +35263,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __Pyx_XDECREF_SET(__pyx_v_currStart, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1500
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1500
  * 	while(idx < numIdx):
  * 		currStart = tempStarts[idx]
  * 		currRC = tempSignalvals[idx]             # <<<<<<<<<<<<<<
@@ -35269,7 +35275,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __Pyx_XDECREF_SET(__pyx_v_currRC, __pyx_t_2);
     __pyx_t_2 = 0;
 
-    /* "calculateOnebp.pyx":1502
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1502
  * 		currRC = tempSignalvals[idx]
  * 
  * 		if( (currStart == (prevStart + vari.BINSIZE)) and (currRC == prevRC) ):             # <<<<<<<<<<<<<<
@@ -35300,7 +35306,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __pyx_L9_bool_binop_done:;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":1503
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1503
  * 
  * 		if( (currStart == (prevStart + vari.BINSIZE)) and (currRC == prevRC) ):
  * 			line[1] = currStart + vari.BINSIZE             # <<<<<<<<<<<<<<
@@ -35318,7 +35324,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       if (unlikely(__Pyx_SetItemInt(__pyx_v_line, 1, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 1503, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1504
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1504
  * 		if( (currStart == (prevStart + vari.BINSIZE)) and (currRC == prevRC) ):
  * 			line[1] = currStart + vari.BINSIZE
  * 			prevStart = currStart             # <<<<<<<<<<<<<<
@@ -35328,7 +35334,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_INCREF(__pyx_v_currStart);
       __Pyx_DECREF_SET(__pyx_v_prevStart, __pyx_v_currStart);
 
-      /* "calculateOnebp.pyx":1505
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1505
  * 			line[1] = currStart + vari.BINSIZE
  * 			prevStart = currStart
  * 			prevRC = currRC             # <<<<<<<<<<<<<<
@@ -35338,7 +35344,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_INCREF(__pyx_v_currRC);
       __Pyx_DECREF_SET(__pyx_v_prevRC, __pyx_v_currRC);
 
-      /* "calculateOnebp.pyx":1506
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1506
  * 			prevStart = currStart
  * 			prevRC = currRC
  * 			idx = idx + 1             # <<<<<<<<<<<<<<
@@ -35350,7 +35356,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_DECREF_SET(__pyx_v_idx, __pyx_t_1);
       __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1502
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1502
  * 		currRC = tempSignalvals[idx]
  * 
  * 		if( (currStart == (prevStart + vari.BINSIZE)) and (currRC == prevRC) ):             # <<<<<<<<<<<<<<
@@ -35360,7 +35366,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       goto __pyx_L8;
     }
 
-    /* "calculateOnebp.pyx":1509
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1509
  * 		else:
  * 			### End a current line
  * 			subfile.write('\t'.join([str(x) for x in line]) + "\n")             # <<<<<<<<<<<<<<
@@ -35413,7 +35419,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1512
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1512
  * 
  * 			### Start a new line
  * 			line = [currStart, (currStart+vari.BINSIZE), currRC]             # <<<<<<<<<<<<<<
@@ -35442,7 +35448,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_DECREF_SET(__pyx_v_line, ((PyObject*)__pyx_t_2));
       __pyx_t_2 = 0;
 
-      /* "calculateOnebp.pyx":1513
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1513
  * 			### Start a new line
  * 			line = [currStart, (currStart+vari.BINSIZE), currRC]
  * 			prevStart = currStart             # <<<<<<<<<<<<<<
@@ -35452,7 +35458,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_INCREF(__pyx_v_currStart);
       __Pyx_DECREF_SET(__pyx_v_prevStart, __pyx_v_currStart);
 
-      /* "calculateOnebp.pyx":1514
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1514
  * 			line = [currStart, (currStart+vari.BINSIZE), currRC]
  * 			prevStart = currStart
  * 			prevRC = currRC             # <<<<<<<<<<<<<<
@@ -35462,7 +35468,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_INCREF(__pyx_v_currRC);
       __Pyx_DECREF_SET(__pyx_v_prevRC, __pyx_v_currRC);
 
-      /* "calculateOnebp.pyx":1515
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1515
  * 			prevStart = currStart
  * 			prevRC = currRC
  * 			idx = idx + 1             # <<<<<<<<<<<<<<
@@ -35476,7 +35482,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     }
     __pyx_L8:;
 
-    /* "calculateOnebp.pyx":1517
+    /* "CRADLE/CorrectBias/calculateOnebp.pyx":1517
  * 			idx = idx + 1
  * 
  * 		if(idx == numIdx):             # <<<<<<<<<<<<<<
@@ -35491,7 +35497,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     if (__pyx_t_5) {
 
-      /* "calculateOnebp.pyx":1518
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1518
  * 
  * 		if(idx == numIdx):
  * 			line[1] = analysis_end             # <<<<<<<<<<<<<<
@@ -35500,7 +35506,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
  */
       if (unlikely(__Pyx_SetItemInt(__pyx_v_line, 1, __pyx_v_analysis_end, long, 1, __Pyx_PyInt_From_long, 1, 0, 1) < 0)) __PYX_ERR(0, 1518, __pyx_L1_error)
 
-      /* "calculateOnebp.pyx":1519
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1519
  * 		if(idx == numIdx):
  * 			line[1] = analysis_end
  * 			subfile.write('\t'.join([str(x) for x in line]) + "\n")             # <<<<<<<<<<<<<<
@@ -35552,7 +35558,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1520
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1520
  * 			line[1] = analysis_end
  * 			subfile.write('\t'.join([str(x) for x in line]) + "\n")
  * 			subfile.close()             # <<<<<<<<<<<<<<
@@ -35578,7 +35584,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-      /* "calculateOnebp.pyx":1521
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1521
  * 			subfile.write('\t'.join([str(x) for x in line]) + "\n")
  * 			subfile.close()
  * 			break             # <<<<<<<<<<<<<<
@@ -35587,7 +35593,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
  */
       goto __pyx_L7_break;
 
-      /* "calculateOnebp.pyx":1517
+      /* "CRADLE/CorrectBias/calculateOnebp.pyx":1517
  * 			idx = idx + 1
  * 
  * 		if(idx == numIdx):             # <<<<<<<<<<<<<<
@@ -35598,7 +35604,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   }
   __pyx_L7_break:;
 
-  /* "calculateOnebp.pyx":1523
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1523
  * 			break
  * 
  * 	return             # <<<<<<<<<<<<<<
@@ -35609,7 +35615,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
 
-  /* "calculateOnebp.pyx":1482
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1482
  * 
  * 
  * cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):             # <<<<<<<<<<<<<<
@@ -35624,7 +35630,7 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
-  __Pyx_AddTraceback("calculateOnebp.writeBedFile", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.writeBedFile", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_subfile);
@@ -35642,8 +35648,8 @@ static PyObject *__pyx_f_14calculateOnebp_writeBedFile(PyObject *__pyx_v_subfile
 }
 
 /* Python wrapper */
-static PyObject *__pyx_pw_14calculateOnebp_37writeBedFile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_14calculateOnebp_37writeBedFile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_37writeBedFile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_37writeBedFile(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_subfileName = 0;
   PyObject *__pyx_v_tempStarts = 0;
   PyObject *__pyx_v_tempSignalvals = 0;
@@ -35713,24 +35719,24 @@ static PyObject *__pyx_pw_14calculateOnebp_37writeBedFile(PyObject *__pyx_self, 
   __pyx_L5_argtuple_error:;
   __Pyx_RaiseArgtupleInvalid("writeBedFile", 1, 4, 4, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 1482, __pyx_L3_error)
   __pyx_L3_error:;
-  __Pyx_AddTraceback("calculateOnebp.writeBedFile", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.writeBedFile", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_14calculateOnebp_36writeBedFile(__pyx_self, __pyx_v_subfileName, __pyx_v_tempStarts, __pyx_v_tempSignalvals, __pyx_v_analysis_end);
+  __pyx_r = __pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_36writeBedFile(__pyx_self, __pyx_v_subfileName, __pyx_v_tempStarts, __pyx_v_tempSignalvals, __pyx_v_analysis_end);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_14calculateOnebp_36writeBedFile(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subfileName, PyObject *__pyx_v_tempStarts, PyObject *__pyx_v_tempSignalvals, PyObject *__pyx_v_analysis_end) {
+static PyObject *__pyx_pf_6CRADLE_11CorrectBias_14calculateOnebp_36writeBedFile(CYTHON_UNUSED PyObject *__pyx_self, PyObject *__pyx_v_subfileName, PyObject *__pyx_v_tempStarts, PyObject *__pyx_v_tempSignalvals, PyObject *__pyx_v_analysis_end) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("writeBedFile", 0);
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __pyx_f_14calculateOnebp_writeBedFile(__pyx_v_subfileName, __pyx_v_tempStarts, __pyx_v_tempSignalvals, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1482, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_6CRADLE_11CorrectBias_14calculateOnebp_writeBedFile(__pyx_v_subfileName, __pyx_v_tempStarts, __pyx_v_tempSignalvals, __pyx_v_analysis_end, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1482, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -35739,7 +35745,7 @@ static PyObject *__pyx_pf_14calculateOnebp_36writeBedFile(CYTHON_UNUSED PyObject
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_AddTraceback("calculateOnebp.writeBedFile", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("CRADLE.CorrectBias.calculateOnebp.writeBedFile", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -48643,7 +48649,7 @@ static PyBufferProcs __pyx_tp_as_buffer_array = {
 
 static PyTypeObject __pyx_type___pyx_array = {
   PyVarObject_HEAD_INIT(0, 0)
-  "calculateOnebp.array", /*tp_name*/
+  "CRADLE.CorrectBias.calculateOnebp.array", /*tp_name*/
   sizeof(struct __pyx_array_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_array, /*tp_dealloc*/
@@ -48754,7 +48760,7 @@ static PyMethodDef __pyx_methods_Enum[] = {
 
 static PyTypeObject __pyx_type___pyx_MemviewEnum = {
   PyVarObject_HEAD_INIT(0, 0)
-  "calculateOnebp.Enum", /*tp_name*/
+  "CRADLE.CorrectBias.calculateOnebp.Enum", /*tp_name*/
   sizeof(struct __pyx_MemviewEnum_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_Enum, /*tp_dealloc*/
@@ -49007,7 +49013,7 @@ static PyBufferProcs __pyx_tp_as_buffer_memoryview = {
 
 static PyTypeObject __pyx_type___pyx_memoryview = {
   PyVarObject_HEAD_INIT(0, 0)
-  "calculateOnebp.memoryview", /*tp_name*/
+  "CRADLE.CorrectBias.calculateOnebp.memoryview", /*tp_name*/
   sizeof(struct __pyx_memoryview_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc_memoryview, /*tp_dealloc*/
@@ -49137,7 +49143,7 @@ static struct PyGetSetDef __pyx_getsets__memoryviewslice[] = {
 
 static PyTypeObject __pyx_type___pyx_memoryviewslice = {
   PyVarObject_HEAD_INIT(0, 0)
-  "calculateOnebp._memoryviewslice", /*tp_name*/
+  "CRADLE.CorrectBias.calculateOnebp._memoryviewslice", /*tp_name*/
   sizeof(struct __pyx_memoryviewslice_obj), /*tp_basicsize*/
   0, /*tp_itemsize*/
   __pyx_tp_dealloc__memoryviewslice, /*tp_dealloc*/
@@ -49205,25 +49211,25 @@ static PyTypeObject __pyx_type___pyx_memoryviewslice = {
 };
 
 static PyMethodDef __pyx_methods[] = {
-  {"calculateContinuousFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_1calculateContinuousFrag, METH_VARARGS|METH_KEYWORDS, 0},
-  {"calculateDiscreteFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_3calculateDiscreteFrag, METH_VARARGS|METH_KEYWORDS, 0},
-  {"calculateTrainCovariates", (PyCFunction)__pyx_pw_14calculateOnebp_5calculateTrainCovariates, METH_O, 0},
-  {"calculateTaskCovariates", (PyCFunction)__pyx_pw_14calculateOnebp_7calculateTaskCovariates, METH_O, 0},
-  {"performRegression", (PyCFunction)__pyx_pw_14calculateOnebp_9performRegression, METH_O, 0},
-  {"memoryView", (PyCFunction)__pyx_pw_14calculateOnebp_11memoryView, METH_O, 0},
-  {"makeMatrix_ContinuousFrag_train", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_13makeMatrix_ContinuousFrag_train, METH_VARARGS|METH_KEYWORDS, 0},
-  {"makeMatrix_ContinuousFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_15makeMatrix_ContinuousFrag, METH_VARARGS|METH_KEYWORDS, 0},
-  {"makeMatrix_DiscreteFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_17makeMatrix_DiscreteFrag, METH_VARARGS|METH_KEYWORDS, 0},
-  {"find5merProb", (PyCFunction)__pyx_pw_14calculateOnebp_19find5merProb, METH_O, 0},
-  {"edit5merProb", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_21edit5merProb, METH_VARARGS|METH_KEYWORDS, 0},
-  {"findComple5merProb", (PyCFunction)__pyx_pw_14calculateOnebp_23findComple5merProb, METH_O, 0},
-  {"editComple5merProb", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_25editComple5merProb, METH_VARARGS|METH_KEYWORDS, 0},
-  {"findStartGibbs", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_27findStartGibbs, METH_VARARGS|METH_KEYWORDS, 0},
-  {"editStartGibbs", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_29editStartGibbs, METH_VARARGS|METH_KEYWORDS, 0},
-  {"convertGibbs", (PyCFunction)__pyx_pw_14calculateOnebp_31convertGibbs, METH_O, 0},
-  {"correctReadCount", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_33correctReadCount, METH_VARARGS|METH_KEYWORDS, 0},
-  {"selectIdx", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_35selectIdx, METH_VARARGS|METH_KEYWORDS, 0},
-  {"writeBedFile", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_14calculateOnebp_37writeBedFile, METH_VARARGS|METH_KEYWORDS, 0},
+  {"calculateContinuousFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_1calculateContinuousFrag, METH_VARARGS|METH_KEYWORDS, 0},
+  {"calculateDiscreteFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_3calculateDiscreteFrag, METH_VARARGS|METH_KEYWORDS, 0},
+  {"calculateTrainCovariates", (PyCFunction)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_5calculateTrainCovariates, METH_O, 0},
+  {"calculateTaskCovariates", (PyCFunction)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_7calculateTaskCovariates, METH_O, 0},
+  {"performRegression", (PyCFunction)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_9performRegression, METH_O, 0},
+  {"memoryView", (PyCFunction)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_11memoryView, METH_O, 0},
+  {"makeMatrix_ContinuousFrag_train", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_13makeMatrix_ContinuousFrag_train, METH_VARARGS|METH_KEYWORDS, 0},
+  {"makeMatrix_ContinuousFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_15makeMatrix_ContinuousFrag, METH_VARARGS|METH_KEYWORDS, 0},
+  {"makeMatrix_DiscreteFrag", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_17makeMatrix_DiscreteFrag, METH_VARARGS|METH_KEYWORDS, 0},
+  {"find5merProb", (PyCFunction)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_19find5merProb, METH_O, 0},
+  {"edit5merProb", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_21edit5merProb, METH_VARARGS|METH_KEYWORDS, 0},
+  {"findComple5merProb", (PyCFunction)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_23findComple5merProb, METH_O, 0},
+  {"editComple5merProb", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_25editComple5merProb, METH_VARARGS|METH_KEYWORDS, 0},
+  {"findStartGibbs", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_27findStartGibbs, METH_VARARGS|METH_KEYWORDS, 0},
+  {"editStartGibbs", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_29editStartGibbs, METH_VARARGS|METH_KEYWORDS, 0},
+  {"convertGibbs", (PyCFunction)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_31convertGibbs, METH_O, 0},
+  {"correctReadCount", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_33correctReadCount, METH_VARARGS|METH_KEYWORDS, 0},
+  {"selectIdx", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_35selectIdx, METH_VARARGS|METH_KEYWORDS, 0},
+  {"writeBedFile", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_6CRADLE_11CorrectBias_14calculateOnebp_37writeBedFile, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -49568,7 +49574,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "calculateOnebp.pyx":26
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":26
  * cpdef calculateContinuousFrag(chromo, analysis_start, analysis_end, binStart, binEnd, nBins, lastBin):
  * 
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')             # <<<<<<<<<<<<<<
@@ -49579,7 +49585,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "calculateOnebp.pyx":27
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":27
  * 
  * 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
  * 	warnings.filterwarnings('ignore', r'Mean of empty slice')             # <<<<<<<<<<<<<<
@@ -49590,7 +49596,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "calculateOnebp.pyx":190
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":190
  * 				start_gibbs, gibbs = findStartGibbs(idx_fa, vari.FRAGLEN)
  * 			else:
  * 				oldDimer = idx_fa[0:2].upper()             # <<<<<<<<<<<<<<
@@ -49601,7 +49607,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_slice__3);
   __Pyx_GIVEREF(__pyx_slice__3);
 
-  /* "calculateOnebp.pyx":944
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":944
  * 		coef = model.params
  * 		COEFCTRL[rep, ] = coef
  * 		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]             # <<<<<<<<<<<<<<
@@ -49612,7 +49618,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "calculateOnebp.pyx":960
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":960
  * 		plt.ylim(0, maxi)
  * 		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
  * 		plt.gca().set_aspect('equal', adjustable='box')             # <<<<<<<<<<<<<<
@@ -49623,7 +49629,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
 
-  /* "calculateOnebp.pyx":1104
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1104
  * 	## subtract oldBase
  * 	if(oldBase=='A' or oldBase=='a'):
  * 		subtract = np.power(4, 4) * 0             # <<<<<<<<<<<<<<
@@ -49634,7 +49640,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
 
-  /* "calculateOnebp.pyx":1328
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1328
  * 
  * 		## predicted read counts
  * 		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFCTRL[rep, 1:], axis=1) + vari.COEFCTRL[rep, 0])             # <<<<<<<<<<<<<<
@@ -49840,7 +49846,7 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
 
-  /* "calculateOnebp.pyx":14
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":14
  * import statsmodels.api as sm
  * import matplotlib
  * matplotlib.use('Agg')             # <<<<<<<<<<<<<<
@@ -50237,14 +50243,14 @@ if (!__Pyx_RefNanny) {
   #if PY_MAJOR_VERSION < 3 && (__PYX_DEFAULT_STRING_ENCODING_IS_ASCII || __PYX_DEFAULT_STRING_ENCODING_IS_DEFAULT)
   if (__Pyx_init_sys_getdefaultencoding_params() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  if (__pyx_module_is_main_calculateOnebp) {
+  if (__pyx_module_is_main_CRADLE__CorrectBias__calculateOnebp) {
     if (PyObject_SetAttr(__pyx_m, __pyx_n_s_name_2, __pyx_n_s_main) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   }
   #if PY_MAJOR_VERSION >= 3
   {
     PyObject *modules = PyImport_GetModuleDict(); if (unlikely(!modules)) __PYX_ERR(0, 1, __pyx_L1_error)
-    if (!PyDict_GetItemString(modules, "calculateOnebp")) {
-      if (unlikely(PyDict_SetItemString(modules, "calculateOnebp", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
+    if (!PyDict_GetItemString(modules, "CRADLE.CorrectBias.calculateOnebp")) {
+      if (unlikely(PyDict_SetItemString(modules, "CRADLE.CorrectBias.calculateOnebp", __pyx_m) < 0)) __PYX_ERR(0, 1, __pyx_L1_error)
     }
   }
   #endif
@@ -50265,7 +50271,7 @@ if (!__Pyx_RefNanny) {
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
 
-  /* "calculateOnebp.pyx":1
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1
  * import sys             # <<<<<<<<<<<<<<
  * import os
  * import numpy as np
@@ -50275,7 +50281,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_sys, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":2
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":2
  * import sys
  * import os             # <<<<<<<<<<<<<<
  * import numpy as np
@@ -50286,7 +50292,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_os, __pyx_t_1) < 0) __PYX_ERR(0, 2, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":3
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":3
  * import sys
  * import os
  * import numpy as np             # <<<<<<<<<<<<<<
@@ -50298,7 +50304,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":4
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":4
  * import os
  * import numpy as np
  * import math             # <<<<<<<<<<<<<<
@@ -50310,7 +50316,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_math, __pyx_t_1) < 0) __PYX_ERR(0, 4, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":5
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":5
  * import numpy as np
  * import math
  * import time             # <<<<<<<<<<<<<<
@@ -50322,7 +50328,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_time, __pyx_t_1) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":6
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":6
  * import math
  * import time
  * import tempfile             # <<<<<<<<<<<<<<
@@ -50334,7 +50340,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_tempfile, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":7
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":7
  * import time
  * import tempfile
  * import gc             # <<<<<<<<<<<<<<
@@ -50346,7 +50352,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_gc, __pyx_t_1) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":8
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":8
  * import tempfile
  * import gc
  * import scipy             # <<<<<<<<<<<<<<
@@ -50358,7 +50364,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_scipy, __pyx_t_1) < 0) __PYX_ERR(0, 8, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":9
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":9
  * import gc
  * import scipy
  * import py2bit             # <<<<<<<<<<<<<<
@@ -50370,7 +50376,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_py2bit, __pyx_t_1) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":10
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":10
  * import scipy
  * import py2bit
  * import pyBigWig             # <<<<<<<<<<<<<<
@@ -50382,7 +50388,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyBigWig, __pyx_t_1) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":11
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":11
  * import py2bit
  * import pyBigWig
  * import warnings             # <<<<<<<<<<<<<<
@@ -50394,7 +50400,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_warnings, __pyx_t_1) < 0) __PYX_ERR(0, 11, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":12
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":12
  * import pyBigWig
  * import warnings
  * import statsmodels.api as sm             # <<<<<<<<<<<<<<
@@ -50412,7 +50418,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_sm, __pyx_t_2) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":13
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":13
  * import warnings
  * import statsmodels.api as sm
  * import matplotlib             # <<<<<<<<<<<<<<
@@ -50424,7 +50430,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_matplotlib, __pyx_t_2) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":14
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":14
  * import statsmodels.api as sm
  * import matplotlib
  * matplotlib.use('Agg')             # <<<<<<<<<<<<<<
@@ -50441,7 +50447,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":15
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":15
  * import matplotlib
  * matplotlib.use('Agg')
  * import matplotlib.pyplot as plt             # <<<<<<<<<<<<<<
@@ -50459,7 +50465,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_plt, __pyx_t_1) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":16
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":16
  * matplotlib.use('Agg')
  * import matplotlib.pyplot as plt
  * import random             # <<<<<<<<<<<<<<
@@ -50471,7 +50477,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_random, __pyx_t_1) < 0) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":17
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":17
  * import matplotlib.pyplot as plt
  * import random
  * import warnings             # <<<<<<<<<<<<<<
@@ -50483,7 +50489,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_warnings, __pyx_t_1) < 0) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":18
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":18
  * import random
  * import warnings
  * import h5py             # <<<<<<<<<<<<<<
@@ -50495,7 +50501,7 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_h5py, __pyx_t_1) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "calculateOnebp.pyx":21
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":21
  * 
  * 
  * from CRADLE.CorrectBias import vari             # <<<<<<<<<<<<<<
@@ -50516,7 +50522,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
-  /* "calculateOnebp.pyx":1
+  /* "CRADLE/CorrectBias/calculateOnebp.pyx":1
  * import sys             # <<<<<<<<<<<<<<
  * import os
  * import numpy as np
@@ -50687,11 +50693,11 @@ if (!__Pyx_RefNanny) {
   __Pyx_XDECREF(__pyx_t_2);
   if (__pyx_m) {
     if (__pyx_d) {
-      __Pyx_AddTraceback("init calculateOnebp", __pyx_clineno, __pyx_lineno, __pyx_filename);
+      __Pyx_AddTraceback("init CRADLE.CorrectBias.calculateOnebp", __pyx_clineno, __pyx_lineno, __pyx_filename);
     }
     Py_CLEAR(__pyx_m);
   } else if (!PyErr_Occurred()) {
-    PyErr_SetString(PyExc_ImportError, "init calculateOnebp");
+    PyErr_SetString(PyExc_ImportError, "init CRADLE.CorrectBias.calculateOnebp");
   }
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();

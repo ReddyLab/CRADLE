@@ -6,8 +6,6 @@ import sys
 
 def main():
 
-	#with open("README.md", "r") as fh:
-	#	long_description = fh.read()
 
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('numpy', '1.14.3')])
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('argparse', '1.1')])
@@ -30,10 +28,13 @@ def main():
 		Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"])
 	]
 
+	with open("README.md", "r") as f:
+		long_description = f.read()
+
 	setup(name = "CRADLE",
 	      version = "0.1.6",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",
-	      #long_description = long_description,
+	      long_description = long_description,
 	      author = "Young-Sook Kim",
 	      author_email = "kys91240@gmail.com",
 	      url = "https://github.com/Young-Sook/CRADLE",
