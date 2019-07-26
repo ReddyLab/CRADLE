@@ -35,6 +35,7 @@ def main():
 	      version = "0.1.6",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",
 	      long_description = long_description,
+	      long_description_content_type="text/markdown",
 	      author = "Young-Sook Kim",
 	      author_email = "kys91240@gmail.com",
 	      url = "https://github.com/Young-Sook/CRADLE",
