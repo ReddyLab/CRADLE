@@ -67,7 +67,7 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
   -  -faFile <br /> 
        .2bit files. You can download .2bit files in UCSC genome browser. <br/> <br/> 
 * Optional Arguments <br />
-   !! Warning !! Some optional arguments are required depending on parameters in required arguments. <br />
+   !! Warning !! Some optional arguments are required depending on what you put in required arguments. <br />
   -  -binSize <br /> 
       The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1) 
   -  -mi <br /> 
@@ -87,7 +87,8 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
       The number of cpus. default=(available cpus)/2
   -  -bl <br /> 
       Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100
-
+  -  -f <br /> 
+      Output file format. Either 'bigwig' or 'bedgraph' is allowed.
 
 
 ### 2) correctBias_stored
@@ -129,6 +130,8 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
      The number of cpus. default=(available cpus)/2
   -  -bl <br/>
      Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100
+  -  -f <br /> 
+      Output file format. Either 'bigwig' or 'bedgraph' is allowed.
 
 
 ### 3) callPeak
