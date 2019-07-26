@@ -435,7 +435,7 @@ def mergeCorrectedBedfilesTobdg(args):
 	observedBWName = args[4]
 
 	signalBdgName = observedBWName.rsplit('/', 1)[-1]
-	signalBdgName = vari.OUTPUT_DIR + "/" + signalBdgName[:-3] + "_corrected.bw"
+	signalBdgName = vari.OUTPUT_DIR + "/" + signalBdgName[:-3] + "_corrected.bdg"
 	output_stream = open(signalBdgName, "w")
 
 	for line in meta:
