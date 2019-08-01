@@ -46,7 +46,7 @@ def getArgs():
 
 	correctBias_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 
-	correctBias_optional.add_argument('-f', help="output file format. Either 'bigwig' or 'bedgraph' is allowed.")
+	correctBias_optional.add_argument('-f', help="output file format. Either 'bigwig' or 'bedgraph' is allowed. Default='bigwig'")
 
 
 	########### correctBias_stored
@@ -77,7 +77,7 @@ def getArgs():
 
 	correctBiasStored_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 
-	correctBiasStored_optional.add_argument('-f', help="output file format. Either 'bigwig' or 'bedgraph' is allowed.")
+	correctBiasStored_optional.add_argument('-f', help="output file format. Either 'bigwig' or 'bedgraph' is allowed. Default='bigwig'")
 
 	########### callPeak
 	callPeak_parser = subparsers.add_parser("callPeak", help="Correct peaks with corrected bigwig files")

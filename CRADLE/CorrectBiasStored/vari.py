@@ -311,6 +311,10 @@ def setNumProcess(numProcess):
 def setOutputFormat(oformat):
 	global OFORMAT
 
+	if(oformat == None):
+		OFORMAT = "BIGWIG"
+		return
+
 	oformat = oformat.upper()
 	
 	if( (oformat != "BIGWIG") and (oformat != "BEDGRAPH") ):
