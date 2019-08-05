@@ -57,8 +57,8 @@ cpdef performRegression(trainSet):
 	del trainSet, faFile
 
 	#### Initialize COEF matrix
-	COEFCTRL = np.zeros((vari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
-	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
+	COEFCTRL = np.zeros((vari.CTRLBW_NUM, 7), dtype=np.float64)
+	COEFEXP = np.zeros((vari.EXPBW_NUM, 7), dtype=np.float64)
 
 	#### Get X matrix 
 	cdef double [:,:] X_view = np.ones((X_numRows, X_numCols), dtype=np.float64)
@@ -128,7 +128,18 @@ cpdef performRegression(trainSet):
 		model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
 		coef = model.params
-		COEFCTRL[rep, ] = coef
+		COEFCTRL[rep, 0] = coef[0]
+		coef_ptr = 1  
+		j = 1
+		while(j < 7):
+			if(np.isnan(SELECT_COVARI[j-1]) == True):
+				COEFCTRL[rep, j] = np.nan
+				j = j + 1
+			else:
+				COEFCTRL[rep, j] = coef[coef_ptr]	
+				j = j + 1
+				coef_ptr = coef_ptr + 1
+
 		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]
 		corr = np.round(corr, 2)
 
@@ -178,7 +189,19 @@ cpdef performRegression(trainSet):
 		model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
 		coef = model.params
-		COEFEXP[rep, ] = coef
+
+		COEFEXP[rep, 0] = coef[0]
+		coef_ptr = 1
+		j = 1
+		while(j < 7):
+			if(np.isnan(SELECT_COVARI[j-1]) == True):
+				COEFEXP[rep, j] = np.nan
+				j = j + 1
+			else:
+				COEFEXP[rep, j] = coef[coef_ptr]
+				j = j + 1
+				coef_ptr = coef_ptr + 1
+
 		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]
 		corr = np.round(corr, 2)
 
@@ -215,7 +238,7 @@ cpdef correctReadCount(args):
 	chromoEnd = int(faFile.chroms(chromo))
 	faFile.close()
 
-        ###### GENERATE A RESULT MATRIX 
+	###### GENERATE A RESULT MATRIX 
 	frag_start = analysis_start - vari.FRAGLEN + 1
 	frag_end = analysis_end + vari.FRAGLEN - 1
 	shear_start = frag_start - 2
