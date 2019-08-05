@@ -132,7 +132,7 @@ cpdef performRegression(trainSet):
 		coef_ptr = 1  
 		j = 1
 		while(j < 7):
-			if(np.isnan(SELECT_COVARI[j-1]) == True):
+			if(np.isnan(vari.SELECT_COVARI[j-1]) == True):
 				COEFCTRL[rep, j] = np.nan
 				j = j + 1
 			else:
@@ -194,7 +194,7 @@ cpdef performRegression(trainSet):
 		coef_ptr = 1
 		j = 1
 		while(j < 7):
-			if(np.isnan(SELECT_COVARI[j-1]) == True):
+			if(np.isnan(vari.SELECT_COVARI[j-1]) == True):
 				COEFEXP[rep, j] = np.nan
 				j = j + 1
 			else:

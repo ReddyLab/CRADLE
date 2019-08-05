@@ -471,39 +471,6 @@ def mergeCorrectedBedfilesTobw(args):
 	return signalBWName
 
 
-def mergeCorrectedBedfilesTobdg(args):
-	meta = args[0]
-	bwHeader = args[1]
-	dataInfo = args[2]
-	repInfo = args[3]
-	observedBWName = args[4]
-
-	signalBdgName = observedBWName.rsplit('/', 1)[-1]
-	signalBdgName = vari.OUTPUT_DIR + "/" + signalBdgName[:-3] + "_corrected.bdg"
-	output_stream = open(signalBdgName, "w")
-
-	for line in meta:
-		tempSignalBedName = line[dataInfo][(repInfo-1)]
-		tempChrom = line[2]
-
-		if(tempSignalBedName != None):
-			tempFile_stream = open(tempSignalBedName)
-			tempFile = tempFile_stream.readlines()
-
-			for i in range(len(tempFile)):
-				temp = tempFile[i].split()
-				regionStart = int(temp[0])
-				regionEnd = int(temp[1])
-				regionValue = float(temp[2])
-
-				line = [tempChrom, regionStart, regionEnd, regionValue]
-				output_stream.write('\t'.join([str(x) for x in line]) + "\n")
-			tempFile_stream.close()
-			os.remove(tempSignalBedName)
-
-	output_stream.close()
-
-	return signalBdgName
 
 
 
@@ -634,10 +601,10 @@ def run(args):
 		jobList.append([resultMeta, resultBWHeader, 1, (i+1), vari.EXPBW_NAMES[i]]) # resultMeta, ctrl, rep
 
 	pool = multiprocessing.Pool(vari.SAMPLE_NUM)
-	if(vari.OFORMAT == "BIGWIG"):
-		correctedFileNames = pool.map_async(mergeCorrectedBedfilesTobw, jobList).get()
-	if(vari.OFORMAT == "BEDGRAPH"):
-		correctedFileNames = pool.map_async(mergeCorrectedBedfilesTobdg, jobList).get()
+	correctedFileNames = pool.map_async(mergeCorrectedBedfilesTobw, jobList).get()
+	pool.close()
+	pool.join()
+
 
 	print("Output File Names: ")
 	print(correctedFileNames)
