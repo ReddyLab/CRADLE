@@ -87,8 +87,7 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
       The number of cpus. default=(available cpus)/2
   -  -bl <br /> 
       Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100
-  -  -f <br /> 
-      Output file format. Either 'bigwig' or 'bedgraph' is allowed.
+
 
 
 ### 2) correctBias_stored
@@ -130,8 +129,7 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
      The number of cpus. default=(available cpus)/2
   -  -bl <br/>
      Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100
-  -  -f <br /> 
-      Output file format. Either 'bigwig' or 'bedgraph' is allowed.
+
 
 
 ### 3) callPeak
