@@ -10,7 +10,7 @@ def main():
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('numpy', '1.14.3')])
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('argparse', '1.1')])
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('py2bit', '0.3.0')]) 
-	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('pyBigWig', '0.3.11')])
+	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('pyBigWig', '0.3.17')])
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('statsmodels', '0.8.0')])
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('scipy', '1.0.1')])	
 	subprocess.call([sys.executable, '-m', 'pip', 'install', '{}>={}'.format('matplotlib', '1.5.3')]) 
@@ -32,7 +32,7 @@ def main():
 		long_description = f.read()
 
 	setup(name = "CRADLE",
-	      version = "0.1.7",
+	      version = "0.1.8",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",
 	      long_description = long_description,
 	      long_description_content_type="text/markdown",
