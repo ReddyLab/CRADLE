@@ -475,10 +475,6 @@ def run(args):
 	gc.collect()
 	
 
-	vari.COEFCTRL = coefResult[0][0]
-	vari.COEFEXP = coefResult[0][1]
-	vari.COEFCTRL_HIGHRC = coefResult[1][0]
-	vari.COEFEXP_HIGHRC = coefResult[1][1]
 	print("The order of coefficients:")
 	print(vari.COVARI_ORDER)
 	
