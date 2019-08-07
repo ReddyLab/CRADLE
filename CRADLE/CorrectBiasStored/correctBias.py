@@ -473,19 +473,33 @@ def run(args):
 	pool.join
 	del trainSet1, trainSet2
 	gc.collect()
+	
 
 	vari.COEFCTRL = coefResult[0][0]
 	vari.COEFEXP = coefResult[0][1]
 	vari.COEFCTRL_HIGHRC = coefResult[1][0]
 	vari.COEFEXP_HIGHRC = coefResult[1][1]
-	print("COEF_CTRL: ")
+	print("The order of coefficients:")
+	print(vari.COVARI_ORDER)
+	
+	noNan_idx = [0]
+	temp = np.where(np.isnan(vari.SELECT_COVARI) == False)[0] + 1
+	temp = temp.tolist()
+	noNan_idx.extend(temp)
+	
 	print(vari.COEFCTRL)
-	print("COEF_EXP: ")
 	print(vari.COEFEXP)
-	print("COEF_CTRL_HIGHRC: ")
 	print(vari.COEFCTRL_HIGHRC)
-	print("COEF_EXP_HIGHRC: ")
 	print(vari.COEFEXP_HIGHRC)
+
+	print("COEF_CTRL: ")
+	print(np.array(vari.COEFCTRL)[:,noNan_idx])
+	print("COEF_EXP: ")
+	print(np.array(vari.COEFEXP)[:,noNan_idx])
+	print("COEF_CTRL_HIGHRC: ")
+	print(np.array(vari.COEFCTRL_HIGHRC)[:,noNan_idx])
+	print("COEF_EXP_HIGHRC: ")
+	print(np.array(vari.COEFEXP_HIGHRC)[:,noNan_idx])
 	
 	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-start_time)/3600) )
 

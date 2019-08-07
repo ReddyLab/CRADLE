@@ -558,6 +558,9 @@ def run(args):
 	vari.COEFEXP = coefResult[0][1]
 	vari.COEFCTRL_HIGHRC = coefResult[1][0]
 	vari.COEFEXP_HIGHRC = coefResult[1][1]
+	print("The order of coefficients:")
+	print(vari.COVARI_ORDER)
+
 	print("COEF_CTRL: ")
 	print(vari.COEFCTRL)
 	print("COEF_EXP: ")

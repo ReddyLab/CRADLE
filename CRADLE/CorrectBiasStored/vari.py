@@ -71,6 +71,7 @@ def setCovariDir(biasType, covariDir, faFile):
 	global FA
 	global COVARI_NUM
 	global BINSIZE
+	global COVARI_ORDER
 
 	COVARI_DIR = covariDir
 
@@ -88,21 +89,34 @@ def setCovariDir(biasType, covariDir, faFile):
 
 	SELECT_COVARI = np.array([np.nan] * 6)
 	COVARI_NUM = 0
+	
+	COVARI_ORDER = ['Intercept']
+
+	biasType = [x.lower() for x in biasType]
+
+	for i in range(len(biasType)):
+		if( (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad')):
+			print("Error! Wrong value in -biasType. Only 'shear', 'pcr', 'map', 'gquad' are allowed")
+			sys.exit()
+
 	if('shear' in biasType):
 		SELECT_COVARI[0] = 1
 		SELECT_COVARI[1] = 1
 		COVARI_NUM = COVARI_NUM + 2
+		COVARI_ORDER.extend(["MGW_shear", "ProT_shear"])
 	if('pcr' in biasType):
 		SELECT_COVARI[2] = 1
 		SELECT_COVARI[3] = 1
 		COVARI_NUM = COVARI_NUM + 2
+		COVARI_ORDER.extend(["Anneal_pcr", "Denature_pcr"])
 	if('map' in biasType):
 		SELECT_COVARI[4] = 1
 		COVARI_NUM = COVARI_NUM + 1
+		COVARI_ORDER.extend(["Map_map"])
 	if('gquad' in biasType):
 		SELECT_COVARI[5] = 1
 		COVARI_NUM = COVARI_NUM + 1
-
+		COVARI_ORDER.extend(["Gquad_gquad"])
 	return
 
 

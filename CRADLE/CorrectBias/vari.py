@@ -73,6 +73,7 @@ def setBiasFiles(args):
 	global GQUAD
 	global COVARI_NUM
 	global FA
+	global COVARI_ORDER
 
 	SHEAR = 0
 	PCR = 0
@@ -82,9 +83,22 @@ def setBiasFiles(args):
 	FA = args.faFile
 
 	COVARI_NUM = 0
-	if('shear' in args.biasType):
+
+	COVARI_ORDER = ['Intercept']
+
+	biasType = [x.lower() for x in args.biasType]
+
+	for i in range(len(biasType)):
+		if( (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad')):
+			print("Error! Wrong value in -biasType. Only 'shear', 'pcr', 'map', 'gquad' are allowed")
+			sys.exit()
+
+
+	if('shear' in biasType):
 		SHEAR = 1
 		COVARI_NUM = COVARI_NUM + 2
+
+		COVARI_ORDER.extend(["MGW_shear", "ProT_shear"])
 
 		global MGW
 		global PROT
@@ -614,9 +628,11 @@ def setBiasFiles(args):
 		N_PROT = temp[:,1].astype(float).min()
 
 
-	if('pcr' in args.biasType):
+	if('pcr' in biasType):
 		PCR = 1
 		COVARI_NUM = COVARI_NUM + 2 # ANNEAL & DENATURE
+
+		COVARI_ORDER.extend(["Anneal_pcr", "Denature_pcr"])
 
 		global GIBBS
 		global ENTROPY
@@ -639,9 +655,11 @@ def setBiasFiles(args):
 		PARA2 =  math.pow(10, -6) / (1-PARA1)
 		N_GIBBS = np.median(temp[:,1].astype(float))
 
-	if('map' in args.biasType):
+	if('map' in biasType):
 		MAP = 1
 		COVARI_NUM = COVARI_NUM + 1
+
+		COVARI_ORDER.extend(["Map_map"])
 
 		global MAPFILE
 		global KMER
@@ -656,10 +674,12 @@ def setBiasFiles(args):
 		MAPFILE = args.mapFile
 		KMER = int(args.kmer)
 
-	if('gquad' in args.biasType):
+	if('gquad' in biasType):
 		GQUAD = 1
 		COVARI_NUM = COVARI_NUM + 1
 		
+		COVARI_ORDER.extend(["Gquad_gquad"])
+
 		global GQAUDFILE
 		global GQAUD_MAX
 
