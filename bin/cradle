@@ -107,6 +107,8 @@ def getArgs():
 
 	callPeak_optional.add_argument('-d', help="The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=(fragment size)/ 2")
 
+	callPeak_optional.add_argument('-pl', help="Minimum peak length. default=wbin")
+
 	return parser
 
 

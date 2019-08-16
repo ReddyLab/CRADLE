@@ -821,6 +821,9 @@ cpdef selectTheta(metaDataName):
 				regionTheta = int(line[3]) 
 				regionPvalue = float(line[4])
 
+				if(np.isnan(regionPvalue) == True):
+					continue
+
 				if(regionTheta >= theta):
 					PVALUE_simes.extend([ regionPvalue ])
 

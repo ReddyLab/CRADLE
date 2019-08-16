@@ -107,6 +107,19 @@ def mergePeaks(peak_result):
 	return merged_peak
 
 
+def filterSmallPeaks(peak_result):
+
+	final_result = []
+	for i in range(len(peak_result)):
+		start = int(peak_result[i][1])
+		end = int(peak_result[i][2])
+
+		if( (end-start) >= vari.PEAKLEN ):
+			final_result.append(peak_result[i])
+
+	return final_result
+
+
 
 def run(args):
 
@@ -235,18 +248,48 @@ def run(args):
 	print("Newly adjusted cutoff: %s" % vari.ADJ_FDR)
 	
 
+	##### Applying the selected theta 
+	input_filename = meta_filename
+	input_stream = open(input_filename)
+	input_file = input_stream.readlines()
+
+	PVALUE_simes = []
+
+	### Apply the selected thata to the data
+	for subFileIdx in range(len(input_file)):
+		subfile_name = input_file[subFileIdx].split()[0]
+		subfile_stream = open(subfile_name)
+		subfile_file = subfile_stream.readlines()
+
+		for regionIdx in range(len(subfile_file)):
+			line = subfile_file[regionIdx].split()
+			regionTheta = int(line[3])
+			regionPvalue = float(line[4])
+
+			if(np.isnan(regionPvalue) == True):
+				continue
+
+			if(regionTheta >= vari.THETA):
+				PVALUE_simes.extend([ regionPvalue ])
+	
+	PVALUE_group_bh = statsmodels.sandbox.stats.multicomp.multipletests(PVALUE_simes, alpha=vari.FDR, method='fdr_bh')[0]
+
+
+	##### Selecting windows
 	task_callPeak = []
 
 	input_filename = meta_filename
 	input_stream = open(input_filename)
 	input_file = input_stream.readlines()
 
+	groupPvalueIdx = 0
 	for subFileIdx in range(len(input_file)):
 		subfile_name = input_file[subFileIdx].split()[0]
 		subfile_stream = open(subfile_name)
 		subfile_file = subfile_stream.readlines()
 
 		selectRegionIdx = []
+		selectedIdx = 0
 
 		for regionIdx in range(len(subfile_file)):
 			line = subfile_file[regionIdx].split()
@@ -257,13 +300,18 @@ def run(args):
 				continue
 			if(np.isnan(regionPvalue) == True):
 				continue
-			if(regionPvalue < vari.FDR):
+			if(PVALUE_group_bh[groupPvalueIdx+selectedIdx] == True):
 				selectRegionIdx.extend([ regionIdx ])
+			selectedIdx = selectedIdx + 1
+
+		groupPvalueIdx = groupPvalueIdx + selectedIdx
 
 		if(len(selectRegionIdx) != 0):
 			task_callPeak.append([subfile_name, selectRegionIdx])
 		else:
 			os.remove(subfile_name)
+
+	input_stream.close()
 	os.remove(meta_filename)	
 
 	if(len(task_callPeak) < vari.NUMPROCESS):
@@ -296,22 +344,26 @@ def run(args):
 
 	######## WRITE A RESULT FILE
 	if(vari.DISTANCE == 1):
-		output_filename = vari.OUTPUT_DIR + "/CRADE_peaks"
+		final_result = filterSmallPeaks(peak_result)
+
+		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
 		output_stream = open(output_filename, "w")
 
-		for i in range(len(peak_result)):
-			output_stream.write('\t'.join([str(x) for x in peak_result[i]]) + "\n")
+		for i in range(len(final_result)):
+			output_stream.write('\t'.join([str(x) for x in final_result[i]]) + "\n")
 		output_stream.close()
 	else:
 		merged_peaks = mergePeaks(peak_result)
+		final_result = filterSmallPeaks(merged_peaks)
 
-		output_filename = vari.OUTPUT_DIR + "/CRADE_peaks"
+		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
 		output_stream = open(output_filename, "w")
 
-		for i in range(len(merged_peaks)):
-			output_stream.write('\t'.join([str(x) for x in merged_peaks[i]]) + "\n")
+		for i in range(len(final_result)):
+			output_stream.write('\t'.join([str(x) for x in final_result[i]]) + "\n")
 		output_stream.close()
 
 	print("======= COMPLETED! ===========")
 	print("The peak result was saved in %s" % vari.OUTPUT_DIR)
 
+	return

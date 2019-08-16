@@ -8,8 +8,10 @@ def setGlobalVariables(args):
 	setOutputDirectory(args.o)
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.fdr)
-	setBinSize(args.l, args.rbin, args.wbin)
+	binSize2 = setBinSize(args.l, args.rbin, args.wbin)
+	setPeakLen(args.pl, binSize2)
 	setNumProcess(args.p)
+	setDistance(args.l, args.d)
 
 	return	
 
@@ -246,12 +248,12 @@ def setBinSize(fragLen, binSize1, binSize2):
 			BINSIZE1 = int(binSize1)
 			BINSIZE2 = int(binSize2)
 			SHIFTSIZE2 = BINSIZE2	
-			return			
+			return BINSIZE2			
 	elif( (binSize1 == None) and (binSize2 == None)):
 		BINSIZE1 = int(fragLen * 1.5)
 		BINSIZE2 = int(float(BINSIZE1) / 6)
 		SHIFTSIZE2 = BINSIZE2
-		return
+		return BINSIZE2
 	elif( (binSize1 == None)  and (binSize2 != None)):
 		BINSIZE1 = int(fragLen * 1.5)
 		if(int(binSize2) > BINSIZE1):
@@ -260,15 +262,15 @@ def setBinSize(fragLen, binSize1, binSize2):
 		else:
 			BINSIZE2 = int(binSize2)
 			SHIFTSIZE2 = BINSIZE2
-			return
+			return BINSIZE2
 	else: # binSize1 != None binSize2 == None
 		BINSIZE1 = int(binSize1)
 		BINSIZE2 = int(float(BINSIZE1) / 6)
 		SHIFTSIZE2 = BINSIZE2
 		
-		return
+		return BINSIZE2
 	
-	return
+	return BINSIZE2
 
 
 def setNumProcess(numProcess):
@@ -288,4 +290,24 @@ def setNumProcess(numProcess):
 	return
 
 
+def setDistance(fragLen, distance):
+	global DISTANCE
 
+	fragLen = float(fragLen)
+
+	if(distance == None):
+		DISTANCE = int(fragLen / 2.0)
+	else:
+		DISTANCE = int(distance)
+	return
+
+
+
+def setPeakLen(peakLen, binSize2):
+	global PEAKLEN
+
+	if(peakLen == None):
+		PEAKLEN = int(binSize2)
+	else:
+		PEAKLEN = int(peakLen)
+	return

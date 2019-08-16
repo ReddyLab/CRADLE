@@ -32,7 +32,7 @@ def main():
 		long_description = f.read()
 
 	setup(name = "CRADLE",
-	      version = "0.1.8",
+	      version = "0.1.9",
 	      description = "Correct Read Counts and Analysis of Differently Expressed Regions",
 	      long_description = long_description,
 	      long_description_content_type="text/markdown",
