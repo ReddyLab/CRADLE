@@ -314,6 +314,11 @@ def run(args):
 	input_stream.close()
 	os.remove(meta_filename)	
 
+	if(len(task_callPeak) == 0):
+		print("======= COMPLETED! ===========")
+		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
+		return
+
 	if(len(task_callPeak) < vari.NUMPROCESS):
 		pool = multiprocessing.Pool(len(task_callPeak))
 	else:
@@ -339,31 +344,50 @@ def run(args):
 
 	if(len(peak_result) == 0):
 		print("======= COMPLETED! ===========")
-		print("There is no peak detected.")
+		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
 		return
 
 	######## WRITE A RESULT FILE
 	if(vari.DISTANCE == 1):
 		final_result = filterSmallPeaks(peak_result)
 
+		numActi = 0
+		numRepress = 0
+
 		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
 		output_stream = open(output_filename, "w")
 
 		for i in range(len(final_result)):
+			if(int(final_result[i][3]) == 1):
+				numActi = numActi + 1
+			else:
+				numRepress = numRepress + 1
+
 			output_stream.write('\t'.join([str(x) for x in final_result[i]]) + "\n")
 		output_stream.close()
 	else:
 		merged_peaks = mergePeaks(peak_result)
 		final_result = filterSmallPeaks(merged_peaks)
 
+		numActi = 0
+		numRepress = 0
+
 		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
 		output_stream = open(output_filename, "w")
 
 		for i in range(len(final_result)):
+			if(int(final_result[i][3]) == 1):
+				numActi = numActi + 1
+			else:
+				numRepress = numRepress + 1
+
 			output_stream.write('\t'.join([str(x) for x in final_result[i]]) + "\n")
 		output_stream.close()
 
 	print("======= COMPLETED! ===========")
 	print("The peak result was saved in %s" % vari.OUTPUT_DIR)
+	print("Total number of peaks: %s" % len(final_result))
+	print("Activated peaks: %s" % numActi)
+	print("Repressed peaks: %s" % numRepress)
 
 	return
