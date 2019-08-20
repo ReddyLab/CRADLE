@@ -558,17 +558,23 @@ def run(args):
 	vari.COEFEXP = coefResult[0][1]
 	vari.COEFCTRL_HIGHRC = coefResult[1][0]
 	vari.COEFEXP_HIGHRC = coefResult[1][1]
+
 	print("The order of coefficients:")
 	print(vari.COVARI_ORDER)
 
+	noNan_idx = [0]
+	temp = np.where(np.isnan(vari.SELECT_COVARI) == False)[0] + 1
+	temp = temp.tolist()
+	noNan_idx.extend(temp)
+
 	print("COEF_CTRL: ")
-	print(vari.COEFCTRL)
+	print(np.array(vari.COEFCTRL)[:,noNan_idx])
 	print("COEF_EXP: ")
-	print(vari.COEFEXP)
+	print(np.array(vari.COEFEXP)[:,noNan_idx])
 	print("COEF_CTRL_HIGHRC: ")
-	print(vari.COEFCTRL_HIGHRC)
+	print(np.array(vari.COEFCTRL_HIGHRC)[:,noNan_idx])
 	print("COEF_EXP_HIGHRC: ")
-	print(vari.COEFEXP_HIGHRC)
+	print(np.array(vari.COEFEXP_HIGHRC)[:,noNan_idx])
 
 	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-start_time)/3600) )
 

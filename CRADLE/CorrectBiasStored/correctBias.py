@@ -473,6 +473,11 @@ def run(args):
 	pool.join
 	del trainSet1, trainSet2
 	gc.collect()
+
+	vari.COEFCTRL = coefResult[0][0]
+	vari.COEFEXP = coefResult[0][1]
+	vari.COEFCTRL_HIGHRC = coefResult[1][0]
+	vari.COEFEXP_HIGHRC = coefResult[1][1]
 	
 
 	print("The order of coefficients:")
@@ -482,11 +487,6 @@ def run(args):
 	temp = np.where(np.isnan(vari.SELECT_COVARI) == False)[0] + 1
 	temp = temp.tolist()
 	noNan_idx.extend(temp)
-	
-	print(vari.COEFCTRL)
-	print(vari.COEFEXP)
-	print(vari.COEFCTRL_HIGHRC)
-	print(vari.COEFEXP_HIGHRC)
 
 	print("COEF_CTRL: ")
 	print(np.array(vari.COEFCTRL)[:,noNan_idx])
