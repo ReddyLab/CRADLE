@@ -57,7 +57,7 @@ def getCandidateTrainSet(rcPercentile):
 		trainRegionNum = totalBinNum
 
 	trainRegionNum1 = int(np.round(trainRegionNum * 0.5 / 5))
-	trainRegionNum2 = int(np.round(trainRegionNum * 0.5 / 9))
+	trainRegionNum2 = int(np.round(trainRegionNum * 0.5 / 8))
 	trainSetMeta = []
 
 	ctrlBW = pyBigWig.open(vari.CTRLBW_NAMES[0])
