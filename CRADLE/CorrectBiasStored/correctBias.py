@@ -360,7 +360,8 @@ def divideGenome():
 			numBin = float(regionLen) / binSize
 			if(numBin > int(numBin)):
 				numBin = int(numBin) + 1
-			
+
+			numBin = int(numBin)			
 			for i in range(numBin):
 				start = regionStart + i * binSize
 				end = regionStart + (i + 1) * binSize
