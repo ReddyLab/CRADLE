@@ -77,7 +77,7 @@ def getCandidateTrainSet(rcPercentile):
 
 	ctrlBW.close()
 	meanRC = np.array(meanRC)
-	del temp, ctrlBW
+	del ctrlBW
 
 	for i in range(5):
 		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
@@ -562,19 +562,15 @@ def run(args):
 	print("The order of coefficients:")
 	print(vari.COVARI_ORDER)
 
-	noNan_idx = [0]
-	temp = np.where(np.isnan(vari.SELECT_COVARI) == False)[0] + 1
-	temp = temp.tolist()
-	noNan_idx.extend(temp)
 
 	print("COEF_CTRL: ")
-	print(np.array(vari.COEFCTRL)[:,noNan_idx])
+	print(vari.COEFCTRL)
 	print("COEF_EXP: ")
-	print(np.array(vari.COEFEXP)[:,noNan_idx])
+	print(vari.COEFEXP)
 	print("COEF_CTRL_HIGHRC: ")
-	print(np.array(vari.COEFCTRL_HIGHRC)[:,noNan_idx])
+	print(vari.COEFCTRL_HIGHRC)
 	print("COEF_EXP_HIGHRC: ")
-	print(np.array(vari.COEFEXP_HIGHRC)[:,noNan_idx])
+	print(vari.COEFEXP_HIGHRC)
 
 	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-start_time)/3600) )
 

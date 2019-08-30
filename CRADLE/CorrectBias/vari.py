@@ -74,7 +74,6 @@ def setBiasFiles(args):
 	global COVARI_NUM
 	global FA
 	global COVARI_ORDER
-	global SELECT_COVARI
 
 	SHEAR = 0
 	PCR = 0
@@ -86,7 +85,6 @@ def setBiasFiles(args):
 	COVARI_NUM = 0
 
 	COVARI_ORDER = ['Intercept']
-	SELECT_COVARI = np.array([np.nan] * 6)
 
 	biasType = [x.lower() for x in args.biasType]
 
@@ -101,8 +99,6 @@ def setBiasFiles(args):
 		COVARI_NUM = COVARI_NUM + 2
 
 		COVARI_ORDER.extend(["MGW_shear", "ProT_shear"])
-		SELECT_COVARI[0] = 1
-		SELECT_COVARI[1] = 1
 
 		global MGW
 		global PROT
@@ -637,8 +633,6 @@ def setBiasFiles(args):
 		COVARI_NUM = COVARI_NUM + 2 # ANNEAL & DENATURE
 
 		COVARI_ORDER.extend(["Anneal_pcr", "Denature_pcr"])
-		SELECT_COVARI[2] = 1
-		SELECT_COVARI[3] = 1
 
 		global GIBBS
 		global ENTROPY
@@ -667,7 +661,6 @@ def setBiasFiles(args):
 
 		COVARI_ORDER.extend(["Map_map"])
 
-		SELECT_COVARI[4] = 1
 
 		global MAPFILE
 		global KMER
@@ -688,7 +681,6 @@ def setBiasFiles(args):
 		
 		COVARI_ORDER.extend(["Gquad_gquad"])
 
-		SELECT_COVARI[5] = 1
 		global GQAUDFILE
 		global GQAUD_MAX
 
