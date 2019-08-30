@@ -77,7 +77,7 @@ def getCandidateTrainSet(rcPercentile):
 
 	ctrlBW.close()
 	meanRC = np.array(meanRC)
-	del ctrlBW
+	del temp, ctrlBW
 
 	for i in range(5):
 		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
