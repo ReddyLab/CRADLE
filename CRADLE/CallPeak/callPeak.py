@@ -130,14 +130,22 @@ def run(args):
 	
 	##### CALCULATE vari.FILTER_CUTOFF
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
-	region_1stchr = np.array(vari.REGION)
-	region_1stchr = region_1stchr[np.where(region_1stchr[:,0] == region_1stchr[0][0])].tolist()
-	if(len(region_1stchr) < vari.NUMPROCESS):
-		pool = multiprocessing.Pool(len(region_1stchr))
+	region_total = 0
+	task_vari = []
+	for region in vari.REGION:
+		regionSize = int(region[2]) - int(region[1])
+		region_total = region_total + regionSize
+		task_vari.append(region)
+		
+		if(region_total > 3* np.power(10, 8)):
+			break
+
+	if(len(task_vari) < vari.NUMPROCESS):
+		pool = multiprocessing.Pool(len(task_vari))
 	else:
 		pool = multiprocessing.Pool(vari.NUMPROCESS)
 
-	result_filter = pool.map_async(calculateRC.getVariance, region_1stchr).get()
+	result_filter = pool.map_async(calculateRC.getVariance, task_vari).get()
 	pool.close()
 	pool.join()
 
@@ -166,7 +174,7 @@ def run(args):
 		region_total = region_total + regionSize 
 		task_diff.append(region)		
 
-		if(regionSize > 3* np.power(10, 8)):
+		if(region_total > 3* np.power(10, 8)):
 			break
 
 	if(len(task_diff) < vari.NUMPROCESS):
