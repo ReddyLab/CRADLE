@@ -73,6 +73,8 @@ def getCandidateTrainSet(rcPercentile):
 			numBin = 1
 		temp = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
 		temp = temp[np.where(temp!=None)]
+		temp = temp[np.where(temp > 0)]
+
 		meanRC.extend(temp.tolist())
 
 	ctrlBW.close()

@@ -3,6 +3,7 @@ import math
 import numpy as np
 import sys
 import multiprocessing
+import pyBigWig
 
 def setGlobalVariables(args):
 	
@@ -79,6 +80,9 @@ def setCovariDir(biasType, covariDir, faFile):
 		print("Error! There is no covariate directory")
 		sys.exit()
 
+	if(COVARI_DIR[-1] == "/"):
+		COVARI_DIR = COVARI_DIR[:-1]
+	
 	temp_str = COVARI_DIR.split('/')
 	COVARI_Name = temp_str[len(temp_str)-1]
 	temp_str = COVARI_Name.split("_")[1]
@@ -274,6 +278,26 @@ def setAnlaysisRegion(region, bl):
 
 		REGION = region_woBL
 	
+	# check if all chromosomes in the REGION in bigwig files
+	bw = pyBigWig.open(CTRLBW_NAMES[0])
+	region_final = []
+	for regionIdx in range(len(REGION)):
+		chromo = REGION[regionIdx][0]
+		start = int(REGION[regionIdx][1])
+		end = int(REGION[regionIdx][2])
+
+		chromoLen = bw.chroms(chromo)
+		if(chromoLen == None):
+			continue
+		if(end > chromoLen):
+			REGION[regionIdx][2] = chromoLen
+			if( chromoLen <= start ):
+				continue
+		region_final.append([chromo, start, end])
+	bw.close()
+
+	REGION = region_final
+
 
 	return
 
@@ -281,7 +305,10 @@ def setAnlaysisRegion(region, bl):
 def setFilterCriteria(minFrag):
 	global FILTERVALUE
 
-	FILTERVALUE = int(minFrag)
+	if(minFrag == None):
+		FILTERVALUE = SAMPLE_NUM
+	else:
+		FILTERVALUE = int(minFrag)
 
 	return
 

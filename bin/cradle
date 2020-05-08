@@ -30,7 +30,7 @@ def getArgs():
 
 	correctBias_optional.add_argument('-binSize', help="The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)", default=1)
 
-	correctBias_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=10", default=10)
+	correctBias_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples")
 
 	correctBias_optional.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")
 
@@ -68,7 +68,7 @@ def getArgs():
 	## optional
 	correctBiasStored_optional = correctBiasStored_parser.add_argument_group("Optional Args")
 
-	correctBiasStored_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=10", default=10)
+	correctBiasStored_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples")
 
 	correctBiasStored_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.")
 

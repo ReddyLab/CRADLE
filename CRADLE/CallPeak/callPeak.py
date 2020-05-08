@@ -356,6 +356,7 @@ def run(args):
 		return
 
 	######## WRITE A RESULT FILE
+	colNames = ["chr", "start", "end", "activity type", "p value", "effect size"]
 	if(vari.DISTANCE == 1):
 		final_result = filterSmallPeaks(peak_result)
 
@@ -364,6 +365,7 @@ def run(args):
 
 		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
 		output_stream = open(output_filename, "w")
+		output_stream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
 		for i in range(len(final_result)):
 			if(int(final_result[i][3]) == 1):
@@ -382,6 +384,7 @@ def run(args):
 
 		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
 		output_stream = open(output_filename, "w")
+		output_stream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
 		for i in range(len(final_result)):
 			if(int(final_result[i][3]) == 1):

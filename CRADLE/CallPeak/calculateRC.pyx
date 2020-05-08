@@ -349,6 +349,7 @@ cpdef doWindowApproach(arg):
 					subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
 					subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
 					subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
+					writtenRegionNum = writtenRegionNum + 1
 
 				binStart_idx = binStart_idx + vari.SHIFTSIZE2
 				continue

@@ -3,6 +3,7 @@ import math
 import numpy as np
 import sys
 import multiprocessing
+import pyBigWig
 
 def setGlobalVariables(args):
 	
@@ -857,6 +858,25 @@ def setAnlaysisRegion(region, bl):
 		REGION = region_woBL
 
 
+	# check if all chromosomes in the REGION in bigwig files
+	bw = pyBigWig.open(CTRLBW_NAMES[0])
+	region_final = []
+	for regionIdx in range(len(REGION)):
+		chromo = REGION[regionIdx][0]
+		start = int(REGION[regionIdx][1])
+		end = int(REGION[regionIdx][2])
+
+		chromoLen = bw.chroms(chromo)
+		if(chromoLen == None):
+			continue
+		if(end > chromoLen):
+			REGION[regionIdx][2] = chromoLen
+			if( chromoLen <= start ):
+				continue
+		region_final.append([chromo, start, end])
+	bw.close()
+
+	REGION = region_final	
 
 	return
 
@@ -864,7 +884,10 @@ def setAnlaysisRegion(region, bl):
 def setFilterCriteria(minFrag):
 	global FILTERVALUE
 
-	FILTERVALUE = int(minFrag)
+	if(minFrag == None):
+		FILTERVALUE = int(SAMPLE_NUM)		
+	else:
+		FILTERVALUE = int(minFrag)
 
 	return
 
