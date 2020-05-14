@@ -14,6 +14,7 @@ def setGlobalVariables(args):
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.mi)
 	setNumProcess(args.p)
+	setNormalization(args.norm, args.generateNormBW)
 
 	return
 
@@ -341,10 +342,28 @@ def setNumProcess(numProcess):
 		NUMPROCESS = int(numProcess)
 
 	if(NUMPROCESS > system_cpus):
-		print("ERROR: You specified too many cpus!")
-		sys.exit()
+		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
+		NUMPROCESS = system_cpus
 
 	return
 
 
+def setNormalization(norm, generateNormBW):
+	global I_NORM
+	global I_GENERATE_NormBW
 
+	if(norm.lower() == 'false'):
+		I_NORM = False
+	else:
+		I_NORM = True
+
+	if(generateNormBW.lower() == 'false'):
+		I_GENERATE_NormBW = False
+	else:
+		I_GENERATE_NormBW = True
+
+	if((I_NORM == False) and (I_GENERATE_NormBW == True)):
+		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
+		sys.exit()
+
+	return

@@ -46,6 +46,9 @@ def getArgs():
 
 	correctBias_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 
+	correctBias_optional.add_argument('-norm', help="Whether normalization is needed for input bigwig files. Choose either 'True' or 'False'. default=True", default='True')
+
+	correctBias_optional.add_argument('-generateNormBW', help="If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False", default='False')
 
 
 	########### correctBias_stored
@@ -75,6 +78,10 @@ def getArgs():
 	correctBiasStored_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
 
 	correctBiasStored_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
+
+	correctBiasStored_optional.add_argument('-norm', help="Whether normalization is needed for input bigwig files. Choose either 'True' or 'False'. default=True", default='True')
+
+	correctBiasStored_optional.add_argument('-generateNormBW', help="If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False", default='False')
 
 
 	########### callPeak

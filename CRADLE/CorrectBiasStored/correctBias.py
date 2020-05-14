@@ -429,6 +429,75 @@ def mergeCorrectedBedfilesTobw(args):
 
 	return signalBWName
 
+def generateNormalizedObBWs(args):
+	bwHeader = args[0]
+	scaler = float(args[1])
+	observedBWName = args[2]
+
+	normObBWName = observedBWName.rsplit('/', 1)[-1]
+	normObBWName = vari.OUTPUT_DIR + "/" + normObBWName[:-3] + "_normalized.bw"
+	normObBW = pyBigWig.open(normObBWName, "w")
+	normObBW.addHeader(bwHeader)
+
+	obBW = pyBigWig.open(observedBWName)
+
+	for regionIdx in range(len(vari.REGION)):
+		chromo = vari.REGION[regionIdx][0]
+		start = int(vari.REGION[regionIdx][1])
+		end = int(vari.REGION[regionIdx][2])
+
+		starts = np.array(range(start, end))
+		values = np.array(obBW.values(chromo, start, end))
+
+		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
+		starts = starts[idx]
+		values = values[idx]
+		values = values / scaler
+
+		if(len(starts) == 0):
+			continue
+
+		## merge positions with the same values
+		values = values.astype(int)
+		numIdx = len(values)
+
+		idx = 0
+		prevStart = starts[idx]
+		prevRC = values[idx]
+		line = [prevStart, (prevStart+1), prevRC]
+
+		if(numIdx == 1):
+			normObBW.addEntries([chromo], [int(prevStart)], ends=[int(prevStart+1)], values=[float(prevRC)])
+		else:
+			idx = 1
+			while(idx < numIdx):
+				currStart = starts[idx]
+				currRC = values[idx]
+
+				if( (currStart == (prevStart + 1)) and (currRC == prevRC) ):
+					line[1] = currStart + 1
+					prevStart = currStart
+					prevRC = currRC
+					idx = idx + 1
+				else:
+					### End a current line
+					normObBW.addEntries([chromo], [int(line[0])], ends=[int(line[1])], values=[float(line[2])])
+
+					### Start a new line
+					line = [currStart, (currStart+1), currRC]
+					prevStart = currStart
+					prevRC = currRC
+					idx = idx + 1
+
+				if(idx == numIdx):
+					normObBW.addEntries([chromo], [int(line[0])], ends=[int(line[1])], values=[float(line[2])])
+					break
+
+	normObBW.close()
+	obBW.close()
+
+	return normObBWName
+
 
 
 
@@ -455,14 +524,19 @@ def run(args):
 
 	###### NORMALIZING READ COUNTS
 	print("======  NORMALIZING READ COUNTS ....")
-	scalerResult = getScaler( np.concatenate((trainSet1, trainSet2), axis=0).tolist() )
+	if(vari.I_NORM == True):
+		scalerResult = getScaler( np.concatenate((trainSet1, trainSet2), axis=0).tolist() )
+	else:
+		scalerResult = [1] * vari.SAMPLE_NUM
 	vari.setScaler(scalerResult)
-	print("NORMALIZING CONSTANT: ")
-	print("CTRKBW: ")
-	print(vari.CTRLSCALER)
-	print("EXPBW: ")
-	print(vari.EXPSCALER)
-	print("\n\n")
+
+	if(vari.I_NORM == True):
+		print("NORMALIZING CONSTANT: ")
+		print("CTRKBW: ")
+		print(vari.CTRLSCALER)
+		print("EXPBW: ")
+		print(vari.EXPSCALER)
+		print("\n\n")
 
 	print("-- RUNNING TIME of calculating scalers : %s hour(s)" % ((time.time()-start_time)/3600) )
 	
@@ -540,6 +614,29 @@ def run(args):
 	print(correctedFileNames)
 
 	print("======  Completed Correcting Read Counts! \n\n")
+
+	if(vari.I_GENERATE_NormBW == True):
+		print("======  Generating normalized observed bigwigs \n\n")
+		# copy the first replicate 
+		from shutil import copyfile
+		observedBWName = vari.CTRLBW_NAMES[0]
+		normObBWName = observedBWName.rsplit('/', 1)[-1]
+		normObBWName = vari.OUTPUT_DIR + "/" + normObBWName[:-3] + "_normalized.bw"
+		copyfile(observedBWName, normObBWName)
+
+		jobList = []
+		for i in range(1, vari.CTRLBW_NUM):
+			jobList.append([resultBWHeader, vari.CTRLSCALER[i], vari.CTRLBW_NAMES[i]])
+		for i in range(vari.EXPBW_NUM):
+			jobList.append([resultBWHeader, vari.EXPSCALER[i], vari.EXPBW_NAMES[i]])
+
+		pool = multiprocessing.Pool(vari.SAMPLE_NUM-1)
+		normObFileNames = pool.map_async(generateNormalizedObBWs, jobList).get()
+		pool.close()
+		pool.join()
+
+		print("Nomralized observed bigwig file names: ")
+		print(normObFileNames)
 		
 	print("-- RUNNING TIME: %s hour(s)" % ((time.time()-start_time)/3600) )
 

@@ -16,6 +16,7 @@ def setGlobalVariables(args):
 	setFilterCriteria(args.mi)
 	setBinSize(args.binSize)
 	setNumProcess(args.p)
+	setNormalization(args.norm, args.generateNormBW)
 
 	return
 
@@ -38,7 +39,7 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 
 	CTRLBW_NUM = len(ctrlbwFiles)
 	EXPBW_NUM = len(expbwFiles)
-	SAMPLE_NUM = CTRLBW_NUM + EXPBW_NUM
+	SAMPLE_NUM = int(CTRLBW_NUM + EXPBW_NUM)
 
 	CTRLBW_NAMES = [0] * CTRLBW_NUM
 	for i in range(CTRLBW_NUM):
@@ -926,9 +927,27 @@ def setNumProcess(numProcess):
 		NUMPROCESS = int(numProcess)
 
 	if(NUMPROCESS > system_cpus):
-		print("ERROR: You specified too many cpus!")
-		sys.exit()
+		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
+		NUMPROCESS = system_cpus
 
 	return
 
+def setNormalization(norm, generateNormBW):
+	global I_NORM
+	global I_GENERATE_NormBW
 
+	if(norm.lower() == 'false'):
+		I_NORM = False
+	else:
+		I_NORM = True	
+
+	if(generateNormBW.lower() == 'false'):
+		I_GENERATE_NormBW = False
+	else:
+		I_GENERATE_NormBW = True
+
+	if((I_NORM == False) and (I_GENERATE_NormBW == True)):
+		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
+		sys.exit()
+
+	return
