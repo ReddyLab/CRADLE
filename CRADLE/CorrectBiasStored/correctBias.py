@@ -402,7 +402,7 @@ def mergeCorrectedBedfilesTobw(args):
 	repInfo = args[3]
 	observedBWName = args[4]
 
-	signalBWName = observedBWName.rsplit('/', 1)[-1].split(".")[0]
+	signalBWName = '.'.join( observedBWName.rsplit('/', 1)[-1].split(".")[:-1])
 	signalBWName = vari.OUTPUT_DIR + "/" + signalBWName + "_corrected.bw"
 	signalBW = pyBigWig.open(signalBWName, "w")
 	signalBW.addHeader(bwHeader)
@@ -434,7 +434,7 @@ def generateNormalizedObBWs(args):
 	scaler = float(args[1])
 	observedBWName = args[2]
 
-	normObBWName = observedBWName.rsplit('/', 1)[-1].split(".")[0]
+	normObBWName = '.'.join( observedBWName.rsplit('/', 1)[-1].split(".")[:-1])
 	normObBWName = vari.OUTPUT_DIR + "/" + normObBWName + "_normalized.bw"
 	normObBW = pyBigWig.open(normObBWName, "w")
 	normObBW.addHeader(bwHeader)
