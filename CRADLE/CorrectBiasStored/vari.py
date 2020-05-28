@@ -56,6 +56,9 @@ def setOutputDirectory(outputDir):
 
 	if(outputDir == None):
 		outputDir = os.getcwd() + "/CRADLE_correctionResult"
+	
+	if(outputDir[-1] == "/"):
+		outputDir = outputDir[:-1]
 
 	OUTPUT_DIR = outputDir
 
@@ -338,6 +341,8 @@ def setNumProcess(numProcess):
 
 	if(numProcess == None):
 		NUMPROCESS = int(system_cpus / 2.0 )
+		if(NUMPROCESS < 1):
+			NUMPROCESS = 1
 	else:
 		NUMPROCESS = int(numProcess)
 

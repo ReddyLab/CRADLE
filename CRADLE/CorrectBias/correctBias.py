@@ -566,7 +566,10 @@ def run(args):
 	###### NORMALIZING READ COUNTS
 	print("======  NORMALIZING READ COUNTS ....")
 	if(vari.I_NORM == True):
-		scalerResult = getScaler( np.concatenate((trainSet1, trainSet2), axis=0).tolist() )
+		if( (len(trainSet1) == 0) or (len(trainSet2) == 0)):
+			 scalerResult = getScaler( list(vari.REGION) )
+		else:
+			scalerResult = getScaler( np.concatenate((trainSet1, trainSet2), axis=0).tolist() )
 	else:
 		scalerResult = [1] * vari.SAMPLE_NUM
 	vari.setScaler(scalerResult)
@@ -585,6 +588,9 @@ def run(args):
 	###### FITTING TRAIN SETS TO THE CORRECTION MODEL
 	print("======  FITTING TRAIN SETS TO THE CORRECTION MODEL ....\n")
 	## SELECTING TRAINING SET
+	if(len(trainSet1) == 0):
+		trainSet1 = vari.REGION
+
 	if(len(trainSet1) < vari.NUMPROCESS):
 		numProcess = len(trainSet1)
 	else:
@@ -603,6 +609,8 @@ def run(args):
 	
 	### trainSet2
 	## SELECTING TRAINING SET
+	if(len(trainSet2) == 0):
+		trainSet2 = vari.REGION
 	if(len(trainSet2) < vari.NUMPROCESS):
 		numProcess = len(trainSet2)
 	else:
@@ -694,8 +702,8 @@ def run(args):
 		# copy the first replicate 
 		from shutil import copyfile
 		observedBWName = vari.CTRLBW_NAMES[0]
-		normObBWName = observedBWName.rsplit('/', 1)[-1]
-		normObBWName = vari.OUTPUT_DIR + "/" + normObBWName[:-3] + "_normalized.bw"
+		normObBWName = '.'.join( observedBWName.rsplit('/', 1)[-1].split(".")[:-1])
+		normObBWName = vari.OUTPUT_DIR + "/" + normObBWName + "_normalized.bw"
 		copyfile(observedBWName, normObBWName)
 
 		jobList = []

@@ -50,9 +50,12 @@ def setOutputDirectory(outputDir):
 	global OUTPUT_DIR
 
 	if(outputDir == None):
-		OUTPUT_DIR = os.getcwd() + "/" + "CRADLE_peak_result"
-	else:
-		OUTPUT_DIR = outputDir
+		outputDir = os.getcwd() + "/" + "CRADLE_peak_result"
+	
+	if(outputDir[-1] == "/"):
+		outputDir = outputDir[:-1]
+
+	OUTPUT_DIR = outputDir
 
 	dirExist = os.path.isdir(OUTPUT_DIR)
 	if(dirExist == False):
@@ -301,6 +304,8 @@ def setNumProcess(numProcess):
 
 	if(numProcess == None):
 		NUMPROCESS = int(system_cpus / 2.0 )
+		if(NUMPROCESS < 1):
+			NUMPROCESS = 1
 	else:
 		NUMPROCESS = int(numProcess)
 
