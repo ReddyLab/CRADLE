@@ -567,7 +567,7 @@ def run(args):
 	print("======  NORMALIZING READ COUNTS ....")
 	if(vari.I_NORM == True):
 		if( (len(trainSet1) == 0) or (len(trainSet2) == 0)):
-			 scalerResult = getScaler( list(vari.REGION) )
+			scalerResult = getScaler( list(vari.REGION) )
 		else:
 			scalerResult = getScaler( np.concatenate((trainSet1, trainSet2), axis=0).tolist() )
 	else:
