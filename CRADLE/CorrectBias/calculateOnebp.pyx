@@ -949,7 +949,8 @@ cpdef performRegression(covariFiles):
 		maxi2 = np.nanmax(np.array(Y_view)[idx])
 		maxi = max(maxi1, maxi2)
 
-		figName = vari.OUTPUT_DIR + "/ctrl_rep" + str(rep+1) + ".png"
+		bwName = '.'.join( vari.CTRLBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
+		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
@@ -994,8 +995,9 @@ cpdef performRegression(covariFiles):
 		maxi1 = np.nanmax(model.fittedvalues[idx])
 		maxi2 = np.nanmax(np.array(Y_view)[idx])
 		maxi = max(maxi1, maxi2)
-	
-		figName = vari.OUTPUT_DIR + "/exp_rep" + str(rep+1) + ".png"
+
+		bwName = '.'.join( vari.EXPBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
+		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
 		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
