@@ -176,6 +176,21 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
   -  -d <br/>
      The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=(fragment size)/ 2
 
+## Output file format
+```
+chr  start end  activity type p value effect size
+chr1	14140	14765	-1	2.149582360947877e-05	-13
+chr1	15504	16192	-1	0.00039501487778326774	-15
+chr1	16761	18033	-1	3.665706490580859e-05	-23
+chr1	28913	29334	-1	0.00023519755766549438	-8
+.
+.
+```
+* The 1st-3rd columns: genomic coordiantes
+* The 4th colum: activity type. '1' indicates activation and '-1' indicates repression
+* The 5th colum: p value
+* The 6th colum: effect size calculated by subtracting the mean of experimental read counts from the mean of control read counts.
+
 
 ## How to download covariate files
 We uploaded pre-computed covariates files for human genome (hg19, hg38). Those files are required to run "correctBias_stored"
