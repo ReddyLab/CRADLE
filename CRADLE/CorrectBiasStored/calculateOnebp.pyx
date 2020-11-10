@@ -42,13 +42,11 @@ cpdef performRegression(trainSet):
 		if(shear_start < 1):
 			shear_start = 1
 			frag_start = 3
-			binStart = max(binStart, frag_start)
 			analysis_start = max(analysis_start, frag_start)
 		
 		if(shear_end > chromoEnd):
 			shear_end = chromoEnd
 			frag_end = shear_end - 2
-			binEnd = min(binEnd, (frag_end-1))
 			analysis_end = min(analysis_end, frag_end)  # not included
 	
 		X_numRows = X_numRows + (analysis_end - analysis_start)
