@@ -165,11 +165,12 @@ def setAnlaysisRegion(region, bl):
 			currEnd = int(REGION[pos][2])
 
 			if( (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd)):
-				region_merged[resultIdx][2] = currEnd
+				maxEnd = np.max([currEnd, pastEnd])
+				region_merged[resultIdx][2] = maxEnd
 				pos = pos + 1
 				pastChromo = currChromo
 				pastStart = currStart
-				pastEnd = currEnd
+				pastEnd = maxEnd
 			else:
 				region_merged.append([currChromo, currStart, currEnd])
 				resultIdx = resultIdx + 1
