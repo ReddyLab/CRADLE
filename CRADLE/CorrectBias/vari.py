@@ -1,12 +1,12 @@
 import os
 import math
-import numpy as np
 import sys
 import multiprocessing
+
+import numpy as np
 import pyBigWig
 
 def setGlobalVariables(args):
-	
 	### input bigwig files
 	setInputFiles(args.ctrlbw, args.expbw)
 	setOutputDirectory(args.o)
@@ -18,13 +18,11 @@ def setGlobalVariables(args):
 	setNumProcess(args.p)
 	setNormalization(args.norm, args.generateNormBW)
 
-	return
-
 
 def setInputFiles(ctrlbwFiles, expbwFiles):
 	global CTRLBW_NAMES
 	global EXPBW_NAMES
-	
+
 	global CTRLBW_NUM
 	global EXPBW_NUM
 	global SAMPLE_NUM
@@ -44,31 +42,26 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 	CTRLBW_NAMES = [0] * CTRLBW_NUM
 	for i in range(CTRLBW_NUM):
 		CTRLBW_NAMES[i] = ctrlbwFiles[i]
-	
+
 	EXPBW_NAMES = [0] * EXPBW_NUM
 	for i in range(EXPBW_NUM):
 		EXPBW_NAMES[i] = expbwFiles[i]
 
 
-	return
-
-
 def setOutputDirectory(outputDir):
-	global OUTPUT_DIR 
+	global OUTPUT_DIR
 
-	if(outputDir == None):
+	if outputDir is None:
 		outputDir = os.getcwd() + "/CRADLE_correctionResult"
-	
-	if(outputDir[-1] == "/"):
+
+	if outputDir[-1] == "/":
 		outputDir = outputDir[:-1]
 
 	OUTPUT_DIR = outputDir
 
 	dirExist = os.path.isdir(OUTPUT_DIR)
-	if(dirExist == False):
+	if not dirExist:
 		os.makedirs(OUTPUT_DIR)
-
-	return
 
 
 def setBiasFiles(args):
@@ -94,12 +87,12 @@ def setBiasFiles(args):
 	biasType = [x.lower() for x in args.biasType]
 
 	for i in range(len(biasType)):
-		if( (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad')):
+		if (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad'):
 			print("Error! Wrong value in -biasType. Only 'shear', 'pcr', 'map', 'gquad' are allowed")
 			sys.exit()
 
 
-	if('shear' in biasType):
+	if 'shear' in biasType:
 		SHEAR = 1
 		COVARI_NUM = COVARI_NUM + 2
 
@@ -367,7 +360,7 @@ def setBiasFiles(args):
 			['TTTCA', -0.268263986594679], ['TTTCC', -0.619459464768786], ['TTTCG', -0.444450554821118], ['TTTCT', -0.561087458546879],
 			['TTTGA', -0.194156014440958], ['TTTGC', -0.264425210287514], ['TTTGG', -0.26060111384911], ['TTTGT', -0.344148684119552],
 			['TTTTA', -0.486611365645396], ['TTTTC', -0.785520500690961], ['TTTTG', -0.55083095837969], ['TTTTT', -1.76850260706379]]
-		
+
 		temp = np.array(MGW)
 		N_MGW = temp[:,1].astype(float).min()
 
@@ -628,12 +621,11 @@ def setBiasFiles(args):
 			['TTTCA', -1.06053511290359], ['TTTCC', -0.94177959832198], ['TTTCG', -1.02104500319695], ['TTTCT', -1.016007209167],
 			['TTTGA', -0.971773954190171], ['TTTGC', -1.07287007106154], ['TTTGG', -0.828673110549498], ['TTTGT', -1.30090143481734],
 			['TTTTA', -1.63027199933694], ['TTTTC', -1.59081316259639], ['TTTTG', -1.79845252737464], ['TTTTT', -7.4079243225598]]
-		
+
 		temp = np.array(PROT)
 		N_PROT = temp[:,1].astype(float).min()
 
-
-	if('pcr' in biasType):
+	if 'pcr' in biasType:
 		PCR = 1
 		COVARI_NUM = COVARI_NUM + 2 # ANNEAL & DENATURE
 
@@ -651,7 +643,7 @@ def setBiasFiles(args):
 			 ['CA', -0.78], ['CC', -1.97], ['CG', -1.44], ['CT', -1.29],
 			 ['GA', -1.66], ['GC', -2.7], ['GG', -1.97], ['GT', -2.04],
 			 ['TA', -0.12], ['TC', -1.66], ['TG', -0.78], ['TT', -1.04]]
-	
+
 		ENTROPY = -0.02485
 		temp = np.array(GIBBS)
 		MIN_TM = -0.12 / ENTROPY
@@ -660,7 +652,7 @@ def setBiasFiles(args):
 		PARA2 =  math.pow(10, -6) / (1-PARA1)
 		N_GIBBS = np.median(temp[:,1].astype(float))
 
-	if('map' in biasType):
+	if 'map' in biasType:
 		MAP = 1
 		COVARI_NUM = COVARI_NUM + 1
 
@@ -670,28 +662,28 @@ def setBiasFiles(args):
 		global MAPFILE
 		global KMER
 
-		if(args.mapFile == None):
+		if args.mapFile is None:
 			print("ERROR: No map file was specified !")
 			sys.exit()
-		if(args.kmer == None):
+		if args.kmer is None:
 			print("ERROR: No kmer parameter was specified !")
 			sys.exit()
-	
+
 		MAPFILE = args.mapFile
 		KMER = int(args.kmer)
 
-	if('gquad' in biasType):
+	if 'gquad' in biasType:
 		GQUAD = 1
 		COVARI_NUM = COVARI_NUM + 1
-		
+
 		COVARI_ORDER.extend(["Gquad_gquad"])
 
 		global GQAUDFILE
 		global GQAUD_MAX
 
 		guadFileNum = len(args.gquadFile)
-		
-		if(guadFileNum == 0):
+
+		if guadFileNum == 0:
 			print("ERROR: No g-quadruplex file was specified !")
 			sys.exit()
 
@@ -700,14 +692,9 @@ def setBiasFiles(args):
 			GQAUDFILE[i] = args.gquadFile[i]
 		GQAUD_MAX = args.gquadMax
 
-	return
-
-
 def setFragLen(fragLen):
 	global FRAGLEN
 	FRAGLEN = int(fragLen)
-
-	return
 
 def setAnlaysisRegion(region, bl):
 	global REGION
@@ -724,7 +711,7 @@ def setAnlaysisRegion(region, bl):
 		REGION.append(temp)
 	input_stream.close()
 
-	if(len(REGION) > 1):
+	if len(REGION) > 1:
 		REGION = np.array(REGION)
 		REGION = REGION[np.lexsort(( REGION[:,1].astype(int), REGION[:,0])  ) ]
 		REGION = REGION.tolist()
@@ -739,12 +726,12 @@ def setAnlaysisRegion(region, bl):
 		resultIdx = 0
 
 		pos = 1
-		while( pos < len(REGION) ):
+		while pos < len(REGION):
 			currChromo = REGION[pos][0]
 			currStart = int(REGION[pos][1])
 			currEnd = int(REGION[pos][2])
 
-			if( (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd)):
+			if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
 				maxEnd = np.max([currEnd, pastEnd])
 				region_merged[resultIdx][2] = maxEnd
 				pos = pos + 1
@@ -761,7 +748,7 @@ def setAnlaysisRegion(region, bl):
 
 		REGION = region_merged
 
-	if(bl != None):  ### REMOVE BLACKLIST REGIONS FROM 'REGION'     
+	if bl != None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
 		bl_region_temp = []
 		input_stream = open(bl)
 		input_file = input_stream.readlines()
@@ -772,7 +759,7 @@ def setAnlaysisRegion(region, bl):
 			bl_region_temp.append(temp)
 
 		## merge overlapping blacklist regions
-		if(len(bl_region_temp) == 1):
+		if len(bl_region_temp) == 1:
 			bl_region = bl_region_temp
 			bl_region = np.array(bl_region)
 		else:
@@ -789,12 +776,12 @@ def setAnlaysisRegion(region, bl):
 			resultIdx = 0
 
 			pos = 1
-			while( pos < len(bl_region_temp) ):
+			while pos < len(bl_region_temp):
 				currChromo = bl_region_temp[pos][0]
 				currStart = int(bl_region_temp[pos][1])
 				currEnd = int(bl_region_temp[pos][2])
 
-				if( (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd)):
+				if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
 					bl_region[resultIdx][2] = currEnd
 					pos = pos + 1
 					pastChromo = currChromo
@@ -816,22 +803,34 @@ def setAnlaysisRegion(region, bl):
 			regionEnd = int(region[2])
 
 			overlapped_bl = []
-			## overlap Case 1 : A blacklist region completely covers the region. 
-			idx = np.where( (bl_region[:,0] == regionChromo) & (bl_region[:,1].astype(int) <= regionStart) & (bl_region[:,2].astype(int) >= regionEnd) )[0]
-			if(len(idx) > 0):
+			## overlap Case 1 : A blacklist region completely covers the region.
+			idx = np.where(
+				(bl_region[:,0] == regionChromo) &
+				(bl_region[:,1].astype(int) <= regionStart) &
+				(bl_region[:,2].astype(int) >= regionEnd)
+				)[0]
+			if len(idx) > 0:
 				continue
 
-			## overlap Case 2 
-			idx = np.where( (bl_region[:,0] == regionChromo) & (bl_region[:,2].astype(int) > regionStart) & (bl_region[:,2].astype(int) <= regionEnd) )[0]
-			if(len(idx) > 0):
+			## overlap Case 2
+			idx = np.where(
+				(bl_region[:,0] == regionChromo) &
+				(bl_region[:,2].astype(int) > regionStart) &
+				(bl_region[:,2].astype(int) <= regionEnd)
+				)[0]
+			if len(idx) > 0:
 				overlapped_bl.extend( bl_region[idx].tolist() )
 
 			## overlap Case 3
-			idx = np.where( (bl_region[:,0] == regionChromo) & (bl_region[:,1].astype(int) >= regionStart) & (bl_region[:,1].astype(int) < regionEnd) )[0]
-			if(len(idx) > 0):
+			idx = np.where(
+				(bl_region[:,0] == regionChromo) &
+				(bl_region[:,1].astype(int) >= regionStart) &
+				(bl_region[:,1].astype(int) < regionEnd)
+				)[0]
+			if len(idx) > 0:
 				overlapped_bl.extend( bl_region[idx].tolist() )
 
-			if(len(overlapped_bl) == 0):
+			if len(overlapped_bl) == 0:
 				region_woBL.append(region)
 				continue
 
@@ -845,18 +844,18 @@ def setAnlaysisRegion(region, bl):
 				blStart = int(overlapped_bl[pos][1])
 				blEnd = int(overlapped_bl[pos][2])
 
-				if( blStart <= regionStart ):
+				if blStart <= regionStart:
 					currStart = blEnd
 				else:
-					if(currStart == blStart):
+					if currStart == blStart:
 						currStart = blEnd
 						continue
 
 					region_woBL.append([ regionChromo, currStart, blStart ])
 					currStart = blEnd
 
-				if( (pos == (len(overlapped_bl)-1)) and (blEnd < regionEnd) ):
-					if(blEnd == regionEnd):
+				if  (pos == (len(overlapped_bl)-1)) and (blEnd < regionEnd):
+					if blEnd == regionEnd:
 						break
 					region_woBL.append([ regionChromo, blEnd, regionEnd ])
 
@@ -872,29 +871,25 @@ def setAnlaysisRegion(region, bl):
 		end = int(REGION[regionIdx][2])
 
 		chromoLen = bw.chroms(chromo)
-		if(chromoLen == None):
+		if chromoLen is None:
 			continue
-		if(end > chromoLen):
+		if end > chromoLen:
 			REGION[regionIdx][2] = chromoLen
-			if( chromoLen <= start ):
+			if chromoLen <= start:
 				continue
 		region_final.append([chromo, start, end])
 	bw.close()
 
-	REGION = region_final	
-
-	return
+	REGION = region_final
 
 
 def setFilterCriteria(minFrag):
 	global FILTERVALUE
 
-	if(minFrag == None):
-		FILTERVALUE = int(SAMPLE_NUM)		
+	if minFrag is None:
+		FILTERVALUE = int(SAMPLE_NUM)
 	else:
 		FILTERVALUE = int(minFrag)
-
-	return
 
 
 def setScaler(scalerResult):
@@ -909,8 +904,6 @@ def setScaler(scalerResult):
 		CTRLSCALER[i] = scalerResult[i-1]
 	for i in range(EXPBW_NUM):
 		EXPSCALER[i] = scalerResult[i+CTRLBW_NUM-1]
-	
-	return
 
 
 def setBinSize(binSize):
@@ -918,42 +911,38 @@ def setBinSize(binSize):
 
 	BINSIZE = int(binSize)
 
-	return
 
 def setNumProcess(numProcess):
 	global NUMPROCESS
-	
+
 	system_cpus = int(multiprocessing.cpu_count())
 
-	if(numProcess == None):
+	if numProcess is None:
 		NUMPROCESS = int(system_cpus / 2.0 )
-		if(NUMPROCESS < 1):
+		if NUMPROCESS < 1:
 			NUMPROCESS = 1
 	else:
 		NUMPROCESS = int(numProcess)
 
-	if(NUMPROCESS > system_cpus):
+	if NUMPROCESS > system_cpus:
 		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
 		NUMPROCESS = system_cpus
 
-	return
 
 def setNormalization(norm, generateNormBW):
 	global I_NORM
 	global I_GENERATE_NormBW
 
-	if(norm.lower() == 'false'):
+	if norm.lower() == 'false':
 		I_NORM = False
 	else:
-		I_NORM = True	
+		I_NORM = True
 
-	if(generateNormBW.lower() == 'false'):
+	if generateNormBW.lower() == 'false':
 		I_GENERATE_NormBW = False
 	else:
 		I_GENERATE_NormBW = True
 
-	if((I_NORM == False) and (I_GENERATE_NormBW == True)):
+	if (not I_NORM) and I_GENERATE_NormBW:
 		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
 		sys.exit()
-
-	return
