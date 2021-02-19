@@ -12,7 +12,7 @@ Recommend to install the newest version.
 
 2) Using git repository
 ```
-git clone https://github.com/Young-Sook/CRADLE.git
+git clone https://github.com/ReddyLab/CRADLE.git
 python setup.py install
 ```
 
