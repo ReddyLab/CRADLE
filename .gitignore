@@ -1,0 +1,5 @@
+# Ignore build artifacts
+build
+CRADLE/**/*.c
+dist
+CRADLE.egg-info
