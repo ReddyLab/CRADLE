@@ -1,10 +1,8 @@
+import gc
+import multiprocessing
 import os
 import numpy as np
-import multiprocessing
-import argparse
-import py2bit
 import pyBigWig
-import gc
 import statsmodels.sandbox.stats.multicomp
 
 from CRADLE.CallPeak import vari
@@ -12,7 +10,6 @@ from CRADLE.CallPeak import calculateRC
 
 
 def mergePeaks(peak_result):
-
 	## open bigwig files to calculate effect size
 	ctrlBW = [0] * vari.CTRLBW_NUM
 	expBW = [0] * vari.EXPBW_NUM
@@ -25,7 +22,6 @@ def mergePeaks(peak_result):
 	merged_peak = []
 
 	pastChromo = peak_result[0][0]
-	pastStart = int(peak_result[0][1])
 	pastEnd = int(peak_result[0][2])
 	pastEnrich = int(peak_result[0][3])
 	pvalues = [float(peak_result[0][4])]
@@ -34,14 +30,14 @@ def mergePeaks(peak_result):
 	resultIdx = 0
 
 	i = 1
-	while(i < len(peak_result)):
+	while i < len(peak_result):
 		currChromo = peak_result[i][0]
 		currStart = int(peak_result[i][1])
 		currEnd = int(peak_result[i][2])
 		currEnrich = int(peak_result[i][3])
 		currpvalue = float(peak_result[i][4])
 
-		if( (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) < vari.DISTANCE)):
+		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) < vari.DISTANCE):
 			merged_peak[resultIdx][2] = currEnd
 			pvalues.extend([ currpvalue ])
 		else:
@@ -71,7 +67,7 @@ def mergePeaks(peak_result):
 			pvalues = [currpvalue]
 			resultIdx = resultIdx + 1
 
-		if(i == (len(peak_result) -1)):
+		if i == (len(peak_result) -1):
 			merged_peak[resultIdx][4] = np.min(pvalues)
 			regionChromo = merged_peak[resultIdx][0]
 			regionStart = int(merged_peak[resultIdx][1])
@@ -93,7 +89,6 @@ def mergePeaks(peak_result):
 			merged_peak[resultIdx][5] = diff_pos
 
 		pastChromo = currChromo
-		pastStart = currStart
 		pastEnd = currEnd
 		pastEnrich = currEnrich
 
@@ -114,20 +109,18 @@ def filterSmallPeaks(peak_result):
 		start = int(peak_result[i][1])
 		end = int(peak_result[i][2])
 
-		if( (end-start) >= vari.PEAKLEN ):
+		if (end-start) >= vari.PEAKLEN:
 			final_result.append(peak_result[i])
 
 	return final_result
 
 
-
 def run(args):
-
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS ...\n")
-	vari.setGlobalVariables(args)	
+	vari.setGlobalVariables(args)
 
-	
+
 	##### CALCULATE vari.FILTER_CUTOFF
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
 	region_total = 0
@@ -136,11 +129,11 @@ def run(args):
 		regionSize = int(region[2]) - int(region[1])
 		region_total = region_total + regionSize
 		task_vari.append(region)
-		
-		if(region_total > 3* np.power(10, 8)):
+
+		if region_total > 3* np.power(10, 8):
 			break
 
-	if(len(task_vari) < vari.NUMPROCESS):
+	if len(task_vari) < vari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(task_vari))
 	else:
 		pool = multiprocessing.Pool(vari.NUMPROCESS)
@@ -151,7 +144,7 @@ def run(args):
 
 	var = []
 	for i in range(len(result_filter)):
-		if(result_filter[i] != None):
+		if result_filter[i] is not None:
 			var.extend(result_filter[i])
 
 	vari.FILTER_CUTOFFS[0] = -1
@@ -171,13 +164,13 @@ def run(args):
 	task_diff = []
 	for region in vari.REGION:
 		regionSize = int(region[2]) - int(region[1])
-		region_total = region_total + regionSize 
-		task_diff.append(region)		
+		region_total = region_total + regionSize
+		task_diff.append(region)
 
-		if(region_total > 3* np.power(10, 8)):
+		if region_total > 3* np.power(10, 8):
 			break
 
-	if(len(task_diff) < vari.NUMPROCESS):
+	if len(task_diff) < vari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(task_diff))
 	else:
 		pool = multiprocessing.Pool(vari.NUMPROCESS)
@@ -187,7 +180,7 @@ def run(args):
 
 	diff = []
 	for i in range(len(result_diff)):
-		if(result_diff[i] != None):
+		if result_diff[i] is not None:
 			diff.extend(result_diff[i])
 
 	vari.NULL_STD = np.sqrt(np.nanvar(diff))
@@ -196,46 +189,45 @@ def run(args):
 	print("Region cutoff: %s " % vari.REGION_CUTOFF)
 	del pool, result_diff, diff, task_diff
 	gc.collect()
-	
+
 
 	# 2)  DEINING REGIONS WITH 'vari.REGION_CUTOFF'
-	if(len(vari.REGION) < vari.NUMPROCESS):
+	if len(vari.REGION) < vari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(vari.REGION))
-	else:	
+	else:
 		pool = multiprocessing.Pool(vari.NUMPROCESS)
-	result_region = pool.map_async(calculateRC.defineRegion, vari.REGION).get()		
+	result_region = pool.map_async(calculateRC.defineRegion, vari.REGION).get()
 	pool.close()
 	pool.join()
 	gc.collect()
-	
+
 
 	##### STATISTICAL TESTING FOR EACH REGION
 	print("======  PERFORMING STAITSTICAL TESTING FOR EACH REGION ...")
 	task_window = []
 	for i in range(len(result_region)):
-		if(result_region[i] != None):
+		if result_region[i] is not None:
 			task_window.append(result_region[i])
 	del result_region
 
-	if(len(task_window) < vari.NUMPROCESS):
+	if len(task_window) < vari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(task_window))
 	else:
 		pool = multiprocessing.Pool(vari.NUMPROCESS)
 	result_ttest = pool.map_async(calculateRC.doWindowApproach, task_window).get()
 	pool.close()
 	pool.join()
-	
 
 	meta_filename = vari.OUTPUT_DIR + "/metaData_pvalues"
 	meta_stream = open(meta_filename, "w")
 	for i in range(len(result_ttest)):
-		if(result_ttest[i] != None):
+		if result_ttest[i] is not None:
 			meta_stream.write(result_ttest[i] + "\n")
 	meta_stream.close()
 	del task_window, pool, result_ttest
-	
 
-	##### CHOOSING THETA 
+
+	##### CHOOSING THETA
 	task_theta = [meta_filename]
 	pool = multiprocessing.Pool(1)
 	result_theta = pool.map_async(calculateRC.selectTheta, task_theta).get()
@@ -244,7 +236,7 @@ def run(args):
 
 	vari.THETA = result_theta[0][0]
 	selectRegionNum = result_theta[0][1]
-	totalRegionNum = result_theta[0][2]	
+	totalRegionNum = result_theta[0][2]
 
 
 	##### FDR control
@@ -254,9 +246,9 @@ def run(args):
 	print("Total number of regions: %s" % totalRegionNum)
 	print("The number of selected regions: %s" % selectRegionNum)
 	print("Newly adjusted cutoff: %s" % vari.ADJ_FDR)
-	
 
-	##### Applying the selected theta 
+
+	##### Applying the selected theta
 	input_filename = meta_filename
 	input_stream = open(input_filename)
 	input_file = input_stream.readlines()
@@ -274,12 +266,12 @@ def run(args):
 			regionTheta = int(line[3])
 			regionPvalue = float(line[4])
 
-			if(np.isnan(regionPvalue) == True):
+			if np.isnan(regionPvalue):
 				continue
 
-			if(regionTheta >= vari.THETA):
+			if regionTheta >= vari.THETA:
 				PVALUE_simes.extend([ regionPvalue ])
-	
+
 	PVALUE_group_bh = statsmodels.sandbox.stats.multicomp.multipletests(PVALUE_simes, alpha=vari.FDR, method='fdr_bh')[0]
 
 
@@ -303,38 +295,38 @@ def run(args):
 			line = subfile_file[regionIdx].split()
 			regionTheta = int(line[3])
 			regionPvalue = float(line[4])
-			
-			if(regionTheta < vari.THETA):
+
+			if regionTheta < vari.THETA:
 				continue
-			if(np.isnan(regionPvalue) == True):
+			if np.isnan(regionPvalue):
 				continue
-			if(PVALUE_group_bh[groupPvalueIdx+selectedIdx] == True):
+			if PVALUE_group_bh[groupPvalueIdx+selectedIdx]:
 				selectRegionIdx.extend([ regionIdx ])
 			selectedIdx = selectedIdx + 1
 
 		groupPvalueIdx = groupPvalueIdx + selectedIdx
 
-		if(len(selectRegionIdx) != 0):
+		if len(selectRegionIdx) != 0:
 			task_callPeak.append([subfile_name, selectRegionIdx])
 		else:
 			os.remove(subfile_name)
 
 	input_stream.close()
-	os.remove(meta_filename)	
+	os.remove(meta_filename)
 
-	if(len(task_callPeak) == 0):
+	if len(task_callPeak) == 0:
 		print("======= COMPLETED! ===========")
 		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
 		return
 
-	if(len(task_callPeak) < vari.NUMPROCESS):
+	if len(task_callPeak) < vari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(task_callPeak))
 	else:
 		pool = multiprocessing.Pool(vari.NUMPROCESS)
 	result_callPeak = pool.map_async(calculateRC.doFDRprocedure, task_callPeak).get()
 	pool.close()
 	pool.join()
-	
+
 	del pool, task_callPeak
 	gc.collect()
 
@@ -350,14 +342,15 @@ def run(args):
 		input_stream.close()
 		os.remove(input_filename)
 
-	if(len(peak_result) == 0):
+	if len(peak_result) == 0:
 		print("======= COMPLETED! ===========")
 		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
 		return
 
+
 	######## WRITE A RESULT FILE
 	colNames = ["chr", "start", "end", "activity type", "p value", "effect size"]
-	if(vari.DISTANCE == 1):
+	if vari.DISTANCE == 1:
 		final_result = filterSmallPeaks(peak_result)
 
 		numActi = 0
@@ -368,7 +361,7 @@ def run(args):
 		output_stream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
 		for i in range(len(final_result)):
-			if(int(final_result[i][3]) == 1):
+			if int(final_result[i][3]) == 1:
 				numActi = numActi + 1
 			else:
 				numRepress = numRepress + 1
@@ -387,7 +380,7 @@ def run(args):
 		output_stream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
 		for i in range(len(final_result)):
-			if(int(final_result[i][3]) == 1):
+			if int(final_result[i][3]) == 1:
 				numActi = numActi + 1
 			else:
 				numRepress = numRepress + 1
@@ -400,5 +393,3 @@ def run(args):
 	print("Total number of peaks: %s" % len(final_result))
 	print("Activated peaks: %s" % numActi)
 	print("Repressed peaks: %s" % numRepress)
-
-	return
