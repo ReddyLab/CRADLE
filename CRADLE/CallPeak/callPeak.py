@@ -25,6 +25,7 @@ def mergePeaks(peak_result):
 	pastEnd = int(peak_result[0][2])
 	pastEnrich = int(peak_result[0][3])
 	pvalues = [float(peak_result[0][4])]
+	qvalues = [float(peak_result[0][5])]
 
 	merged_peak.append(peak_result[0])
 	resultIdx = 0
@@ -36,13 +37,26 @@ def mergePeaks(peak_result):
 		currEnd = int(peak_result[i][2])
 		currEnrich = int(peak_result[i][3])
 		currpvalue = float(peak_result[i][4])
+		currqvalue = float(peak_result[i][5])
 
 		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) < vari.DISTANCE):
 			merged_peak[resultIdx][2] = currEnd
 			pvalues.extend([ currpvalue ])
+			qvalues.extend([ currqvalue ])
 		else:
 			## update the continuous regions
-			merged_peak[resultIdx][4] = np.min(pvalues)
+			min_pvalue = np.min(pvalues)
+			if(min_pvalue == 0):
+				merged_peak[resultIdx][4] = np.nan
+			else:
+				merged_peak[resultIdx][4] = np.round((-1) * np.log10(min_pvalue), 2)
+
+			min_qvalue = np.min(qvalues)
+			if(min_qvalue == 0):
+				merged_peak[resultIdx][5] = np.nan
+			else:
+				merged_peak[resultIdx][5] = np.round((-1) * np.log10(min_qvalue), 2)
+
 			regionChromo = merged_peak[resultIdx][0]
 			regionStart = int(merged_peak[resultIdx][1])
 			regionEnd = int(merged_peak[resultIdx][2])
@@ -60,15 +74,29 @@ def mergePeaks(peak_result):
 			expRC_posMean = np.nanmean(expRC)
 
 			diff_pos = int(expRC_posMean - ctrlRC_posMean)
-			merged_peak[resultIdx][5] = diff_pos
+			merged_peak[resultIdx][6] = diff_pos
+			merged_peak[resultIdx].extend([ctrlRC_posMean, expRC_posMean])			
+	
 
 			## start a new region
 			merged_peak.append(peak_result[i])
 			pvalues = [currpvalue]
+			qvalues = [currqvalue]
 			resultIdx = resultIdx + 1
 
 		if i == (len(peak_result) -1):
-			merged_peak[resultIdx][4] = np.min(pvalues)
+			min_pvalue = np.min(pvalues)
+			if(min_pvalue == 0):
+				merged_peak[resultIdx][4] = np.nan
+			else:
+				merged_peak[resultIdx][4] = np.round((-1) * np.log10(min_pvalue), 2)
+
+			min_qvalue = np.min(qvalues)
+			if(min_qvalue == 0):
+				merged_peak[resultIdx][5] = np.nan
+			else:
+				merged_peak[resultIdx][5] = np.round((-1) * np.log10(min_qvalue), 2)
+
 			regionChromo = merged_peak[resultIdx][0]
 			regionStart = int(merged_peak[resultIdx][1])
 			regionEnd = int(merged_peak[resultIdx][2])
@@ -86,7 +114,8 @@ def mergePeaks(peak_result):
 			expRC_posMean = np.nanmean(expRC)
 
 			diff_pos = int(expRC_posMean - ctrlRC_posMean)
-			merged_peak[resultIdx][5] = diff_pos
+			merged_peak[resultIdx][6] = diff_pos
+			merged_peak[resultIdx].extend([ctrlRC_posMean, expRC_posMean])
 
 		pastChromo = currChromo
 		pastEnd = currEnd
@@ -104,6 +133,10 @@ def mergePeaks(peak_result):
 
 def filterSmallPeaks(peak_result):
 
+
+	max_neglogPvalue = 0
+	max_neglogQvalue = 0
+
 	final_result = []
 	for i in range(len(peak_result)):
 		start = int(peak_result[i][1])
@@ -112,14 +145,24 @@ def filterSmallPeaks(peak_result):
 		if (end-start) >= vari.PEAKLEN:
 			final_result.append(peak_result[i])
 
-	return final_result
+			neglogPvalue = float(peak_result[i][4])
+			neglogQvalue = float(peak_result[i][5])
+
+			if(np.isnan(neglogPvalue) == False):
+				if(neglogPvalue > max_neglogPvalue):
+					max_neglogPvalue =  neglogPvalue
+
+			if(np.isnan(neglogQvalue) == False):
+				if(neglogQvalue > max_neglogQvalue):
+					max_neglogQvalue =  neglogQvalue
+
+	return final_result, max_neglogPvalue, max_neglogQvalue
 
 
 def run(args):
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS ...\n")
 	vari.setGlobalVariables(args)
-
 
 	##### CALCULATE vari.FILTER_CUTOFF
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
@@ -225,7 +268,6 @@ def run(args):
 			meta_stream.write(result_ttest[i] + "\n")
 	meta_stream.close()
 	del task_window, pool, result_ttest
-
 
 	##### CHOOSING THETA
 	task_theta = [meta_filename]
@@ -349,47 +391,52 @@ def run(args):
 
 
 	######## WRITE A RESULT FILE
-	colNames = ["chr", "start", "end", "activity type", "p value", "effect size"]
+	colNames = ["chr", "start", "end", "name", "score", "strand", "effectSize", "inputCount", "outputCount", "-log(pvalue)", "-log(qvalue)" ]
 	if vari.DISTANCE == 1:
-		final_result = filterSmallPeaks(peak_result)
-
-		numActi = 0
-		numRepress = 0
-
-		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
-		output_stream = open(output_filename, "w")
-		output_stream.write('\t'.join([str(x) for x in colNames]) + "\n")
-
-		for i in range(len(final_result)):
-			if int(final_result[i][3]) == 1:
-				numActi = numActi + 1
-			else:
-				numRepress = numRepress + 1
-
-			output_stream.write('\t'.join([str(x) for x in final_result[i]]) + "\n")
-		output_stream.close()
+		final_result, max_neglogPvalue, max_neglogQvalue = filterSmallPeaks(peak_result)
 	else:
 		merged_peaks = mergePeaks(peak_result)
-		final_result = filterSmallPeaks(merged_peaks)
+		final_result, max_neglogPvalue, max_neglogQvalue = filterSmallPeaks(merged_peaks)
 
-		numActi = 0
-		numRepress = 0
+	numActi = 0
+	numRepress = 0
 
-		output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
-		output_stream = open(output_filename, "w")
-		output_stream.write('\t'.join([str(x) for x in colNames]) + "\n")
+	output_filename = vari.OUTPUT_DIR + "/CRADLE_peaks"
+	output_stream = open(output_filename, "w")
+	output_stream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
-		for i in range(len(final_result)):
-			if int(final_result[i][3]) == 1:
-				numActi = numActi + 1
-			else:
-				numRepress = numRepress + 1
+	for i in range(len(final_result)):
+		if int(final_result[i][3]) == 1:
+			numActi = numActi + 1
+		else:
+			numRepress = numRepress + 1
 
-			output_stream.write('\t'.join([str(x) for x in final_result[i]]) + "\n")
-		output_stream.close()
+		## order in a common file ormat
+		chromo = final_result[i][0]
+		start = final_result[i][1]
+		end = final_result[i][2]
+		name = chromo + ":" + str(start) + "-" + str(end)
+		score = "."
+		strand = "."
+		effectSize = final_result[i][6]
+		input_count = int(final_result[i][7])
+		output_count = int(final_result[i][8])
+		neglogPvalue = float(final_result[i][4])
+		if(np.isnan(neglogPvalue) == True):
+			neglogPvalue = max_neglogPvalue
+		neglogQvalue = float(final_result[i][5])
+		if(np.isnan(neglogQvalue) == True):
+			neglogQvalue = max_neglogQvalue
+		
+		peakToAdd = [chromo, start, end, name, score, strand, effectSize, input_count, output_count, neglogPvalue, neglogQvalue]
+
+		output_stream.write('\t'.join([str(x) for x in peakToAdd]) + "\n")
+	output_stream.close()
 
 	print("======= COMPLETED! ===========")
 	print("The peak result was saved in %s" % vari.OUTPUT_DIR)
 	print("Total number of peaks: %s" % len(final_result))
 	print("Activated peaks: %s" % numActi)
 	print("Repressed peaks: %s" % numRepress)
+
+	return
