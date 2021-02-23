@@ -1,5 +1,5 @@
 # CRADLE
-CRADLE (Correcting Read counts and Analysis of DifferentiaLly Expressed regions) is a package that was developed to analyze STARR-seq data. CRADLE removes technical biases from sonication, PCR, mappability and G-quadruplex sturcture, and generates bigwigs files with corrected read counts. CRADLE then uses those corrected read counts and detects both activated and repressed enhancers. CRADLE will help to find enhancers with better accuracy and credibility. 
+CRADLE (Correcting Read counts and Analysis of DifferentiaLly Expressed regions) is a package that was developed to analyze STARR-seq data. CRADLE removes technical biases from sonication, PCR, mappability and G-quadruplex sturcture, and generates bigwig files with corrected read counts. CRADLE then uses those corrected read counts and detects both activated and repressed enhancers. CRADLE will help find enhancers with better accuracy and credibility. 
 
 
 ## Installation
@@ -29,12 +29,12 @@ CRADLE requires
 - h5py (>= 2.6.0)
 - Cython (>= 0.24.1)
 ```
-Those dependencies will be automatically installed when you install CRADLE either with pip or git repository.
+These dependencies will be automatically installed when you install CRADLE either with pip or git repository.
 
 
 ## Commands
 ```
-cradle {correctBias, correctBias_stored, callPeak}
+cradle <correctBias | correctBias_stored | callPeak> [options]
 ```
 
 ### 1) correctBias
@@ -94,7 +94,7 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
 
 
 ### 2) correctBias_stored
-This command corrects technical biases (shear, PCR, mappability, G-quadruplex) from read counts when there are precomputed covariate files(.hdf). This command takes bigwig files as input and outputs bigwig files with corrected read counts. This command is much faster than running correctBias. Using 'correctBias_stored' is highly recommended when you have large regions, especially if you have whole genome data. You can download covariate files in synpase ().
+This command corrects technical biases (shear, PCR, mappability, G-quadruplex) from read counts when there are precomputed covariate files(.hdf). This command takes bigwig files as input and outputs bigwig files with corrected read counts. This command is much faster than running correctBias. Using 'correctBias_stored' is highly recommended when you have large regions, especially if you have whole genome data. You can download covariate files from [synpase](http://www.synapse.org).
 
 Example of running correctBias_stored: 
 ```
@@ -178,7 +178,7 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
 
 ## Output file format
 ```
-chr	start	end	Name	score	strand	effectSize	inputCount	outputCount	-log(pvalue)	-log(qvalue)
+chr start   end Name    score   strand  effectSize  inputCount  outputCount -log(pvalue)    -log(qvalue)
 chr1	70367085	70367210	chr1:70367085-70367210	.	.	133	-8	125	14.57	13.8
 chr1	116853710	116853835	chr1:116853710-116853835	.	.	255	13	268	14.57	13.8
 chr1	163672337	163672462	chr1:163672337-163672462	.	.	170	-2	168	14.57	13.8
@@ -191,25 +191,25 @@ chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8
 * The 6th colum (effectSize):  effect size calculated by subtracting the mean of experimental read counts from the mean of control read counts.
 * The 7th colum (inputCount):  the mean of control read counts.
 * The 8th colum (outputCount):  the mean of experimental read counts.
-* The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of pvalue and qvalue. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values. 
+* The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of p value and q value. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values. 
 
 
 
 ## How to download covariate files
 We uploaded pre-computed covariates files for human genome (hg19, hg38). Those files are required to run "correctBias_stored"
-1. Go to synapse (www.synapse.org)
-2. Register in the synapse. (You cannot download the files unless you register)
+1. Go to [synapse](http://www.synapse.org)
+2. Register with synapse. (You cannot download the files unless you register)
 3. Search covariate files with SynapseID, syn20369503. 
 
 ## How to download human mappability and gquadruplex files
 We liftover mappability files[2] and G-quadruplex files[3] from hg19 to hg38. You can download both hg19 and hg38 mappability files and G-quadruplex files.
-1. Go to synapse (www.synapse.org)
-2. Register in the synapse. (You cannot download the files unless you register)
+1. Go to [synapse](http://www.synapse.org)
+2. Register with synapse. (You cannot download the files unless you register)
 3. Search covariate files with SynapseID, syn20369496. 
 
 
 ## Tips on running CRADLE
-* We strongly recommend to use correctBias_stored when you have large regions because running "correctBias" might take too long time, especially when fragmen size is more than 500. Little difference in fragment legnth and sequenced length doesn't significantly affect correction power, so we recommend to download covariate files from syanpse and run 'correctBias_stored' if you can find fragment legnth and sequenced length that are close to your data. 
+* We strongly recommend using `correctBias_stored` when you have large regions because running `correctBias` might take a long time, especially when the fragment size is over 500. Small differences in fragment and sequenced lengths don't significantly affect correction power, so we recommend downloading covariate files from syanpse and runnning `correctBias_stored` if you can find fragment and sequenced lengths that are close to your data. 
 
 
 ## References
