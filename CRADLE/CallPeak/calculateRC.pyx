@@ -501,15 +501,22 @@ cpdef doFDRprocedure(args):
 		PVALUE_region_bh = np.array([0.0] * len(windowPvalue))
 		nanIdx = np.where(np.isnan(windowPvalue)==True)
 		PVALUE_region_bh[nanIdx] = np.nan
+		QVALUE_region_bh = np.array([np.nan] * len(windowPvalue))
 
 		nonNanIdx = np.where(np.isnan(windowPvalue)==False)
 		windowPvalue_temp = windowPvalue[nonNanIdx]
 
-		PVALUE_region_bh_temp = statsmodels.sandbox.stats.multicomp.multipletests(windowPvalue_temp, alpha=vari.ADJ_FDR, method='fdr_bh')[0]
+
+		bh_result_temp = statsmodels.sandbox.stats.multicomp.multipletests(windowPvalue_temp, alpha=vari.ADJ_FDR, method='fdr_bh')
+		PVALUE_region_bh_temp = bh_result_temp[0]
+		QVALUE_region_bh_temp = bh_result_temp[1]
+		del bh_result_temp
 		for nonIdx in range(len(nonNanIdx[0])):
 			PVALUE_region_bh[nonNanIdx[0][nonIdx]] = PVALUE_region_bh_temp[nonIdx]
-
+			QVALUE_region_bh[nonNanIdx[0][nonIdx]] = QVALUE_region_bh_temp[nonIdx]
+		del PVALUE_region_bh_temp, QVALUE_region_bh_temp
 		PVALUE_region_bh = np.array(PVALUE_region_bh)
+		QVALUE_region_bh = np.array(QVALUE_region_bh)
 		selectWindowIdx = np.where(PVALUE_region_bh== True)[0]
 
 		if len(selectWindowIdx) == 0:
@@ -520,8 +527,10 @@ cpdef doFDRprocedure(args):
 		pastStart = regionStart + idx * vari.SHIFTSIZE2
 		pastEnd = pastStart + vari.BINSIZE2
 		pastPvalue = windowPvalue[idx]
+		pastQvalue = QVALUE_region_bh[idx]
 		pastEnrich = windowEnrich[idx]
 		pastPvalueSets = [pastPvalue]
+		pastQvalueSets = [pastQvalue]
 
 		selectWindowVector = [regionChromo, pastStart, pastEnd, pastEnrich]
 
@@ -529,6 +538,7 @@ cpdef doFDRprocedure(args):
 
 		if lastIdx == selectWindowIdx[0]:
 			selectWindowVector.extend([ pastPvalue ])
+			selectWindowVector.extend([ pastQvalue ])
 
 			if lastIdx == (windowNum-1):
 				pastEnd = regionEnd
@@ -553,18 +563,21 @@ cpdef doFDRprocedure(args):
 				continue
 
 			subPeakStarts, subPeakEnds, subPeakDiffs = truncateNan(selectWindowVector[1], selectWindowVector[2], diff_pos)
-
+			writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile)
+			
+			'''
 			for subPeakNum in range(len(subPeakStarts)):
-				temp = list(selectWindowVector)
-				temp[1] = subPeakStarts[subPeakNum]
-				temp[2] = subPeakEnds[subPeakNum]
-				temp[3] = int(temp[3])
-				temp.extend([ subPeakDiffs[subPeakNum]  ])
+				testResult = testSubPeak(subPeakDiffs[subPeakNum], selectWindowVector[3])
 
-				testResult = testSubPeak(temp, selectWindowVector[3])
 				if testResult:
-					subfile.write('\t'.join([str(x) for x in temp]) + "\n")
+					temp = list(selectWindowVector)
+					temp[1] = subPeakStarts[subPeakNum]
+					temp[2] = subPeakEnds[subPeakNum]
+					temp[3] = int(temp[3])
+					temp.extend([ subPeakDiffs[subPeakNum]  ])
 
+					subfile.write('\t'.join([str(x) for x in temp]) + "\n")
+			'''
 			continue
 
 
@@ -573,14 +586,18 @@ cpdef doFDRprocedure(args):
 			currEnd = currStart + vari.BINSIZE2
 			currPvalue = windowPvalue[idx]
 			currEnrich = windowEnrich[idx]
+			currQvalue = QVALUE_region_bh[idx] 
 
 			if (currStart >= pastStart) and (currStart <= pastEnd) and (pastEnrich == currEnrich):
 				selectWindowVector[2] = currEnd
 				pastPvalueSets.extend([currPvalue])
+				pastQvalueSets.extend([currQvalue])
+				
 			else:
 				### End a previous region
 				selectWindowVector[2] = pastEnd
 				selectWindowVector.extend([ np.min(pastPvalueSets) ])
+				selectWindowVector.extend([ np.min(pastQvalueSets) ])
 
 				ctrlRC = []
 				for rep in range(vari.CTRLBW_NUM):
@@ -600,6 +617,7 @@ cpdef doFDRprocedure(args):
 				if diff_pos_nanNum == len(diff_pos):
 					## stark a new region
 					pastPvalueSets = [currPvalue]
+					pastQvalueSets = [currQvalue]
 					selectWindowVector = [regionChromo, currStart, currEnd, currEnrich]
 
 					pastStart = currStart
@@ -608,20 +626,24 @@ cpdef doFDRprocedure(args):
 					continue
 
 				subPeakStarts, subPeakEnds, subPeakDiffs = truncateNan(selectWindowVector[1], selectWindowVector[2], diff_pos)
+				writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile)		
 
+				'''
 				for subPeakNum in range(len(subPeakStarts)):
-					temp = list(selectWindowVector)
-					temp[1] = subPeakStarts[subPeakNum]
-					temp[2] = subPeakEnds[subPeakNum]
-					temp[3] = int(temp[3])
-					temp.extend([ subPeakDiffs[subPeakNum]  ])
+					testResult = testSubPeak(subPeakDiffs[subPeakNum], selectWindowVector[3])
 
-					testResult = testSubPeak(temp, selectWindowVector[3])
 					if testResult:
-						subfile.write('\t'.join([str(x) for x in temp]) + "\n")
+						temp = list(selectWindowVector)
+						temp[1] = subPeakStarts[subPeakNum]
+						temp[2] = subPeakEnds[subPeakNum]
+						temp[3] = int(temp[3])
+						temp.extend([ subPeakDiffs[subPeakNum]  ])
 
+						subfile.write('\t'.join([str(x) for x in temp]) + "\n")
+				'''
 				### Start a new region
 				pastPvalueSets = [currPvalue]
+				pastQvalueSets = [currQvalue]
 				selectWindowVector = [regionChromo, currStart, currEnd, currEnrich]
 
 			if idx == lastIdx:
@@ -630,6 +652,7 @@ cpdef doFDRprocedure(args):
 					selectWindowVector[2] = pastEnd
 
 				selectWindowVector.extend([ np.min(pastPvalueSets) ])
+				selectWindowVector.extend([ np.min(pastQvalueSets) ])
 
 				ctrlRC = []
 				for rep in range(vari.CTRLBW_NUM):
@@ -650,7 +673,9 @@ cpdef doFDRprocedure(args):
 					break
 
 				subPeakStarts, subPeakEnds, subPeakDiffs = truncateNan(selectWindowVector[1], selectWindowVector[2], diff_pos)
+				writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile)
 
+				'''
 				for subPeakNum in range(len(subPeakStarts)):
 					temp = list(selectWindowVector)
 					temp[1] = subPeakStarts[subPeakNum]
@@ -661,7 +686,7 @@ cpdef doFDRprocedure(args):
 					testResult = testSubPeak(temp, selectWindowVector[3])
 					if testResult:
 						subfile.write('\t'.join([str(x) for x in temp]) + "\n")
-
+				'''
 				break
 
 			pastStart = currStart
@@ -679,9 +704,9 @@ cpdef doFDRprocedure(args):
 
 	return subfile.name
 
-cpdef testSubPeak(subpeak, binEnrichType):
-	diff = int(subpeak[5])
-
+cpdef testSubPeak(subpeakDiff, binEnrichType):
+	diff = int(subpeakDiff)
+	
 	if diff == 0:
 		return False
 	if (binEnrichType == 1) and (diff < 0):
@@ -826,3 +851,15 @@ cpdef selectTheta(metaDataName):
 	idx = idx[0][0]
 
 	return [vari.FILTER_CUTOFFS_THETAS[idx], selectRegionNum_array[idx], totalRegionNum_array[idx]]
+
+cpdef writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile):
+	for subPeakNum in range(len(subPeakStarts)):
+		testResult = testSubPeak(subPeakDiffs[subPeakNum], selectWindowVector[3])
+
+		if testResult:
+			temp = list(selectWindowVector)
+			temp[1] = subPeakStarts[subPeakNum]
+			temp[2] = subPeakEnds[subPeakNum]
+			temp[3] = int(temp[3])
+			temp.extend([ subPeakDiffs[subPeakNum]  ])
+			subfile.write('\t'.join([str(x) for x in temp]) + "\n")

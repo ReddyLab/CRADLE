@@ -178,18 +178,21 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
 
 ## Output file format
 ```
-chr  start end  activity type p value effect size
-chr1	14140	14765	-1	2.149582360947877e-05	-13
-chr1	15504	16192	-1	0.00039501487778326774	-15
-chr1	16761	18033	-1	3.665706490580859e-05	-23
-chr1	28913	29334	-1	0.00023519755766549438	-8
+chr	start	end	Name	score	strand	effectSize	inputCount	outputCount	-log(pvalue)	-log(qvalue)
+chr1	70367085	70367210	chr1:70367085-70367210	.	.	133	-8	125	14.57	13.8
+chr1	116853710	116853835	chr1:116853710-116853835	.	.	255	13	268	14.57	13.8
+chr1	163672337	163672462	chr1:163672337-163672462	.	.	170	-2	168	14.57	13.8
+chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8
 .
 .
 ```
-* The 1st-3rd columns: genomic coordiantes
-* The 4th colum: activity type. '1' indicates activation and '-1' indicates repression
-* The 5th colum: p value
-* The 6th colum: effect size calculated by subtracting the mean of experimental read counts from the mean of control read counts.
+* The 1st-3rd columns(chr, start, end): genomic coordiantes
+* The 4th,5th colum (score, strand): not applicable in CRADLE
+* The 6th colum (effectSize):  effect size calculated by subtracting the mean of experimental read counts from the mean of control read counts.
+* The 7th colum (inputCount):  the mean of control read counts.
+* The 8th colum (outputCount):  the mean of experimental read counts.
+* The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of pvalue and qvalue. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values. 
+
 
 
 ## How to download covariate files
