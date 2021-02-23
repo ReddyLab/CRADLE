@@ -1,12 +1,10 @@
-import os
-import math
-import numpy as np
-import sys
 import multiprocessing
+import os
+import sys
+import numpy as np
 import pyBigWig
 
 def setGlobalVariables(args):
-	
 	### input bigwig files
 	setInputFiles(args.ctrlbw, args.expbw)
 	setOutputDirectory(args.o)
@@ -16,13 +14,11 @@ def setGlobalVariables(args):
 	setNumProcess(args.p)
 	setNormalization(args.norm, args.generateNormBW)
 
-	return
-
 
 def setInputFiles(ctrlbwFiles, expbwFiles):
 	global CTRLBW_NAMES
 	global EXPBW_NAMES
-	
+
 	global CTRLBW_NUM
 	global EXPBW_NUM
 	global SAMPLE_NUM
@@ -42,37 +38,33 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 	CTRLBW_NAMES = [0] * CTRLBW_NUM
 	for i in range(CTRLBW_NUM):
 		CTRLBW_NAMES[i] = ctrlbwFiles[i]
-	
+
 	EXPBW_NAMES = [0] * EXPBW_NUM
 	for i in range(EXPBW_NUM):
 		EXPBW_NAMES[i] = expbwFiles[i]
 
 
-	return
-
-
 def setOutputDirectory(outputDir):
-	global OUTPUT_DIR 
+	global OUTPUT_DIR
 
-	if(outputDir == None):
+	if outputDir is None:
 		outputDir = os.getcwd() + "/CRADLE_correctionResult"
-	
-	if(outputDir[-1] == "/"):
+
+	if outputDir[-1] == "/":
 		outputDir = outputDir[:-1]
 
 	OUTPUT_DIR = outputDir
 
 	dirExist = os.path.isdir(OUTPUT_DIR)
-	if(dirExist == False):
+	if not dirExist:
 		os.makedirs(OUTPUT_DIR)
 
-	return
 
 def setCovariDir(biasType, covariDir, faFile):
 	global COVARI_DIR
 	global COVARI_Name
 	global SELECT_COVARI
-	global FRAGLEN	
+	global FRAGLEN
 	global FA
 	global COVARI_NUM
 	global BINSIZE
@@ -80,13 +72,13 @@ def setCovariDir(biasType, covariDir, faFile):
 
 	COVARI_DIR = covariDir
 
-	if(os.path.isdir(COVARI_DIR) == False):
+	if not os.path.isdir(COVARI_DIR):
 		print("Error! There is no covariate directory")
 		sys.exit()
 
-	if(COVARI_DIR[-1] == "/"):
+	if COVARI_DIR[-1] == "/":
 		COVARI_DIR = COVARI_DIR[:-1]
-	
+
 	temp_str = COVARI_DIR.split('/')
 	COVARI_Name = temp_str[len(temp_str)-1]
 	temp_str = COVARI_Name.split("_")[1]
@@ -97,36 +89,34 @@ def setCovariDir(biasType, covariDir, faFile):
 
 	SELECT_COVARI = np.array([np.nan] * 6)
 	COVARI_NUM = 0
-	
+
 	COVARI_ORDER = ['Intercept']
 
 	biasType = [x.lower() for x in biasType]
 
 	for i in range(len(biasType)):
-		if( (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad')):
+		if (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad'):
 			print("Error! Wrong value in -biasType. Only 'shear', 'pcr', 'map', 'gquad' are allowed")
 			sys.exit()
 
-	if('shear' in biasType):
+	if 'shear' in biasType:
 		SELECT_COVARI[0] = 1
 		SELECT_COVARI[1] = 1
 		COVARI_NUM = COVARI_NUM + 2
 		COVARI_ORDER.extend(["MGW_shear", "ProT_shear"])
-	if('pcr' in biasType):
+	if 'pcr' in biasType:
 		SELECT_COVARI[2] = 1
 		SELECT_COVARI[3] = 1
 		COVARI_NUM = COVARI_NUM + 2
 		COVARI_ORDER.extend(["Anneal_pcr", "Denature_pcr"])
-	if('map' in biasType):
+	if 'map' in biasType:
 		SELECT_COVARI[4] = 1
 		COVARI_NUM = COVARI_NUM + 1
 		COVARI_ORDER.extend(["Map_map"])
-	if('gquad' in biasType):
+	if 'gquad' in biasType:
 		SELECT_COVARI[5] = 1
 		COVARI_NUM = COVARI_NUM + 1
 		COVARI_ORDER.extend(["Gquad_gquad"])
-	return
-
 
 
 def setAnlaysisRegion(region, bl):
@@ -144,7 +134,7 @@ def setAnlaysisRegion(region, bl):
 		REGION.append(temp)
 	input_stream.close()
 
-	if(len(REGION) > 1):
+	if len(REGION) > 1:
 		REGION = np.array(REGION)
 		REGION = REGION[np.lexsort(( REGION[:,1].astype(int), REGION[:,0])  ) ]
 		REGION = REGION.tolist()
@@ -159,12 +149,12 @@ def setAnlaysisRegion(region, bl):
 		resultIdx = 0
 
 		pos = 1
-		while( pos < len(REGION) ):
+		while pos < len(REGION):
 			currChromo = REGION[pos][0]
 			currStart = int(REGION[pos][1])
 			currEnd = int(REGION[pos][2])
 
-			if( (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd)):
+			if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
 				maxEnd = np.max([currEnd, pastEnd])
 				region_merged[resultIdx][2] = maxEnd
 				pos = pos + 1
@@ -180,9 +170,9 @@ def setAnlaysisRegion(region, bl):
 				pastEnd = currEnd
 
 		REGION = region_merged
-	
-	## BL	
-	if(bl != None):  ### REMOVE BLACKLIST REGIONS FROM 'REGION'     
+
+	## BL
+	if bl != None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
 		bl_region_temp = []
 		input_stream = open(bl)
 		input_file = input_stream.readlines()
@@ -193,7 +183,7 @@ def setAnlaysisRegion(region, bl):
 			bl_region_temp.append(temp)
 
 		## merge overlapping blacklist regions
-		if(len(bl_region_temp) == 1):
+		if len(bl_region_temp) == 1:
 			bl_region = bl_region_temp
 			bl_region = np.array(bl_region)
 		else:
@@ -210,12 +200,12 @@ def setAnlaysisRegion(region, bl):
 			resultIdx = 0
 
 			pos = 1
-			while( pos < len(bl_region_temp) ):
+			while pos < len(bl_region_temp):
 				currChromo = bl_region_temp[pos][0]
 				currStart = int(bl_region_temp[pos][1])
 				currEnd = int(bl_region_temp[pos][2])
 
-				if( (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd)):
+				if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
 					bl_region[resultIdx][2] = currEnd
 					pos = pos + 1
 					pastChromo = currChromo
@@ -237,22 +227,34 @@ def setAnlaysisRegion(region, bl):
 			regionEnd = int(region[2])
 
 			overlapped_bl = []
-			## overlap Case 1 : A blacklist region completely covers the region. 
-			idx = np.where( (bl_region[:,0] == regionChromo) & (bl_region[:,1].astype(int) <= regionStart) & (bl_region[:,2].astype(int) >= regionEnd) )[0]
-			if(len(idx) > 0):
+			## overlap Case 1 : A blacklist region completely covers the region.
+			idx = np.where(
+				(bl_region[:,0] == regionChromo) &
+				(bl_region[:,1].astype(int) <= regionStart) &
+				(bl_region[:,2].astype(int) >= regionEnd)
+				)[0]
+			if len(idx) > 0:
 				continue
 
-			## overlap Case 2 
-			idx = np.where( (bl_region[:,0] == regionChromo) & (bl_region[:,2].astype(int) > regionStart) & (bl_region[:,2].astype(int) <= regionEnd) )[0]
-			if(len(idx) > 0):
+			## overlap Case 2
+			idx = np.where(
+				(bl_region[:,0] == regionChromo) &
+				(bl_region[:,2].astype(int) > regionStart) &
+				(bl_region[:,2].astype(int) <= regionEnd)
+				)[0]
+			if len(idx) > 0:
 				overlapped_bl.extend( bl_region[idx].tolist() )
 
 			## overlap Case 3
-			idx = np.where( (bl_region[:,0] == regionChromo) & (bl_region[:,1].astype(int) >= regionStart) & (bl_region[:,2].astype(int) < regionEnd) )[0]
-			if(len(idx) > 0):
+			idx = np.where(
+				(bl_region[:,0] == regionChromo) &
+				(bl_region[:,1].astype(int) >= regionStart) &
+				(bl_region[:,2].astype(int) < regionEnd)
+				)[0]
+			if len(idx) > 0:
 				overlapped_bl.extend( bl_region[idx].tolist() )
 
-			if(len(overlapped_bl) == 0):
+			if len(overlapped_bl) == 0:
 				region_woBL.append(region)
 				continue
 
@@ -266,23 +268,23 @@ def setAnlaysisRegion(region, bl):
 				blStart = int(overlapped_bl[pos][1])
 				blEnd = int(overlapped_bl[pos][2])
 
-				if( blStart <= regionStart ):
+				if blStart <= regionStart:
 					currStart = blEnd
 				else:
-					if(currStart == blStart):
+					if currStart == blStart:
 						currStart = blEnd
 						continue
 
 					region_woBL.append([ regionChromo, currStart, blStart ])
 					currStart = blEnd
 
-				if( (pos == (len(overlapped_bl)-1)) and (blEnd < regionEnd) ):
-					if(blEnd == regionEnd):
+				if (pos == (len(overlapped_bl)-1)) and (blEnd < regionEnd):
+					if blEnd == regionEnd:
 						break
 					region_woBL.append([ regionChromo, blEnd, regionEnd ])
 
 		REGION = region_woBL
-	
+
 	# check if all chromosomes in the REGION in bigwig files
 	bw = pyBigWig.open(CTRLBW_NAMES[0])
 	region_final = []
@@ -292,11 +294,11 @@ def setAnlaysisRegion(region, bl):
 		end = int(REGION[regionIdx][2])
 
 		chromoLen = bw.chroms(chromo)
-		if(chromoLen == None):
+		if chromoLen is None:
 			continue
-		if(end > chromoLen):
+		if end > chromoLen:
 			REGION[regionIdx][2] = chromoLen
-			if( chromoLen <= start ):
+			if chromoLen <= start:
 				continue
 		region_final.append([chromo, start, end])
 	bw.close()
@@ -304,18 +306,13 @@ def setAnlaysisRegion(region, bl):
 	REGION = region_final
 
 
-	return
-
-
 def setFilterCriteria(minFrag):
 	global FILTERVALUE
 
-	if(minFrag == None):
+	if minFrag is None:
 		FILTERVALUE = SAMPLE_NUM
 	else:
 		FILTERVALUE = int(minFrag)
-
-	return
 
 
 def setScaler(scalerResult):
@@ -330,46 +327,39 @@ def setScaler(scalerResult):
 		CTRLSCALER[i] = scalerResult[i-1]
 	for i in range(EXPBW_NUM):
 		EXPSCALER[i] = scalerResult[i+CTRLBW_NUM-1]
-	
-	return
-
 
 
 def setNumProcess(numProcess):
 	global NUMPROCESS
-	
+
 	system_cpus = int(multiprocessing.cpu_count())
 
-	if(numProcess == None):
+	if numProcess is None:
 		NUMPROCESS = int(system_cpus / 2.0 )
-		if(NUMPROCESS < 1):
+		if NUMPROCESS < 1:
 			NUMPROCESS = 1
 	else:
 		NUMPROCESS = int(numProcess)
 
-	if(NUMPROCESS > system_cpus):
+	if NUMPROCESS > system_cpus:
 		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
 		NUMPROCESS = system_cpus
-
-	return
 
 
 def setNormalization(norm, generateNormBW):
 	global I_NORM
 	global I_GENERATE_NormBW
 
-	if(norm.lower() == 'false'):
+	if norm.lower() == 'false':
 		I_NORM = False
 	else:
 		I_NORM = True
 
-	if(generateNormBW.lower() == 'false'):
+	if generateNormBW.lower() == 'false':
 		I_GENERATE_NormBW = False
 	else:
 		I_GENERATE_NormBW = True
 
-	if((I_NORM == False) and (I_GENERATE_NormBW == True)):
+	if (not I_NORM) and I_GENERATE_NormBW:
 		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
 		sys.exit()
-
-	return
