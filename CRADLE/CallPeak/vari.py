@@ -187,7 +187,7 @@ def setAnlaysisRegion(region, bl):
 			idx = np.where(
 				(bl_region[:,0] == regionChromo) &
 				(bl_region[:,1].astype(int) >= regionStart) &
-				(bl_region[:,2].astype(int) < regionEnd)
+				(bl_region[:,1].astype(int) < regionEnd)
 				)[0]
 
 			if len(idx) > 0:
