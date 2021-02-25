@@ -172,7 +172,7 @@ def setAnlaysisRegion(region, bl):
 		REGION = region_merged
 
 	## BL
-	if bl != None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
+	if bl is not None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
 		bl_region_temp = []
 		input_stream = open(bl)
 		input_file = input_stream.readlines()

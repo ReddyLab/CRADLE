@@ -66,7 +66,7 @@ def getCandidateTrainSet(rcPercentile):
 		if numBin == 0:
 			numBin = 1
 		temp = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-		temp = temp[np.where(temp is not None)]
+		temp = temp[np.where(temp != None)]
 		temp = temp[np.where(temp > 0)]
 
 		meanRC.extend(temp.tolist())
@@ -146,7 +146,7 @@ def FilltrainSetMeta(trainBinInfo):
 				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
 				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
 
-				idx = np.where(meanValues is not None)
+				idx = np.where(meanValues != None)
 				meanValues = meanValues[idx]
 				pos = pos[idx]
 
@@ -190,7 +190,7 @@ def FilltrainSetMeta(trainBinInfo):
 				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
 				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
 
-				idx = np.where(meanValues is not None)
+				idx = np.where(meanValues != None)
 				meanValues = meanValues[idx]
 				pos = pos[idx]
 
@@ -313,7 +313,7 @@ def getScaler(trainSet):
 			numBin = int((sub_regionEnd - sub_regionStart) / vari.BINSIZE)
 
 			temp = np.array(ob1.stats(regionChromo, sub_regionStart, sub_regionEnd, nBins=numBin, type="mean"))
-			idx = np.where(temp is None)
+			idx = np.where(temp == None)
 			temp[idx] = 0
 			temp = temp.tolist()
 			ob1Values.extend(temp)
@@ -364,7 +364,7 @@ def getScalerForEachSample(args):
 			numBin = int((sub_regionEnd - sub_regionStart) / vari.BINSIZE)
 
 			temp = np.array(ob2.stats(regionChromo, sub_regionStart, sub_regionEnd, nBins=numBin, type="mean"))
-			idx = np.where(temp is None)
+			idx = np.where(temp == None)
 			temp[idx] = 0
 			temp = temp.tolist()
 			ob2Values.extend(temp)
@@ -484,7 +484,7 @@ def generateNormalizedObBWs(args):
 		starts = np.array(range(start, end))
 		values = np.array(obBW.values(chromo, start, end))
 
-		idx = np.where( (not np.isnan(values)) & (values > 0))[0]
+		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
 		starts = starts[idx]
 		values = values[idx]
 		values = values / scaler
