@@ -1,154 +1,141 @@
-import sys
 import os
-import numpy as np
-import math
-import time
 import tempfile
-import gc
-import scipy
+import warnings
+import h5py
+import numpy as np
+import matplotlib
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
 import py2bit
 import pyBigWig
-import warnings
-import statsmodels.api as sm
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import h5py
-import random
-
 
 from CRADLE.CorrectBiasStored import vari
 
-cpdef performRegression(trainSet):
-	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
-	warnings.filterwarnings('ignore', r'Mean of empty slice')
-	
-	faFile = py2bit.open(vari.FA)
+matplotlib.use('Agg')
+warnings.filterwarnings('ignore', r'All-NaN slice encountered')
+warnings.filterwarnings('ignore', r'Mean of empty slice')
 
-	trainSet_new = []
-	X_numRows = 0
-	X_numCols = vari.COVARI_NUM + 1
-	for trainIdx in range(len(trainSet)):
-		chromo = trainSet[trainIdx][0]
-		analysis_start = int(trainSet[trainIdx][1])
-		analysis_end = int(trainSet[trainIdx][2])
-		chromoEnd = int(faFile.chroms(chromo))
+cpdef performRegression(trainingSet):
+	cdef int analysisStart
+	cdef int analysisEnd
+	newTrainingSet = []
+	xRowCount = 0
+	xColumnCount = vari.COVARI_NUM + 1
 
-		frag_start = analysis_start - vari.FRAGLEN + 1
-		frag_end = analysis_end + vari.FRAGLEN - 1  
-		shear_start = frag_start - 2
-		shear_end = frag_end + 2
+	with py2bit.open(vari.FA) as faFile:
+		for trainIdx in range(len(trainingSet)):
+			chromo = trainingSet[trainIdx][0]
+			analysisStart = int(trainingSet[trainIdx][1])
+			analysisEnd = int(trainingSet[trainIdx][2])
+			chromoEnd = int(faFile.chroms(chromo))
 
-		if(shear_start < 1):
-			shear_start = 1
-			frag_start = 3
-			analysis_start = max(analysis_start, frag_start)
-		
-		if(shear_end > chromoEnd):
-			shear_end = chromoEnd
-			frag_end = shear_end - 2
-			analysis_end = min(analysis_end, frag_end)  # not included
-	
-		X_numRows = X_numRows + (analysis_end - analysis_start)
-		trainSet_new.append([chromo, analysis_start, analysis_end])
-	faFile.close()
-	del trainSet, faFile
+			fragStart = analysisStart - vari.FRAGLEN + 1
+			fragEnd = analysisEnd + vari.FRAGLEN - 1
+			shearStart = fragStart - 2
+			shearEnd = fragEnd + 2
+
+			if shearStart < 1:
+				shearStart = 1
+				fragStart = 3
+				analysisStart = max(analysisStart, fragStart)
+
+			if shearEnd > chromoEnd:
+				shearEnd = chromoEnd
+				fragEnd = shearEnd - 2
+				analysisEnd = min(analysisEnd, fragEnd)  # not included
+
+			xRowCount = xRowCount + (analysisEnd - analysisStart)
+			newTrainingSet.append([chromo, analysisStart, analysisEnd])
 
 	#### Initialize COEF matrix
 	COEFCTRL = np.zeros((vari.CTRLBW_NUM, 7), dtype=np.float64)
 	COEFEXP = np.zeros((vari.EXPBW_NUM, 7), dtype=np.float64)
 
-	#### Get X matrix 
-	cdef double [:,:] X_view = np.ones((X_numRows, X_numCols), dtype=np.float64)
+	#### Get X matrix
+	cdef double [:,:] xView = np.ones((xRowCount, xColumnCount), dtype=np.float64)
 
-	cdef int row_ptr = 0
+	cdef int currentRow = 0
 	cdef int pos
 	cdef int j
-	cdef int analysis_start_this
-	cdef int analysis_end_this
 
-	for trainIdx in range(len(trainSet_new)):
-		chromo = trainSet_new[trainIdx][0]
-		analysis_start_this = int(trainSet_new[trainIdx][1])
-		analysis_end_this = int(trainSet_new[trainIdx][2])
+	for trainIdx in range(len(newTrainingSet)):
+		chromo = newTrainingSet[trainIdx][0]
+		analysisStart = int(newTrainingSet[trainIdx][1])
+		analysisEnd = int(newTrainingSet[trainIdx][2])
 
 		hdfFileName = vari.COVARI_DIR + "/" + vari.COVARI_Name + "_" + chromo + ".hdf5"
-		f = h5py.File(hdfFileName, "r")
+		with h5py.File(hdfFileName, "r") as hdfFile:
+			pos = analysisStart
+			while pos < analysisEnd:
+				temp = hdfFile['covari'][pos - 3] * vari.SELECT_COVARI
+				temp = temp[not np.isnan(temp)]
 
-		pos = analysis_start_this
-		while(pos < analysis_end_this):
-			temp = f['covari'][pos-3] * vari.SELECT_COVARI
-			temp = temp[np.isnan(temp) == False]
+				j = 0
+				while j < vari.COVARI_NUM:
+					xView[(currentRow + pos - analysisStart), j + 1] = temp[j]
+					j = j + 1
+				pos = pos + 1
+			currentRow = currentRow + (analysisEnd - analysisStart)
 
-			j = 0
-			while(j < vari.COVARI_NUM):
-				X_view[(row_ptr+pos-analysis_start_this), j+1] = temp[j]
-				j = j + 1
-			pos = pos + 1
-		row_ptr = row_ptr + (analysis_end_this - analysis_start_this)
-		f.close()
-
-
-	if(X_numRows < 50000):
-		idx = np.array(list(range(X_numRows)))
+	if xRowCount < 50000:
+		idx = np.array(list(range(xRowCount)))
 	else:
-		idx = np.random.choice(np.array(list(range(X_numRows))), 50000, replace=False)
+		idx = np.random.choice(np.array(list(range(xRowCount))), 50000, replace=False)
 
 	#### Get Y matrix
-	cdef double [:] Y_view = np.zeros(X_numRows, dtype=np.float64)
+	cdef double [:] yView = np.zeros(xRowCount, dtype=np.float64)
 	cdef int ptr
 	cdef int posIdx
 
 	for rep in range(vari.CTRLBW_NUM):
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
-		
-		ptr = 0
-		for trainIdx in range(len(trainSet_new)):
-			chromo = trainSet_new[trainIdx][0]
-			analysis_start = int(trainSet_new[trainIdx][1])
-			analysis_end = int(trainSet_new[trainIdx][2])
+		with pyBigWig.open(vari.CTRLBW_NAMES[rep]) as bwFile:
+			ptr = 0
+			for trainIdx in range(len(newTrainingSet)):
+				chromo = newTrainingSet[trainIdx][0]
+				analysisStart = int(newTrainingSet[trainIdx][1])
+				analysisEnd = int(newTrainingSet[trainIdx][2])
 
-			rc = np.array(bw.values(chromo, analysis_start, analysis_end))
-			rc[np.isnan(rc) == True] = float(0)
-			rc = rc / vari.CTRLSCALER[rep]
+				readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+				readCounts[np.isnan(readCounts)] = float(0)
+				readCounts = readCounts / vari.CTRLSCALER[rep]
 
-			numPos = analysis_end - analysis_start
-			posIdx = 0
-			while(posIdx < numPos):
-				Y_view[ptr+posIdx] = rc[posIdx]
-				posIdx = posIdx + 1
+				numPos = analysisEnd - analysisStart
+				posIdx = 0
+				while posIdx < numPos:
+					yView[ptr + posIdx] = readCounts[posIdx]
+					posIdx = posIdx + 1
 
-			ptr = ptr + numPos
-		bw.close()
-		del rc
+				ptr = ptr + numPos
+
+		del readCounts
 
 		#### do regression
-		model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+		model = sm.GLM(np.array(yView).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
 		coef = model.params
 		COEFCTRL[rep, 0] = coef[0]
-		coef_ptr = 1  
+		coefIdx = 1
 		j = 1
-		while(j < 7):
-			if(np.isnan(vari.SELECT_COVARI[j-1]) == True):
+		while j < 7:
+			if np.isnan(vari.SELECT_COVARI[j-1]):
 				COEFCTRL[rep, j] = np.nan
 				j = j + 1
 			else:
-				COEFCTRL[rep, j] = coef[coef_ptr]	
+				COEFCTRL[rep, j] = coef[coefIdx]
 				j = j + 1
-				coef_ptr = coef_ptr + 1
+				coefIdx = coefIdx + 1
 
-		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]
+		corr = np.corrcoef(model.fittedvalues, np.array(yView))[0, 1]
 		corr = np.round(corr, 2)
 
 		## PLOT
 		maxi1 = np.nanmax(model.fittedvalues[idx])
-		maxi2 = np.nanmax(np.array(Y_view)[idx])
+		maxi2 = np.nanmax(np.array(yView)[idx])
 		maxi = max(maxi1, maxi2)
 
 		bwName = '.'.join( vari.CTRLBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
 		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
-		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
+		plt.plot(np.array(yView)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
 		plt.ylabel("predicted")
@@ -160,58 +147,56 @@ cpdef performRegression(trainSet):
 		plt.close()
 		plt.clf()
 
-			
-	for rep in range(vari.EXPBW_NUM):	
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
+	for rep in range(vari.EXPBW_NUM):
+		with pyBigWig.open(vari.EXPBW_NAMES[rep]) as bwFile:
+			ptr = 0
+			for trainIdx in range(len(newTrainingSet)):
+				chromo = newTrainingSet[trainIdx][0]
+				analysisStart = int(newTrainingSet[trainIdx][1])
+				analysisEnd = int(newTrainingSet[trainIdx][2])
 
-		ptr = 0
-		for trainIdx in range(len(trainSet_new)):
-			chromo = trainSet_new[trainIdx][0]
-			analysis_start = int(trainSet_new[trainIdx][1])
-			analysis_end = int(trainSet_new[trainIdx][2])
+				readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+				readCounts[np.isnan(readCounts)] = float(0)
+				readCounts = readCounts / vari.EXPSCALER[rep]
 
-			rc = np.array(bw.values(chromo, analysis_start, analysis_end))
-			rc[np.isnan(rc) == True] = float(0)
-			rc = rc / vari.EXPSCALER[rep]
+				numPos = analysisEnd - analysisStart
+				posIdx = 0
+				while posIdx < numPos:
+					yView[ptr+posIdx] = readCounts[posIdx]
+					posIdx = posIdx +1
 
-			numPos = analysis_end - analysis_start
-			posIdx = 0
-			while(posIdx < numPos):
-				Y_view[ptr+posIdx] = rc[posIdx]
-				posIdx = posIdx +1
+				ptr = ptr + numPos
 
-			ptr = ptr + numPos
-		bw.close()
-		del rc
+		del readCounts
 
 		#### do regression
-		model = sm.GLM(np.array(Y_view).astype(int), np.array(X_view), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+		model = sm.GLM(np.array(yView).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
 		coef = model.params
 
 		COEFEXP[rep, 0] = coef[0]
-		coef_ptr = 1
+		coefIdx = 1
 		j = 1
-		while(j < 7):
-			if(np.isnan(vari.SELECT_COVARI[j-1]) == True):
+		while j < 7:
+			if np.isnan(vari.SELECT_COVARI[j-1]):
 				COEFEXP[rep, j] = np.nan
 				j = j + 1
 			else:
-				COEFEXP[rep, j] = coef[coef_ptr]
+				COEFEXP[rep, j] = coef[coefIdx]
 				j = j + 1
-				coef_ptr = coef_ptr + 1
+				coefIdx = coefIdx + 1
 
-		corr = np.corrcoef(model.fittedvalues, np.array(Y_view))[0, 1]
+		corr = np.corrcoef(model.fittedvalues, np.array(yView))[0, 1]
 		corr = np.round(corr, 2)
 
 		## PLOT
 		maxi1 = np.nanmax(model.fittedvalues[idx])
-		maxi2 = np.nanmax(np.array(Y_view)[idx])
+		maxi2 = np.nanmax(np.array(yView)[idx])
 		maxi = max(maxi1, maxi2)
 
 		bwName = '.'.join( vari.EXPBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
 		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
-		plt.plot(np.array(Y_view)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
+		plt.plot(np.array(yView)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
 		plt.ylabel("predicted")
@@ -227,34 +212,30 @@ cpdef performRegression(trainSet):
 
 
 cpdef correctReadCount(args):
-	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
-	warnings.filterwarnings('ignore', r'Mean of empty slice')
-
 	chromo = args[0]
-	analysis_start = int(args[1])  # Genomic coordinates(starts from 1)
-	analysis_end = int(args[2])
+	analysisStart = int(args[1])  # Genomic coordinates(starts from 1)
+	analysisEnd = int(args[2])
 
-	faFile = py2bit.open(vari.FA)
-	chromoEnd = int(faFile.chroms(chromo))
-	faFile.close()
+	with py2bit.open(vari.FA) as faFile:
+		chromoEnd = int(faFile.chroms(chromo))
 
-	###### GENERATE A RESULT MATRIX 
-	frag_start = analysis_start - vari.FRAGLEN + 1
-	frag_end = analysis_end + vari.FRAGLEN - 1
-	shear_start = frag_start - 2
-	shear_end = frag_end + 2
+	###### GENERATE A RESULT MATRIX
+	fragStart = analysisStart - vari.FRAGLEN + 1
+	fragEnd = analysisEnd + vari.FRAGLEN - 1
+	shearStart = fragStart - 2
+	shearEnd = fragEnd + 2
 
-	if(shear_start < 1):
-		shear_start = 1
-		frag_start = 3
-		analysis_start = max(analysis_start, frag_start)
-	if(shear_end > chromoEnd):
-		shear_end = chromoEnd
-		frag_end = shear_end - 2
-		analysis_end = min(analysis_end, frag_end)
+	if shearStart < 1:
+		shearStart = 1
+		fragStart = 3
+		analysisStart = max(analysisStart, fragStart)
+	if shearEnd > chromoEnd:
+		shearEnd = chromoEnd
+		fragEnd = shearEnd - 2
+		analysisEnd = min(analysisEnd, fragEnd)
 
 
-	## OUTPUT FILES 
+	## OUTPUT FILES
 	subfinalCtrl = [0] * vari.CTRLBW_NUM
 	subfinalCtrlNames = [0] * vari.CTRLBW_NUM
 	subfinalExp = [0] * vari.EXPBW_NUM
@@ -271,9 +252,9 @@ cpdef correctReadCount(args):
 		subfinalExp[i].close()
 
 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > FILTERVALUE
-	selectedIdx, highRC_idx, starts = selectIdx(chromo, analysis_start, analysis_end)
+	selectedIdx, highReadCountIdx, starts = selectIdx(chromo, analysisStart, analysisEnd)
 
-	if(len(selectedIdx) == 0):
+	if len(selectedIdx) == 0:
 		for i in range(vari.CTRLBW_NUM):
 			os.remove(subfinalCtrlNames[i])
 		for i in range(vari.EXPBW_NUM):
@@ -283,126 +264,128 @@ cpdef correctReadCount(args):
 
 
 	hdfFileName = vari.COVARI_DIR + "/" + vari.COVARI_Name + "_" + chromo + ".hdf5"
-	f = h5py.File(hdfFileName, "r")
+	with h5py.File(hdfFileName, "r") as hdfFile:
+		for rep in range(vari.CTRLBW_NUM):
+			with pyBigWig.open(vari.CTRLBW_NAMES[rep]) as bwFile:
+				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+				rcArr[np.isnan(rcArr)] = float(0)
+				rcArr = rcArr / vari.CTRLSCALER[rep]
 
-	for rep in range(vari.CTRLBW_NUM):	
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
-		rcArr = np.array(bw.values(chromo, analysis_start, analysis_end))
-		rcArr[np.isnan(rcArr) == True] = float(0)
-		rcArr = rcArr / vari.CTRLSCALER[rep]
-		bw.close()
+			prdvals = np.exp(
+				np.nansum(
+					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * vari.SELECT_COVARI) * vari.COEFCTRL[rep, 1:],
+					axis=1
+				) + vari.COEFCTRL[rep, 0]
+			)
+			prdvals[highReadCountIdx] = np.exp(
+				np.nansum(
+					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * vari.SELECT_COVARI) * vari.COEFCTRL_HIGHRC[rep, 1:],
+					axis=1
+				) + vari.COEFCTRL_HIGHRC[rep, 0]
+			)
 
-		prdvals = np.exp(np.nansum( (f['covari'][(analysis_start-3):(analysis_end-3)] * vari.SELECT_COVARI) * vari.COEFCTRL[rep, 1:], axis=1) + vari.COEFCTRL[rep, 0]) 
-		prdvals[highRC_idx] = np.exp(np.nansum( (f['covari'][(analysis_start-3):(analysis_end-3)][highRC_idx] * vari.SELECT_COVARI) * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])
+			rcArr = rcArr - prdvals
+			rcArr = rcArr[selectedIdx]
 
-		rcArr = rcArr - prdvals
-		rcArr = rcArr[selectedIdx]
-
-		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-		if(len(idx[0]) > 0):
-			tempStarts = np.delete(starts, idx)
-			rcArr = np.delete(rcArr, idx)
-			if(len(rcArr) > 0):
-				writeBedFile(subfinalCtrlNames[rep], tempStarts, rcArr, analysis_end)
+			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
+			if len(idx[0]) > 0:
+				tempStarts = np.delete(starts, idx)
+				rcArr = np.delete(rcArr, idx)
+				if len(rcArr) > 0:
+					writeBedFile(subfinalCtrlNames[rep], tempStarts, rcArr, analysisEnd)
+				else:
+					os.remove(subfinalCtrlNames[rep])
+					subfinalCtrlNames[rep] = None
 			else:
-				os.remove(subfinalCtrlNames[rep])
-				subfinalCtrlNames[rep] = None
-		else:
-			if(len(rcArr) > 0):
-				writeBedFile(subfinalCtrlNames[rep], starts, rcArr, analysis_end)
+				if len(rcArr) > 0:
+					writeBedFile(subfinalCtrlNames[rep], starts, rcArr, analysisEnd)
+				else:
+					os.remove(subfinalCtrlNames[rep])
+					subfinalCtrlNames[rep] = None
+
+		for rep in range(vari.EXPBW_NUM):
+			with pyBigWig.open(vari.EXPBW_NAMES[rep]) as bwFile:
+				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+				rcArr[np.isnan(rcArr)] = float(0)
+				rcArr = rcArr / vari.EXPSCALER[rep]
+
+			prdvals = np.exp(
+				np.nansum(
+					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * vari.SELECT_COVARI) * vari.COEFEXP[rep, 1:],
+					axis=1
+				) + vari.COEFEXP[rep, 0]
+			)
+			prdvals[highReadCountIdx] = np.exp(
+				np.nansum(
+					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * vari.SELECT_COVARI) * vari.COEFEXP_HIGHRC[rep, 1:],
+					axis=1
+				) + vari.COEFEXP_HIGHRC[rep, 0]
+			)
+
+			rcArr = rcArr - prdvals
+			rcArr = rcArr[selectedIdx]
+
+			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
+			if len(idx[0]) > 0:
+				tempStarts = np.delete(starts, idx)
+				rcArr = np.delete(rcArr, idx)
+				if len(rcArr) > 0:
+					writeBedFile(subfinalExpNames[rep], tempStarts, rcArr, analysisEnd)
+				else:
+					os.remove(subfinalExpNames[rep])
+					subfinalExpNames[rep] = None
 			else:
-				os.remove(subfinalCtrlNames[rep])
-				subfinalCtrlNames[rep] = None
+				if len(rcArr) > 0:
+					writeBedFile(subfinalExpNames[rep], starts, rcArr, analysisEnd)
+				else:
+					os.remove(subfinalExpNames[rep])
+					subfinalExpNames[rep] = None
 
+	return [subfinalCtrlNames, subfinalExpNames, chromo]
 
-	for rep in range(vari.EXPBW_NUM):
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
-		rcArr = np.array(bw.values(chromo, analysis_start, analysis_end))
-		rcArr[np.isnan(rcArr) == True] = float(0)
-		rcArr = rcArr / vari.EXPSCALER[rep]
-		bw.close()
-
-		prdvals = np.exp(np.nansum( (f['covari'][(analysis_start-3):(analysis_end-3)] * vari.SELECT_COVARI) * vari.COEFEXP[rep, 1:], axis=1) + vari.COEFEXP[rep, 0])
-		prdvals[highRC_idx] = np.exp(np.nansum( (f['covari'][(analysis_start-3):(analysis_end-3)][highRC_idx] * vari.SELECT_COVARI) * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])
-
-		rcArr = rcArr - prdvals
-		rcArr = rcArr[selectedIdx]
-
-		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-		if(len(idx[0]) > 0):
-			tempStarts = np.delete(starts, idx)
-			rcArr = np.delete(rcArr, idx)
-			if(len(rcArr) > 0):
-				writeBedFile(subfinalExpNames[rep], tempStarts, rcArr, analysis_end)
-			else:
-				os.remove(subfinalExpNames[rep])
-				subfinalExpNames[rep] = None
-		else:
-			if(len(rcArr) > 0):
-				writeBedFile(subfinalExpNames[rep], starts, rcArr, analysis_end)
-			else:
-				os.remove(subfinalExpNames[rep])
-				subfinalExpNames[rep] = None
-
-	f.close()	
-
-	return_array = [subfinalCtrlNames, subfinalExpNames, chromo]
-
-	return return_array
-
-
-
-
-
-cpdef selectIdx(chromo, analysis_start, analysis_end):
-	ctrlRC = []
+cpdef selectIdx(chromo, analysisStart, analysisEnd):
+	ctrlReadCounts = []
 	for rep in range(vari.CTRLBW_NUM):
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
-		
-		temp = np.array(bw.values(chromo, analysis_start, analysis_end))
-		temp[np.where(np.isnan(temp)==True)] = float(0)
+		with pyBigWig.open(vari.CTRLBW_NAMES[rep]) as bwFile:
+			temp = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+			temp[np.where(np.isnan(temp))] = float(0)
 
-		bw.close()
-		ctrlRC.append(temp.tolist())
+		ctrlReadCounts.append(temp.tolist())
 
-		if(rep == 0):
-			rc_sum = temp
-			highRC_idx = np.where(temp > vari.HIGHRC)[0]
+		if rep == 0:
+			readCountSum = temp
+			highReadCountIdx = np.where(temp > vari.HIGHRC)[0]
 		else:
-			rc_sum = rc_sum + temp
+			readCountSum = readCountSum + temp
 
-	ctrlRC = np.nanmean(ctrlRC, axis=0)
-	idx1 = np.where(ctrlRC > 0)[0].tolist()	
-		
+	ctrlReadCounts = np.nanmean(ctrlReadCounts, axis=0)
+	idx1 = np.where(ctrlReadCounts > 0)[0].tolist()
+
 	expRC = []
 	for rep in range(vari.EXPBW_NUM):
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
+		with pyBigWig.open(vari.EXPBW_NAMES[rep]) as bwFile:
+			temp = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+			temp[np.where(np.isnan(temp))] = float(0)
 
-		temp = np.array(bw.values(chromo, analysis_start, analysis_end))
-		temp[np.where(np.isnan(temp)==True)] = float(0)
-
-		bw.close()
 		expRC.append(temp.tolist())
 
-		rc_sum = rc_sum + temp
+		readCountSum = readCountSum + temp
 
 	expRC = np.nanmean(expRC, axis=0)
 	idx2 = np.where(expRC > 0)[0].tolist()
-	idx3 = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()
+	idx3 = np.where(readCountSum > vari.FILTERVALUE)[0].tolist()
 
-	idx_temp = np.intersect1d(idx1, idx2)
-	idx = np.intersect1d(idx_temp, idx3)
+	idxTemp = np.intersect1d(idx1, idx2)
+	idx = np.intersect1d(idxTemp, idx3)
 
-	if(len(idx) == 0):
+	if len(idx) == 0:
 		return np.array([]), np.array([]), np.array([])
 
-	starts = np.array(list(range(analysis_start, analysis_end)))[idx]
+	starts = np.array(list(range(analysisStart, analysisEnd)))[idx]
 
-	return idx, highRC_idx, starts
+	return idx, highReadCountIdx, starts
 
-
-
-cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):
+cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysisEnd):
 	subfile = open(subfileName, "w")
 
 	tempSignalvals = tempSignalvals.astype(int)
@@ -410,41 +393,35 @@ cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysis_end):
 
 	idx = 0
 	prevStart = tempStarts[idx]
-	prevRC = tempSignalvals[idx]
-	line = [prevStart, (prevStart + vari.BINSIZE), prevRC]
-	if(numIdx == 1):
+	prevReadCount = tempSignalvals[idx]
+	line = [prevStart, (prevStart + vari.BINSIZE), prevReadCount]
+	if numIdx == 1:
 		subfile.write('\t'.join([str(x) for x in line]) + "\n")
 		subfile.close()
 		return
 
 	idx = 1
-	while(idx < numIdx):
+	while idx < numIdx:
 		currStart = tempStarts[idx]
-		currRC = tempSignalvals[idx]
+		currReadCount = tempSignalvals[idx]
 
-		if( (currStart == (prevStart + vari.BINSIZE)) and (currRC == prevRC) ):
+		if (currStart == (prevStart + vari.BINSIZE)) and (currReadCount == prevReadCount):
 			line[1] = currStart + vari.BINSIZE
 			prevStart = currStart
-			prevRC = currRC
+			prevReadCount = currReadCount
 			idx = idx + 1
 		else:
 			### End a current line
 			subfile.write('\t'.join([str(x) for x in line]) + "\n")
 
 			### Start a new line
-			line = [currStart, (currStart+vari.BINSIZE), currRC]
+			line = [currStart, (currStart+vari.BINSIZE), currReadCount]
 			prevStart = currStart
-			prevRC = currRC
+			prevReadCount = currReadCount
 			idx = idx + 1
 
-		if(idx == numIdx):
-			line[1] = analysis_end
+		if idx == numIdx:
+			line[1] = analysisEnd
 			subfile.write('\t'.join([str(x) for x in line]) + "\n")
 			subfile.close()
 			break
-
-	return
-
-
-
-

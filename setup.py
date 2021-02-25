@@ -24,7 +24,7 @@ def main():
 
 	ext_modules = [
 		Extension('CRADLE.CorrectBias.calculateOnebp', ['CRADLE/CorrectBias/calculateOnebp.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
-		Extension('CRADLE.CorrectBiasStored.calculateOnebp', ['CRADLE/CorrectBiasStored/calculateOnebp.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
+		Extension('CRADLE.CorrectBiasStored.calculateOneBP', ['CRADLE/CorrectBiasStored/calculateOneBP.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"]),
 		Extension('CRADLE.CallPeak.calculateRC', ['CRADLE/CallPeak/calculateRC.pyx'], include_dirs=[numpy.get_include()], extra_compile_args=["-fno-strict-aliasing"])
 	]
 
