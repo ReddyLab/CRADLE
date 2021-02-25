@@ -249,7 +249,7 @@ cpdef defineRegion(region):
 
 		region_var = np.nanvar(rc)
 
-		if np.isnan(region_var):
+		if np.isnan(region_var) == True:
 			deleteIdx.extend([regionIdx])
 			continue
 

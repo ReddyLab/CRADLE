@@ -51,7 +51,7 @@ def getCandidateTrainSet(rcPercentile):
 		if numBin == 0:
 			numBin = 1
 		temp = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-		temp = temp[np.where(temp is not None)]
+		temp = temp[np.where(temp != None)]
 		temp = temp[np.where(temp > 0)]
 
 		meanRC.extend(temp.tolist())
@@ -130,7 +130,7 @@ def FilltrainSetMeta(trainBinInfo):
 				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
 				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
 
-				idx = np.where(meanValues is not None)
+				idx = np.where(meanValues != None)
 				meanValues = meanValues[idx]
 				pos = pos[idx]
 
@@ -174,7 +174,7 @@ def FilltrainSetMeta(trainBinInfo):
 				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
 				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
 
-				idx = np.where(meanValues is not None)
+				idx = np.where(meanValues != None)
 				meanValues = meanValues[idx]
 				pos = pos[idx]
 
@@ -440,7 +440,7 @@ def generateNormalizedObBWs(args):
 		starts = np.array(range(start, end))
 		values = np.array(obBW.values(chromo, start, end))
 
-		idx = np.where( (not np.isnan(values)) & (values > 0))[0]
+		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
 		starts = starts[idx]
 		values = values[idx]
 		values = values / scaler
@@ -558,7 +558,7 @@ def run(args):
 	print(vari.COVARI_ORDER)
 
 	noNan_idx = [0]
-	temp = np.where(not np.isnan(vari.SELECT_COVARI))[0] + 1
+	temp = np.where(np.isnan(vari.SELECT_COVARI) == False)[0] + 1
 	temp = temp.tolist()
 	noNan_idx.extend(temp)
 
