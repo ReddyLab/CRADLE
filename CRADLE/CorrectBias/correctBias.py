@@ -121,7 +121,7 @@ def FilltrainSetMeta(trainBinInfo):
 	numOfCandiRegion = 0
 
 	resultFile = tempfile.NamedTemporaryFile(mode="w+t", suffix=".txt", dir=vari.OUTPUT_DIR, delete=False)
-
+	'''
 	if downLimit == highRC :
 		result = []
 
@@ -166,47 +166,47 @@ def FilltrainSetMeta(trainBinInfo):
 		numOfCandiRegion = len(result)
 		for i in range(len(result)):
 			resultFile.write('\t'.join([str(x) for x in result[i]]) + "\n")
+	'''
+	
+	for region in vari.REGION:
+		regionChromo = region[0]
+		regionStart = int(region[1])
+		regionEnd = int(region[2])
 
-	else:
-		for region in vari.REGION:
-			regionChromo = region[0]
-			regionStart = int(region[1])
-			regionEnd = int(region[2])
+		numBin = int( (regionEnd - regionStart) / trainBinSize )
+		if numBin == 0:
+			numBin = 1
+			meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
 
-			numBin = int( (regionEnd - regionStart) / trainBinSize )
-			if numBin == 0:
-				numBin = 1
-				meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
+			if meanValue is None:
+				continue
 
-				if meanValue is None:
-					continue
+			if (meanValue >= downLimit) and (meanValue < upLimit):
+				line = [regionChromo, regionStart, regionEnd]
+				resultFile.write('\t'.join([str(x) for x in line]) + "\n")
+				numOfCandiRegion = numOfCandiRegion + 1
+		else:
+			regionEnd = numBin * trainBinSize + regionStart
+			meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
+			pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
 
-				if (meanValue >= downLimit) and (meanValue < upLimit):
-					line = [regionChromo, regionStart, regionEnd]
-					resultFile.write('\t'.join([str(x) for x in line]) + "\n")
-					numOfCandiRegion = numOfCandiRegion + 1
-			else:
-				regionEnd = numBin * trainBinSize + regionStart
-				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
+			idx = np.where(meanValues != None)
+			meanValues = meanValues[idx]
+			pos = pos[idx]
 
-				idx = np.where(meanValues != None)
-				meanValues = meanValues[idx]
-				pos = pos[idx]
+			idx = np.where((meanValues >= downLimit) & (meanValues < upLimit))
 
-				idx = np.where((meanValues >= downLimit) & (meanValues < upLimit))
+			if len(idx[0]) == 0:
+				continue
 
-				if len(idx[0]) == 0:
-					continue
+			start = pos[idx]
+			end = start + trainBinSize
+			chromoArray = [regionChromo] * len(start)
 
-				start = pos[idx]
-				end = start + trainBinSize
-				chromoArray = [regionChromo] * len(start)
-
-				numOfCandiRegion = numOfCandiRegion + len(start)
-				for i in range(len(start)):
-					line = [regionChromo, start[i], start[i] + trainBinSize]
-					resultFile.write('\t'.join([str(x) for x in line]) + "\n")
+			numOfCandiRegion = numOfCandiRegion + len(start)
+			for i in range(len(start)):
+				line = [regionChromo, start[i], start[i] + trainBinSize]
+				resultFile.write('\t'.join([str(x) for x in line]) + "\n")
 
 	ctrlBW.close()
 	resultFile.close()
