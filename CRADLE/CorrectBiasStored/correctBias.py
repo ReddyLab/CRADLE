@@ -10,14 +10,12 @@ import pyBigWig
 import statsmodels.api as sm
 
 from CRADLE.CorrectBiasStored import vari
-from CRADLE.CorrectBiasStored import calculateOnebp
+from CRADLE.CorrectBiasStored import calculateOneBP
 
+trainBinSize = 1000
 
 def getCandidateTrainSet(rcPercentile):
-	global trainBinSize
 	global highRC
-
-	trainBinSize = 1000
 
 	trainRegionNum = math.pow(10, 6)
 	trainRegionNum = trainRegionNum / float(trainBinSize)
@@ -543,7 +541,7 @@ def run(args):
 		trainSet1 = vari.REGION
 	if len(trainSet2) == 0:
 		trainSet2 = vari.REGION
-	coefResult = pool.map_async(calculateOnebp.performRegression, [trainSet1, trainSet2]).get()
+	coefResult = pool.map_async(calculateOneBP.performRegression, [trainSet1, trainSet2]).get()
 	pool.close()
 	pool.join()
 	del trainSet1, trainSet2
@@ -584,7 +582,7 @@ def run(args):
 		numProcess = vari.NUMPROCESS
 
 	pool = multiprocessing.Pool(numProcess)
-	resultMeta = pool.map_async(calculateOnebp.correctReadCount, task).get()
+	resultMeta = pool.map_async(calculateOneBP.correctReadCount, task).get()
 	pool.close()
 	pool.join()
 	del pool
