@@ -1,3 +1,6 @@
+# code editor stuff
+.vscode
+
 # Ignore build artifacts
 build
 CRADLE/**/*.c

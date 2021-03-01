@@ -13,7 +13,16 @@ Recommend to install the newest version.
 2) Using git repository
 ```
 git clone https://github.com/ReddyLab/CRADLE.git
-python setup.py install
+make install
+```
+
+or, alternatively
+
+```
+git clone https://github.com/ReddyLab/CRADLE.git
+pip install build # If the 'build' package isn't already installed
+python -m build # Build cradle
+pip install dist/*.whl # Install cradle
 ```
 
 ## Dependencies
