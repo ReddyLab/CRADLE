@@ -12,20 +12,20 @@ import statsmodels.api as sm
 from CRADLE.CorrectBiasStored import vari
 from CRADLE.CorrectBiasStored import calculateOneBP
 
-trainBinSize = 1000
+TRAINING_BIN_SIZE = 1000
 
 def getCandidateTrainSet(rcPercentile):
 	global highRC
 
 	trainRegionNum = math.pow(10, 6)
-	trainRegionNum = trainRegionNum / float(trainBinSize)
+	trainRegionNum = trainRegionNum / float(TRAINING_BIN_SIZE)
 
 	totalBinNum = 0
 	for region in vari.REGION:
 		regionStart = int(region[1])
 		regionEnd = int(region[2])
 
-		numBin = int( (regionEnd - regionStart) / trainBinSize)
+		numBin = int( (regionEnd - regionStart) / TRAINING_BIN_SIZE)
 		if numBin == 0:
 			numBin = 1
 		totalBinNum = totalBinNum + numBin
@@ -45,7 +45,7 @@ def getCandidateTrainSet(rcPercentile):
 		regionStart = int(region[1])
 		regionEnd = int(region[2])
 
-		numBin = int( (regionEnd - regionStart) / trainBinSize )
+		numBin = int( (regionEnd - regionStart) / TRAINING_BIN_SIZE )
 		if numBin == 0:
 			numBin = 1
 		temp = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
@@ -114,7 +114,7 @@ def FilltrainSetMeta(trainBinInfo):
 			regionStart = int(region[1])
 			regionEnd = int(region[2])
 
-			numBin = int( (regionEnd - regionStart) / trainBinSize )
+			numBin = int( (regionEnd - regionStart) / TRAINING_BIN_SIZE )
 			if numBin == 0:
 				numBin = 1
 				meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))[0]
@@ -125,9 +125,9 @@ def FilltrainSetMeta(trainBinInfo):
 					result.append([regionChromo, regionStart, regionEnd, meanValue])
 
 			else:
-				regionEnd = numBin * trainBinSize + regionStart
+				regionEnd = numBin * TRAINING_BIN_SIZE + regionStart
 				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-				pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
+				pos = np.array(list(range(0, numBin))) * TRAINING_BIN_SIZE + regionStart
 
 				idx = np.where(meanValues != None)
 				meanValues = meanValues[idx]
@@ -135,7 +135,7 @@ def FilltrainSetMeta(trainBinInfo):
 
 				idx = np.where((meanValues >= downLimit) & (meanValues < upLimit))
 				start = pos[idx]
-				end = start + trainBinSize
+				end = start + TRAINING_BIN_SIZE
 				meanValues = meanValues[idx]
 				chromoArray = [regionChromo] * len(start)
 				result.extend(np.column_stack((chromoArray, start, end, meanValues)).tolist())
@@ -156,7 +156,7 @@ def FilltrainSetMeta(trainBinInfo):
 		regionStart = int(region[1])
 		regionEnd = int(region[2])
 
-		numBin = int( (regionEnd - regionStart) / trainBinSize )
+		numBin = int( (regionEnd - regionStart) / TRAINING_BIN_SIZE )
 		if numBin == 0:
 			numBin = 1
 			meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
@@ -169,9 +169,9 @@ def FilltrainSetMeta(trainBinInfo):
 				resultFile.write('\t'.join([str(x) for x in line]) + "\n")
 				numOfCandiRegion = numOfCandiRegion + 1
 		else:
-			regionEnd = numBin * trainBinSize + regionStart
+			regionEnd = numBin * TRAINING_BIN_SIZE + regionStart
 			meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-			pos = np.array(list(range(0, numBin))) * trainBinSize + regionStart
+			pos = np.array(list(range(0, numBin))) * TRAINING_BIN_SIZE + regionStart
 
 			idx = np.where(meanValues != None)
 			meanValues = meanValues[idx]
@@ -183,12 +183,12 @@ def FilltrainSetMeta(trainBinInfo):
 				continue
 
 			start = pos[idx]
-			end = start + trainBinSize
+			end = start + TRAINING_BIN_SIZE
 			chromoArray = [regionChromo] * len(start)
 
 			numOfCandiRegion = numOfCandiRegion + len(start)
 			for i in range(len(start)):
-				line = [regionChromo, start[i], start[i] + trainBinSize]
+				line = [regionChromo, start[i], start[i] + TRAINING_BIN_SIZE]
 				resultFile.write('\t'.join([str(x) for x in line]) + "\n")
 
 	ctrlBW.close()
