@@ -1,8 +1,7 @@
-import os
 import math
-import sys
 import multiprocessing
-
+import os
+import sys
 import numpy as np
 import pyBigWig
 
@@ -37,7 +36,7 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 
 	CTRLBW_NUM = len(ctrlbwFiles)
 	EXPBW_NUM = len(expbwFiles)
-	SAMPLE_NUM = int(CTRLBW_NUM + EXPBW_NUM)
+	SAMPLE_NUM = CTRLBW_NUM + EXPBW_NUM
 
 	CTRLBW_NAMES = [0] * CTRLBW_NUM
 	for i in range(CTRLBW_NUM):
@@ -90,7 +89,6 @@ def setBiasFiles(args):
 		if (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad'):
 			print("Error! Wrong value in -biasType. Only 'shear', 'pcr', 'map', 'gquad' are allowed")
 			sys.exit()
-
 
 	if 'shear' in biasType:
 		SHEAR = 1
@@ -700,29 +698,29 @@ def setAnlaysisRegion(region, bl):
 	global REGION
 
 	REGION = []
-	input_filename = region
-	input_stream = open(input_filename)
-	input_file = input_stream.readlines()
+	inputFilename = region
+	inputStream = open(inputFilename)
+	inputFileContents = inputStream.readlines()
 
-	for i in range(len(input_file)):
-		temp = input_file[i].split()
+	for i in range(len(inputFileContents)):
+		temp = inputFileContents[i].split()
 		temp[1] = int(temp[1])
 		temp[2] = int(temp[2])
 		REGION.append(temp)
-	input_stream.close()
+	inputStream.close()
 
 	if len(REGION) > 1:
 		REGION = np.array(REGION)
 		REGION = REGION[np.lexsort(( REGION[:,1].astype(int), REGION[:,0])  ) ]
 		REGION = REGION.tolist()
 
-		region_merged = []
+		regionMerged = []
 
 		pos = 0
 		pastChromo = REGION[pos][0]
 		pastStart = int(REGION[pos][1])
 		pastEnd = int(REGION[pos][2])
-		region_merged.append([ pastChromo, pastStart, pastEnd])
+		regionMerged.append([ pastChromo, pastStart, pastEnd])
 		resultIdx = 0
 
 		pos = 1
@@ -733,116 +731,116 @@ def setAnlaysisRegion(region, bl):
 
 			if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
 				maxEnd = np.max([currEnd, pastEnd])
-				region_merged[resultIdx][2] = maxEnd
+				regionMerged[resultIdx][2] = maxEnd
 				pos = pos + 1
 				pastChromo = currChromo
 				pastStart = currStart
 				pastEnd = maxEnd
 			else:
-				region_merged.append([currChromo, currStart, currEnd])
+				regionMerged.append([currChromo, currStart, currEnd])
 				resultIdx = resultIdx + 1
 				pos = pos + 1
 				pastChromo = currChromo
 				pastStart = currStart
 				pastEnd = currEnd
 
-		REGION = region_merged
+		REGION = regionMerged
 
-	if bl != None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
-		bl_region_temp = []
-		input_stream = open(bl)
-		input_file = input_stream.readlines()
-		for i in range(len(input_file)):
-			temp = input_file[i].split()
+	if bl is not None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
+		blRegionTemp = []
+		inputStream = open(bl)
+		inputFile = inputStream.readlines()
+		for i in range(len(inputFile)):
+			temp = inputFile[i].split()
 			temp[1] = int(temp[1])
 			temp[2] = int(temp[2])
-			bl_region_temp.append(temp)
+			blRegionTemp.append(temp)
 
 		## merge overlapping blacklist regions
-		if len(bl_region_temp) == 1:
-			bl_region = bl_region_temp
-			bl_region = np.array(bl_region)
+		if len(blRegionTemp) == 1:
+			blRegion = blRegionTemp
+			blRegion = np.array(blRegion)
 		else:
-			bl_region_temp = np.array(bl_region_temp)
-			bl_region_temp = bl_region_temp[np.lexsort( ( bl_region_temp[:,1].astype(int), bl_region_temp[:,0] ) )]
-			bl_region_temp = bl_region_temp.tolist()
+			blRegionTemp = np.array(blRegionTemp)
+			blRegionTemp = blRegionTemp[np.lexsort( ( blRegionTemp[:,1].astype(int), blRegionTemp[:,0] ) )]
+			blRegionTemp = blRegionTemp.tolist()
 
-			bl_region = []
+			blRegion = []
 			pos = 0
-			pastChromo = bl_region_temp[pos][0]
-			pastStart = int(bl_region_temp[pos][1])
-			pastEnd = int(bl_region_temp[pos][2])
-			bl_region.append([pastChromo, pastStart, pastEnd])
+			pastChromo = blRegionTemp[pos][0]
+			pastStart = int(blRegionTemp[pos][1])
+			pastEnd = int(blRegionTemp[pos][2])
+			blRegion.append([pastChromo, pastStart, pastEnd])
 			resultIdx = 0
 
 			pos = 1
-			while pos < len(bl_region_temp):
-				currChromo = bl_region_temp[pos][0]
-				currStart = int(bl_region_temp[pos][1])
-				currEnd = int(bl_region_temp[pos][2])
+			while pos < len(blRegionTemp):
+				currChromo = blRegionTemp[pos][0]
+				currStart = int(blRegionTemp[pos][1])
+				currEnd = int(blRegionTemp[pos][2])
 
 				if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
-					bl_region[resultIdx][2] = currEnd
+					blRegion[resultIdx][2] = currEnd
 					pos = pos + 1
 					pastChromo = currChromo
 					pastStart = currStart
 					pastEnd = currEnd
 				else:
-					bl_region.append([currChromo, currStart, currEnd])
+					blRegion.append([currChromo, currStart, currEnd])
 					resultIdx = resultIdx + 1
 					pos = pos + 1
 					pastChromo = currChromo
 					pastStart = currStart
 					pastEnd = currEnd
-			bl_region = np.array(bl_region)
+			blRegion = np.array(blRegion)
 
-		region_woBL = []
+		regionWoBL = []
 		for region in REGION:
 			regionChromo = region[0]
 			regionStart = int(region[1])
 			regionEnd = int(region[2])
 
-			overlapped_bl = []
+			overlappedBl = []
 			## overlap Case 1 : A blacklist region completely covers the region.
 			idx = np.where(
-				(bl_region[:,0] == regionChromo) &
-				(bl_region[:,1].astype(int) <= regionStart) &
-				(bl_region[:,2].astype(int) >= regionEnd)
+				(blRegion[:,0] == regionChromo) &
+				(blRegion[:,1].astype(int) <= regionStart) &
+				(blRegion[:,2].astype(int) >= regionEnd)
 				)[0]
 			if len(idx) > 0:
 				continue
 
 			## overlap Case 2
 			idx = np.where(
-				(bl_region[:,0] == regionChromo) &
-				(bl_region[:,2].astype(int) > regionStart) &
-				(bl_region[:,2].astype(int) <= regionEnd)
+				(blRegion[:,0] == regionChromo) &
+				(blRegion[:,2].astype(int) > regionStart) &
+				(blRegion[:,2].astype(int) <= regionEnd)
 				)[0]
 			if len(idx) > 0:
-				overlapped_bl.extend( bl_region[idx].tolist() )
+				overlappedBl.extend( blRegion[idx].tolist() )
 
 			## overlap Case 3
 			idx = np.where(
-				(bl_region[:,0] == regionChromo) &
-				(bl_region[:,1].astype(int) >= regionStart) &
-				(bl_region[:,1].astype(int) < regionEnd)
+				(blRegion[:,0] == regionChromo) &
+				(blRegion[:,1].astype(int) >= regionStart) &
+				(blRegion[:,1].astype(int) < regionEnd)
 				)[0]
 			if len(idx) > 0:
-				overlapped_bl.extend( bl_region[idx].tolist() )
+				overlappedBl.extend( blRegion[idx].tolist() )
 
-			if len(overlapped_bl) == 0:
-				region_woBL.append(region)
+			if len(overlappedBl) == 0:
+				regionWoBL.append(region)
 				continue
 
-			overlapped_bl = np.array(overlapped_bl)
-			overlapped_bl = overlapped_bl[overlapped_bl[:,1].astype(int).argsort()]
-			overlapped_bl = np.unique(overlapped_bl, axis=0)
-			overlapped_bl = overlapped_bl[overlapped_bl[:,1].astype(int).argsort()]
+			overlappedBl = np.array(overlappedBl)
+			overlappedBl = overlappedBl[overlappedBl[:,1].astype(int).argsort()]
+			overlappedBl = np.unique(overlappedBl, axis=0)
+			overlappedBl = overlappedBl[overlappedBl[:,1].astype(int).argsort()]
 
 			currStart = regionStart
-			for pos in range(len(overlapped_bl)):
-				blStart = int(overlapped_bl[pos][1])
-				blEnd = int(overlapped_bl[pos][2])
+			for pos in range(len(overlappedBl)):
+				blStart = int(overlappedBl[pos][1])
+				blEnd = int(overlappedBl[pos][2])
 
 				if blStart <= regionStart:
 					currStart = blEnd
@@ -851,20 +849,19 @@ def setAnlaysisRegion(region, bl):
 						currStart = blEnd
 						continue
 
-					region_woBL.append([ regionChromo, currStart, blStart ])
+					regionWoBL.append([ regionChromo, currStart, blStart ])
 					currStart = blEnd
 
-				if  (pos == (len(overlapped_bl)-1)) and (blEnd < regionEnd):
+				if (pos == (len(overlappedBl)-1)) and (blEnd < regionEnd):
 					if blEnd == regionEnd:
 						break
-					region_woBL.append([ regionChromo, blEnd, regionEnd ])
+					regionWoBL.append([ regionChromo, blEnd, regionEnd ])
 
-		REGION = region_woBL
-
+		REGION = regionWoBL
 
 	# check if all chromosomes in the REGION in bigwig files
 	bw = pyBigWig.open(CTRLBW_NAMES[0])
-	region_final = []
+	regionFinal = []
 	for regionIdx in range(len(REGION)):
 		chromo = REGION[regionIdx][0]
 		start = int(REGION[regionIdx][1])
@@ -877,17 +874,17 @@ def setAnlaysisRegion(region, bl):
 			REGION[regionIdx][2] = chromoLen
 			if chromoLen <= start:
 				continue
-		region_final.append([chromo, start, end])
+		regionFinal.append([chromo, start, end])
 	bw.close()
 
-	REGION = region_final
+	REGION = regionFinal
 
 
 def setFilterCriteria(minFrag):
 	global FILTERVALUE
 
 	if minFrag is None:
-		FILTERVALUE = int(SAMPLE_NUM)
+		FILTERVALUE = SAMPLE_NUM
 	else:
 		FILTERVALUE = int(minFrag)
 
@@ -915,18 +912,18 @@ def setBinSize(binSize):
 def setNumProcess(numProcess):
 	global NUMPROCESS
 
-	system_cpus = int(multiprocessing.cpu_count())
+	systemCPUs = int(multiprocessing.cpu_count())
 
 	if numProcess is None:
-		NUMPROCESS = int(system_cpus / 2.0 )
+		NUMPROCESS = int(systemCPUs / 2.0 )
 		if NUMPROCESS < 1:
 			NUMPROCESS = 1
 	else:
 		NUMPROCESS = int(numProcess)
 
-	if NUMPROCESS > system_cpus:
+	if NUMPROCESS > systemCPUs:
 		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
-		NUMPROCESS = system_cpus
+		NUMPROCESS = systemCPUs
 
 
 def setNormalization(norm, generateNormBW):
