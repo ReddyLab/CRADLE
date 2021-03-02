@@ -63,7 +63,7 @@ cpdef performRegression(trainingSet):
 		analysisStart = int(newTrainingSet[trainIdx][1])
 		analysisEnd = int(newTrainingSet[trainIdx][2])
 
-		hdfFileName = vari.COVARI_DIR + "/" + vari.COVARI_Name + "_" + chromo + ".hdf5"
+		hdfFileName = vari.COVARI_DIR + "/" + vari.COVARI_NAME + "_" + chromo + ".hdf5"
 		with h5py.File(hdfFileName, "r") as hdfFile:
 			pos = analysisStart
 			while pos < analysisEnd:
@@ -263,7 +263,7 @@ cpdef correctReadCount(args):
 		return [ [None] * vari.CTRLBW_NUM, [None] * vari.EXPBW_NUM, chromo ]
 
 
-	hdfFileName = vari.COVARI_DIR + "/" + vari.COVARI_Name + "_" + chromo + ".hdf5"
+	hdfFileName = vari.COVARI_DIR + "/" + vari.COVARI_NAME + "_" + chromo + ".hdf5"
 	with h5py.File(hdfFileName, "r") as hdfFile:
 		for rep in range(vari.CTRLBW_NUM):
 			with pyBigWig.open(vari.CTRLBW_NAMES[rep]) as bwFile:
