@@ -117,7 +117,7 @@ def FilltrainSetMeta(trainBinInfo):
 
 	ctrlBW = pyBigWig.open(vari.CTRLBW_NAMES[0])
 
-	result_line = trainBinInfo
+	resultLine = trainBinInfo
 	numOfCandiRegion = 0
 
 	resultFile = tempfile.NamedTemporaryFile(mode="w+t", suffix=".txt", dir=vari.OUTPUT_DIR, delete=False)
@@ -167,7 +167,7 @@ def FilltrainSetMeta(trainBinInfo):
 		for i in range(len(result)):
 			resultFile.write('\t'.join([str(x) for x in result[i]]) + "\n")
 	'''
-	
+
 	for region in vari.REGION:
 		regionChromo = region[0]
 		regionStart = int(region[1])
@@ -212,8 +212,8 @@ def FilltrainSetMeta(trainBinInfo):
 	resultFile.close()
 
 	if numOfCandiRegion != 0:
-		result_line.extend([ resultFile.name, numOfCandiRegion ])
-		return result_line
+		resultLine.extend([ resultFile.name, numOfCandiRegion ])
+		return resultLine
 
 	os.remove(resultFile.name)
 	return None
@@ -235,8 +235,8 @@ def selectTrainSetFromMeta(trainSetMeta):
 		candiRegionNum = int(trainSetMeta[binIdx][4])
 
 		if candiRegionNum < regionNum:
-			subfile_stream = open(candiRegionFile)
-			subfile = subfile_stream.readlines()
+			subfileStream = open(candiRegionFile)
+			subfile = subfileStream.readlines()
 
 			for i in range(len(subfile)):
 				temp = subfile[i].split()
@@ -261,8 +261,8 @@ def selectTrainSetFromMeta(trainSetMeta):
 		candiRegionNum = int(trainSetMeta[binIdx][4])
 
 		if downLimit == highRC:
-			subfile_stream = open(candiRegionFile)
-			subfile = subfile_stream.readlines()
+			subfileStream = open(candiRegionFile)
+			subfile = subfileStream.readlines()
 
 			i = len(subfile) - 1
 			while regionNum > 0 and i >= 0:
@@ -272,8 +272,8 @@ def selectTrainSetFromMeta(trainSetMeta):
 				regionNum = regionNum - 1
 		else:
 			if candiRegionNum < regionNum:
-				subfile_stream = open(candiRegionFile)
-				subfile = subfile_stream.readlines()
+				subfileStream = open(candiRegionFile)
+				subfile = subfileStream.readlines()
 
 				for i in range(len(subfile)):
 					temp = subfile[i].split()
@@ -304,15 +304,15 @@ def getScaler(trainSet):
 
 		binIdx = 0
 		while binIdx < vari.BINSIZE:
-			sub_regionStart = regionStart + binIdx
-			sub_regionEnd = sub_regionStart + ( int( (regionEnd - sub_regionStart) / vari.BINSIZE ) * vari.BINSIZE )
+			subregionStart = regionStart + binIdx
+			subregionEnd = subregionStart + ( int( (regionEnd - subregionStart) / vari.BINSIZE ) * vari.BINSIZE )
 
-			if sub_regionEnd <= sub_regionStart:
+			if subregionEnd <= subregionStart:
 				break
 
-			numBin = int((sub_regionEnd - sub_regionStart) / vari.BINSIZE)
+			numBin = int((subregionEnd - subregionStart) / vari.BINSIZE)
 
-			temp = np.array(ob1.stats(regionChromo, sub_regionStart, sub_regionEnd, nBins=numBin, type="mean"))
+			temp = np.array(ob1.stats(regionChromo, subregionStart, subregionEnd, nBins=numBin, type="mean"))
 			idx = np.where(temp == None)
 			temp[idx] = 0
 			temp = temp.tolist()
@@ -355,15 +355,15 @@ def getScalerForEachSample(args):
 
 		binIdx = 0
 		while binIdx < vari.BINSIZE:
-			sub_regionStart = regionStart + binIdx
-			sub_regionEnd = sub_regionStart + ( int( (regionEnd - sub_regionStart) / vari.BINSIZE ) * vari.BINSIZE )
+			subregionStart = regionStart + binIdx
+			subregionEnd = subregionStart + ( int( (regionEnd - subregionStart) / vari.BINSIZE ) * vari.BINSIZE )
 
-			if sub_regionEnd <= sub_regionStart:
+			if subregionEnd <= subregionStart:
 				break
 
-			numBin = int((sub_regionEnd - sub_regionStart) / vari.BINSIZE)
+			numBin = int((subregionEnd - subregionStart) / vari.BINSIZE)
 
-			temp = np.array(ob2.stats(regionChromo, sub_regionStart, sub_regionEnd, nBins=numBin, type="mean"))
+			temp = np.array(ob2.stats(regionChromo, subregionStart, subregionEnd, nBins=numBin, type="mean"))
 			idx = np.where(temp == None)
 			temp[idx] = 0
 			temp = temp.tolist()
@@ -414,15 +414,15 @@ def divideGenome():
 def getResultBWHeader():
 	chromoInData = np.array(vari.REGION)[:,0]
 
-	chromoInData_unique = []
+	chromoInDataUnique = []
 	bw = pyBigWig.open(vari.CTRLBW_NAMES[0])
 
 	resultBWHeader = []
 	for i in range(len(chromoInData)):
 		chromo = chromoInData[i]
-		if chromo in chromoInData_unique:
+		if chromo in chromoInDataUnique:
 			continue
-		chromoInData_unique.extend([chromo])
+		chromoInDataUnique.extend([chromo])
 		chromoSize = bw.chroms(chromo)
 		resultBWHeader.append( (chromo, chromoSize) )
 
@@ -446,8 +446,8 @@ def mergeCorrectedBedfilesTobw(args):
 		tempChrom = line[2]
 
 		if tempSignalBedName is not None:
-			tempFile_stream = open(tempSignalBedName)
-			tempFile = tempFile_stream.readlines()
+			tempFileStream = open(tempSignalBedName)
+			tempFile = tempFileStream.readlines()
 
 			for i in range(len(tempFile)):
 				temp = tempFile[i].split()
@@ -456,7 +456,7 @@ def mergeCorrectedBedfilesTobw(args):
 				regionValue = float(temp[2])
 
 				signalBW.addEntries([tempChrom], [regionStart], ends=[regionEnd], values=[regionValue])
-			tempFile_stream.close()
+			tempFileStream.close()
 			os.remove(tempSignalBedName)
 
 	signalBW.close()
@@ -536,7 +536,7 @@ def generateNormalizedObBWs(args):
 
 def run(args):
 
-	start_time = time.time()
+	startTime = time.time()
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
 	checkArgs(args)
@@ -548,11 +548,11 @@ def run(args):
 	rcPercentile = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
 	trainSetMeta = getCandidateTrainSet(rcPercentile)
 
-	print("-- RUNNING TIME of getting trainSetMeta : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of getting trainSetMeta : %s hour(s)" % ((time.time()-startTime)/3600) )
 
 	trainSet1, trainSet2 = selectTrainSetFromMeta(trainSetMeta)
 	del trainSetMeta
-	print("-- RUNNING TIME of selecting train set from trainSetMeta : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of selecting train set from trainSetMeta : %s hour(s)" % ((time.time()-startTime)/3600) )
 
 
 	###### NORMALIZING READ COUNTS
@@ -574,7 +574,7 @@ def run(args):
 		print(vari.EXPSCALER)
 		print("\n\n")
 
-	print("-- RUNNING TIME of calculating scalers : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of calculating scalers : %s hour(s)" % ((time.time()-startTime)/3600) )
 
 
 	###### FITTING TRAIN SETS TO THE CORRECTION MODEL
@@ -594,7 +594,7 @@ def run(args):
 	pool.join()
 	del pool, trainSet1
 	gc.collect()
-	print("-- RUNNING TIME of calculating 1st Train Cavariates : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of calculating 1st Train Cavariates : %s hour(s)" % ((time.time()-startTime)/3600) )
 
 
 	### trainSet2
@@ -613,7 +613,7 @@ def run(args):
 	del pool, trainSet2
 	gc.collect()
 
-	print("-- RUNNING TIME of calculating 2nd Train Cavariates : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of calculating 2nd Train Cavariates : %s hour(s)" % ((time.time()-startTime)/3600) )
 
 
 	## PERFORM REGRESSION
@@ -642,7 +642,7 @@ def run(args):
 	print("COEF_EXP_HIGHRC: ")
 	print(vari.COEFEXP_HIGHRC)
 
-	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-startTime)/3600) )
 
 
 	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL
@@ -661,7 +661,7 @@ def run(args):
 	del pool
 	gc.collect()
 
-	print("-- RUNNING TIME of calculating Task covariates : %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME of calculating Task covariates : %s hour(s)" % ((time.time()-startTime)/3600) )
 
 
 	###### MERGING TEMP FILES
@@ -707,4 +707,4 @@ def run(args):
 		print("Nomralized observed bigwig file names: ")
 		print(normObFileNames)
 
-	print("-- RUNNING TIME: %s hour(s)" % ((time.time()-start_time)/3600) )
+	print("-- RUNNING TIME: %s hour(s)" % ((time.time()-startTime)/3600) )
