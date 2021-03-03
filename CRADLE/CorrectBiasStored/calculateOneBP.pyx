@@ -68,7 +68,7 @@ cpdef performRegression(trainingSet):
 			pos = analysisStart
 			while pos < analysisEnd:
 				temp = hdfFile['covari'][pos - 3] * vari.SELECT_COVARI
-				temp = temp[not np.isnan(temp)]
+				temp = temp[np.isnan(temp) == False]
 
 				j = 0
 				while j < vari.COVARI_NUM:
@@ -96,7 +96,7 @@ cpdef performRegression(trainingSet):
 				analysisEnd = int(newTrainingSet[trainIdx][2])
 
 				readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				readCounts[np.isnan(readCounts)] = float(0)
+				readCounts[np.isnan(readCounts) == True] = float(0)
 				readCounts = readCounts / vari.CTRLSCALER[rep]
 
 				numPos = analysisEnd - analysisStart
@@ -117,7 +117,7 @@ cpdef performRegression(trainingSet):
 		coefIdx = 1
 		j = 1
 		while j < 7:
-			if np.isnan(vari.SELECT_COVARI[j-1]):
+			if np.isnan(vari.SELECT_COVARI[j-1]) == True:
 				COEFCTRL[rep, j] = np.nan
 				j = j + 1
 			else:
@@ -156,7 +156,7 @@ cpdef performRegression(trainingSet):
 				analysisEnd = int(newTrainingSet[trainIdx][2])
 
 				readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				readCounts[np.isnan(readCounts)] = float(0)
+				readCounts[np.isnan(readCounts) == True] = float(0)
 				readCounts = readCounts / vari.EXPSCALER[rep]
 
 				numPos = analysisEnd - analysisStart
@@ -178,7 +178,7 @@ cpdef performRegression(trainingSet):
 		coefIdx = 1
 		j = 1
 		while j < 7:
-			if np.isnan(vari.SELECT_COVARI[j-1]):
+			if np.isnan(vari.SELECT_COVARI[j-1]) == True:
 				COEFEXP[rep, j] = np.nan
 				j = j + 1
 			else:
@@ -268,7 +268,7 @@ cpdef correctReadCount(args):
 		for rep in range(vari.CTRLBW_NUM):
 			with pyBigWig.open(vari.CTRLBW_NAMES[rep]) as bwFile:
 				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				rcArr[np.isnan(rcArr)] = float(0)
+				rcArr[np.isnan(rcArr) == True] = float(0)
 				rcArr = rcArr / vari.CTRLSCALER[rep]
 
 			prdvals = np.exp(
@@ -306,7 +306,7 @@ cpdef correctReadCount(args):
 		for rep in range(vari.EXPBW_NUM):
 			with pyBigWig.open(vari.EXPBW_NAMES[rep]) as bwFile:
 				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				rcArr[np.isnan(rcArr)] = float(0)
+				rcArr[np.isnan(rcArr) == True] = float(0)
 				rcArr = rcArr / vari.EXPSCALER[rep]
 
 			prdvals = np.exp(
@@ -348,7 +348,7 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd):
 	for rep in range(vari.CTRLBW_NUM):
 		with pyBigWig.open(vari.CTRLBW_NAMES[rep]) as bwFile:
 			temp = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-			temp[np.where(np.isnan(temp))] = float(0)
+			temp[np.where(np.isnan(temp) == True)] = float(0)
 
 		ctrlReadCounts.append(temp.tolist())
 
@@ -365,7 +365,7 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd):
 	for rep in range(vari.EXPBW_NUM):
 		with pyBigWig.open(vari.EXPBW_NAMES[rep]) as bwFile:
 			temp = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-			temp[np.where(np.isnan(temp))] = float(0)
+			temp[np.where(np.isnan(temp) == True)] = float(0)
 
 		expRC.append(temp.tolist())
 

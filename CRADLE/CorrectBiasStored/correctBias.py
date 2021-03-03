@@ -242,6 +242,7 @@ def selectTrainSetFromMeta(trainSetMeta):
 		candiRegionFile = trainSetMeta[binIdx][3]
 		candiRegionNum = int(trainSetMeta[binIdx][4])
 
+		'''
 		if downLimit == highRC:
 			subfile_stream = open(candiRegionFile)
 			subfile = subfile_stream.readlines()
@@ -252,20 +253,22 @@ def selectTrainSetFromMeta(trainSetMeta):
 				trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
 				i = i - 1
 				regionNum = regionNum - 1
+		
 		else:
-			if candiRegionNum < regionNum:
-				subfile_stream = open(candiRegionFile)
-				subfile = subfile_stream.readlines()
+		'''
+		if candiRegionNum < regionNum:
+			subfile_stream = open(candiRegionFile)
+			subfile = subfile_stream.readlines()
 
-				for i in range(len(subfile)):
-					temp = subfile[i].split()
-					trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
-			else:
-				selectRegionIdx = np.random.choice(list(range(candiRegionNum)), regionNum, replace=False)
+			for i in range(len(subfile)):
+				temp = subfile[i].split()
+				trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
+		else:
+			selectRegionIdx = np.random.choice(list(range(candiRegionNum)), regionNum, replace=False)
 
-				for i in range(len(selectRegionIdx)):
-					temp = linecache.getline(candiRegionFile, selectRegionIdx[i]+1).split()
-					trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
+			for i in range(len(selectRegionIdx)):
+				temp = linecache.getline(candiRegionFile, selectRegionIdx[i]+1).split()
+				trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
 
 		os.remove(candiRegionFile)
 
@@ -285,7 +288,7 @@ def getScaler(trainSet):
 		end = int(trainSet[i][2])
 
 		temp = np.array(ob1.values(chromo, start, end))
-		idx = np.where(np.isnan(temp))
+		idx = np.where(np.isnan(temp) == True)
 		temp[idx] = 0
 		temp = temp.tolist()
 		ob1Values.extend(temp)
@@ -323,7 +326,7 @@ def getScalerForEachSample(args):
 		end = int(trainSet[i][2])
 
 		temp = np.array(ob2.values(chromo, start, end))
-		idx = np.where(np.isnan(temp))
+		idx = np.where(np.isnan(temp) == True)
 		temp[idx] = 0
 		temp = temp.tolist()
 		ob2Values.extend(temp)
