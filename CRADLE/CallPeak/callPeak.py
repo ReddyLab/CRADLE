@@ -29,6 +29,46 @@ def mergePeaks(peakResult):
 
 	mergedPeak.append(peakResult[0])
 	resultIdx = 0
+	if len(peakResult) == 1:
+                minPValue = np.min(pvalues)
+                if minPValue == 0:
+                        mergedPeak[resultIdx][4] = np.nan
+                else:
+                        mergedPeak[resultIdx][4] = np.round((-1) * np.log10(minPValue), 2)
+
+                minQValue = np.min(qvalues)
+                if minQValue == 0:
+                        mergedPeak[resultIdx][5] = np.nan
+                else:
+                        mergedPeak[resultIdx][5] = np.round((-1) * np.log10(minQValue), 2)
+
+                regionChromo = mergedPeak[resultIdx][0]
+                regionStart = int(mergedPeak[resultIdx][1])
+                regionEnd = int(mergedPeak[resultIdx][2])
+
+                ctrlRC = []
+                for rep in range(vari.CTRLBW_NUM):
+                        rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
+                        ctrlRC.extend([rc])
+                ctrlRCPosMean = np.nanmean(ctrlRC)
+
+                expRC = []
+                for rep in range(vari.EXPBW_NUM):
+                        rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
+                        expRC.extend([rc])
+                expRCPosMean = np.nanmean(expRC)
+
+                diffPos = int(expRCPosMean - ctrlRCPosMean)
+                mergedPeak[resultIdx][6] = diffPos
+                mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean])
+
+		for i in range(vari.CTRLBW_NUM):
+                        ctrlBW[i].close()
+                for i in range(vari.EXPBW_NUM):
+                        expBW[i].close()
+
+                return mergedPeak
+
 
 	i = 1
 	while i < len(peakResult):
@@ -134,8 +174,8 @@ def mergePeaks(peakResult):
 def filterSmallPeaks(peakResult):
 
 
-	maxNegLogPValue = 0
-	maxNegLogQValue = 0
+	maxNegLogPValue = 1
+	maxNegLogQValue = 1
 
 	finalResult = []
 	for i in range(len(peakResult)):
@@ -423,10 +463,16 @@ def run(args):
 		outputCount = int(finalResult[i][8])
 		neglogPvalue = float(finalResult[i][4])
 		if(np.isnan(neglogPvalue) == True):
-			neglogPvalue = maxNegLogPValue
+			if(maxNegLogPValue == 1):
+				neglogPvalue = "-log(0)"
+			else:
+				neglogPvalue = maxNegLogPValue
 		neglogQvalue = float(finalResult[i][5])
 		if(np.isnan(neglogQvalue) == True):
-			neglogQvalue = maxNegLogQValue
+			if(maxNegLogQValue == 1):
+				neglogQvalue = "-log(0)"
+			else:
+				neglogQvalue = maxNegLogQValue
 
 		peakToAdd = [chromo, start, end, name, score, strand, effectSize, inputCount, outputCount, neglogPvalue, neglogQvalue]
 
