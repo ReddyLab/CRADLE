@@ -30,44 +30,44 @@ def mergePeaks(peakResult):
 	mergedPeak.append(peakResult[0])
 	resultIdx = 0
 	if len(peakResult) == 1:
-                minPValue = np.min(pvalues)
-                if minPValue == 0:
-                        mergedPeak[resultIdx][4] = np.nan
-                else:
-                        mergedPeak[resultIdx][4] = np.round((-1) * np.log10(minPValue), 2)
+		minPValue = np.min(pvalues)
+		if minPValue == 0:
+			mergedPeak[resultIdx][4] = np.nan
+		else:
+			mergedPeak[resultIdx][4] = np.round((-1) * np.log10(minPValue), 2)
 
-                minQValue = np.min(qvalues)
-                if minQValue == 0:
-                        mergedPeak[resultIdx][5] = np.nan
-                else:
-                        mergedPeak[resultIdx][5] = np.round((-1) * np.log10(minQValue), 2)
+		minQValue = np.min(qvalues)
+		if minQValue == 0:
+			mergedPeak[resultIdx][5] = np.nan
+		else:
+			mergedPeak[resultIdx][5] = np.round((-1) * np.log10(minQValue), 2)
 
-                regionChromo = mergedPeak[resultIdx][0]
-                regionStart = int(mergedPeak[resultIdx][1])
-                regionEnd = int(mergedPeak[resultIdx][2])
+		regionChromo = mergedPeak[resultIdx][0]
+		regionStart = int(mergedPeak[resultIdx][1])
+		regionEnd = int(mergedPeak[resultIdx][2])
 
-                ctrlRC = []
-                for rep in range(vari.CTRLBW_NUM):
-                        rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
-                        ctrlRC.extend([rc])
-                ctrlRCPosMean = np.nanmean(ctrlRC)
+		ctrlRC = []
+		for rep in range(vari.CTRLBW_NUM):
+			rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
+			ctrlRC.extend([rc])
+		ctrlRCPosMean = np.nanmean(ctrlRC)
 
-                expRC = []
-                for rep in range(vari.EXPBW_NUM):
-                        rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
-                        expRC.extend([rc])
-                expRCPosMean = np.nanmean(expRC)
+		expRC = []
+		for rep in range(vari.EXPBW_NUM):
+			rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
+			expRC.extend([rc])
+		expRCPosMean = np.nanmean(expRC)
 
-                diffPos = int(expRCPosMean - ctrlRCPosMean)
-                mergedPeak[resultIdx][6] = diffPos
-                mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean])
+		diffPos = int(expRCPosMean - ctrlRCPosMean)
+		mergedPeak[resultIdx][6] = diffPos
+		mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean])
 
 		for i in range(vari.CTRLBW_NUM):
-                        ctrlBW[i].close()
-                for i in range(vari.EXPBW_NUM):
-                        expBW[i].close()
+			ctrlBW[i].close()
+		for i in range(vari.EXPBW_NUM):
+			expBW[i].close()
 
-                return mergedPeak
+		return mergedPeak
 
 
 	i = 1
