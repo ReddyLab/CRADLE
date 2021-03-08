@@ -253,7 +253,7 @@ def selectTrainSetFromMeta(trainSetMeta):
 				trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
 				i = i - 1
 				regionNum = regionNum - 1
-		
+
 		else:
 		'''
 		if candiRegionNum < regionNum:
@@ -498,6 +498,7 @@ def run(args):
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
 	vari.setGlobalVariables(args)
+	covariates = vari.getStoredCovariates(args.biasType, args.covariDir)
 
 
 	###### SELECT TRAIN SETS
@@ -539,14 +540,22 @@ def run(args):
 	print("======  FITTING TRAIN SETS TO THE CORRECTION MODEL ....\n")
 
 	## PERFORM REGRESSION
+	print("======  PERFORMING REGRESSION ....\n")
 	pool = multiprocessing.Pool(2)
 	if len(trainSet1) == 0:
 		trainSet1 = vari.REGION
 	if len(trainSet2) == 0:
 		trainSet2 = vari.REGION
-	coefResult = pool.map_async(calculateOneBP.performRegression, [trainSet1, trainSet2]).get()
+	coefResult = pool.starmap_async(
+		calculateOneBP.performRegression,
+		[
+			[trainSet1, covariates, vari.FA, vari.CTRLBW_NAMES, vari.CTRLSCALER, vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR],
+			[trainSet2, covariates, vari.FA, vari.CTRLBW_NAMES, vari.CTRLSCALER, vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR]
+		]
+	).get()
 	pool.close()
 	pool.join()
+
 	del trainSet1, trainSet2
 	gc.collect()
 
@@ -557,10 +566,10 @@ def run(args):
 
 
 	print("The order of coefficients:")
-	print(vari.COVARI_ORDER)
+	print(covariates.order)
 
 	noNan_idx = [0]
-	temp = np.where(np.isnan(vari.SELECT_COVARI) == False)[0] + 1
+	temp = np.where(np.isnan(covariates.selected) == False)[0] + 1
 	temp = temp.tolist()
 	noNan_idx.extend(temp)
 
@@ -578,14 +587,29 @@ def run(args):
 
 	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL
 	print("======  FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL \n")
-	task = divideGenome()
-	if len(task) < vari.NUMPROCESS:
-		numProcess = len(task)
-	else:
-		numProcess = vari.NUMPROCESS
+	tasks = divideGenome()
+	numProcesses = min(len(tasks), vari.NUMPROCESS)
+	taskCount = len(tasks)
+	crcArgs = zip(
+		tasks,
+		[covariates] * taskCount,
+		[vari.FA] * taskCount,
+		[vari.CTRLBW_NAMES] * taskCount,
+		[vari.CTRLSCALER] * taskCount,
+		[vari.COEFCTRL] * taskCount,
+		[vari.COEFCTRL_HIGHRC] * taskCount,
+		[vari.EXPBW_NAMES] * taskCount,
+		[vari.EXPSCALER] * taskCount,
+		[vari.COEFEXP] * taskCount,
+		[vari.COEFEXP_HIGHRC] * taskCount,
+		[vari.HIGHRC] * taskCount,
+		[vari.MIN_FRAG_FILTER_VALUE] * taskCount,
+		[vari.BINSIZE] * taskCount,
+		[vari.OUTPUT_DIR] * taskCount
+	)
 
-	pool = multiprocessing.Pool(numProcess)
-	resultMeta = pool.map_async(calculateOneBP.correctReadCount, task).get()
+	pool = multiprocessing.Pool(numProcesses)
+	resultMeta = pool.starmap_async(calculateOneBP.correctReadCount, crcArgs).get()
 	pool.close()
 	pool.join()
 	del pool
