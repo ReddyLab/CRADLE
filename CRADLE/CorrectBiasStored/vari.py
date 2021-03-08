@@ -14,6 +14,39 @@ def setGlobalVariables(args):
 	setNumProcess(args.p)
 	setNormalization(args.norm, args.generateNormBW)
 
+class StoredCovariates:
+	def __init__(self, biasTypes, directory):
+		self.directory = directory.rstrip('/')
+		self.name = self.directory.split('/')[-1]
+		self.fragLen = int(self.name.split('_')[1][7:]) # 7 = len("fragLen")
+		self.order = ['Intercept']
+		self.selected = np.array([np.nan] * 6)
+
+		biasTypes = {x.lower() for x in biasTypes} # set comprehension
+		validBiasTypes = {'shear', 'pcr', 'map', 'gquad'}
+
+		if not biasTypes.issubset(validBiasTypes):
+			print("Warning! Invalid values in -biasType. Only 'shear', 'pcr', 'map', 'gquad' are allowed")
+			biasTypes = biasTypes.intersection(validBiasTypes)
+
+		if 'shear' in biasTypes:
+			self.selected[0] = 1
+			self.selected[1] = 1
+			self.order.extend(["MGW_shear", "ProT_shear"])
+		if 'pcr' in biasTypes:
+			self.selected[2] = 1
+			self.selected[3] = 1
+			self.order.extend(["Anneal_pcr", "Denature_pcr"])
+		if 'map' in biasTypes:
+			self.selected[4] = 1
+			self.order.extend(["Map_map"])
+		if 'gquad' in biasTypes:
+			self.selected[5] = 1
+			self.order.extend(["Gquad_gquad"])
+		self.num = len(self.order) - 1
+
+	def hdfFileName(self, chromosome):
+		return self.directory + "/" + self.name + "_" + chromosome + ".hdf5"
 
 def setInputFiles(ctrlbwFiles, expbwFiles):
 	global CTRLBW_NAMES
@@ -59,12 +92,14 @@ def setOutputDirectory(outputDir):
 	if not dirExist:
 		os.makedirs(OUTPUT_DIR)
 
+def getStoredCovariates(biasTypes, covariDir):
+	return StoredCovariates(biasTypes, covariDir)
 
 def setCovariDir(biasType, covariDir, faFile):
 	global COVARI_DIR
 	global COVARI_NAME
 	global SELECT_COVARI
-	global FRAGLEN
+	global MIN_FRAG_FILTER_VALUE
 	global FA
 	global COVARI_NUM
 	global BINSIZE
@@ -82,7 +117,7 @@ def setCovariDir(biasType, covariDir, faFile):
 	tempStr = COVARI_DIR.split('/')
 	COVARI_NAME = tempStr[len(tempStr)-1]
 	tempStr = COVARI_NAME.split("_")[1]
-	FRAGLEN = int(tempStr.split("fragLen")[1])
+	MIN_FRAG_FILTER_VALUE = int(tempStr.split("fragLen")[1])
 
 	FA = faFile
 	BINSIZE = 1

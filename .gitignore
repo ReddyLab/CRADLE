@@ -6,3 +6,6 @@ build
 CRADLE/**/*.c
 dist
 CRADLE.egg-info
+
+# Testing results
+test_cradle*

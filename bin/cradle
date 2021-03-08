@@ -1,10 +1,11 @@
-#!/usr/bin/python 
+#!/usr/bin/python
 
 import argparse
+import multiprocessing as mp
 
 def getArgs():
 	parser = argparse.ArgumentParser("cradle")
-	
+
 	subparsers = parser.add_subparsers(help="", dest="commandName")
 
 	########### correctBias
@@ -13,7 +14,7 @@ def getArgs():
 	correctBias_required = correctBias_parser.add_argument_group("Required Args")
 
 	correctBias_required.add_argument('-ctrlbw', help="Ctrl bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", nargs='+', required=True)
-	
+
 	correctBias_required.add_argument('-expbw', help="Experimental bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -expbw file1.bw file2.bw", nargs='+', required=True)
 
 	correctBias_required.add_argument('-l', help="Fragment length.", required=True)
@@ -22,11 +23,11 @@ def getArgs():
 
 	correctBias_required.add_argument('-biasType', help="Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type map, -mapFile and -kmer are required. If you type gquad, -gquadFile is required", nargs='+', required=True)
 
-	correctBias_required.add_argument('-faFile', help=".2bit file.", required=True)	
-	
-	
+	correctBias_required.add_argument('-faFile', help=".2bit file.", required=True)
+
+
 	## optional
-	correctBias_optional = correctBias_parser.add_argument_group("Optional Args")	
+	correctBias_optional = correctBias_parser.add_argument_group("Optional Args")
 
 	correctBias_optional.add_argument('-binSize', help="The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)", default=1)
 
@@ -39,7 +40,7 @@ def getArgs():
 	correctBias_optional.add_argument('-gquadFile', help="Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
 
 	correctBias_optional.add_argument('-gquadMax', help="The maximum gquad score. This is used to normalize Gquad score. default=78.6", default=78.6)
-	
+
 	correctBias_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult")
 
 	correctBias_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
@@ -120,12 +121,11 @@ def getArgs():
 
 
 def main():
-	
 	args = getArgs().parse_args()
 
-	### Correcting bias 
+	### Correcting bias
 	if(args.commandName == "correctBias"):
-		from CRADLE.CorrectBias.correctBias import run # excectue 'def run' in correctBias.py 
+		from CRADLE.CorrectBias.correctBias import run # excectue 'def run' in correctBias.py
 		run(args)
 
 	### Correcting bias when there are stored covariates
@@ -136,10 +136,11 @@ def main():
 	### Call peaks
 	if(args.commandName == "callPeak"):
 		from CRADLE.CallPeak.callPeak import run
-		run(args)	
+		run(args)
 
 
 if __name__ == '__main__':
+	mp.set_start_method('fork')
 	main()
 
 
