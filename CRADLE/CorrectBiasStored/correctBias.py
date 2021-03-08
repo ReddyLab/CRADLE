@@ -603,7 +603,7 @@ def run(args):
 		[vari.COEFEXP] * taskCount,
 		[vari.COEFEXP_HIGHRC] * taskCount,
 		[vari.HIGHRC] * taskCount,
-		[vari.MIN_FRAG_FILTER_VALUE] * taskCount,
+		[vari.MIN_FRAGNUM_FILTER_VALUE] * taskCount,
 		[vari.BINSIZE] * taskCount,
 		[vari.OUTPUT_DIR] * taskCount
 	)
