@@ -99,7 +99,7 @@ def setCovariDir(biasType, covariDir, faFile):
 	global COVARI_DIR
 	global COVARI_NAME
 	global SELECT_COVARI
-	global MIN_FRAG_FILTER_VALUE
+	global FRAGLEN
 	global FA
 	global COVARI_NUM
 	global BINSIZE
@@ -117,7 +117,7 @@ def setCovariDir(biasType, covariDir, faFile):
 	tempStr = COVARI_DIR.split('/')
 	COVARI_NAME = tempStr[len(tempStr)-1]
 	tempStr = COVARI_NAME.split("_")[1]
-	MIN_FRAG_FILTER_VALUE = int(tempStr.split("fragLen")[1])
+	FRAGLEN = int(tempStr.split("fragLen")[1])
 
 	FA = faFile
 	BINSIZE = 1
@@ -342,12 +342,12 @@ def setAnlaysisRegion(region, bl):
 
 
 def setFilterCriteria(minFrag):
-	global FILTERVALUE
+	global MIN_FRAGNUM_FILTER_VALUE
 
 	if minFrag is None:
-		FILTERVALUE = SAMPLE_NUM
+		MIN_FRAGNUM_FILTER_VALUE = SAMPLE_NUM
 	else:
-		FILTERVALUE = int(minFrag)
+		MIN_FRAGNUM_FILTER_VALUE = int(minFrag)
 
 
 def setScaler(scalerResult):

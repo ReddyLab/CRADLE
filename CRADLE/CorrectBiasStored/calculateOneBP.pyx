@@ -251,7 +251,7 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 		subfinalExpNames[i] = subfinalExp[i].name
 		subfinalExp[i].close()
 
-	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAG_FILTER_VALUE
+	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAGNUM_FILTER_VALUE
 	selectedIdx, highReadCountIdx, starts = selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue)
 
 	if len(selectedIdx) == 0:
