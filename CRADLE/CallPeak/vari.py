@@ -332,12 +332,15 @@ def setPeakLen(peakLen):
 def setStatTesting(stat):
 	global EQUALVAR
 
-	stat = stat.lower()
-	if(stat == 't-test'):
+	if stat is None:
 		EQUALVAR = True
-	elif(stat == 'welch'):
-		EQUALVAR = False
 	else:
-		print("ERROR: You should use either 't-test' or 'welch' in -stat")
-		ss.exit()
+		stat = stat.lower()
+		if stat == 't-test':
+			EQUALVAR = True
+		elif stat == 'welch':
+			EQUALVAR = False
+		else:
+			print("ERROR: You should use either 't-test' or 'welch' in -stat")
+			sys.exit()
 
