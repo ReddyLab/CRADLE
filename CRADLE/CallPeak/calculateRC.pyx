@@ -241,6 +241,7 @@ cpdef defineRegion(region):
 	if len(definedRegion) == 0:
 		return None
 
+	definedRegion = restrictRegionLen(definedRegion)
 
 	deleteIdx = []
 	for regionIdx in range(len(definedRegion)):
@@ -286,6 +287,33 @@ cpdef defineRegion(region):
 		EXPBW[rep].close()
 
 	return subfile.name
+
+cpdef restrictRegionLen(definedRegion):
+	definedRegion_new = []
+
+	maxRegionLen = vari.BINSIZE1 * 3
+
+	for regionIdx in range(len(definedRegion)):
+		start = int(definedRegion[regionIdx][1])
+		end = int(definedRegion[regionIdx][2])
+		groupType = int(definedRegion[regionIdx][3])
+		regionLen = end - start
+
+		if( regionLen > maxRegionLen ):
+			newNumBin = int(np.ceil(regionLen / maxRegionLen))
+			newRegionSize = int(regionLen / newNumBin)
+			chromo = definedRegion[regionIdx][0]
+
+			for newBinIdx in range(newNumBin):
+				newStart = start + newBinIdx * newRegionSize
+				newEnd = newStart + newRegionSize
+				if(newBinIdx == ((newNumBin)-1)):
+					newEnd = end			    
+				definedRegion_new.append([chromo, newStart, newEnd, groupType])
+		else:
+			definedRegion_new.append(definedRegion[regionIdx])
+
+	return definedRegion_new
 
 cpdef doWindowApproach(arg):
 	warnings.simplefilter("ignore", category=RuntimeWarning)
@@ -466,7 +494,7 @@ cpdef doStatTesting(rc):
 		pvalue = tResult.pvalue
 
 	else:
-		welchResult = scipy.stats.ttest_ind(ctrlRC, expRC, equal_var=False)
+		welchResult = scipy.stats.ttest_ind(ctrlRC, expRC, equal_var=vari.EQUALVAR)
 
 		if welchResult.statistic > 0:
 			enrich = -1

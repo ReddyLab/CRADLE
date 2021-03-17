@@ -94,8 +94,6 @@ def getArgs():
 
 	callPeak_required.add_argument('-expbw', help="Experimental bigwig files. Corrected bigwig files are recommended. Each file name should be spaced. ex) -expbw file1.bw file2.bw", nargs='+', required=True)
 
-	callPeak_required.add_argument('-l', help="Fragment length.", required=True)
-
 	callPeak_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000", required=True)
 
 	callPeak_required.add_argument('-fdr', help="FDR control", required=True)
@@ -107,15 +105,17 @@ def getArgs():
 
 	callPeak_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 
-	callPeak_optional.add_argument('-rbin', help="The size of a bin used for defining regions. rbin cannot be smaller than wbin. default = (fragment length)*1.5")
+	callPeak_optional.add_argument('-rbin', help="The size of a bin used for defining regions. rbin cannot be smaller than wbin. default = 300")
 
 	callPeak_optional.add_argument('-wbin', help="The size of a bin used for testing differential activity. wbin cannot be larger than rbin. default = rbin/6")
 
 	callPeak_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
 
-	callPeak_optional.add_argument('-d', help="The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=(fragment size)/ 2")
+	callPeak_optional.add_argument('-d', help="The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=10")
 
 	callPeak_optional.add_argument('-pl', help="Minimum peak length. default=wbin")
+
+	callPeak_optional.add_argument('-stat', help="Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test")	
 
 	return parser
 

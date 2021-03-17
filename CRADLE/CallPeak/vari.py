@@ -9,11 +9,11 @@ def setGlobalVariables(args):
 	setOutputDirectory(args.o)
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.fdr)
-	binSize2 = setBinSize(args.l, args.rbin, args.wbin)
-	setPeakLen(args.pl, binSize2)
+	setBinSize(args.l, args.rbin, args.wbin)
+	setPeakLen(args.pl)
 	setNumProcess(args.p)
 	setDistance(args.l, args.d)
-
+	setStatTesting(args.stat)
 
 def setInputFiles(ctrlbwFiles, expbwFiles):
 	global CTRLBW_NAMES
@@ -258,12 +258,10 @@ def setFilterCriteria(fdr):
 	FILTER_CUTOFFS = [0] * 10 ## theta: 0, 10, 20, 30,...., 90
 
 
-def setBinSize(fragLen, binSize1, binSize2):
+def setBinSize(binSize1, binSize2):
 	global BINSIZE1    ## used to define 'regions'
 	global BINSIZE2    ## used to do statistical testing in window-levels
 	global SHIFTSIZE2
-
-	fragLen = float(fragLen)
 
 	if (binSize1 is not None) and (binSize2 is not None):
 		if int(binSize1) < int(binSize2):
@@ -273,29 +271,27 @@ def setBinSize(fragLen, binSize1, binSize2):
 			BINSIZE1 = int(binSize1)
 			BINSIZE2 = int(binSize2)
 			SHIFTSIZE2 = BINSIZE2
-			return BINSIZE2
+
 	elif (binSize1 is None) and (binSize2 is None):
-		BINSIZE1 = int(fragLen * 1.5)
+		BINSIZE1 = 300
 		BINSIZE2 = int(float(BINSIZE1) / 6)
 		SHIFTSIZE2 = BINSIZE2
-		return BINSIZE2
+
 	elif (binSize1 is None)  and (binSize2 is not None):
-		BINSIZE1 = int(fragLen * 1.5)
+		BINSIZE1 = 300
 		if int(binSize2) > BINSIZE1:
 			print("Error: wbin cannot be larger than rbin (%sbp)" % BINSIZE1)
 			sys.exit()
 		else:
 			BINSIZE2 = int(binSize2)
 			SHIFTSIZE2 = BINSIZE2
-			return BINSIZE2
+
 	else: # binSize1 is not None binSize2 is None
 		BINSIZE1 = int(binSize1)
 		BINSIZE2 = int(float(BINSIZE1) / 6)
 		SHIFTSIZE2 = BINSIZE2
 
-		return BINSIZE2
 
-	return BINSIZE2
 
 
 def setNumProcess(numProcess):
@@ -315,21 +311,33 @@ def setNumProcess(numProcess):
 		sys.exit()
 
 
-def setDistance(fragLen, distance):
+def setDistance(distance):
 	global DISTANCE
 
-	fragLen = float(fragLen)
-
 	if distance is None:
-		DISTANCE = int(fragLen / 2.0)
+		DISTANCE = 10
 	else:
 		DISTANCE = int(distance)
 
 
-def setPeakLen(peakLen, binSize2):
+def setPeakLen(peakLen):
 	global PEAKLEN
 
 	if peakLen is None:
-		PEAKLEN = int(binSize2)
+		PEAKLEN = int(BINSIZE2)
 	else:
 		PEAKLEN = int(peakLen)
+
+
+def setStatTesting(stat):
+	global EQUALVAR
+
+	stat = stat.lower()
+	if(stat == 't-test'):
+		EQUALVAR = True
+	elif(stat == 'welch'):
+		EQUALVAR = False
+	else:
+		print("ERROR: You should use either 't-test' or 'welch' in -stat")
+		ss.exit()
+
