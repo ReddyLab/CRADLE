@@ -84,6 +84,8 @@ def getArgs():
 
 	correctBiasStored_optional.add_argument('-generateNormBW', help="If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False", default='False')
 
+	correctBiasStored_optional.add_argument('-rngSeed', type=int, help="Set seed value for the RNG. Enables repeatable runs.", default=None)
+
 
 	########### callPeak
 	callPeak_parser = subparsers.add_parser("callPeak", help="Correct peaks with corrected bigwig files")

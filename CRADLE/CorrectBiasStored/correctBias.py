@@ -6,11 +6,13 @@ import os
 import tempfile
 import time
 import numpy as np
+import py2bit
 import pyBigWig
 import statsmodels.api as sm
 
-from CRADLE.CorrectBiasStored import vari
-from CRADLE.CorrectBiasStored import calculateOneBP
+from . import vari
+from . import calculateOneBP
+from .calculateOneBP import TrainingRegion, TrainingSet
 
 TRAINING_BIN_SIZE = 1000
 
@@ -200,7 +202,6 @@ def FilltrainSetMeta(trainBinInfo):
 
 	os.remove(resultFile.name)
 	return None
-
 
 
 def selectTrainSetFromMeta(trainSetMeta):
@@ -491,6 +492,41 @@ def generateNormalizedObBWs(args):
 
 	return normObBWName
 
+def alignCoordinatesToHDF(faFile, oldTrainingSet, fragLen):
+	trainingSet = []
+	xRowCount = 0
+
+	for trainingRegion in oldTrainingSet:
+		chromo = trainingRegion[0]
+		analysisStart = int(trainingRegion[1])
+		analysisEnd = int(trainingRegion[2])
+		chromoEnd = faFile.chroms(chromo)
+
+		fragStart = analysisStart - fragLen + 1
+		fragEnd = analysisEnd + fragLen - 1
+		shearStart = fragStart - 2
+		shearEnd = fragEnd + 2
+
+		if shearStart < 1:
+			shearStart = 1
+			fragStart = 3
+			analysisStart = max(analysisStart, fragStart)
+
+		if shearEnd > chromoEnd:
+			shearEnd = chromoEnd
+			fragEnd = shearEnd - 2
+			analysisEnd = min(analysisEnd, fragEnd)  # not included
+
+		xRowCount += (analysisEnd - analysisStart)
+		trainingSet.append(TrainingRegion(chromo, analysisStart, analysisEnd))
+
+	return TrainingSet(trainingRegions=trainingSet, xRowCount=xRowCount)
+
+def getScatterplotSamples(trainingSet):
+	if trainingSet.xRowCount <= 50000:
+		return np.array(range(trainingSet.xRowCount))
+	else:
+		return np.random.choice(np.array(range(trainingSet.xRowCount)), 50000, replace=False)
 
 def run(args):
 
@@ -508,7 +544,7 @@ def run(args):
 
 	print("-- RUNNING TIME of getting trainSetMeta : %s hour(s)" % ((time.time()-start_time)/3600) )
 
-	trainSet1, trainSet2 = selectTrainSetFromMeta(trainSetMeta)
+	trainSet90Percentile, trainSet90To99Percentile = selectTrainSetFromMeta(trainSetMeta)
 	del trainSetMeta
 
 	print("-- RUNNING TIME of selecting train set from trainSetMeta : %s hour(s)" % ((time.time()-start_time)/3600) )
@@ -517,10 +553,10 @@ def run(args):
 	###### NORMALIZING READ COUNTS
 	print("======  NORMALIZING READ COUNTS ....")
 	if vari.I_NORM:
-		if (len(trainSet1) == 0) or (len(trainSet2) == 0):
+		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
 			scalerResult = getScaler( list(vari.REGION) )
 		else:
-			scalerResult = getScaler( np.concatenate((trainSet1, trainSet2), axis=0).tolist() )
+			scalerResult = getScaler( np.concatenate((trainSet90Percentile, trainSet90To99Percentile), axis=0).tolist() )
 	else:
 		scalerResult = [1] * vari.SAMPLE_NUM
 	vari.setScaler(scalerResult)
@@ -542,21 +578,37 @@ def run(args):
 	## PERFORM REGRESSION
 	print("======  PERFORMING REGRESSION ....\n")
 	pool = multiprocessing.Pool(2)
-	if len(trainSet1) == 0:
-		trainSet1 = vari.REGION
-	if len(trainSet2) == 0:
-		trainSet2 = vari.REGION
+
+	if len(trainSet90Percentile) == 0:
+		trainSet90Percentile = vari.REGION
+	if len(trainSet90To99Percentile) == 0:
+		trainSet90To99Percentile = vari.REGION
+
+	with py2bit.open(vari.FA) as faFile:
+		trainSet90Percentile = alignCoordinatesToHDF(faFile, trainSet90Percentile, covariates.fragLen)
+		trainSet90To99Percentile = alignCoordinatesToHDF(faFile, trainSet90To99Percentile, covariates.fragLen)
+
+	scatterplotSamples90Percentile = getScatterplotSamples(trainSet90Percentile)
+	scatterplotSamples90to99Percentile = getScatterplotSamples(trainSet90To99Percentile)
+
+
 	coefResult = pool.starmap_async(
 		calculateOneBP.performRegression,
 		[
-			[trainSet1, covariates, vari.FA, vari.CTRLBW_NAMES, vari.CTRLSCALER, vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR],
-			[trainSet2, covariates, vari.FA, vari.CTRLBW_NAMES, vari.CTRLSCALER, vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR]
+			[
+				trainSet90Percentile, scatterplotSamples90Percentile, covariates, vari.CTRLBW_NAMES, vari.CTRLSCALER,
+				vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR, "90_precentile"
+			],
+			[
+				trainSet90To99Percentile, scatterplotSamples90to99Percentile, covariates, vari.CTRLBW_NAMES, vari.CTRLSCALER,
+				vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR, "90_to_99_percentile"
+			]
 		]
 	).get()
 	pool.close()
 	pool.join()
 
-	del trainSet1, trainSet2
+	del trainSet90Percentile, trainSet90To99Percentile
 	gc.collect()
 
 	vari.COEFCTRL = coefResult[0][0]

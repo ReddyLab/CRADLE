@@ -145,6 +145,8 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
      Whether normalization is needed for input bigwig files. Choose either 'True' or 'False'. default=True
   -  -generateNormBW <br />
      If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False
+-  -rngSeed <br />
+     Set the seed value for the RNG. This enables repeatable runs. default=None
 
 ### 3) callPeak
 This command calls activated and repressed peaks with using corrected bigwig files as input. 

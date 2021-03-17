@@ -11,92 +11,77 @@ import pyBigWig
 
 matplotlib.use('Agg')
 
-cpdef performRegression(trainingSet, covariates, faFileName, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, outputDir):
-	cdef int analysisStart
-	cdef int analysisEnd
-	newTrainingSet = []
-	xRowCount = 0
+cdef class TrainingRegion:
+	cdef public str chromo
+	cdef public int analysisStart, analysisEnd
+
+	def __init__(self, chromo, analysisStart, analysisEnd):
+		self.chromo = chromo
+		self.analysisStart = analysisStart
+		self.analysisEnd = analysisEnd
+
+cdef class TrainingSet:
+	cdef public int xRowCount
+	cdef public list trainingRegions
+
+	def __init__(self, list trainingRegions, int xRowCount):
+		self.trainingRegions = trainingRegions
+		self.xRowCount = xRowCount
+
+	def __iter__(self):
+		def regionGenerator():
+			for region in self.trainingRegions:
+				yield region
+
+		return regionGenerator()
+
+cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, outputDir, outputLabel):
 	xColumnCount = covariates.num + 1
-
-	with py2bit.open(faFileName) as faFile:
-		for trainIdx in range(len(trainingSet)):
-			chromo = trainingSet[trainIdx][0]
-			analysisStart = int(trainingSet[trainIdx][1])
-			analysisEnd = int(trainingSet[trainIdx][2])
-			chromoEnd = int(faFile.chroms(chromo))
-
-			fragStart = analysisStart - covariates.fragLen + 1
-			fragEnd = analysisEnd + covariates.fragLen - 1
-			shearStart = fragStart - 2
-			shearEnd = fragEnd + 2
-
-			if shearStart < 1:
-				shearStart = 1
-				fragStart = 3
-				analysisStart = max(analysisStart, fragStart)
-
-			if shearEnd > chromoEnd:
-				shearEnd = chromoEnd
-				fragEnd = shearEnd - 2
-				analysisEnd = min(analysisEnd, fragEnd)  # not included
-
-			xRowCount = xRowCount + (analysisEnd - analysisStart)
-			newTrainingSet.append([chromo, analysisStart, analysisEnd])
 
 	#### Initialize COEF matrix
 	COEFCTRL = np.zeros((len(ctrlBWNames), 7), dtype=np.float64)
 	COEFEXP = np.zeros((len(experiBWNames), 7), dtype=np.float64)
 
 	#### Get X matrix
-	cdef double [:,:] xView = np.ones((xRowCount, xColumnCount), dtype=np.float64)
+	cdef double [:,:] xView = np.ones((trainingSet.xRowCount, xColumnCount), dtype=np.float64)
 
 	cdef int currentRow = 0
 	cdef int pos
-	cdef int j
+	cdef int i, j
 
-	for trainIdx in range(len(newTrainingSet)):
-		chromo = newTrainingSet[trainIdx][0]
-		analysisStart = int(newTrainingSet[trainIdx][1])
-		analysisEnd = int(newTrainingSet[trainIdx][2])
-
-		hdfFileName = covariates.hdfFileName(chromo)
+	for trainingRegion in trainingSet:
+		hdfFileName = covariates.hdfFileName(trainingRegion.chromo)
 		with h5py.File(hdfFileName, "r") as hdfFile:
-			pos = analysisStart
-			while pos < analysisEnd:
+			pos = trainingRegion.analysisStart
+			while pos < trainingRegion.analysisEnd:
 				temp = hdfFile['covari'][pos - 3] * covariates.selected
 				temp = temp[np.isnan(temp) == False]
 
 				j = 0
+				i = currentRow + pos - trainingRegion.analysisStart
 				while j < covariates.num:
-					xView[(currentRow + pos - analysisStart), j + 1] = temp[j]
-					j = j + 1
-				pos = pos + 1
-			currentRow = currentRow + (analysisEnd - analysisStart)
+					xView[i, j + 1] = temp[j]
+					j += 1
+				pos += 1
+			currentRow += (trainingRegion.analysisEnd - trainingRegion.analysisStart)
 	#### END Get X matrix
 
-	if xRowCount < 50000:
-		idx = np.array(list(range(xRowCount)))
-	else:
-		idx = np.random.choice(np.array(list(range(xRowCount))), 50000, replace=False)
-
 	#### Get Y matrix
-	cdef double [:] yView = np.zeros(xRowCount, dtype=np.float64)
+	cdef double [:] yView = np.zeros(trainingSet.xRowCount, dtype=np.float64)
 	cdef int ptr
 	cdef int posIdx
 
 	for rep in range(len(ctrlBWNames)):
 		with pyBigWig.open(ctrlBWNames[rep]) as bwFile:
 			ptr = 0
-			for trainIdx in range(len(newTrainingSet)):
-				chromo = newTrainingSet[trainIdx][0]
-				analysisStart = int(newTrainingSet[trainIdx][1])
-				analysisEnd = int(newTrainingSet[trainIdx][2])
-
-				readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+			for trainingRegion in trainingSet:
+				readCounts = np.array(
+					bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
+				)
 				readCounts[np.isnan(readCounts) == True] = float(0)
 				readCounts = readCounts / ctrlScaler[rep]
 
-				numPos = analysisEnd - analysisStart
+				numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
 				posIdx = 0
 				while posIdx < numPos:
 					yView[ptr + posIdx] = readCounts[posIdx]
@@ -126,13 +111,13 @@ cpdef performRegression(trainingSet, covariates, faFileName, ctrlBWNames, ctrlSc
 		corr = np.round(corr, 2)
 
 		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[idx])
-		maxi2 = np.nanmax(np.array(yView)[idx])
+		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
+		maxi2 = np.nanmax(np.array(yView)[scatterplotSamples])
 		maxi = max(maxi1, maxi2)
 
 		bwName = '.'.join(ctrlBWNames[rep].rsplit('/', 1)[-1].split(".")[:-1])
-		figName = outputDir + "/fit_" + bwName + ".png"
-		plt.plot(np.array(yView)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
+		figName = os.path.join(outputDir, f"fit_{bwName}_{outputLabel}.png")
+		plt.plot(np.array(yView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
 		plt.ylabel("predicted")
@@ -147,16 +132,14 @@ cpdef performRegression(trainingSet, covariates, faFileName, ctrlBWNames, ctrlSc
 	for rep in range(len(experiBWNames)):
 		with pyBigWig.open(experiBWNames[rep]) as bwFile:
 			ptr = 0
-			for trainIdx in range(len(newTrainingSet)):
-				chromo = newTrainingSet[trainIdx][0]
-				analysisStart = int(newTrainingSet[trainIdx][1])
-				analysisEnd = int(newTrainingSet[trainIdx][2])
-
-				readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+			for trainingRegion in trainingSet:
+				readCounts = np.array(
+					bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
+				)
 				readCounts[np.isnan(readCounts) == True] = float(0)
 				readCounts = readCounts / experiScaler[rep]
 
-				numPos = analysisEnd - analysisStart
+				numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
 				posIdx = 0
 				while posIdx < numPos:
 					yView[ptr+posIdx] = readCounts[posIdx]
@@ -187,13 +170,13 @@ cpdef performRegression(trainingSet, covariates, faFileName, ctrlBWNames, ctrlSc
 		corr = np.round(corr, 2)
 
 		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[idx])
-		maxi2 = np.nanmax(np.array(yView)[idx])
+		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
+		maxi2 = np.nanmax(np.array(yView)[scatterplotSamples])
 		maxi = max(maxi1, maxi2)
 
 		bwName = '.'.join(experiBWNames[rep].rsplit('/', 1)[-1].split(".")[:-1])
-		figName = outputDir + "/fit_" + bwName + ".png"
-		plt.plot(np.array(yView)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
+		figName = os.path.join(outputDir, f"fit_{bwName}_{outputLabel}.png")
+		plt.plot(np.array(yView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
 		plt.ylabel("predicted")
