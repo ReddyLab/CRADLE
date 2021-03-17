@@ -9,10 +9,10 @@ def setGlobalVariables(args):
 	setOutputDirectory(args.o)
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.fdr)
-	setBinSize(args.l, args.rbin, args.wbin)
+	setBinSize(args.rbin, args.wbin)
 	setPeakLen(args.pl)
 	setNumProcess(args.p)
-	setDistance(args.l, args.d)
+	setDistance(args.d)
 	setStatTesting(args.stat)
 
 def setInputFiles(ctrlbwFiles, expbwFiles):
