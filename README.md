@@ -153,7 +153,6 @@ Example of running callPeak:
 ```
 cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
                 -expbw exp1_corrected.bw exp2_corrected.bw exp3_corrected.bw
-                -l 500
                 -r /data/YoungSook/target_region.bed
                 -fdr 0.05
                 -o /data/YoungSook/CRADLE_peakCalling_result
@@ -164,8 +163,6 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
       Ctrl bigwig files. Corrected bigwig files are recommended. Each file name should be spaced
   -  -expbw <br />
       Experimental bigwig files Corrected bigwig files are recommended.. Each file name should be spaced.
-  -  -l <br />
-      Fragment length
   -  -r <br /> 
       Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000
   -  -fdr <br />
@@ -177,13 +174,17 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
   -  -bl <br />
      Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100
   -  -rbin <br />
-     The size of a bin used for defining regions. rbin cannot be smaller than wbin. default = (fragment length)*1.5
+     The size of a bin used for defining regions. rbin cannot be smaller than wbin. default = 300
   -  -wbin <br />
      The size of a bin used for testing differential activity. wbin cannot be larger than rbin. default = rbin/6
   -  -p <br/>
      The number of cpus. default=(available cpus)/2
   -  -d <br/>
-     The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=(fragment size)/ 2
+     The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=10
+  -  -pl <br/>
+     Minimum peak length. Peaks with smaller size than this value are filtered out. default=wbin
+  -  -stat <br/>
+     Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test
 
 ## Output file format
 ```
