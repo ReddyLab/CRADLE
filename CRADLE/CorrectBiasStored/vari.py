@@ -13,6 +13,8 @@ def setGlobalVariables(args):
 	setFilterCriteria(args.mi)
 	setNumProcess(args.p)
 	setNormalization(args.norm, args.generateNormBW)
+	seed = setRngSeed(args.rngSeed)
+	writeRngSeed(seed, args.o)
 
 class StoredCovariates:
 	def __init__(self, biasTypes, directory):
@@ -398,3 +400,16 @@ def setNormalization(norm, generateNormBW):
 	if (not I_NORM) and I_GENERATE_NormBW:
 		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
 		sys.exit()
+
+def setRngSeed(seed):
+	if seed is None:
+		seed = np.random.randint(0, 2**32 - 1)
+
+	np.random.seed(seed)
+	print(f"RNG Seed: {seed}")
+	return seed
+
+def writeRngSeed(seed, outputDir):
+	seedFileName = os.path.join(outputDir, "rngseed.txt")
+	with open(seedFileName, "w") as seedFile:
+		seedFile.write(f"{seed}\n")
