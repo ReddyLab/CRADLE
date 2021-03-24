@@ -11,6 +11,8 @@ import pyBigWig
 
 matplotlib.use('Agg')
 
+COEF_LEN = 7
+
 cdef class TrainingRegion:
 	cdef public str chromo
 	cdef public int analysisStart, analysisEnd
@@ -38,10 +40,6 @@ cdef class TrainingSet:
 cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, outputDir, outputLabel):
 	xColumnCount = covariates.num + 1
 
-	#### Initialize COEF matrix
-	COEFCTRL = np.zeros((len(ctrlBWNames), 7), dtype=np.float64)
-	COEFEXP = np.zeros((len(experiBWNames), 7), dtype=np.float64)
-
 	#### Get X matrix
 	cdef double [:,:] xView = np.ones((trainingSet.xRowCount, xColumnCount), dtype=np.float64)
 
@@ -66,130 +64,95 @@ cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames
 			currentRow += (trainingRegion.analysisEnd - trainingRegion.analysisStart)
 	#### END Get X matrix
 
-	#### Get Y matrix
-	cdef double [:] yView = np.zeros(trainingSet.xRowCount, dtype=np.float64)
+	#### Initialize COEF arrays
+	COEFCTRL = np.zeros((len(ctrlBWNames), COEF_LEN), dtype=np.float64)
+	COEFEXPR = np.zeros((len(experiBWNames), COEF_LEN), dtype=np.float64)
+
+	for i, bwFileName in enumerate(ctrlBWNames):
+		readCounts = getReadCounts(bwFileName, trainingSet, ctrlScaler[i])
+		model = buildModel(readCounts, xView)
+
+		COEFCTRL[i, :] = getCoefs(model, covariates)
+
+		figName = figureFileName(outputDir, bwFileName, outputLabel)
+		plot(readCounts, model.fittedvalues, figName, scatterplotSamples)
+
+	for i, bwFileName in enumerate(experiBWNames):
+		readCounts = getReadCounts(bwFileName, trainingSet, experiScaler[i])
+		model = buildModel(readCounts, xView)
+
+		COEFEXPR[i, :] = getCoefs(model, covariates)
+
+		figName = figureFileName(outputDir, bwFileName, outputLabel)
+		plot(readCounts, model.fittedvalues, figName, scatterplotSamples)
+
+	return COEFCTRL, COEFEXPR
+
+cpdef figureFileName(outputDir, bwFileName, outputLabel):
+	bwName = '.'.join(bwFileName.rsplit('/', 1)[-1].split(".")[:-1])
+	return os.path.join(outputDir, f"fit_{bwName}_{outputLabel}.png")
+
+cpdef getReadCounts(bwFileName, trainingSet, scaler):
+	cdef double [:] readCounts = np.zeros(trainingSet.xRowCount, dtype=np.float64)
 	cdef int ptr
 	cdef int posIdx
 
-	for rep in range(len(ctrlBWNames)):
-		with pyBigWig.open(ctrlBWNames[rep]) as bwFile:
-			ptr = 0
-			for trainingRegion in trainingSet:
-				readCounts = np.array(
-					bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
-				)
-				readCounts[np.isnan(readCounts) == True] = float(0)
-				readCounts = readCounts / ctrlScaler[rep]
+	with pyBigWig.open(bwFileName) as bwFile:
+		ptr = 0
+		for trainingRegion in trainingSet:
+			regionReadCounts = np.array(
+				bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
+			)
+			regionReadCounts[np.isnan(regionReadCounts) == True] = 0.0
+			regionReadCounts = regionReadCounts / scaler
 
-				numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
-				posIdx = 0
-				while posIdx < numPos:
-					yView[ptr + posIdx] = readCounts[posIdx]
-					posIdx = posIdx + 1
+			numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
+			posIdx = 0
+			while posIdx < numPos:
+				readCounts[ptr + posIdx] = regionReadCounts[posIdx]
+				posIdx += 1
 
-				ptr = ptr + numPos
+			ptr += numPos
 
-		del readCounts
+	return readCounts
 
-		#### do regression
-		model = sm.GLM(np.array(yView).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+cpdef buildModel(readCounts, xView):
+	#### do regression
+	return sm.GLM(np.array(readCounts).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
-		coef = model.params
-		COEFCTRL[rep, 0] = coef[0]
-		coefIdx = 1
-		j = 1
-		while j < 7:
-			if np.isnan(covariates.selected[j-1]) == True:
-				COEFCTRL[rep, j] = np.nan
-				j = j + 1
-			else:
-				COEFCTRL[rep, j] = coef[coefIdx]
-				j = j + 1
-				coefIdx = coefIdx + 1
+cpdef getCoefs(model, covariates):
+	coef = np.zeros(COEF_LEN, dtype=np.float64)
 
-		corr = np.corrcoef(model.fittedvalues, np.array(yView))[0, 1]
-		corr = np.round(corr, 2)
+	coef[0] = model.params[0]
 
-		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
-		maxi2 = np.nanmax(np.array(yView)[scatterplotSamples])
-		maxi = max(maxi1, maxi2)
+	paramIdx = 1
+	for j in range(1, COEF_LEN):
+		if np.isnan(covariates.selected[j - 1]) == True:
+			coef[j] = np.nan
+		else:
+			coef[j] = model.params[paramIdx]
+			paramIdx += 1
 
-		bwName = '.'.join(ctrlBWNames[rep].rsplit('/', 1)[-1].split(".")[:-1])
-		figName = os.path.join(outputDir, f"fit_{bwName}_{outputLabel}.png")
-		plt.plot(np.array(yView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
-		plt.text((maxi-25), 10, corr, ha='center', va='center')
-		plt.xlabel("observed")
-		plt.ylabel("predicted")
-		plt.xlim(0, maxi)
-		plt.ylim(0, maxi)
-		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
-		plt.gca().set_aspect('equal', adjustable='box')
-		plt.savefig(figName)
-		plt.close()
-		plt.clf()
+	return coef
 
-	for rep in range(len(experiBWNames)):
-		with pyBigWig.open(experiBWNames[rep]) as bwFile:
-			ptr = 0
-			for trainingRegion in trainingSet:
-				readCounts = np.array(
-					bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
-				)
-				readCounts[np.isnan(readCounts) == True] = float(0)
-				readCounts = readCounts / experiScaler[rep]
+cpdef plot(yView, fittedvalues, figName, scatterplotSamples):
+	corr = np.corrcoef(fittedvalues, np.array(yView))[0, 1]
+	corr = np.round(corr, 2)
+	maxi1 = np.nanmax(fittedvalues[scatterplotSamples])
+	maxi2 = np.nanmax(np.array(yView)[scatterplotSamples])
+	maxi = max(maxi1, maxi2)
 
-				numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
-				posIdx = 0
-				while posIdx < numPos:
-					yView[ptr+posIdx] = readCounts[posIdx]
-					posIdx = posIdx +1
-
-				ptr = ptr + numPos
-
-		del readCounts
-
-		#### do regression
-		model = sm.GLM(np.array(yView).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
-
-		coef = model.params
-
-		COEFEXP[rep, 0] = coef[0]
-		coefIdx = 1
-		j = 1
-		while j < 7:
-			if np.isnan(covariates.selected[j-1]) == True:
-				COEFEXP[rep, j] = np.nan
-				j = j + 1
-			else:
-				COEFEXP[rep, j] = coef[coefIdx]
-				j = j + 1
-				coefIdx = coefIdx + 1
-
-		corr = np.corrcoef(model.fittedvalues, np.array(yView))[0, 1]
-		corr = np.round(corr, 2)
-
-		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
-		maxi2 = np.nanmax(np.array(yView)[scatterplotSamples])
-		maxi = max(maxi1, maxi2)
-
-		bwName = '.'.join(experiBWNames[rep].rsplit('/', 1)[-1].split(".")[:-1])
-		figName = os.path.join(outputDir, f"fit_{bwName}_{outputLabel}.png")
-		plt.plot(np.array(yView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
-		plt.text((maxi-25), 10, corr, ha='center', va='center')
-		plt.xlabel("observed")
-		plt.ylabel("predicted")
-		plt.xlim(0, maxi)
-		plt.ylim(0, maxi)
-		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
-		plt.gca().set_aspect('equal', adjustable='box')
-		plt.savefig(figName)
-		plt.close()
-		plt.clf()
-
-	return COEFCTRL, COEFEXP
-
+	plt.plot(np.array(yView)[scatterplotSamples], fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
+	plt.text((maxi-25), 10, corr, ha='center', va='center')
+	plt.xlabel("observed")
+	plt.ylabel("predicted")
+	plt.xlim(0, maxi)
+	plt.ylim(0, maxi)
+	plt.plot([0, maxi], [0, maxi], 'k-', color='r')
+	plt.gca().set_aspect('equal', adjustable='box')
+	plt.savefig(figName)
+	plt.close()
+	plt.clf()
 
 cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
 	chromo = taskArgs[0]
