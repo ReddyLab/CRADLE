@@ -263,8 +263,8 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 
 cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue):
 	readCountSums = np.zeros(analysisEnd - analysisStart, dtype=np.float64)
+	meanMinFragFilterValue = int(np.round(minFragFilterValue / (len(ctrlBWNames) + len(experiBWNames))))
 
-	ctrlReadCounts = []
 	for rep, bwName in enumerate(ctrlBWNames):
 		with pyBigWig.open(bwName) as bwFile:
 			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
@@ -272,31 +272,26 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, 
 
 		if rep == 0:
 			highReadCountIdx = np.where(readCounts > highRC)[0]
-
-		ctrlReadCounts.append(readCounts.tolist())
+			overMeanReadCountIdx = np.where(readCounts >= meanMinFragFilterValue)[0]
+		else:
+			overMeanReadCountIdx_temp = np.where(readCounts >= meanMinFragFilterValue)[0]
+			overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)	
 
 		readCountSums += readCounts
 
-	ctrlReadCounts = np.nanmean(ctrlReadCounts, axis=0)
-
-	experiReadCounts = []
 	for rep, bwName in enumerate(experiBWNames):
 		with pyBigWig.open(bwName) as bwFile:
 			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
 			readCounts[np.isnan(readCounts)] = 0.0
 
-		experiReadCounts.append(readCounts.tolist())
+		overMeanReadCountIdx_temp = np.where(readCounts >= meanMinFragFilterValue)[0]
+		overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
 
 		readCountSums += readCounts
+	del overMeanReadCountIdx_temp
 
-	experiReadCounts = np.nanmean(experiReadCounts, axis=0)
-
-	idx1 = np.where(ctrlReadCounts > 0)[0].tolist()
-	idx2 = np.where(experiReadCounts > 0)[0].tolist()
-	idx3 = np.where(readCountSums > minFragFilterValue)[0].tolist()
-
-	idxTemp = np.intersect1d(idx1, idx2)
-	idx = np.intersect1d(idxTemp, idx3)
+	idx = np.where(readCountSums > minFragFilterValue)[0].tolist()
+	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
 	if len(idx) == 0:
 		return np.array([]), np.array([]), np.array([])

@@ -1402,8 +1402,8 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 
 
 cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins):
+	meanMinFragFilterValue = int(np.round(vari.FILTERVALUE / (vari.CTRLBW_NUM + vari.EXPBW_NUM)))
 
-	ctrlRC = []
 	for rep in range(vari.CTRLBW_NUM):
 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
 
@@ -1422,19 +1422,18 @@ cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins)
 			temp[np.where(temp==None)] = float(0)
 
 		bw.close()
-		ctrlRC.append(temp.tolist())
 
 		if rep == 0:
 			rc_sum = temp
 			highRCIdx = np.where(temp > vari.HIGHRC)[0]
+			overMeanReadCountIdx = np.where(temp >= meanMinFragFilterValue)[0]
 
 		else:
 			rc_sum = rc_sum + temp
+			overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
+			overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
 
-	ctrlRC = np.nanmean(ctrlRC, axis=0)
-	idx1 = np.where(ctrlRC > 0)[0].tolist()
 
-	expRC = []
 	for rep in range(vari.EXPBW_NUM):
 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
 
@@ -1453,16 +1452,14 @@ cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins)
 			temp[np.where(temp==None)] = float(0)
 
 		bw.close()
-		expRC.append(temp.tolist())
 
 		rc_sum = rc_sum + temp
-
-	expRC = np.nanmean(expRC, axis=0)
-	idx2 = np.where(expRC > 0)[0].tolist()
-	idx3 = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()
-
-	idxTemp = np.intersect1d(idx1, idx2)
-	idx = np.intersect1d(idxTemp, idx3)
+		
+		overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
+		overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
+	
+	idx = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()
+	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
 
 	if len(idx) == 0:
