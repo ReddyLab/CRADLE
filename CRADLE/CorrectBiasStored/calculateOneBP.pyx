@@ -103,7 +103,7 @@ cpdef getReadCounts(bwFileName, trainingSet, scaler):
 			regionReadCounts = np.array(
 				bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
 			)
-			regionReadCounts[np.isnan(regionReadCounts) == True] = 0.0
+			regionReadCounts[np.isnan(regionReadCounts)] = 0.0
 			regionReadCounts = regionReadCounts / scaler
 
 			numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
@@ -159,9 +159,6 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 	analysisStart = int(taskArgs[1])  # Genomic coordinates(starts from 1)
 	analysisEnd = int(taskArgs[2])
 
-	ctrlBWNum = len(ctrlBWNames)
-	experiBWNum = len(experiBWNames)
-
 	with py2bit.open(faFileName) as faFile:
 		chromoEnd = int(faFile.chroms(chromo))
 
@@ -180,41 +177,22 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 		fragEnd = shearEnd - 2
 		analysisEnd = min(analysisEnd, fragEnd)
 
-
-	## OUTPUT FILES
-	subfinalCtrl = [0] * ctrlBWNum
-	subfinalCtrlNames = [0] * ctrlBWNum
-	subfinalExp = [0] * experiBWNum
-	subfinalExpNames = [0] * experiBWNum
-
-	for i in range(ctrlBWNum):
-		subfinalCtrl[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False)
-		subfinalCtrlNames[i] = subfinalCtrl[i].name
-		subfinalCtrl[i].close()
-
-	for i in range(experiBWNum):
-		subfinalExp[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False)
-		subfinalExpNames[i] = subfinalExp[i].name
-		subfinalExp[i].close()
-
 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAGNUM_FILTER_VALUE
 	selectedIdx, highReadCountIdx, starts = selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue)
 
+	## OUTPUT FILES
+	subfinalCtrlNames = [None] * len(ctrlBWNames)
+	subfinalExperiNames = [None] * len(experiBWNames)
+
 	if len(selectedIdx) == 0:
-		for i in range(ctrlBWNum):
-			os.remove(subfinalCtrlNames[i])
-		for i in range(experiBWNum):
-			os.remove(subfinalExpNames[i])
-
-		return [ [None] * ctrlBWNum, [None] * experiBWNum, chromo ]
-
+		return [subfinalCtrlNames, subfinalExperiNames, chromo]
 
 	hdfFileName = covariates.hdfFileName(chromo)
 	with h5py.File(hdfFileName, "r") as hdfFile:
-		for rep in range(ctrlBWNum):
-			with pyBigWig.open(ctrlBWNames[rep]) as bwFile:
+		for rep, bwName in enumerate(ctrlBWNames):
+			with pyBigWig.open(bwName) as bwFile:
 				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				rcArr[np.isnan(rcArr) == True] = float(0)
+				rcArr[np.isnan(rcArr)] = 0.0
 				rcArr = rcArr / ctrlScaler[rep]
 
 			prdvals = np.exp(
@@ -234,25 +212,22 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 			rcArr = rcArr[selectedIdx]
 
 			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-			if len(idx[0]) > 0:
-				tempStarts = np.delete(starts, idx)
-				rcArr = np.delete(rcArr, idx)
-				if len(rcArr) > 0:
-					writeBedFile(subfinalCtrlNames[rep], tempStarts, rcArr, analysisEnd, binsize)
-				else:
-					os.remove(subfinalCtrlNames[rep])
-					subfinalCtrlNames[rep] = None
-			else:
-				if len(rcArr) > 0:
-					writeBedFile(subfinalCtrlNames[rep], starts, rcArr, analysisEnd, binsize)
-				else:
-					os.remove(subfinalCtrlNames[rep])
-					subfinalCtrlNames[rep] = None
+			if len(rcArr) > 0:
+				with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False) as subfinalCtrlFile:
+					subfinalCtrlNames[rep] = subfinalCtrlFile.name
 
-		for rep in range(experiBWNum):
-			with pyBigWig.open(experiBWNames[rep]) as bwFile:
+					if len(idx[0]) > 0:
+						tempStarts = np.delete(starts, idx)
+						rcArr = np.delete(rcArr, idx)
+					else:
+						tempStarts = starts
+
+					writeBedFile(subfinalCtrlFile, tempStarts, rcArr, analysisEnd, binsize)
+
+		for rep, bwName in enumerate(experiBWNames):
+			with pyBigWig.open(bwName) as bwFile:
 				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				rcArr[np.isnan(rcArr) == True] = float(0)
+				rcArr[np.isnan(rcArr)] = 0.0
 				rcArr = rcArr / experiScaler[rep]
 
 			prdvals = np.exp(
@@ -272,54 +247,53 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 			rcArr = rcArr[selectedIdx]
 
 			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-			if len(idx[0]) > 0:
-				tempStarts = np.delete(starts, idx)
-				rcArr = np.delete(rcArr, idx)
-				if len(rcArr) > 0:
-					writeBedFile(subfinalExpNames[rep], tempStarts, rcArr, analysisEnd, binsize)
-				else:
-					os.remove(subfinalExpNames[rep])
-					subfinalExpNames[rep] = None
-			else:
-				if len(rcArr) > 0:
-					writeBedFile(subfinalExpNames[rep], starts, rcArr, analysisEnd, binsize)
-				else:
-					os.remove(subfinalExpNames[rep])
-					subfinalExpNames[rep] = None
+			if len(rcArr) > 0:
+				with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False) as subfinalExperiFile:
+					subfinalExperiNames[rep] = subfinalExperiFile.name
 
-	return [subfinalCtrlNames, subfinalExpNames, chromo]
+					if len(idx[0]) > 0:
+						tempStarts = np.delete(starts, idx)
+						rcArr = np.delete(rcArr, idx)
+					else:
+						tempStarts = starts
+
+					writeBedFile(subfinalExperiFile, tempStarts, rcArr, analysisEnd, binsize)
+
+	return [subfinalCtrlNames, subfinalExperiNames, chromo]
 
 cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue):
-	ctrlReadCounts = []
-	for rep in range(len(ctrlBWNames)):
-		with pyBigWig.open(ctrlBWNames[rep]) as bwFile:
-			temp = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-			temp[np.where(np.isnan(temp) == True)] = float(0)
+	readCountSums = np.zeros(analysisEnd - analysisStart, dtype=np.float64)
 
-		ctrlReadCounts.append(temp.tolist())
+	ctrlReadCounts = []
+	for rep, bwName in enumerate(ctrlBWNames):
+		with pyBigWig.open(bwName) as bwFile:
+			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+			readCounts[np.isnan(readCounts)] = 0.0
 
 		if rep == 0:
-			readCountSum = temp
-			highReadCountIdx = np.where(temp > highRC)[0]
-		else:
-			readCountSum = readCountSum + temp
+			highReadCountIdx = np.where(readCounts > highRC)[0]
+
+		ctrlReadCounts.append(readCounts.tolist())
+
+		readCountSums += readCounts
 
 	ctrlReadCounts = np.nanmean(ctrlReadCounts, axis=0)
+
+	experiReadCounts = []
+	for rep, bwName in enumerate(experiBWNames):
+		with pyBigWig.open(bwName) as bwFile:
+			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+			readCounts[np.isnan(readCounts)] = 0.0
+
+		experiReadCounts.append(readCounts.tolist())
+
+		readCountSums += readCounts
+
+	experiReadCounts = np.nanmean(experiReadCounts, axis=0)
+
 	idx1 = np.where(ctrlReadCounts > 0)[0].tolist()
-
-	expRC = []
-	for rep in range(len(experiBWNames)):
-		with pyBigWig.open(experiBWNames[rep]) as bwFile:
-			temp = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-			temp[np.where(np.isnan(temp) == True)] = float(0)
-
-		expRC.append(temp.tolist())
-
-		readCountSum = readCountSum + temp
-
-	expRC = np.nanmean(expRC, axis=0)
-	idx2 = np.where(expRC > 0)[0].tolist()
-	idx3 = np.where(readCountSum > minFragFilterValue)[0].tolist()
+	idx2 = np.where(experiReadCounts > 0)[0].tolist()
+	idx3 = np.where(readCountSums > minFragFilterValue)[0].tolist()
 
 	idxTemp = np.intersect1d(idx1, idx2)
 	idx = np.intersect1d(idxTemp, idx3)
@@ -331,10 +305,7 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, 
 
 	return idx, highReadCountIdx, starts
 
-
-cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysisEnd, binsize):
-	subfile = open(subfileName, "w")
-
+cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 	tempSignalvals = tempSignalvals.astype(int)
 	numIdx = len(tempSignalvals)
 
