@@ -4,18 +4,6 @@ import sys
 import numpy as np
 import pyBigWig
 
-def setGlobalVariables(args):
-	### input bigwig files
-	setInputFiles(args.ctrlbw, args.expbw)
-	setOutputDirectory(args.o)
-	setCovariDir(args.biasType, args.covariDir, args.faFile)
-	setAnlaysisRegion(args.r, args.bl)
-	setFilterCriteria(args.mi)
-	setNumProcess(args.p)
-	setNormalization(args.norm, args.generateNormBW)
-	seed = setRngSeed(args.rngSeed)
-	writeRngSeed(seed, args.o)
-
 class StoredCovariates:
 	def __init__(self, biasTypes, directory):
 		self.directory = directory.rstrip('/')
@@ -50,146 +38,93 @@ class StoredCovariates:
 	def hdfFileName(self, chromosome):
 		return self.directory + "/" + self.name + "_" + chromosome + ".hdf5"
 
-def setInputFiles(ctrlbwFiles, expbwFiles):
+def setGlobalVariables(args):
+	global BINSIZE
+	# global COEFCTRL
+	# global COEFCTRL_HIGHRC
+	# global COEFEXP
+	# global COEFEXP_HIGHRC
 	global CTRLBW_NAMES
-	global EXPBW_NAMES
-
 	global CTRLBW_NUM
+	global EXPBW_NAMES
 	global EXPBW_NUM
+	global FA
+	global HIGHRC
+	global I_GENERATE_NORM_BW
+	global I_NORM
+	global MIN_FRAG_FILTER_VALUE
+	global NUMPROCESS
+	global OUTPUT_DIR
+	global REGION
 	global SAMPLE_NUM
 
-	global COEFCTRL
-	global COEFEXP
-	global COEFCTRL_HIGHRC
-	global COEFEXP_HIGHRC
+	BINSIZE = 1
+	HIGHRC = None
 
-	global HIGHRC
+	### input bigwig files
+	CTRLBW_NAMES, CTRLBW_NUM, EXPBW_NAMES, EXPBW_NUM, SAMPLE_NUM = inputFiles(args.ctrlbw, args.expbw)
 
-
-	CTRLBW_NUM = len(ctrlbwFiles)
-	EXPBW_NUM = len(expbwFiles)
-	SAMPLE_NUM = CTRLBW_NUM + EXPBW_NUM
-
-	CTRLBW_NAMES = [0] * CTRLBW_NUM
-	for i in range(CTRLBW_NUM):
-		CTRLBW_NAMES[i] = ctrlbwFiles[i]
-
-	EXPBW_NAMES = [0] * EXPBW_NUM
-	for i in range(EXPBW_NUM):
-		EXPBW_NAMES[i] = expbwFiles[i]
+	FA = args.faFile
+	I_NORM, I_GENERATE_NORM_BW = normalization(args.norm, args.generateNormBW)
+	MIN_FRAG_FILTER_VALUE = minFragFilterCriteria(args.mi, SAMPLE_NUM)
+	NUMPROCESS = subprocessCount(int(args.p))
+	OUTPUT_DIR = outputDirectory(args.o)
+	REGION = anlaysisRegion(args.r, args.bl, CTRLBW_NAMES[0])
 
 
-def setOutputDirectory(outputDir):
-	global OUTPUT_DIR
+def inputFiles(ctrlBWFiles, experiBWFiles):
+	return (ctrlBWFiles, len(ctrlBWFiles), experiBWFiles, len(experiBWFiles), len(ctrlBWFiles) + len(experiBWFiles))
 
+
+def outputDirectory(outputDir):
 	if outputDir is None:
 		outputDir = os.getcwd() + "/CRADLE_correctionResult"
 
-	if outputDir[-1] == "/":
-		outputDir = outputDir[:-1]
+	outputDir = outputDir.rstrip('/')
 
-	OUTPUT_DIR = outputDir
+	if not os.path.exists(outputDir):
+		os.makedirs(outputDir)
+	elif not os.path.isdir(outputDir):
+		print("Error! Output directory (-o) exists but is _not_ a directory")
+		sys.exit()
 
-	dirExist = os.path.isdir(OUTPUT_DIR)
-	if not dirExist:
-		os.makedirs(OUTPUT_DIR)
+	return outputDir
+
 
 def getStoredCovariates(biasTypes, covariDir):
 	return StoredCovariates(biasTypes, covariDir)
 
-def setCovariDir(biasType, covariDir, faFile):
-	global COVARI_DIR
-	global COVARI_NAME
-	global SELECT_COVARI
-	global FRAGLEN
-	global FA
-	global COVARI_NUM
-	global BINSIZE
-	global COVARI_ORDER
 
-	COVARI_DIR = covariDir
+def anlaysisRegion(regionFile, bl, ctrlBWFile):
+	regions = []
 
-	if not os.path.isdir(COVARI_DIR):
-		print("Error! There is no covariate directory")
-		sys.exit()
+	with open(regionFile) as inputStream:
+		inputFileLines = inputStream.readlines()
 
-	if COVARI_DIR[-1] == "/":
-		COVARI_DIR = COVARI_DIR[:-1]
+		for line in inputFileLines:
+			temp = line.split()
+			temp[1] = int(temp[1])
+			temp[2] = int(temp[2])
+			regions.append(temp)
 
-	tempStr = COVARI_DIR.split('/')
-	COVARI_NAME = tempStr[len(tempStr)-1]
-	tempStr = COVARI_NAME.split("_")[1]
-	FRAGLEN = int(tempStr.split("fragLen")[1])
-
-	FA = faFile
-	BINSIZE = 1
-
-	SELECT_COVARI = np.array([np.nan] * 6)
-	COVARI_NUM = 0
-
-	COVARI_ORDER = ['Intercept']
-
-	biasType = [x.lower() for x in biasType]
-
-	for i in range(len(biasType)):
-		if (biasType[i] != 'shear') and (biasType[i] != 'pcr') and (biasType[i] != 'map') and (biasType[i] != 'gquad'):
-			print("Error! Wrong value in -biasType. Only 'shear', 'pcr', 'map', 'gquad' are allowed")
-			sys.exit()
-
-	if 'shear' in biasType:
-		SELECT_COVARI[0] = 1
-		SELECT_COVARI[1] = 1
-		COVARI_NUM = COVARI_NUM + 2
-		COVARI_ORDER.extend(["MGW_shear", "ProT_shear"])
-	if 'pcr' in biasType:
-		SELECT_COVARI[2] = 1
-		SELECT_COVARI[3] = 1
-		COVARI_NUM = COVARI_NUM + 2
-		COVARI_ORDER.extend(["Anneal_pcr", "Denature_pcr"])
-	if 'map' in biasType:
-		SELECT_COVARI[4] = 1
-		COVARI_NUM = COVARI_NUM + 1
-		COVARI_ORDER.extend(["Map_map"])
-	if 'gquad' in biasType:
-		SELECT_COVARI[5] = 1
-		COVARI_NUM = COVARI_NUM + 1
-		COVARI_ORDER.extend(["Gquad_gquad"])
-
-
-def setAnlaysisRegion(region, bl):
-	global REGION
-
-	REGION = []
-	inputFilename = region
-	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
-
-	for i in range(len(inputFile)):
-		temp = inputFile[i].split()
-		temp[1] = int(temp[1])
-		temp[2] = int(temp[2])
-		REGION.append(temp)
-	inputStream.close()
-
-	if len(REGION) > 1:
-		REGION = np.array(REGION)
-		REGION = REGION[np.lexsort(( REGION[:,1].astype(int), REGION[:,0])  ) ]
-		REGION = REGION.tolist()
+	if len(regions) > 1:
+		regions = np.array(regions)
+		regions = regions[np.lexsort(( regions[:,1].astype(int), regions[:,0])  ) ]
+		regions = regions.tolist()
 
 		regionMerged = []
 
-		pos = 0
-		pastChromo = REGION[pos][0]
-		pastStart = int(REGION[pos][1])
-		pastEnd = int(REGION[pos][2])
+		pastChromo = regions[0][0]
+		pastStart = int(regions[0][1])
+		pastEnd = int(regions[0][2])
 		regionMerged.append([pastChromo, pastStart, pastEnd])
 		resultIdx = 0
 
 		pos = 1
-		while pos < len(REGION):
-			currChromo = REGION[pos][0]
-			currStart = int(REGION[pos][1])
-			currEnd = int(REGION[pos][2])
+		while pos < len(regions):
+			currChromo = regions[pos][0]
+			currStart = int(regions[pos][1])
+			currEnd = int(regions[pos][2])
 
 			if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
 				maxEnd = np.max([currEnd, pastEnd])
@@ -206,7 +141,7 @@ def setAnlaysisRegion(region, bl):
 				pastStart = currStart
 				pastEnd = currEnd
 
-		REGION = regionMerged
+		regions = regionMerged
 
 	## BL
 	if bl is not None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
@@ -258,7 +193,7 @@ def setAnlaysisRegion(region, bl):
 			blRegion = np.array(blRegion)
 
 		regionWoBL = []
-		for region in REGION:
+		for region in regions:
 			regionChromo = region[0]
 			regionStart = int(region[1])
 			regionEnd = int(region[2])
@@ -312,44 +247,67 @@ def setAnlaysisRegion(region, bl):
 						currStart = blEnd
 						continue
 
-					regionWoBL.append([ regionChromo, currStart, blStart ])
+					regionWoBL.append([regionChromo, currStart, blStart ])
 					currStart = blEnd
 
 				if (pos == (len(overlappedBL)-1)) and (blEnd < regionEnd):
 					if blEnd == regionEnd:
 						break
-					regionWoBL.append([ regionChromo, blEnd, regionEnd ])
+					regionWoBL.append([regionChromo, blEnd, regionEnd ])
 
-		REGION = regionWoBL
+		regions = regionWoBL
 
 	# check if all chromosomes in the REGION in bigwig files
-	bw = pyBigWig.open(CTRLBW_NAMES[0])
-	regionFinal = []
-	for regionIdx in range(len(REGION)):
-		chromo = REGION[regionIdx][0]
-		start = int(REGION[regionIdx][1])
-		end = int(REGION[regionIdx][2])
+	bwFile = pyBigWig.open(ctrlBWFile)
+	regionsFinal = []
+	for region in regions:
+		chromo = region[0]
+		start = int(region[1])
+		end = int(region[2])
 
-		chromoLen = bw.chroms(chromo)
+		chromoLen = bwFile.chroms(chromo)
 		if chromoLen is None:
 			continue
 		if end > chromoLen:
-			REGION[regionIdx][2] = chromoLen
+			region[2] = chromoLen
 			if chromoLen <= start:
 				continue
-		regionFinal.append([chromo, start, end])
-	bw.close()
+		regionsFinal.append([chromo, start, end])
+	bwFile.close()
 
-	REGION = regionFinal
+	return regionsFinal
 
 
-def setFilterCriteria(minFrag):
-	global MIN_FRAGNUM_FILTER_VALUE
-
+def minFragFilterCriteria(minFrag, default):
 	if minFrag is None:
-		MIN_FRAGNUM_FILTER_VALUE = SAMPLE_NUM
+		return default
+
+	return int(minFrag)
+
+
+def subprocessCount(numProcess):
+	systemCPUs = int(multiprocessing.cpu_count())
+
+	if numProcess is None:
+		processCount = min(1, int(systemCPUs / 2.0 ))
 	else:
-		MIN_FRAGNUM_FILTER_VALUE = int(minFrag)
+		processCount = min(numProcess, systemCPUs)
+
+	if numProcess > systemCPUs:
+		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
+
+	return processCount
+
+
+def normalization(norm, generateNormBW):
+	norm = not norm.lower() == 'false'
+	generateNormBW = not generateNormBW.lower() == 'false'
+
+	if generateNormBW and (not norm):
+		print("ERROR: I_NORM should be 'True' if I_GENERATE_NORM_BW is 'True'")
+		sys.exit()
+
+	return (norm, generateNormBW)
 
 
 def setScaler(scalerResult):
@@ -362,54 +320,6 @@ def setScaler(scalerResult):
 
 	for i in range(1, CTRLBW_NUM):
 		CTRLSCALER[i] = scalerResult[i-1]
+
 	for i in range(EXPBW_NUM):
 		EXPSCALER[i] = scalerResult[i+CTRLBW_NUM-1]
-
-
-def setNumProcess(numProcess):
-	global NUMPROCESS
-
-	systemCPUs = int(multiprocessing.cpu_count())
-
-	if numProcess is None:
-		NUMPROCESS = int(systemCPUs / 2.0 )
-		if NUMPROCESS < 1:
-			NUMPROCESS = 1
-	else:
-		NUMPROCESS = int(numProcess)
-
-	if NUMPROCESS > systemCPUs:
-		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
-		NUMPROCESS = systemCPUs
-
-
-def setNormalization(norm, generateNormBW):
-	global I_NORM
-	global I_GENERATE_NormBW
-
-	if norm.lower() == 'false':
-		I_NORM = False
-	else:
-		I_NORM = True
-
-	if generateNormBW.lower() == 'false':
-		I_GENERATE_NormBW = False
-	else:
-		I_GENERATE_NormBW = True
-
-	if (not I_NORM) and I_GENERATE_NormBW:
-		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
-		sys.exit()
-
-def setRngSeed(seed):
-	if seed is None:
-		seed = np.random.randint(0, 2**32 - 1)
-
-	np.random.seed(seed)
-	print(f"RNG Seed: {seed}")
-	return seed
-
-def writeRngSeed(seed, outputDir):
-	seedFileName = os.path.join(outputDir, "rngseed.txt")
-	with open(seedFileName, "w") as seedFile:
-		seedFile.write(f"{seed}\n")

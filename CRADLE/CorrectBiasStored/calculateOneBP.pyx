@@ -9,33 +9,11 @@ import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
+from ..correctbiasutils.cython import TrainingRegion, TrainingSet
+
 matplotlib.use('Agg')
 
 COEF_LEN = 7
-
-cdef class TrainingRegion:
-	cdef public str chromo
-	cdef public int analysisStart, analysisEnd
-
-	def __init__(self, chromo, analysisStart, analysisEnd):
-		self.chromo = chromo
-		self.analysisStart = analysisStart
-		self.analysisEnd = analysisEnd
-
-cdef class TrainingSet:
-	cdef public int xRowCount
-	cdef public list trainingRegions
-
-	def __init__(self, list trainingRegions, int xRowCount):
-		self.trainingRegions = trainingRegions
-		self.xRowCount = xRowCount
-
-	def __iter__(self):
-		def regionGenerator():
-			for region in self.trainingRegions:
-				yield region
-
-		return regionGenerator()
 
 cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, outputDir, outputLabel):
 	xColumnCount = covariates.num + 1
@@ -275,7 +253,7 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, 
 			overMeanReadCountIdx = np.where(readCounts >= meanMinFragFilterValue)[0]
 		else:
 			overMeanReadCountIdx_temp = np.where(readCounts >= meanMinFragFilterValue)[0]
-			overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)	
+			overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
 
 		readCountSums += readCounts
 
