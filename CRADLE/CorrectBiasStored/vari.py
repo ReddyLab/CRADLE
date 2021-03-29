@@ -344,12 +344,12 @@ def setAnlaysisRegion(region, bl):
 
 
 def setFilterCriteria(minFrag):
-	global MIN_FRAGNUM_FILTER_VALUE
+	global MIN_FRAG_FILTER_VALUE
 
 	if minFrag is None:
-		MIN_FRAGNUM_FILTER_VALUE = SAMPLE_NUM
+		MIN_FRAG_FILTER_VALUE = SAMPLE_NUM
 	else:
-		MIN_FRAGNUM_FILTER_VALUE = int(minFrag)
+		MIN_FRAG_FILTER_VALUE = int(minFrag)
 
 
 def setScaler(scalerResult):
@@ -362,6 +362,7 @@ def setScaler(scalerResult):
 
 	for i in range(1, CTRLBW_NUM):
 		CTRLSCALER[i] = scalerResult[i-1]
+
 	for i in range(EXPBW_NUM):
 		EXPSCALER[i] = scalerResult[i+CTRLBW_NUM-1]
 
@@ -385,7 +386,7 @@ def setNumProcess(numProcess):
 
 def setNormalization(norm, generateNormBW):
 	global I_NORM
-	global I_GENERATE_NormBW
+	global I_GENERATE_NORM_BW
 
 	if norm.lower() == 'false':
 		I_NORM = False
@@ -393,12 +394,12 @@ def setNormalization(norm, generateNormBW):
 		I_NORM = True
 
 	if generateNormBW.lower() == 'false':
-		I_GENERATE_NormBW = False
+		I_GENERATE_NORM_BW = False
 	else:
-		I_GENERATE_NormBW = True
+		I_GENERATE_NORM_BW = True
 
-	if (not I_NORM) and I_GENERATE_NormBW:
-		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
+	if (not I_NORM) and I_GENERATE_NORM_BW:
+		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NORM_BW is 'True'")
 		sys.exit()
 
 def setRngSeed(seed):
