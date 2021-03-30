@@ -7,5 +7,5 @@ CRADLE/**/*.c
 dist
 CRADLE.egg-info
 
-# Testing results
+# Ignore test runs
 test_cradle*
