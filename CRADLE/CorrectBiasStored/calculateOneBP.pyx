@@ -9,7 +9,7 @@ import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
-from ..correctbiasutils.cython import TrainingRegion, TrainingSet
+from ..correctbiasutils.cython import TrainingRegion, TrainingSet, writeBedFile
 
 matplotlib.use('Agg')
 
@@ -190,16 +190,11 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 			rcArr = rcArr[selectedIdx]
 
 			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
+			tempStarts = np.delete(starts, idx)
+			rcArr = np.delete(rcArr, idx)
 			if len(rcArr) > 0:
 				with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False) as subfinalCtrlFile:
 					subfinalCtrlNames[rep] = subfinalCtrlFile.name
-
-					if len(idx[0]) > 0:
-						tempStarts = np.delete(starts, idx)
-						rcArr = np.delete(rcArr, idx)
-					else:
-						tempStarts = starts
-
 					writeBedFile(subfinalCtrlFile, tempStarts, rcArr, analysisEnd, binsize)
 
 		for rep, bwName in enumerate(experiBWNames):
@@ -225,16 +220,11 @@ cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler
 			rcArr = rcArr[selectedIdx]
 
 			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
+			tempStarts = np.delete(starts, idx)
+			rcArr = np.delete(rcArr, idx)
 			if len(rcArr) > 0:
 				with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False) as subfinalExperiFile:
 					subfinalExperiNames[rep] = subfinalExperiFile.name
-
-					if len(idx[0]) > 0:
-						tempStarts = np.delete(starts, idx)
-						rcArr = np.delete(rcArr, idx)
-					else:
-						tempStarts = starts
-
 					writeBedFile(subfinalExperiFile, tempStarts, rcArr, analysisEnd, binsize)
 
 	return [subfinalCtrlNames, subfinalExperiNames, chromo]
@@ -277,42 +267,3 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, 
 	starts = np.array(list(range(analysisStart, analysisEnd)))[idx]
 
 	return idx, highReadCountIdx, starts
-
-cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
-	tempSignalvals = tempSignalvals.astype(int)
-	numIdx = len(tempSignalvals)
-
-	idx = 0
-	prevStart = tempStarts[idx]
-	prevReadCount = tempSignalvals[idx]
-	line = [prevStart, (prevStart + binsize), prevReadCount]
-	if numIdx == 1:
-		subfile.write('\t'.join([str(x) for x in line]) + "\n")
-		subfile.close()
-		return
-
-	idx = 1
-	while idx < numIdx:
-		currStart = tempStarts[idx]
-		currReadCount = tempSignalvals[idx]
-
-		if (currStart == (prevStart + binsize)) and (currReadCount == prevReadCount):
-			line[1] = currStart + binsize
-			prevStart = currStart
-			prevReadCount = currReadCount
-			idx = idx + 1
-		else:
-			### End a current line
-			subfile.write('\t'.join([str(x) for x in line]) + "\n")
-
-			### Start a new line
-			line = [currStart, (currStart+binsize), currReadCount]
-			prevStart = currStart
-			prevReadCount = currReadCount
-			idx = idx + 1
-
-		if idx == numIdx:
-			line[1] = analysisEnd
-			subfile.write('\t'.join([str(x) for x in line]) + "\n")
-			subfile.close()
-			break

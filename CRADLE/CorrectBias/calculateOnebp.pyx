@@ -18,6 +18,7 @@ import pyBigWig
 matplotlib.use('Agg')
 
 from CRADLE.CorrectBias import vari
+from ..correctbiasutils.cython import writeBedFile
 
 cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
 
@@ -1278,35 +1279,15 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		lastBinStart = regionEnd
 		lastBinEnd = analysisEnd
 
-	## OUTPUT FILES
-	subfinalCtrl = [0] * vari.CTRLBW_NUM
-	subfinalCtrlNames = [0] * vari.CTRLBW_NUM
-	subfinalExp = [0] * vari.EXPBW_NUM
-	subfinalExpNames = [0] * vari.EXPBW_NUM
-
-	for i in range(vari.CTRLBW_NUM):
-		subfinalCtrl[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
-		subfinalCtrlNames[i] = subfinalCtrl[i].name
-		subfinalCtrl[i].close()
-
-	for i in range(vari.EXPBW_NUM):
-		subfinalExp[i] = tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False)
-		subfinalExpNames[i] = subfinalExp[i].name
-		subfinalExp[i].close()
-
 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > FILTERVALUE
 	selectedIdx, highRCIdx, starts = selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins)
 
+	## OUTPUT FILES
+	subfinalCtrlNames = [None] * vari.CTRLBW_NUM
+	subfinalExperiNames = [None] * vari.EXPBW_NUM
+
 	if len(selectedIdx) == 0:
-		for i in range(vari.CTRLBW_NUM):
-			os.remove(subfinalCtrlNames[i])
-		for i in range(vari.EXPBW_NUM):
-			os.remove(subfinalExpNames[i])
-
-		os.remove(covariFileName)
-
-		return [ [None] * vari.CTRLBW_NUM, [None] * vari.EXPBW_NUM, chromo ]
-
+		return [subfinalCtrlNames, subfinalExperiNames, chromo]
 
 	f = h5py.File(covariFileName, "r")
 
@@ -1337,20 +1318,12 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		rcArr = rcArr[selectedIdx]
 
 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-		if len(idx[0]) > 0:
-			tempStarts = np.delete(starts, idx)
-			rcArr = np.delete(rcArr, idx)
-			if len(rcArr) > 0:
-				writeBedFile(subfinalCtrlNames[rep], tempStarts, rcArr, analysisEnd)
-			else:
-				os.remove(subfinalCtrlNames[rep])
-				subfinalCtrlNames[rep] = None
-		else:
-			if len(rcArr) > 0:
-				writeBedFile(subfinalCtrlNames[rep], starts, rcArr, analysisEnd)
-			else:
-				os.remove(subfinalCtrlNames[rep])
-				subfinalCtrlNames[rep] = None
+		tempStarts = np.delete(starts, idx)
+		rcArr = np.delete(rcArr, idx)
+		if len(rcArr) > 0:
+			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False) as subfinalCtrlFile:
+				subfinalCtrlNames[rep] = subfinalCtrlFile.name
+				writeBedFile(subfinalCtrlFile, tempStarts, rcArr, analysisEnd, vari.BINSIZE)
 
 	for rep in range(vari.EXPBW_NUM):
 		## observed read counts
@@ -1380,25 +1353,17 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		rcArr = rcArr[selectedIdx]
 
 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-		if len(idx[0]) > 0:
-			tempStarts = np.delete(starts, idx)
-			rcArr = np.delete(rcArr, idx)
-			if len(rcArr) > 0:
-				writeBedFile(subfinalExpNames[rep], tempStarts, rcArr, analysisEnd)
-			else:
-				os.remove(subfinalExpNames[rep])
-				subfinalExpNames[rep] = None
-		else:
-			if len(rcArr) > 0:
-				writeBedFile(subfinalExpNames[rep], starts, rcArr, analysisEnd)
-			else:
-				os.remove(subfinalExpNames[rep])
-				subfinalExpNames[rep] = None
+		tempStarts = np.delete(starts, idx)
+		rcArr = np.delete(rcArr, idx)
+		if len(rcArr) > 0:
+			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False) as subfinalExperiFile:
+				subfinalExperiNames[rep] = subfinalExperiFile.name
+				writeBedFile(subfinalExperiFile, tempStarts, rcArr, analysisEnd, vari.BINSIZE)
 
 	f.close()
 	os.remove(covariFileName)
 
-	return [subfinalCtrlNames, subfinalExpNames, chromo]
+	return [subfinalCtrlNames, subfinalExperiNames, chromo]
 
 
 cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins):
@@ -1454,10 +1419,10 @@ cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins)
 		bw.close()
 
 		rc_sum = rc_sum + temp
-		
+
 		overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
 		overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
-	
+
 	idx = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()
 	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
@@ -1477,45 +1442,3 @@ cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins)
 	starts = starts[idx]
 
 	return idx, highRCIdx, starts
-
-
-cpdef writeBedFile(subfileName, tempStarts, tempSignalvals, analysisEnd):
-	subfile = open(subfileName, "w")
-
-	tempSignalvals = tempSignalvals.astype(int)
-	numIdx = len(tempSignalvals)
-
-	idx = 0
-	prevStart = tempStarts[idx]
-	prevRC = tempSignalvals[idx]
-	line = [prevStart, (prevStart + vari.BINSIZE), prevRC]
-	if numIdx == 1:
-		subfile.write('\t'.join([str(x) for x in line]) + "\n")
-		subfile.close()
-		return
-
-	idx = 1
-	while idx < numIdx:
-		currStart = tempStarts[idx]
-		currRC = tempSignalvals[idx]
-
-		if (currStart == (prevStart + vari.BINSIZE)) and (currRC == prevRC):
-			line[1] = currStart + vari.BINSIZE
-			prevStart = currStart
-			prevRC = currRC
-			idx = idx + 1
-		else:
-			### End a current line
-			subfile.write('\t'.join([str(x) for x in line]) + "\n")
-
-			### Start a new line
-			line = [currStart, (currStart+vari.BINSIZE), currRC]
-			prevStart = currStart
-			prevRC = currRC
-			idx = idx + 1
-
-		if idx == numIdx:
-			line[1] = analysisEnd
-			subfile.write('\t'.join([str(x) for x in line]) + "\n")
-			subfile.close()
-			break

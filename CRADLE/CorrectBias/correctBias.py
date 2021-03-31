@@ -570,7 +570,7 @@ def run(args):
 
 	if vari.I_NORM:
 		print("NORMALIZING CONSTANT: ")
-		print("CTRKBW: ")
+		print("CTRLBW: ")
 		print(vari.CTRLSCALER)
 		print("EXPBW: ")
 		print(vari.EXPSCALER)
