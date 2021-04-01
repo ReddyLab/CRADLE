@@ -51,6 +51,8 @@ def getArgs():
 
 	correctBias_optional.add_argument('-generateNormBW', help="If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False", default='False')
 
+	correctBias_optional.add_argument('-rngSeed', type=int, help="Set seed value for the RNG. Enables repeatable runs.", default=None)
+
 
 	########### correctBias_stored
 	correctBiasStored_parser = subparsers.add_parser("correctBias_stored", help="Correct shear, pcr, mappability, g-quadruplex sturcture bias from bigwig files when there are stored covariate hdf5 files. This is much faster than correctBias.")

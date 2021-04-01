@@ -866,7 +866,7 @@ cpdef calculateTaskCovariates(args):
 		return result
 
 
-cpdef performRegression(covariFiles):
+cpdef performRegression(covariFiles, scatterplotSamples):
 	### Read covariates values (X)
 	xNumRows = 0
 	for i in range(len(covariFiles)):
@@ -900,11 +900,6 @@ cpdef performRegression(covariFiles):
 	### COEFFICIENTS
 	COEFCTRL = np.zeros((vari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
 	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
-
-	if xNumRows < 50000:
-		idx = np.array(list(range(xNumRows)))
-	else:
-		idx = np.random.choice(np.array(list(range(xNumRows))), 50000, replace=False)
 
 	cdef double [:] YView = np.zeros(xNumRows, dtype=np.float64)
 
@@ -941,13 +936,13 @@ cpdef performRegression(covariFiles):
 		corr = np.round(corr, 2)
 
 		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[idx])
-		maxi2 = np.nanmax(np.array(YView)[idx])
+		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
+		maxi2 = np.nanmax(np.array(YView)[scatterplotSamples])
 		maxi = max(maxi1, maxi2)
 
 		bwName = '.'.join( vari.CTRLBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
 		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
-		plt.plot(np.array(YView)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
+		plt.plot(np.array(YView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
 		plt.ylabel("predicted")
@@ -995,13 +990,13 @@ cpdef performRegression(covariFiles):
 		corr = np.round(corr, 2)
 
 		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[idx])
-		maxi2 = np.nanmax(np.array(YView)[idx])
+		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
+		maxi2 = np.nanmax(np.array(YView)[scatterplotSamples])
 		maxi = max(maxi1, maxi2)
 
 		bwName = '.'.join( vari.EXPBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
 		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
-		plt.plot(np.array(YView)[idx], model.fittedvalues[idx], color='g', marker='s', alpha=0.01)
+		plt.plot(np.array(YView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
 		plt.text((maxi-25), 10, corr, ha='center', va='center')
 		plt.xlabel("observed")
 		plt.ylabel("predicted")
@@ -1454,10 +1449,10 @@ cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins)
 		bw.close()
 
 		rc_sum = rc_sum + temp
-		
+
 		overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
 		overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
-	
+
 	idx = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()
 	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
