@@ -535,6 +535,15 @@ def generateNormalizedObBWs(args):
 
 	return normObBWName
 
+def getScatterplotSamples(covariFiles):
+	xNumRows = 0
+	for covariFile in covariFiles:
+		xNumRows += int(covariFile[1])
+
+	if xNumRows <= 50000:
+		return np.array(range(xNumRows))
+	else:
+		return np.random.choice(np.array(range(xNumRows)), 50000, replace=False)
 
 def run(args):
 
@@ -619,8 +628,20 @@ def run(args):
 
 
 	## PERFORM REGRESSION
+	print("======  PERFORMING REGRESSION ....\n")
+
+	scatterplotSamples90Percentile = getScatterplotSamples(trainSetResult1)
+	scatterplotSamples90to99Percentile = getScatterplotSamples(trainSetResult2)
+
+	startTime = time.time()
 	pool = multiprocessing.Pool(2)
-	coefResult = pool.map_async(calculateOnebp.performRegression, [trainSetResult1, trainSetResult2]).get()
+	coefResult = pool.starmap_async(
+		calculateOnebp.performRegression,
+		[
+			(trainSetResult1, scatterplotSamples90Percentile),
+			(trainSetResult2, scatterplotSamples90to99Percentile)
+		]
+	).get()
 	pool.close()
 	pool.join()
 	del trainSetResult1, trainSetResult2
