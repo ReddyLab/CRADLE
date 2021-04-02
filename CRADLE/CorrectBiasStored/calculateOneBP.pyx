@@ -19,27 +19,19 @@ cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames
 	xColumnCount = covariates.num + 1
 
 	#### Get X matrix
-	cdef double [:,:] xView = np.ones((trainingSet.xRowCount, xColumnCount), dtype=np.float64)
+	xView = np.ones((trainingSet.xRowCount, xColumnCount), dtype=np.float64)
 
 	cdef int currentRow = 0
-	cdef int pos
-	cdef int i, j
 
 	for trainingRegion in trainingSet:
+		region_length = trainingRegion.analysisEnd - trainingRegion.analysisStart
 		hdfFileName = covariates.hdfFileName(trainingRegion.chromo)
 		with h5py.File(hdfFileName, "r") as hdfFile:
-			pos = trainingRegion.analysisStart
-			while pos < trainingRegion.analysisEnd:
-				temp = hdfFile['covari'][pos - 3] * covariates.selected
-				temp = temp[np.isnan(temp) == False]
-
-				j = 0
-				i = currentRow + pos - trainingRegion.analysisStart
-				while j < covariates.num:
-					xView[i, j + 1] = temp[j]
-					j += 1
-				pos += 1
-			currentRow += (trainingRegion.analysisEnd - trainingRegion.analysisStart)
+			non_selected_rows = np.where(np.isnan(covariates.selected))
+			temp = hdfFile['covari'][trainingRegion.analysisStart - 3:trainingRegion.analysisEnd - 3]
+			temp = np.delete(temp, non_selected_rows, 1)
+			xView[currentRow:currentRow + region_length, 1:xColumnCount] = temp
+			currentRow += region_length
 	#### END Get X matrix
 
 	#### Initialize COEF arrays
