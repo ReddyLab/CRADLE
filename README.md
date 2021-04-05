@@ -150,7 +150,7 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
      Whether normalization is needed for input bigwig files. Choose either 'True' or 'False'. default=True
   -  -generateNormBW <br />
      If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False
--  -rngSeed <br />
+  -  -rngSeed <br />
      Set the seed value for the RNG. This enables repeatable runs. default=None
 
 ### 3) callPeak
@@ -244,7 +244,7 @@ chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8 12.3
 * The 7th colum (inputCount):  the mean of control read counts.
 * The 8th colum (outputCount):  the mean of experimental read counts.
 * The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of p value and q value. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values. 
-* The 11th column: Cohen's D, standarized effect size. 'nan' in the case where there is only one replicate in either -ctrlbw or -expbw. 
+* The 11th column: Cohen's D, standarized effect size. This column will have 'nan' values in the case where there is only one replicate in either -ctrlbw or -expbw. 
 
 ### 3) Output files for normliaze
    Normalized bigwigs files of which file name has '_normalized' in the suffix. The number of generated corrected bigwigs files will be the same as the total number of  bigwigs files used as input (this includes both control and experimental bigwigs). 
