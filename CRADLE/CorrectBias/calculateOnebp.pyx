@@ -7,18 +7,14 @@ import tempfile
 import time
 import warnings
 import h5py
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import scipy
 import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
-matplotlib.use('Agg')
-
 from CRADLE.CorrectBias import vari
-from ..correctbiasutils.cython import writeBedFile
+from CRADLE.correctbiasutils.cython import writeBedFile, plot
 
 cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
 
@@ -301,8 +297,6 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	return correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastBin, nBins)
 
 
-
-
 cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
@@ -521,8 +515,6 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	f.close()
 
 	return correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastBin, nBins)
-
-
 
 
 cpdef calculateTrainCovariates(args):
@@ -933,27 +925,12 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 
 		coef = model.params
 		COEFCTRL[rep, ] = coef
-		corr = np.corrcoef(model.fittedvalues, np.array(YView))[0, 1]
-		corr = np.round(corr, 2)
 
 		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
-		maxi2 = np.nanmax(np.array(YView)[scatterplotSamples])
-		maxi = max(maxi1, maxi2)
-
 		bwName = '.'.join( vari.CTRLBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
 		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
-		plt.plot(np.array(YView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
-		plt.text((maxi-25), 10, corr, ha='center', va='center')
-		plt.xlabel("observed")
-		plt.ylabel("predicted")
-		plt.xlim(0, maxi)
-		plt.ylim(0, maxi)
-		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
-		plt.gca().set_aspect('equal', adjustable='box')
-		plt.savefig(figName)
-		plt.close()
-		plt.clf()
+
+		plot(YView, model.fittedvalues, figName, scatterplotSamples)
 
 	for rep in range(vari.EXPBW_NUM):
 		ptr = 0
@@ -987,27 +964,12 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 
 		coef = model.params
 		COEFEXP[rep, ] = coef
-		corr = np.corrcoef(model.fittedvalues, np.array(YView))[0, 1]
-		corr = np.round(corr, 2)
 
 		## PLOT
-		maxi1 = np.nanmax(model.fittedvalues[scatterplotSamples])
-		maxi2 = np.nanmax(np.array(YView)[scatterplotSamples])
-		maxi = max(maxi1, maxi2)
-
 		bwName = '.'.join( vari.EXPBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
 		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
-		plt.plot(np.array(YView)[scatterplotSamples], model.fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
-		plt.text((maxi-25), 10, corr, ha='center', va='center')
-		plt.xlabel("observed")
-		plt.ylabel("predicted")
-		plt.xlim(0, maxi)
-		plt.ylim(0, maxi)
-		plt.plot([0, maxi], [0, maxi], 'k-', color='r')
-		plt.gca().set_aspect('equal', adjustable='box')
-		plt.savefig(figName)
-		plt.close()
-		plt.clf()
+
+		plot(YView, model.fittedvalues, figName, scatterplotSamples)
 
 	return COEFCTRL, COEFEXP
 
