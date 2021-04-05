@@ -46,7 +46,7 @@ These dependencies will be automatically installed when you install CRADLE eithe
 
 ## Commands
 ```
-cradle <correctBias | correctBias_stored | callPeak> [options]
+cradle <correctBias | correctBias_stored | callPeak | normalize > [options]
 ```
 
 ### 1) correctBias
@@ -192,14 +192,49 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
      Minimum peak length. Peaks with smaller size than this value are filtered out. default=wbin
   -  -stat <br/>
      Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test
+     
+     
+### 3) Normalize
+This command normalizes samples across different samples (accounting for sequencing depth) and different regions. 
+This command should be used for data that has uneven coverage resulting from any other reasons than biases. 
+For example, STARR-seq from BACs can have different coverage for each BAC region and overlapping BAC regions. This can cause correctBias or correctBias_stored to not efficiently model biases. 
 
-## Output file format
+Example of running Normalize: 
 ```
-chr start   end Name    score   strand  effectSize  inputCount  outputCount -log(pvalue)    -log(qvalue)
-chr1	70367085	70367210	chr1:70367085-70367210	.	.	133	-8	125	14.57	13.8
-chr1	116853710	116853835	chr1:116853710-116853835	.	.	255	13	268	14.57	13.8
-chr1	163672337	163672462	chr1:163672337-163672462	.	.	170	-2	168	14.57	13.8
-chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8
+cradle normalize -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
+                -expbw exp1_corrected.bw exp2_corrected.bw exp3_corrected.bw
+                -r /data/YoungSook/target_region.bed
+                -o /data/YoungSook/CRADLE_normalize_result
+```
+* Required Arguments
+  -  -ctrlbw <br /> 
+      Ctrl bigwig files. Corrected bigwig files are recommended. Each file name should be spaced
+  -  -expbw <br />
+      Experimental bigwig files Corrected bigwig files are recommended.. Each file name should be spaced.
+  -  -r <br /> 
+      Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. If you are suing BACs, please provide the coordinates of BACs without merging regions. ex) chr1\t100\t3000
+
+* Optional Arguments
+  -  -o <br /> 
+     Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_normalization.
+  -  -p <br/>
+     The number of cpus. default=(available cpus)/2
+
+
+## Output files
+### 1) Output files for correctBias and correctBias_stored.
+   1) Corrected bigwigs files of which file name has '_corrected' in the suffix. The number of generated corrected bigwigs files will be the same as the total number of  bigwigs files used as input (this includes both control and experimental bigwigs). 
+   2) PNG files that shows fitting of the model with a subset of traning data. The number on the right bottom is Pearson's coefficient. 
+
+
+### 2) Output file from callPeak
+You will get 'CARDLE_peak' as a result file which has the following format:
+```
+chr start   end Name    score   strand  effectSize  inputCount  outputCount -log(pvalue)    -log(qvalue)  cohen's D
+chr1	70367085	70367210	chr1:70367085-70367210	.	.	133	-8	125	14.57	13.8 3.2
+chr1	116853710	116853835	chr1:116853710-116853835	.	.	255	13	268	14.57	13.8 4.6
+chr1	163672337	163672462	chr1:163672337-163672462	.	.	170	-2	168	14.57	13.8 12.3
+chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8 12.3
 .
 .
 ```
@@ -209,7 +244,10 @@ chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8
 * The 7th colum (inputCount):  the mean of control read counts.
 * The 8th colum (outputCount):  the mean of experimental read counts.
 * The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of p value and q value. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values. 
+* The 11th column: Cohen's D, standarized effect size. 'nan' in the case where there is only one replicate in either -ctrlbw or -expbw. 
 
+### 3) Output files for normliaze
+   Normalized bigwigs files of which file name has '_normalized' in the suffix. The number of generated corrected bigwigs files will be the same as the total number of  bigwigs files used as input (this includes both control and experimental bigwigs). 
 
 
 ## How to download covariate files
