@@ -121,6 +121,25 @@ def getArgs():
 
 	callPeak_optional.add_argument('-stat', help="Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test")	
 
+
+	########### callPeak
+	normalize_parser = subparsers.add_parser("normalize", help="Normalize bigwgis across samples and across different regions of one sample. This is useful for BAC STARR-seq where you can even uneven coverage for each BAC regions or for each overlapping BAC regions")
+	## required
+	normalize_required = normalize_parser.add_argument_group("Required Args")
+
+	normalize_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000", required=True)
+
+	normalize_required.add_argument('-ctrlbw', help="Unnormalized control bigwig files. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", required=True, nargs="+")
+
+	normalize_required.add_argument('-expbw', help="Unnormalized experimental  bigwig files. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", required=True, nargs="+")
+
+	## optional
+	normalize_optional = normalize_parser.add_argument_group("Optional Args")
+
+	normalize_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2", required=False)
+
+	normalize_optional.add_argument('-o', help="Output directory. All normalized bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_normalization.", required=False)
+
 	return parser
 
 
@@ -142,6 +161,10 @@ def main():
 		from CRADLE.CallPeak.callPeak import run
 		run(args)
 
+	### Normalize
+	if(args.commandName == "normalize"):
+		from CRADLE.Normalize.normalize import run
+		run(args)
 
 if __name__ == '__main__':
 	mp.set_start_method('fork')
