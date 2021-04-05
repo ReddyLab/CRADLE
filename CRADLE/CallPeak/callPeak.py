@@ -59,8 +59,9 @@ def mergePeaks(peakResult):
 		expRCPosMean = np.nanmean(expRC)
 
 		diffPos = int(expRCPosMean - ctrlRCPosMean)
+		cohens_D = calculateCohenD(ctrlRC, expRC)
 		mergedPeak[resultIdx][6] = diffPos
-		mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean])
+		mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
 
 		for i in range(vari.CTRLBW_NUM):
 			ctrlBW[i].close()
@@ -79,7 +80,7 @@ def mergePeaks(peakResult):
 		currpvalue = float(peakResult[i][4])
 		currqvalue = float(peakResult[i][5])
 
-		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) < vari.DISTANCE):
+		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) <= vari.DISTANCE):
 			mergedPeak[resultIdx][2] = currEnd
 			pvalues.extend([ currpvalue ])
 			qvalues.extend([ currqvalue ])
@@ -114,8 +115,9 @@ def mergePeaks(peakResult):
 			expRCPosMean = np.nanmean(expRC)
 
 			diffPos = int(expRCPosMean - ctrlRCPosMean)
+			cohens_D = calculateCohenD(ctrlRC, expRC)
 			mergedPeak[resultIdx][6] = diffPos
-			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean])
+			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
 
 
 			## start a new region
@@ -155,7 +157,8 @@ def mergePeaks(peakResult):
 
 			diffPos = int(expRCPosMean - ctrlRCPosMean)
 			mergedPeak[resultIdx][6] = diffPos
-			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean])
+			cohens_D = calculateCohenD(ctrlRC, expRC)
+			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
 
 		pastChromo = currChromo
 		pastEnd = currEnd
@@ -169,6 +172,19 @@ def mergePeaks(peakResult):
 		expBW[i].close()
 
 	return mergedPeak
+
+
+def calculateCohenD(ctrlRC, expRC):
+	dof = vari.CTRLBW_NUM + vari.EXPBW_NUM - 2
+
+	ctrlRC_mean = np.mean(ctrlRC)
+	expRC_mean = np.mean(expRC)
+
+	s = np.sqrt( (  (vari.CTRLBW_NUM-1)*np.power(np.std(ctrlRC, ddof=1), 2) + (vari.EXPBW_NUM-1)*np.power(np.std(expRC, ddof=1), 2)  ) / dof )
+
+	cohenD = (expRC_mean - ctrlRC_mean) / s
+
+	return cohenD
 
 
 def filterSmallPeaks(peakResult):
@@ -432,11 +448,8 @@ def run(args):
 
 	######## WRITE A RESULT FILE
 	colNames = ["chr", "start", "end", "name", "score", "strand", "effectSize", "inputCount", "outputCount", "-log(pvalue)", "-log(qvalue)" ]
-	if vari.DISTANCE == 1:
-		finalResult, maxNegLogPValue, maxNegLogQValue = filterSmallPeaks(peakResult)
-	else:
-		mergedPeaks = mergePeaks(peakResult)
-		finalResult, maxNegLogPValue, maxNegLogQValue = filterSmallPeaks(mergedPeaks)
+	mergedPeaks = mergePeaks(peakResult)
+	finalResult, maxNegLogPValue, maxNegLogQValue = filterSmallPeaks(mergedPeaks)
 
 	numActi = 0
 	numRepress = 0
@@ -462,6 +475,7 @@ def run(args):
 		inputCount = int(finalResult[i][7])
 		outputCount = int(finalResult[i][8])
 		neglogPvalue = float(finalResult[i][4])
+		cohens_D = float(finalResult[i][9])
 		if(np.isnan(neglogPvalue) == True):
 			if(maxNegLogPValue == 1):
 				neglogPvalue = "-log(0)"
@@ -474,7 +488,7 @@ def run(args):
 			else:
 				neglogQvalue = maxNegLogQValue
 
-		peakToAdd = [chromo, start, end, name, score, strand, effectSize, inputCount, outputCount, neglogPvalue, neglogQvalue]
+		peakToAdd = [chromo, start, end, name, score, strand, effectSize, inputCount, outputCount, neglogPvalue, neglogQvalue, cohens_D]
 
 		outputStream.write('\t'.join([str(x) for x in peakToAdd]) + "\n")
 	outputStream.close()
