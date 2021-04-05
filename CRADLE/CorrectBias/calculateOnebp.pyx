@@ -1237,7 +1237,7 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		lastBinEnd = analysisEnd
 
 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > FILTERVALUE
-	selectedIdx, highRCIdx, starts = selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins)
+	selectedIdx, highRCIdx, starts = selectIdx(chromo, regionStart, regionEnd, vari.CTRLBW_NAMES, vari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, vari.FILTERVALUE)
 
 	## OUTPUT FILES
 	subfinalCtrlNames = [None] * vari.CTRLBW_NUM
@@ -1323,79 +1323,72 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 	return [subfinalCtrlNames, subfinalExperiNames, chromo]
 
 
-cpdef selectIdx(chromo, regionStart, regionEnd, lastBinStart, lastBinEnd, nBins):
-	meanMinFragFilterValue = int(np.round(vari.FILTERVALUE / (vari.CTRLBW_NUM + vari.EXPBW_NUM)))
+cpdef selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBinStart, lastBinEnd, nBins, binSize, highRC, minFragFilterValue):
+	meanMinFragFilterValue = int(np.round(minFragFilterValue / (len(ctrlBWNames) + len(experiBWNames))))
 
-	for rep in range(vari.CTRLBW_NUM):
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
+	for rep, bwName in enumerate(ctrlBWNames):
+		with pyBigWig.open(bwName) as bw:
+			if lastBinStart is not None:
+				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
+				temp[np.where(temp == None)] = 0.0
+				temp = temp.tolist()
 
-		if lastBinStart is not None:
-			temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
-			temp[np.where(temp==None)] = float(0)
-			temp = temp.tolist()
+				last_value = bw.stats(chromo, lastBinStart, lastBinEnd, type="mean", nBins=1)[0]
+				if last_value is None:
+					last_value = 0.0
+				temp.extend([last_value])
+				temp = np.array(temp)
+			else:
+				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
+				temp[np.where(temp == None)] = 0.0
 
-			last_value = bw.stats(chromo, lastBinStart, lastBinEnd, type="mean", nBins=1)[0]
-			if last_value is None:
-				last_value = float(0)
-			temp.extend([last_value])
-			temp = np.array(temp)
-		else:
-			temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
-			temp[np.where(temp==None)] = float(0)
+			if rep == 0:
+				rc_sum = temp
+				highReadCountIdx = np.where(temp > highRC)[0]
+				overMeanReadCountIdx = np.where(temp >= meanMinFragFilterValue)[0]
 
-		bw.close()
+			else:
+				rc_sum += temp
+				overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
+				overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
 
-		if rep == 0:
-			rc_sum = temp
-			highRCIdx = np.where(temp > vari.HIGHRC)[0]
-			overMeanReadCountIdx = np.where(temp >= meanMinFragFilterValue)[0]
+	for bwName in experiBWNames:
+		with pyBigWig.open(bwName) as bw:
 
-		else:
-			rc_sum = rc_sum + temp
+			if lastBinStart is not None:
+				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
+				temp[np.where(temp == None)] = 0.0
+				temp = temp.tolist()
+
+				last_value = bw.stats(chromo, lastBinStart, lastBinEnd, type="mean", nBins=1)[0]
+				if last_value is None:
+					last_value = 0.0
+				temp.extend([last_value])
+				temp = np.array(temp)
+			else:
+				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
+				temp[np.where(temp == None)] = 0.0
+
+			rc_sum += temp
+
 			overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
 			overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
 
-
-	for rep in range(vari.EXPBW_NUM):
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
-
-		if lastBinStart is not None:
-			temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
-			temp[np.where(temp==None)] = float(0)
-			temp = temp.tolist()
-
-			last_value = bw.stats(chromo, lastBinStart, lastBinEnd, type="mean", nBins=1)[0]
-			if last_value is None:
-				last_value = float(0)
-			temp.extend([last_value])
-			temp = np.array(temp)
-		else:
-			temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
-			temp[np.where(temp==None)] = float(0)
-
-		bw.close()
-
-		rc_sum = rc_sum + temp
-
-		overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
-		overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
-
-	idx = np.where(rc_sum > vari.FILTERVALUE)[0].tolist()
+	idx = np.where(rc_sum > minFragFilterValue)[0].tolist()
 	idx = np.intersect1d(idx, overMeanReadCountIdx)
-
 
 	if len(idx) == 0:
 		return np.array([]), np.array([]), np.array([])
 
 	if lastBinStart is not None:
-		starts = np.arange(regionStart, regionEnd, vari.BINSIZE)
+		starts = np.arange(regionStart, regionEnd, binSize)
 		starts = starts.tolist()
 		starts.extend([regionEnd])
 		starts = np.array(starts)
 	else:
-		starts = np.arange(regionStart, regionEnd, vari.BINSIZE)
+		starts = np.arange(regionStart, regionEnd, binSize)
 
 
 	starts = starts[idx]
 
-	return idx, highRCIdx, starts
+	return idx, highReadCountIdx, starts
