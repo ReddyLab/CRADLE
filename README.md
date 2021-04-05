@@ -46,7 +46,7 @@ These dependencies will be automatically installed when you install CRADLE eithe
 
 ## Commands
 ```
-cradle <correctBias | correctBias_stored | callPeak | normalize > [options]
+cradle <correctBias | correctBias_stored | callPeak | normalize> [options]
 ```
 
 ### 1) correctBias
