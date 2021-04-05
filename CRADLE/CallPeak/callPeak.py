@@ -447,7 +447,7 @@ def run(args):
 
 
 	######## WRITE A RESULT FILE
-	colNames = ["chr", "start", "end", "name", "score", "strand", "effectSize", "inputCount", "outputCount", "-log(pvalue)", "-log(qvalue)" ]
+	colNames = ["chr", "start", "end", "name", "score", "strand", "effectSize", "inputCount", "outputCount", "-log(pvalue)", "-log(qvalue)", "cohen's_d" ]
 	mergedPeaks = mergePeaks(peakResult)
 	finalResult, maxNegLogPValue, maxNegLogQValue = filterSmallPeaks(mergedPeaks)
 
