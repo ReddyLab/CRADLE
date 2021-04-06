@@ -78,31 +78,22 @@ def mergeCorrectedBedfilesToBW(meta, bwHeader, dataInfo, repInfo, signalBWName):
 
 	return signalBWName
 
-def divideGenome(regions, binSize=50000):
+def divideGenome(regions, baseBinSize=1, genomeBinSize=50000):
+
+	# Adjust the genome bin size to be a multiple of base bin Size
+	genomeBinSize -= genomeBinSize % baseBinSize
+
 	tasks = []
 	for region in regions:
 		regionChromo = region[0]
 		regionStart = int(region[1])
 		regionEnd = int(region[2])
-		regionLen = regionEnd - regionStart
 
-		if regionLen <= binSize:
-			tasks.append(region)
-		else:
-			numBin = float(regionLen) / binSize
-			if numBin > int(numBin):
-				numBin = int(numBin) + 1
-
-			numBin = int(numBin)
-			for i in range(numBin):
-				start = regionStart + i * binSize
-				end = regionStart + (i + 1) * binSize
-				if i == 0:
-					start = regionStart
-				if i == (numBin -1):
-					end = regionEnd
-
-				tasks.append([regionChromo, start, end])
+		binStart = regionStart
+		while binStart < regionEnd:
+			binEnd = binStart + genomeBinSize
+			tasks.append((regionChromo, binStart, min(binEnd, regionEnd)))
+			binStart = binEnd
 
 	return tasks
 

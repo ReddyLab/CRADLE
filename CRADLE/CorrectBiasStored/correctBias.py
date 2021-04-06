@@ -1,14 +1,17 @@
 import gc
 import multiprocessing
 import time
+
 import numpy as np
 import py2bit
 import pyBigWig
 import statsmodels.api as sm
 
-from . import vari
-from . import calculateOneBP
-from .. import correctbiasutils as utils
+import CRADLE.correctbiasutils as utils
+
+from CRADLE.CorrectBiasStored import vari
+from CRADLE.CorrectBiasStored import calculateOneBP
+
 
 RC_PERCENTILE = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
 
