@@ -7,7 +7,8 @@ import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
-from CRADLE.correctbiasutils.cython import TrainingRegion, TrainingSet, writeBedFile, plot
+from CRADLE.correctbiasutils import TrainingRegion, TrainingSet
+from CRADLE.correctbiasutils.cython import writeBedFile, plot
 
 COEF_LEN = 7
 
