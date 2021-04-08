@@ -6,9 +6,12 @@ import os
 import sys
 import tempfile
 import time
+
 import numpy as np
 import pyBigWig
 import statsmodels.api as sm
+
+import CRADLE.correctbiasutils as utils
 
 from CRADLE.CorrectBias import vari
 from CRADLE.CorrectBias import calculateOnebp
@@ -381,38 +384,6 @@ def getScalerForEachSample(args):
 	return scaler
 
 
-def divideGenome():
-	binSize = 50000
-
-	binSize = int( int( binSize / float(vari.BINSIZE) ) * vari.BINSIZE )
-
-	task = []
-	for idx in range(len(vari.REGION)):
-		regionChromo = vari.REGION[idx][0]
-		regionStart = int(vari.REGION[idx][1])
-		regionEnd = int(vari.REGION[idx][2])
-		regionLen = regionEnd - regionStart
-
-		if regionLen <= binSize :
-			task.append(vari.REGION[idx])
-		else:
-			numBin = float(regionLen) / binSize
-			if numBin > int(numBin):
-				numBin = int(numBin) + 1
-
-			for i in range(numBin):
-				start = regionStart + i * binSize
-				end = regionStart + (i + 1) * binSize
-				if i == 0:
-					start = regionStart
-				if i == (numBin -1):
-					end = regionEnd
-
-				task.append([regionChromo, start, end])
-
-	return task
-
-
 def getResultBWHeader():
 	chromoInData = np.array(vari.REGION)[:,0]
 
@@ -670,7 +641,7 @@ def run(args):
 
 	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL
 	print("======  FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL \n")
-	task = divideGenome()
+	task = utils.divideGenome(vari.REGION, vari.BINSIZE)
 
 	if len(task) < vari.NUMPROCESS:
 		numProcess = len(task)
