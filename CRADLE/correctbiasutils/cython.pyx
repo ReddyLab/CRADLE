@@ -1,8 +1,93 @@
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import pyBigWig
 
 matplotlib.use('Agg')
+
+cpdef generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
+	cdef int currStart
+	cdef int currEnd
+	cdef float currRC
+	cdef int nextStart
+	cdef int nextEnd
+	cdef float nextRC
+	cdef int numIdx
+	cdef int i
+	cdef int coalescedSections
+	cdef long [:] startsView
+	cdef long [:] valuesView
+
+	normObBW = pyBigWig.open(normObBWName, "w")
+	normObBW.addHeader(bwHeader)
+
+	obBW = pyBigWig.open(observedBWName)
+	for region in regions:
+		chromo = region[0]
+		start = int(region[1])
+		end = int(region[2])
+
+		starts = np.arange(start, end)
+		if pyBigWig.numpy == 1:
+			values = obBW.values(chromo, start, end, numpy=True)
+		else:
+			values = np.array(obBW.values(chromo, start, end))
+
+		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
+		starts = starts[idx]
+
+		if len(starts) == 0:
+			continue
+
+		values = values[idx]
+		values = values / scaler
+
+		## merge positions with the same values
+		values = values.astype(int)
+		numIdx = len(values)
+
+		startsView = starts
+		valuesView = values
+
+		currStart = startsView[0]
+		currRC = valuesView[0]
+		currEnd = currStart + 1
+
+		startEntries = []
+		endEntries = []
+		valueEntries = []
+
+		coalescedSections = 1
+		i = 1
+		while i < numIdx:
+			nextStart = startsView[i]
+			nextRC = valuesView[i]
+
+			if nextRC == currRC and nextStart == currEnd:
+				currEnd += 1
+			else:
+				### End a current line
+				startEntries.append(currStart)
+				endEntries.append(currEnd)
+				valueEntries.append(float(currRC))
+
+				### Start a new line
+				currStart = nextStart
+				currEnd = nextStart + 1
+				currRC = nextRC
+				coalescedSections += 1
+
+			i += 1
+
+		startEntries.append(currStart)
+		endEntries.append(currEnd)
+		valueEntries.append(float(currRC))
+
+		normObBW.addEntries([chromo] * coalescedSections, startEntries, ends=endEntries, values=valueEntries)
+	normObBW.close()
+	obBW.close()
+
+	return normObBWName
 
 cpdef plot(yView, fittedvalues, figName, scatterplotSamples):
 	corr = np.corrcoef(fittedvalues, np.array(yView))[0, 1]

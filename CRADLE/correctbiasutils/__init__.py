@@ -9,6 +9,8 @@ import statsmodels.api as sm
 
 from shutil import copyfile
 
+from CRADLE.correctbiasutils.cython import generateNormalizedObBWs
+
 TRAINING_BIN_SIZE = 1000
 
 class TrainingRegion:
@@ -137,69 +139,6 @@ def genNormalizedObBWs(outputDir, header, regions, ctrlBWNames, ctrlScaler, expe
 def outputNormalizedBWFile(outputDir, filename):
 	normObBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
 	return outputDir + "/" + normObBWName + "_normalized.bw"
-
-def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
-	normObBW = pyBigWig.open(normObBWName, "w")
-	normObBW.addHeader(bwHeader)
-
-	obBW = pyBigWig.open(observedBWName)
-
-	for region in regions:
-		chromo = region[0]
-		start = int(region[1])
-		end = int(region[2])
-
-		starts = np.array(range(start, end))
-		values = np.array(obBW.values(chromo, start, end))
-
-		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
-		starts = starts[idx]
-		values = values[idx]
-		values = values / scaler
-
-		if len(starts) == 0:
-			continue
-
-		## merge positions with the same values
-		values = values.astype(int)
-		numIdx = len(values)
-
-		idx = 0
-		prevStart = starts[idx]
-		prevRC = values[idx]
-		line = [prevStart, (prevStart+1), prevRC]
-
-		if numIdx == 1:
-			normObBW.addEntries([chromo], [int(prevStart)], ends=[int(prevStart+1)], values=[float(prevRC)])
-		else:
-			idx = 1
-			while idx < numIdx:
-				currStart = starts[idx]
-				currRC = values[idx]
-
-				if (currStart == (prevStart + 1)) and (currRC == prevRC):
-					line[1] = currStart + 1
-					prevStart = currStart
-					prevRC = currRC
-					idx = idx + 1
-				else:
-					### End a current line
-					normObBW.addEntries([chromo], [int(line[0])], ends=[int(line[1])], values=[float(line[2])])
-
-					### Start a new line
-					line = [currStart, (currStart+1), currRC]
-					prevStart = currStart
-					prevRC = currRC
-					idx = idx + 1
-
-				if idx == numIdx:
-					normObBW.addEntries([chromo], [int(line[0])], ends=[int(line[1])], values=[float(line[2])])
-					break
-
-	normObBW.close()
-	obBW.close()
-
-	return normObBWName
 
 def getScalerTasks(trainingSets, ctrlBWNames, experiBWNames, sampleCount):
 	###### OBTAIN READ COUNTS OF THE FIRST REPLICATE OF CTRLBW.
