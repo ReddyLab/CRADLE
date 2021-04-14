@@ -12,20 +12,13 @@ from shutil import copyfile
 TRAINING_BIN_SIZE = 1000
 
 class TrainingRegion:
-	chromo: str
-	analysisStart: int
-	analysisEnd: int
-
 	def __init__(self, chromo, analysisStart, analysisEnd):
 		self.chromo = chromo
 		self.analysisStart = analysisStart
 		self.analysisEnd = analysisEnd
 
 class TrainingSet:
-	xRowCount: int
-	trainingRegions: list[TrainingRegion]
-
-	def __init__(self, trainingRegions: list[TrainingRegion], xRowCount: int):
+	def __init__(self, trainingRegions, xRowCount):
 		self.trainingRegions = trainingRegions
 		self.xRowCount = xRowCount
 
