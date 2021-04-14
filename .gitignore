@@ -6,6 +6,7 @@ build
 CRADLE/**/*.c
 dist
 CRADLE.egg-info
+*.pyc
 
 # Ignore test runs
 test_cradle*

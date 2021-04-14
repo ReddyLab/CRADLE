@@ -7,11 +7,34 @@ import numpy as np
 import pyBigWig
 import statsmodels.api as sm
 
-from .cython import TrainingRegion, TrainingSet
-
 from shutil import copyfile
 
 TRAINING_BIN_SIZE = 1000
+
+class TrainingRegion:
+	chromo: str
+	analysisStart: int
+	analysisEnd: int
+
+	def __init__(self, chromo, analysisStart, analysisEnd):
+		self.chromo = chromo
+		self.analysisStart = analysisStart
+		self.analysisEnd = analysisEnd
+
+class TrainingSet:
+	xRowCount: int
+	trainingRegions: list[TrainingRegion]
+
+	def __init__(self, trainingRegions: list[TrainingRegion], xRowCount: int):
+		self.trainingRegions = trainingRegions
+		self.xRowCount = xRowCount
+
+	def __iter__(self):
+		def regionGenerator():
+			for region in self.trainingRegions:
+				yield region
+
+		return regionGenerator()
 
 def process(poolSize, function, argumentLists):
 	pool = multiprocessing.Pool(poolSize)
