@@ -425,7 +425,7 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 		numBin = int( (regionEnd - regionStart) / TRAINING_BIN_SIZE )
 		if numBin == 0:
 			numBin = 1
-			meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
+			meanValue = ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean")[0]
 
 			if meanValue is None:
 				continue
