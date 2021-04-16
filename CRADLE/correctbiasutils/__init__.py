@@ -1,3 +1,4 @@
+import io
 import linecache
 import math
 import multiprocessing
@@ -9,7 +10,7 @@ import statsmodels.api as sm
 
 from shutil import copyfile
 
-from CRADLE.correctbiasutils.cython import generateNormalizedObBWs
+from CRADLE.correctbiasutils.cython import array_split, generateNormalizedObBWs
 
 TRAINING_BIN_SIZE = 1000
 
@@ -249,31 +250,43 @@ def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 
 	return trainSet1, trainSet2
 
-def getCandidateTrainingSet(rcPercentile, regions, ctrlBWNames, outputDir):
+def regionMeans(bwFile, binCount, chromo, start, end):
+	if pyBigWig.numpy == 1:
+		values = bwFile.values(chromo, start, end, numpy=True)
+	else:
+		values = np.array(bwFile.values(chromo, start, end))
+
+	if binCount == 1:
+		means = [np.mean(values)]
+	else:
+		binnedValues = array_split(values, binCount, fillValue=np.nan)
+		means = [np.mean(x) for x in binnedValues]
+
+	return means
+
+def getCandidateTrainingSet(rcPercentile, regions, ctrlBWName, outputDir):
 	trainRegionNum = math.pow(10, 6) / float(TRAINING_BIN_SIZE)
 
 	meanRC = []
 	totalBinNum = 0
-	with pyBigWig.open(ctrlBWNames[0]) as ctrlBW:
+	with pyBigWig.open(ctrlBWName) as ctrlBW:
 		for region in regions:
 			regionChromo = region[0]
 			regionStart = int(region[1])
 			regionEnd = int(region[2])
 
-			numBin = max(1, int( (regionEnd - regionStart) / TRAINING_BIN_SIZE))
+			numBin = max(1, (regionEnd - regionStart) // TRAINING_BIN_SIZE)
 			totalBinNum += numBin
 
-			temp = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-			temp = temp[np.where(temp != None)]
-			temp = temp[np.where(temp > 0)]
+			means = regionMeans(ctrlBW, numBin, regionChromo, regionStart, regionEnd)
 
-			meanRC.extend(temp.tolist())
+			meanRC.extend(means)
 
 	if totalBinNum < trainRegionNum:
 		trainRegionNum = totalBinNum
 
 	meanRC = np.array(meanRC)
-	del temp
+	meanRC = meanRC[np.where((np.isnan(meanRC) == False) & (meanRC > 0))]
 
 	trainingRegionNum1 = int(np.round(trainRegionNum * 0.5 / 5))
 	trainingRegionNum2 = int(np.round(trainRegionNum * 0.5 / 9))
@@ -284,17 +297,17 @@ def getCandidateTrainingSet(rcPercentile, regions, ctrlBWNames, outputDir):
 	for i in range(5):
 		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
 		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
-		temp = [rc1, rc2, trainingRegionNum1, regions, ctrlBWNames[0], outputDir, rc90Percentile, rc99Percentile]
+		temp = [rc1, rc2, trainingRegionNum1, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile]
 		trainingSetMeta.append(temp)  ## RC criteria1(down), RC criteria2(up), # of bases, candidate regions
 
 	for i in range(5, 11):
 		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
 		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
 		if i == 10:
-			temp = [rc1, rc2, 3*trainingRegionNum2, regions, ctrlBWNames[0], outputDir, rc90Percentile, rc99Percentile]
+			temp = [rc1, rc2, 3*trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile]
 			rc99Percentile = rc1
 		else:
-			temp = [rc1, rc2, trainingRegionNum2, regions, ctrlBWNames[0], outputDir, rc90Percentile, rc99Percentile] # RC criteria1(down), RC criteria2(up), # of bases, candidate regions
+			temp = [rc1, rc2, trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile] # RC criteria1(down), RC criteria2(up), # of bases, candidate regions
 		if i == 5:
 			rc90Percentile = rc1
 
@@ -355,30 +368,32 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 		for i in range(len(result)):
 			resultFile.write('\t'.join([str(x) for x in result[i]]) + "\n")
 	'''
-
+	fileBuffer = io.StringIO()
 	for region in regions:
 		regionChromo = region[0]
 		regionStart = int(region[1])
 		regionEnd = int(region[2])
 
-		numBin = int( (regionEnd - regionStart) / TRAINING_BIN_SIZE )
+		numBin = (regionEnd - regionStart) // TRAINING_BIN_SIZE
 		if numBin == 0:
 			numBin = 1
-			meanValue = ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean")[0]
 
-			if meanValue is None:
+			meanValue = regionMeans(ctrlBW, numBin, regionChromo, regionStart, regionEnd)[0]
+
+			if np.isnan(meanValue) or meanValue == 0:
 				continue
 
 			if (meanValue >= downLimit) and (meanValue < upLimit):
-				line = [regionChromo, regionStart, regionEnd]
-				resultFile.write('\t'.join([str(x) for x in line]) + "\n")
-				numOfCandiRegion = numOfCandiRegion + 1
+				fileBuffer.write(f"{regionChromo}\t{regionStart}\t{regionEnd}\n")
+				numOfCandiRegion += 1
 		else:
 			regionEnd = numBin * TRAINING_BIN_SIZE + regionStart
-			meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-			pos = np.array(list(range(0, numBin))) * TRAINING_BIN_SIZE + regionStart
 
-			idx = np.where(meanValues != None)
+			meanValues = np.array(regionMeans(ctrlBW, numBin, regionChromo, regionStart, regionEnd))
+
+			pos = np.arange(0, numBin) * TRAINING_BIN_SIZE + regionStart
+
+			idx = np.where((meanValues != None) & (meanValues > 0))
 			meanValues = meanValues[idx]
 			pos = pos[idx]
 
@@ -387,17 +402,16 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 			if len(idx[0]) == 0:
 				continue
 
-			start = pos[idx]
-			end = start + TRAINING_BIN_SIZE
-			chromoArray = [regionChromo] * len(start)
+			starts = pos[idx]
 
-			numOfCandiRegion = numOfCandiRegion + len(start)
-			for i in range(len(start)):
-				line = [regionChromo, start[i], start[i] + TRAINING_BIN_SIZE]
-				resultFile.write('\t'.join([str(x) for x in line]) + "\n")
+			numOfCandiRegion += len(starts)
+			for start in starts:
+				fileBuffer.write(f"{regionChromo}\t{start}\t{start + TRAINING_BIN_SIZE}\n")
 
+	resultFile.write(fileBuffer.getvalue())
 	ctrlBW.close()
 	resultFile.close()
+	fileBuffer.close()
 
 	if numOfCandiRegion != 0:
 		resultLine.extend([ resultFile.name, numOfCandiRegion ])
