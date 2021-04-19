@@ -7,8 +7,8 @@ import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
-from CRADLE.correctbiasutils import TrainingRegion, TrainingSet
-from CRADLE.correctbiasutils.cython import writeBedFile, plot
+from CRADLE.correctbiasutils import TrainingRegion, TrainingSet, marshalFile
+from CRADLE.correctbiasutils.cython import coalesceSections, plot
 
 COEF_LEN = 7
 
@@ -102,103 +102,113 @@ cpdef getCoefs(model, covariates):
 
 	return coef
 
+cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
+	correctedCtrlReadCounts = [[]] * len(ctrlBWNames)
+	correctedExprReadCounts = [[]] * len(experiBWNames)
 
-cpdef correctReadCount(taskArgs, covariates, faFileName, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
-	chromo = taskArgs[0]
-	analysisStart = int(taskArgs[1])  # Genomic coordinates(starts from 1)
-	analysisEnd = int(taskArgs[2])
+	for taskArgs in tasks:
+		chromo = taskArgs[0]
+		analysisStart = int(taskArgs[1])  # Genomic coordinates(starts from 1)
+		analysisEnd = int(taskArgs[2])
 
-	with py2bit.open(faFileName) as faFile:
-		chromoEnd = int(faFile.chroms(chromo))
+		with py2bit.open(faFileName) as faFile:
+			chromoEnd = int(faFile.chroms(chromo))
 
-	###### GENERATE A RESULT MATRIX
-	fragStart = analysisStart - covariates.fragLen + 1
-	fragEnd = analysisEnd + covariates.fragLen - 1
-	shearStart = fragStart - 2
-	shearEnd = fragEnd + 2
+		###### GENERATE A RESULT MATRIX
+		fragStart = analysisStart - covariates.fragLen + 1
+		fragEnd = analysisEnd + covariates.fragLen - 1
+		shearStart = fragStart - 2
+		shearEnd = fragEnd + 2
 
-	if shearStart < 1:
-		shearStart = 1
-		fragStart = 3
-		analysisStart = max(analysisStart, fragStart)
-	if shearEnd > chromoEnd:
-		shearEnd = chromoEnd
-		fragEnd = shearEnd - 2
-		analysisEnd = min(analysisEnd, fragEnd)
+		if shearStart < 1:
+			shearStart = 1
+			fragStart = 3
+			analysisStart = max(analysisStart, fragStart)
+		if shearEnd > chromoEnd:
+			shearEnd = chromoEnd
+			fragEnd = shearEnd - 2
+			analysisEnd = min(analysisEnd, fragEnd)
 
-	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAGNUM_FILTER_VALUE
-	selectedIdx, highReadCountIdx, starts = selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue)
+		###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAGNUM_FILTER_VALUE
+		selectedIdx, highReadCountIdx, starts = selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue)
 
-	## OUTPUT FILES
-	subfinalCtrlNames = [None] * len(ctrlBWNames)
-	subfinalExperiNames = [None] * len(experiBWNames)
+		## OUTPUT FILES
+		subfinalCtrlReadCounts = [None] * len(ctrlBWNames)
+		subfinalExperiReadCounts = [None] * len(experiBWNames)
 
-	if len(selectedIdx) == 0:
-		return [subfinalCtrlNames, subfinalExperiNames, chromo]
+		if len(selectedIdx) == 0:
+			for names in correctedCtrlReadCounts:
+				names.append((chromo, None))
+			for names in correctedExprReadCounts:
+				names.append((chromo, None))
+			continue
 
-	hdfFileName = covariates.hdfFileName(chromo)
-	with h5py.File(hdfFileName, "r") as hdfFile:
-		for rep, bwName in enumerate(ctrlBWNames):
-			with pyBigWig.open(bwName) as bwFile:
-				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				rcArr[np.isnan(rcArr)] = 0.0
-				rcArr = rcArr / ctrlScaler[rep]
+		hdfFileName = covariates.hdfFileName(chromo)
+		with h5py.File(hdfFileName, "r") as hdfFile:
+			for rep, bwName in enumerate(ctrlBWNames):
+				with pyBigWig.open(bwName) as bwFile:
+					rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+					rcArr[np.isnan(rcArr)] = 0.0
+					rcArr = rcArr / ctrlScaler[rep]
 
-			prdvals = np.exp(
-				np.nansum(
-					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFCTRL[rep, 1:],
-					axis=1
-				) + COEFCTRL[rep, 0]
-			)
-			prdvals[highReadCountIdx] = np.exp(
-				np.nansum(
-					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFCTRL_HIGHRC[rep, 1:],
-					axis=1
-				) + COEFCTRL_HIGHRC[rep, 0]
-			)
+				prdvals = np.exp(
+					np.nansum(
+						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFCTRL[rep, 1:],
+						axis=1
+					) + COEFCTRL[rep, 0]
+				)
+				prdvals[highReadCountIdx] = np.exp(
+					np.nansum(
+						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFCTRL_HIGHRC[rep, 1:],
+						axis=1
+					) + COEFCTRL_HIGHRC[rep, 0]
+				)
 
-			rcArr = rcArr - prdvals
-			rcArr = rcArr[selectedIdx]
+				rcArr = rcArr - prdvals
+				rcArr = rcArr[selectedIdx]
 
-			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-			tempStarts = np.delete(starts, idx)
-			rcArr = np.delete(rcArr, idx)
-			if len(rcArr) > 0:
-				with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False) as subfinalCtrlFile:
-					subfinalCtrlNames[rep] = subfinalCtrlFile.name
-					writeBedFile(subfinalCtrlFile, tempStarts, rcArr, analysisEnd, binsize)
+				idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
+				tempStarts = np.delete(starts, idx)
+				rcArr = np.delete(rcArr, idx)
+				if len(rcArr) > 0:
+					subfinalCtrlReadCounts[rep] = coalesceSections(tempStarts, rcArr, analysisEnd, binsize)
 
-		for rep, bwName in enumerate(experiBWNames):
-			with pyBigWig.open(bwName) as bwFile:
-				rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
-				rcArr[np.isnan(rcArr)] = 0.0
-				rcArr = rcArr / experiScaler[rep]
+			for rep, bwName in enumerate(experiBWNames):
+				with pyBigWig.open(bwName) as bwFile:
+					rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+					rcArr[np.isnan(rcArr)] = 0.0
+					rcArr = rcArr / experiScaler[rep]
 
-			prdvals = np.exp(
-				np.nansum(
-					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFEXP[rep, 1:],
-					axis=1
-				) + COEFEXP[rep, 0]
-			)
-			prdvals[highReadCountIdx] = np.exp(
-				np.nansum(
-					(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFEXP_HIGHRC[rep, 1:],
-					axis=1
-				) + COEFEXP_HIGHRC[rep, 0]
-			)
+				prdvals = np.exp(
+					np.nansum(
+						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFEXP[rep, 1:],
+						axis=1
+					) + COEFEXP[rep, 0]
+				)
+				prdvals[highReadCountIdx] = np.exp(
+					np.nansum(
+						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFEXP_HIGHRC[rep, 1:],
+						axis=1
+					) + COEFEXP_HIGHRC[rep, 0]
+				)
 
-			rcArr = rcArr - prdvals
-			rcArr = rcArr[selectedIdx]
+				rcArr = rcArr - prdvals
+				rcArr = rcArr[selectedIdx]
 
-			idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-			tempStarts = np.delete(starts, idx)
-			rcArr = np.delete(rcArr, idx)
-			if len(rcArr) > 0:
-				with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=outputDir, delete=False) as subfinalExperiFile:
-					subfinalExperiNames[rep] = subfinalExperiFile.name
-					writeBedFile(subfinalExperiFile, tempStarts, rcArr, analysisEnd, binsize)
+				idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
+				tempStarts = np.delete(starts, idx)
+				rcArr = np.delete(rcArr, idx)
+				if len(rcArr) > 0:
+					subfinalExperiReadCounts[rep] = coalesceSections(tempStarts, rcArr, analysisEnd, binsize)
 
-	return [subfinalCtrlNames, subfinalExperiNames, chromo]
+		for i, readCounts in enumerate(correctedCtrlReadCounts):
+			readCounts.append((chromo, subfinalCtrlReadCounts[i]))
+		for i, readCounts in enumerate(correctedExprReadCounts):
+			readCounts.append((chromo, subfinalExperiReadCounts[i]))
+
+	ctrlNames = [marshalFile(outputDir, readCounts) for readCounts in correctedCtrlReadCounts]
+	exprNames = [marshalFile(outputDir, readCounts) for readCounts in correctedExprReadCounts]
+	return [ctrlNames, exprNames]
 
 cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue):
 	readCountSums = np.zeros(analysisEnd - analysisStart, dtype=np.float64)
