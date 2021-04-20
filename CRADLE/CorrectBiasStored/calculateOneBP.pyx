@@ -232,6 +232,8 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, 
 	idx = np.where(readCountSums > minFragFilterValue)[0].tolist()
 	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
+	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
+
 	if len(idx) == 0:
 		return np.array([]), np.array([]), np.array([])
 

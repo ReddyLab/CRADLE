@@ -1377,6 +1377,8 @@ cpdef selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, last
 	idx = np.where(rc_sum > minFragFilterValue)[0].tolist()
 	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
+	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
+	
 	if len(idx) == 0:
 		return np.array([]), np.array([]), np.array([])
 
