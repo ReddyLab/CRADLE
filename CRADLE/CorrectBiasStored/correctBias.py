@@ -27,7 +27,7 @@ def run(args):
 	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
 		RC_PERCENTILE,
 		vari.REGION,
-		vari.CTRLBW_NAMES,
+		vari.CTRLBW_NAMES[0],
 		vari.OUTPUT_DIR
 	)
 	vari.HIGHRC = rc90Percentile
