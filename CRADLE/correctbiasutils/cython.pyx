@@ -5,6 +5,47 @@ import pyBigWig
 
 matplotlib.use('Agg')
 
+cpdef array_split(values, numBins, fillValue=np.nan):
+	"""Splits a numpy array of values into numBins "bins". If len(values) is not evenly
+	divisible by numBins the last bin gets the extra values.
+
+	Example:
+		array_split(np.arange(0, 16), 3) = [array(0, 1, 2, 3, 4), array(5, 6, 7, 8, 9), array(10, 11, 12, 13, 14, 15)]
+	"""
+
+	cdef float [:] valuesView
+	cdef int binCount
+	cdef int smallBinSize
+	cdef int valueCount
+	cdef int start
+	cdef int end
+	cdef int smallBinCount
+	cdef int i
+
+	binCount = numBins
+	if binCount < 1:
+		return values
+
+	valuesView = values
+	valueCount = len(valuesView)
+	smallBinSize = max(1, valueCount // binCount)
+	start = 0
+	end = smallBinSize
+	smallBinCount = binCount - 1
+	bins = [fillValue] * binCount
+
+	i = 0
+	while i < smallBinCount and end < valueCount:
+		bins[i] = valuesView[start:end]
+		start = end
+		end += smallBinSize
+		i += 1
+
+	if start < valueCount:
+		bins[i] = valuesView[start:]
+
+	return bins
+
 cpdef generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
 	cdef int currStart
 	cdef int currEnd
