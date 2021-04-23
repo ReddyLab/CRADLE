@@ -9,6 +9,7 @@ import statsmodels.api as sm
 
 import CRADLE.correctbiasutils as utils
 
+from CRADLE.correctbiasutils.cython import array_split
 from CRADLE.CorrectBiasStored import vari
 from CRADLE.CorrectBiasStored import calculateOneBP
 
@@ -131,31 +132,35 @@ def run(args):
 	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL
 	print("======  FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL \n")
 	tasks = utils.divideGenome(vari.REGION)
-	numProcesses = min(len(tasks), vari.NUMPROCESS)
-	taskCount = len(tasks)
+	# `vari.NUMPROCESS * len(vari.CTRLBW_NAMES)` seems like a good number of jobs
+	#   to split the work into. This keeps each individual job from using too much
+	#   memory without creating so many jobs that compiling the BigWig files from
+	#   the generated temp files will take a long time.
+	jobCount = min(len(tasks), vari.NUMPROCESS * len(vari.CTRLBW_NAMES))
+	processCount = min(len(tasks), vari.NUMPROCESS)
+	taskGroups = array_split(tasks, jobCount, fillValue=None)
 	crcArgs = zip(
-		tasks,
-		[covariates] * taskCount,
-		[vari.FA] * taskCount,
-		[vari.CTRLBW_NAMES] * taskCount,
-		[vari.CTRLSCALER] * taskCount,
-		[vari.COEFCTRL] * taskCount,
-		[vari.COEFCTRL_HIGHRC] * taskCount,
-		[vari.EXPBW_NAMES] * taskCount,
-		[vari.EXPSCALER] * taskCount,
-		[vari.COEFEXP] * taskCount,
-		[vari.COEFEXP_HIGHRC] * taskCount,
-		[vari.HIGHRC] * taskCount,
-		[vari.MIN_FRAG_FILTER_VALUE] * taskCount,
-		[vari.BINSIZE] * taskCount,
-		[vari.OUTPUT_DIR] * taskCount
+		taskGroups,
+		[covariates] * jobCount,
+		[vari.FA] * jobCount,
+		[vari.CTRLBW_NAMES] * jobCount,
+		[vari.CTRLSCALER] * jobCount,
+		[vari.COEFCTRL] * jobCount,
+		[vari.COEFCTRL_HIGHRC] * jobCount,
+		[vari.EXPBW_NAMES] * jobCount,
+		[vari.EXPSCALER] * jobCount,
+		[vari.COEFEXP] * jobCount,
+		[vari.COEFEXP_HIGHRC] * jobCount,
+		[vari.HIGHRC] * jobCount,
+		[vari.MIN_FRAG_FILTER_VALUE] * jobCount,
+		[vari.BINSIZE] * jobCount,
+		[vari.OUTPUT_DIR] * jobCount
 	)
-	resultMeta = utils.process(numProcesses, calculateOneBP.correctReadCount, crcArgs)
+	resultMeta = utils.process(processCount, calculateOneBP.correctReadCount, crcArgs)
 
 	gc.collect()
 
 	print("-- RUNNING TIME of calculating Task covariates : %s hour(s)" % ((time.time() - startTime) / 3600) )
-
 
 	###### MERGING TEMP FILES
 	print("======  MERGING TEMP FILES \n")

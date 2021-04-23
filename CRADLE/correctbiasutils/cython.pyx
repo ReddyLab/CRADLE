@@ -13,7 +13,6 @@ cpdef array_split(values, numBins, fillValue=np.nan):
 		array_split(np.arange(0, 16), 3) = [array(0, 1, 2, 3, 4), array(5, 6, 7, 8, 9), array(10, 11, 12, 13, 14, 15)]
 	"""
 
-	cdef float [:] valuesView
 	cdef int binCount
 	cdef int smallBinSize
 	cdef int valueCount
@@ -26,8 +25,7 @@ cpdef array_split(values, numBins, fillValue=np.nan):
 	if binCount < 1:
 		return values
 
-	valuesView = values
-	valueCount = len(valuesView)
+	valueCount = len(values)
 	smallBinSize = max(1, valueCount // binCount)
 	start = 0
 	end = smallBinSize
@@ -36,13 +34,13 @@ cpdef array_split(values, numBins, fillValue=np.nan):
 
 	i = 0
 	while i < smallBinCount and end < valueCount:
-		bins[i] = valuesView[start:end]
+		bins[i] = values[start:end]
 		start = end
 		end += smallBinSize
 		i += 1
 
 	if start < valueCount:
-		bins[i] = valuesView[start:]
+		bins[i] = values[start:]
 
 	return bins
 
@@ -158,6 +156,7 @@ cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 	prevReadCount = tempSignalvals[idx]
 	line = [prevStart, (prevStart + binsize), prevReadCount]
 	if numIdx == 1:
+		line[1] = analysisEnd
 		subfile.write('\t'.join([str(x) for x in line]) + "\n")
 		subfile.close()
 		return
@@ -187,3 +186,59 @@ cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 			subfile.write('\t'.join([str(x) for x in line]) + "\n")
 			subfile.close()
 			break
+
+cpdef coalesceSections(starts, values, analysisEnd=None, binSize=1):
+	cdef long [:] startsView
+	cdef long [:] signalsView
+	cdef int i
+	cdef int numIdx
+	cdef int currStart
+	cdef int nextStart
+	cdef int currValue
+	cdef int nextValue
+	cdef int coalescedSectionCount
+
+	values = values.astype(int)
+	numIdx = len(values)
+
+	startsView = starts
+	valuesView = values
+
+	currStart = startsView[0]
+	currValue = valuesView[0]
+	currEnd = currStart + 1
+
+	startEntries = []
+	endEntries = []
+	valueEntries = []
+
+	coalescedSectionCount = 1
+	i = 1
+	while i < numIdx:
+		nextStart = startsView[i]
+		nextValue = valuesView[i]
+
+		if nextValue == currValue and nextStart == currEnd:
+			currEnd += binSize
+		else:
+			### End a current line
+			startEntries.append(currStart)
+			endEntries.append(currEnd)
+			valueEntries.append(float(currValue))
+
+			### Start a new line
+			currStart = nextStart
+			currEnd = nextStart + 1
+			currValue = nextValue
+			coalescedSectionCount += 1
+
+		i += 1
+
+	if analysisEnd is not None:
+		currEnd = analysisEnd
+
+	startEntries.append(currStart)
+	endEntries.append(currEnd)
+	valueEntries.append(float(currValue))
+
+	return coalescedSectionCount, startEntries, endEntries, valueEntries

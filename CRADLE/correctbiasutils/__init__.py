@@ -1,5 +1,6 @@
 import io
 import linecache
+import marshal
 import math
 import multiprocessing
 import os
@@ -58,40 +59,79 @@ def getResultBWHeader(region, ctrlBWNames):
 
 	return resultBWHeader
 
-def mergeBWFiles(outputDir, header, resultMeta, ctrlBWNames, expriBWNames):
+def marshalFile(outputDir, data):
+	with tempfile.NamedTemporaryFile(mode="wb", suffix=".msl", dir=outputDir, delete=False) as outputFile:
+		name = outputFile.name
+		marshal.dump(data, outputFile)
+
+	return name
+
+def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, expriBWNames):
+	# The tempFiles list isn't in a useful shape. It's a list of pairs of lists of files
+	# Example:
+	# [
+	#   # Results of Job 0
+	#	[['ctrlFile0Temp0.msl', 'ctrlFile1Temp0.msl'], ['experiFile0Temp0.msl', 'expriFile1Temp0.msl'], ],
+	#   # Results of Job 1
+	#	[['ctrlFile0Temp1.msl', 'ctrlFile1Temp1.msl'], ['experiFile0Temp1.msl', 'expriFile1Temp1.msl'], ],
+	#   # Results of Job 2
+	#	[['ctrlFile0Temp2.msl', 'ctrlFile1Temp2.msl'], ['experiFile0Temp2.msl', 'expriFile1Temp2.msl'], ],
+	# ]
+	#
+	# The following code rearranges the file names so they are in this shape:
+	# [
+	#	[
+	# 		['ctrlFile0Temp0.msl', 'ctrlFile0Temp1.msl', 'ctrlFile0Temp2.msl'],
+	# 		['ctrlFile1Temp0.msl', 'ctrlFile1Temp1.msl', 'ctrlFile1Temp2.msl']
+	# 	],
+	#	[
+	# 		['experiFile0Temp0.msl', 'experiFile0Temp1.msl', 'experiFile0Temp2.msl'],
+	# 		['experiFile1Temp0.msl', 'experiFile1Temp1.msl', 'experiFile1Temp2.msl']
+	# 	],
+	# ]
+	#
+	# Which matches what we want to do with the files better -- combine all temp files for a particular file together
+	# into a single BigWig file
+
+	ctrlFiles = [[]] * len(ctrlBWNames)
+	experiFiles = [[]] * len(expriBWNames)
+	for jobFiles in tempFiles:
+		jobCtrl = jobFiles[0]
+		jobExperi = jobFiles[1]
+		for i, ctrlFile in enumerate(jobCtrl):
+			ctrlFiles[i].append(ctrlFile)
+		for i, experiFile in enumerate(jobExperi):
+			experiFiles[i].append(experiFile)
+
 	jobList = []
 	for i, ctrlFile in enumerate(ctrlBWNames):
-		jobList.append([resultMeta, header, 0, (i+1), outputBWFile(outputDir, ctrlFile)])
+		jobList.append([ctrlFiles[i], header, outputBWFile(outputDir, ctrlFile)])
 	for i, experiFile in enumerate(expriBWNames):
-		jobList.append([resultMeta, header, 1, (i+1), outputBWFile(outputDir, experiFile)])
+		jobList.append([experiFiles[i], header, outputBWFile(outputDir, experiFile)])
 
-	return process(len(ctrlBWNames) + len(expriBWNames), mergeCorrectedBedfilesToBW, jobList)
+	return process(len(ctrlBWNames) + len(expriBWNames), mergeCorrectedFilesToBW, jobList)
 
 def outputBWFile(outputDir, filename):
 	signalBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
 	return outputDir + "/" + signalBWName + "_corrected.bw"
 
-def mergeCorrectedBedfilesToBW(meta, bwHeader, dataInfo, repInfo, signalBWName):
+def mergeCorrectedFilesToBW(tempFiles, bwHeader, signalBWName):
 	signalBW = pyBigWig.open(signalBWName, "w")
 	signalBW.addHeader(bwHeader)
 
-	for line in meta:
-		tempSignalBedName = line[dataInfo][repInfo - 1]
-		if tempSignalBedName is None:
-			continue
+	for tempFile in tempFiles:
+		with open(tempFile, 'rb') as dataFile:
+			correctedReadCounts = marshal.load(dataFile)
 
-		tempChrom = line[2]
+		for counts in correctedReadCounts:
+			chromo, readCounts = counts
+			if readCounts is None:
+				continue
 
-		with open(tempSignalBedName) as tempFileStream:
-			for tempLine in tempFileStream.readlines():
-				temp = tempLine.split()
-				regionStart = int(temp[0])
-				regionEnd = int(temp[1])
-				regionValue = float(temp[2])
+			sectionCount, starts, ends, values = readCounts
+			signalBW.addEntries([chromo] * sectionCount, starts, ends=ends, values=values)
 
-				signalBW.addEntries([tempChrom], [regionStart], ends=[regionEnd], values=[regionValue])
-
-		os.remove(tempSignalBedName)
+		os.remove(tempFile)
 
 	signalBW.close()
 
