@@ -156,7 +156,7 @@ cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 	prevReadCount = tempSignalvals[idx]
 	line = [prevStart, (prevStart + binsize), prevReadCount]
 	if numIdx == 1:
-		line[1] = analysisEnd
+		line[1] = min(line[1], analysisEnd)
 		subfile.write('\t'.join([str(x) for x in line]) + "\n")
 		subfile.close()
 		return
@@ -182,7 +182,7 @@ cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 			idx = idx + 1
 
 		if idx == numIdx:
-			line[1] = analysisEnd
+			line[1] = min(line[1], analysisEnd)
 			subfile.write('\t'.join([str(x) for x in line]) + "\n")
 			subfile.close()
 			break
@@ -206,7 +206,7 @@ cpdef coalesceSections(starts, values, analysisEnd=None, binSize=1):
 
 	currStart = startsView[0]
 	currValue = valuesView[0]
-	currEnd = currStart + 1
+	currEnd = currStart + binSize
 
 	startEntries = []
 	endEntries = []
@@ -228,14 +228,14 @@ cpdef coalesceSections(starts, values, analysisEnd=None, binSize=1):
 
 			### Start a new line
 			currStart = nextStart
-			currEnd = nextStart + 1
+			currEnd = nextStart + binSize
 			currValue = nextValue
 			coalescedSectionCount += 1
 
 		i += 1
 
 	if analysisEnd is not None:
-		currEnd = analysisEnd
+		currEnd = min(currEnd, analysisEnd)
 
 	startEntries.append(currStart)
 	endEntries.append(currEnd)
