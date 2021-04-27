@@ -103,20 +103,38 @@ cpdef getCoefs(model, covariates):
 	return coef
 
 cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
-	correctedCtrlReadCounts = [[]] * len(ctrlBWNames)
-	correctedExprReadCounts = [[]] * len(experiBWNames)
+	cdef int analysisStart
+	cdef int analysisEnd
+	cdef int chromoEnd
+	cdef int fragStart
+	cdef int fragEnd
+	cdef int fragLen
+	cdef int replicateIndex
+	cdef int shearStart
+	cdef int shearEnd
+	cdef int taskIndex = 0
+	cdef int taskCount = len(tasks)
+	cdef int ctrlBWCount = len(ctrlBWNames)
+	cdef int experiBWCount = len(experiBWNames)
 
-	for taskArgs in tasks:
-		chromo = taskArgs[0]
-		analysisStart = int(taskArgs[1])  # Genomic coordinates(starts from 1)
-		analysisEnd = int(taskArgs[2])
+	## OUTPUT FILES
+	# TODO: THIS IS A BUG, it makes a bunch of copies of a single list instead of
+	# multiple lists.
+	correctedCtrlReadCounts = [[[None, None]] * taskCount] * ctrlBWCount
+	correctedExprReadCounts = [[[None, None]] * taskCount] * experiBWCount
+
+	while taskIndex < taskCount:
+		chromo = tasks[taskIndex][0]
+		analysisStart = int(tasks[taskIndex][1])  # Genomic coordinates(starts from 1)
+		analysisEnd = int(tasks[taskIndex][2])
 
 		with py2bit.open(faFileName) as faFile:
 			chromoEnd = int(faFile.chroms(chromo))
 
 		###### GENERATE A RESULT MATRIX
-		fragStart = analysisStart - covariates.fragLen + 1
-		fragEnd = analysisEnd + covariates.fragLen - 1
+		fragLen = covariates.fragLen
+		fragStart = analysisStart - fragLen + 1
+		fragEnd = analysisEnd + fragLen - 1
 		shearStart = fragStart - 2
 		shearEnd = fragEnd + 2
 
@@ -132,36 +150,34 @@ cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, C
 		###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAGNUM_FILTER_VALUE
 		selectedIdx, highReadCountIdx, starts = selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue)
 
-		## OUTPUT FILES
-		subfinalCtrlReadCounts = [None] * len(ctrlBWNames)
-		subfinalExperiReadCounts = [None] * len(experiBWNames)
-
 		if len(selectedIdx) == 0:
-			for names in correctedCtrlReadCounts:
-				names.append((chromo, None))
-			for names in correctedExprReadCounts:
-				names.append((chromo, None))
+			taskIndex += 1
 			continue
 
 		hdfFileName = covariates.hdfFileName(chromo)
 		with h5py.File(hdfFileName, "r") as hdfFile:
-			for rep, bwName in enumerate(ctrlBWNames):
-				with pyBigWig.open(bwName) as bwFile:
-					rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+			replicateIndex = 0
+			covari = hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected
+			while replicateIndex < ctrlBWCount:
+				with pyBigWig.open(ctrlBWNames[replicateIndex]) as bwFile:
+					if pyBigWig.numpy == 1:
+						rcArr = bwFile.values(chromo, analysisStart, analysisEnd, numpy=True)
+					else:
+						rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
 					rcArr[np.isnan(rcArr)] = 0.0
-					rcArr = rcArr / ctrlScaler[rep]
+					rcArr = rcArr / ctrlScaler[replicateIndex]
 
 				prdvals = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFCTRL[rep, 1:],
+						covari * COEFCTRL[replicateIndex, 1:],
 						axis=1
-					) + COEFCTRL[rep, 0]
+					) + COEFCTRL[replicateIndex, 0]
 				)
 				prdvals[highReadCountIdx] = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFCTRL_HIGHRC[rep, 1:],
+						covari[highReadCountIdx] * COEFCTRL_HIGHRC[replicateIndex, 1:],
 						axis=1
-					) + COEFCTRL_HIGHRC[rep, 0]
+					) + COEFCTRL_HIGHRC[replicateIndex, 0]
 				)
 
 				rcArr = rcArr - prdvals
@@ -171,25 +187,32 @@ cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, C
 				tempStarts = np.delete(starts, idx)
 				rcArr = np.delete(rcArr, idx)
 				if len(rcArr) > 0:
-					subfinalCtrlReadCounts[rep] = coalesceSections(tempStarts, rcArr, analysisEnd, binsize)
+					correctedExprReadCounts[replicateIndex][taskIndex][0] = chromo
+					correctedExprReadCounts[replicateIndex][taskIndex][1] = coalesceSections(tempStarts, rcArr, analysisEnd, binsize)
 
-			for rep, bwName in enumerate(experiBWNames):
-				with pyBigWig.open(bwName) as bwFile:
-					rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+				replicateIndex += 1
+
+			replicateIndex = 0
+			while replicateIndex < experiBWCount:
+				with pyBigWig.open(experiBWNames[replicateIndex]) as bwFile:
+					if pyBigWig.numpy == 1:
+						rcArr = bwFile.values(chromo, analysisStart, analysisEnd, numpy=True)
+					else:
+						rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
 					rcArr[np.isnan(rcArr)] = 0.0
-					rcArr = rcArr / experiScaler[rep]
+					rcArr = rcArr / experiScaler[replicateIndex]
 
 				prdvals = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFEXP[rep, 1:],
+						covari * COEFEXP[replicateIndex, 1:],
 						axis=1
-					) + COEFEXP[rep, 0]
+					) + COEFEXP[replicateIndex, 0]
 				)
 				prdvals[highReadCountIdx] = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFEXP_HIGHRC[rep, 1:],
+						covari[highReadCountIdx] * COEFEXP_HIGHRC[replicateIndex, 1:],
 						axis=1
-					) + COEFEXP_HIGHRC[rep, 0]
+					) + COEFEXP_HIGHRC[replicateIndex, 0]
 				)
 
 				rcArr = rcArr - prdvals
@@ -199,27 +222,31 @@ cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, C
 				tempStarts = np.delete(starts, idx)
 				rcArr = np.delete(rcArr, idx)
 				if len(rcArr) > 0:
-					subfinalExperiReadCounts[rep] = coalesceSections(tempStarts, rcArr, analysisEnd, binsize)
+					correctedExprReadCounts[replicateIndex][taskIndex][0] = chromo
+					correctedExprReadCounts[replicateIndex][taskIndex][1] = coalesceSections(tempStarts, rcArr, analysisEnd, binsize)
 
-		for i, readCounts in enumerate(correctedCtrlReadCounts):
-			readCounts.append((chromo, subfinalCtrlReadCounts[i]))
-		for i, readCounts in enumerate(correctedExprReadCounts):
-			readCounts.append((chromo, subfinalExperiReadCounts[i]))
+				replicateIndex += 1
+
+		taskIndex += 1
 
 	ctrlNames = [marshalFile(outputDir, readCounts) for readCounts in correctedCtrlReadCounts]
 	exprNames = [marshalFile(outputDir, readCounts) for readCounts in correctedExprReadCounts]
 	return [ctrlNames, exprNames]
 
 cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue):
+	cdef int i = 0
+	cdef int ctrlBWCount = len(ctrlBWNames)
+	cdef int experiBWCount = len(experiBWNames)
+
 	readCountSums = np.zeros(analysisEnd - analysisStart, dtype=np.float64)
 	meanMinFragFilterValue = int(np.round(minFragFilterValue / (len(ctrlBWNames) + len(experiBWNames))))
 
-	for rep, bwName in enumerate(ctrlBWNames):
-		with pyBigWig.open(bwName) as bwFile:
-			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+	while i < ctrlBWCount:
+		with pyBigWig.open(ctrlBWNames[i]) as bwFile:
+			readCounts = bwFile.values(chromo, analysisStart, analysisEnd, numpy=True)
 			readCounts[np.isnan(readCounts)] = 0.0
 
-		if rep == 0:
+		if i == 0:
 			highReadCountIdx = np.where(readCounts > highRC)[0]
 			overMeanReadCountIdx = np.where(readCounts >= meanMinFragFilterValue)[0]
 		else:
@@ -227,26 +254,29 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, 
 			overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
 
 		readCountSums += readCounts
+		i += 1
 
-	for rep, bwName in enumerate(experiBWNames):
-		with pyBigWig.open(bwName) as bwFile:
-			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
+	i = 0
+	while i < experiBWCount:
+		with pyBigWig.open(experiBWNames[i]) as bwFile:
+			readCounts = bwFile.values(chromo, analysisStart, analysisEnd, numpy=True)
 			readCounts[np.isnan(readCounts)] = 0.0
 
 		overMeanReadCountIdx_temp = np.where(readCounts >= meanMinFragFilterValue)[0]
 		overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
 
 		readCountSums += readCounts
+		i += 1
+
 	del overMeanReadCountIdx_temp
 
 	idx = np.where(readCountSums > minFragFilterValue)[0].tolist()
 	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
-	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
-
 	if len(idx) == 0:
-		return np.array([]), np.array([]), np.array([])
+		return np.empty(0), np.empty(0), np.empty(0)
 
-	starts = np.array(list(range(analysisStart, analysisEnd)))[idx]
+	starts = np.arange(analysisStart, analysisEnd)[idx]
+
 
 	return idx, highReadCountIdx, starts
