@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,27 +7,27 @@ import pyBigWig
 
 matplotlib.use('Agg')
 
-cpdef array_split(values, numBins, fillValue=np.nan):
+cpdef arraySplit(values, numBins, fillValue=np.nan):
 	"""Splits a numpy array of values into numBins "bins". If len(values) is not evenly
 	divisible by numBins the last bin gets the extra values.
 
 	Example:
-		array_split(np.arange(0, 16), 3) = [array(0, 1, 2, 3, 4), array(5, 6, 7, 8, 9), array(10, 11, 12, 13, 14, 15)]
+		arraySplit(np.arange(0, 16), 3) = [array(0, 1, 2, 3, 4), array(5, 6, 7, 8, 9), array(10, 11, 12, 13, 14, 15)]
 	"""
 
-	cdef int binCount
+	cdef int binCount = numBins
+	cdef int valueCount = len(values)
 	cdef int smallBinSize
-	cdef int valueCount
 	cdef int start
 	cdef int end
 	cdef int smallBinCount
 	cdef int i
 
-	binCount = numBins
 	if binCount < 1:
-		return values
+		return [values]
+	elif binCount > valueCount:
+		binCount = valueCount
 
-	valueCount = len(values)
 	smallBinSize = max(1, valueCount // binCount)
 	start = 0
 	end = smallBinSize

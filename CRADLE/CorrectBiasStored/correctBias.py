@@ -9,7 +9,7 @@ import statsmodels.api as sm
 
 import CRADLE.correctbiasutils as utils
 
-from CRADLE.correctbiasutils.cython import array_split
+from CRADLE.correctbiasutils.cython import arraySplit
 from CRADLE.CorrectBiasStored import vari
 from CRADLE.CorrectBiasStored import calculateOneBP
 
@@ -138,7 +138,7 @@ def run(args):
 	#   the generated temp files will take a long time.
 	jobCount = min(len(tasks), vari.NUMPROCESS * len(vari.CTRLBW_NAMES))
 	processCount = min(len(tasks), vari.NUMPROCESS)
-	taskGroups = array_split(tasks, jobCount, fillValue=None)
+	taskGroups = arraySplit(tasks, jobCount, fillValue=None)
 	crcArgs = zip(
 		taskGroups,
 		[covariates] * jobCount,

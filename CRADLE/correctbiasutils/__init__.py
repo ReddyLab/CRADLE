@@ -11,7 +11,7 @@ import statsmodels.api as sm
 
 from shutil import copyfile
 
-from CRADLE.correctbiasutils.cython import array_split, generateNormalizedObBWs
+from CRADLE.correctbiasutils.cython import arraySplit, generateNormalizedObBWs
 
 TRAINING_BIN_SIZE = 1000
 
@@ -299,7 +299,7 @@ def regionMeans(bwFile, binCount, chromo, start, end):
 	if binCount == 1:
 		means = [np.mean(values)]
 	else:
-		binnedValues = array_split(values, binCount, fillValue=np.nan)
+		binnedValues = arraySplit(values, binCount, fillValue=np.nan)
 		means = [np.mean(x) for x in binnedValues]
 
 	return means

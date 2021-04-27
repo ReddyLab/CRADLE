@@ -1,6 +1,8 @@
 import pytest
+import pyximport; pyximport.install()
 
 from CRADLE.correctbiasutils import divideGenome
+from CRADLE.correctbiasutils.cython import arraySplit
 
 # Semi-random regions
 rand_regions = [('chr1', 100, 30789), ('chr1', 100, 123123), ('chr1', 124434, 473629), ('chr1', 1234756, 1657483)]
@@ -60,3 +62,19 @@ gbs_regions = [('chr2', 100, 200100), ('chr2', 124434, 524435), ('chr2', 624434,
 ])
 def testDivideGenomeRand(regions, baseBinSize, genomeBinSize, result):
 	assert divideGenome(regions, baseBinSize, genomeBinSize) == result
+
+@pytest.mark.parametrize("inputArray,numBins,result", [
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 0, [[1, 2, 3, 4, 5, 6, 7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 1, [[1, 2, 3, 4, 5, 6, 7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 2, [[1, 2, 3, 4], [5, 6, 7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 4, [[1, 2], [3, 4], [5, 6], [7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 5, [[1], [2], [3], [4], [5, 6, 7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 6, [[1], [2], [3], [4], [5], [6, 7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [[1], [2], [3], [4], [5], [6], [7, 8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 8, [[1], [2], [3], [4], [5], [6], [7], [8, 9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 9, [[1], [2], [3], [4], [5], [6], [7], [8], [9]]),
+	([1, 2, 3, 4, 5, 6, 7, 8, 9], 10, [[1], [2], [3], [4], [5], [6], [7], [8], [9]]),
+])
+def testArraySplit(inputArray, numBins, result):
+	assert arraySplit(inputArray, numBins) == result
