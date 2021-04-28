@@ -17,10 +17,13 @@ cpdef arraySplit(values, numBins, fillValue=np.nan):
 
 	cdef int binCount = numBins
 	cdef int valueCount = len(values)
+	cdef int extraValues
 	cdef int smallBinSize
+	cdef int largeBinSize
 	cdef int start
 	cdef int end
-	cdef int smallBinCount
+	cdef int smallBinEndIndex
+	cdef int largeBinEndIndex
 	cdef int i
 
 	if binCount < 1:
@@ -29,20 +32,28 @@ cpdef arraySplit(values, numBins, fillValue=np.nan):
 		binCount = valueCount
 
 	smallBinSize = max(1, valueCount // binCount)
-	start = 0
-	end = smallBinSize
-	smallBinCount = binCount - 1
+	largeBinSize = smallBinSize + 1
+	extraValues = valueCount - (binCount * smallBinSize)
+	smallBinEndIndex = binCount - extraValues
+	largeBinEndIndex = smallBinEndIndex + extraValues
+
 	bins = [fillValue] * binCount
 
+	start = 0
+	end = smallBinSize
 	i = 0
-	while i < smallBinCount and end < valueCount:
+	while i < smallBinEndIndex:
 		bins[i] = values[start:end]
 		start = end
 		end += smallBinSize
 		i += 1
 
-	if start < valueCount:
-		bins[i] = values[start:]
+	end = start + largeBinSize
+	while i < largeBinEndIndex:
+		bins[i] = values[start:end]
+		start = end
+		end += largeBinSize
+		i += 1
 
 	return bins
 
