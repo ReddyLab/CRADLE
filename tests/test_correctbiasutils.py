@@ -1,4 +1,5 @@
 import pytest
+import pyximport; pyximport.install()
 
 from CRADLE.correctbiasutils import divideGenome
 
