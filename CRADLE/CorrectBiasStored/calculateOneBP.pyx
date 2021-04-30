@@ -103,8 +103,8 @@ cpdef getCoefs(model, covariates):
 	return coef
 
 cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
-	correctedCtrlReadCounts = [[]] * len(ctrlBWNames)
-	correctedExprReadCounts = [[]] * len(experiBWNames)
+	correctedCtrlReadCounts = [[] for _ in range(len(ctrlBWNames))]
+	correctedExprReadCounts = [[] for _ in range(len(experiBWNames))]
 
 	for taskArgs in tasks:
 		chromo = taskArgs[0]

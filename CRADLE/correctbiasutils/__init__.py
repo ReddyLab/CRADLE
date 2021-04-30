@@ -66,16 +66,16 @@ def marshalFile(outputDir, data):
 
 	return name
 
-def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, expriBWNames):
+def rotateBWFileArrays(tempFiles, ctrlBWNames, experiBWNames):
 	# The tempFiles list isn't in a useful shape. It's a list of pairs of lists of files
 	# Example:
 	# [
 	#   # Results of Job 0
-	#	[['ctrlFile0Temp0.msl', 'ctrlFile1Temp0.msl'], ['experiFile0Temp0.msl', 'expriFile1Temp0.msl'], ],
+	#	[['ctrlFile0Temp0.msl', 'ctrlFile1Temp0.msl'], ['experiFile0Temp0.msl', 'experiFile1Temp0.msl'], ],
 	#   # Results of Job 1
-	#	[['ctrlFile0Temp1.msl', 'ctrlFile1Temp1.msl'], ['experiFile0Temp1.msl', 'expriFile1Temp1.msl'], ],
+	#	[['ctrlFile0Temp1.msl', 'ctrlFile1Temp1.msl'], ['experiFile0Temp1.msl', 'experiFile1Temp1.msl'], ],
 	#   # Results of Job 2
-	#	[['ctrlFile0Temp2.msl', 'ctrlFile1Temp2.msl'], ['experiFile0Temp2.msl', 'expriFile1Temp2.msl'], ],
+	#	[['ctrlFile0Temp2.msl', 'ctrlFile1Temp2.msl'], ['experiFile0Temp2.msl', 'experiFile1Temp2.msl'], ],
 	# ]
 	#
 	# The following code rearranges the file names so they are in this shape:
@@ -93,8 +93,8 @@ def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, expriBWNames):
 	# Which matches what we want to do with the files better -- combine all temp files for a particular file together
 	# into a single BigWig file
 
-	ctrlFiles = [[]] * len(ctrlBWNames)
-	experiFiles = [[]] * len(expriBWNames)
+	ctrlFiles = [[] for _ in range(len(ctrlBWNames))]
+	experiFiles = [[] for _ in range(len(experiBWNames))]
 	for jobFiles in tempFiles:
 		jobCtrl = jobFiles[0]
 		jobExperi = jobFiles[1]
@@ -103,13 +103,18 @@ def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, expriBWNames):
 		for i, experiFile in enumerate(jobExperi):
 			experiFiles[i].append(experiFile)
 
+	return ctrlFiles, experiFiles
+
+def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, experiBWNames):
+	ctrlFiles, experiFiles = rotateBWFileArrays(tempFiles, ctrlBWNames, experiBWNames)
+
 	jobList = []
 	for i, ctrlFile in enumerate(ctrlBWNames):
 		jobList.append([ctrlFiles[i], header, outputBWFile(outputDir, ctrlFile)])
-	for i, experiFile in enumerate(expriBWNames):
+	for i, experiFile in enumerate(experiBWNames):
 		jobList.append([experiFiles[i], header, outputBWFile(outputDir, experiFile)])
 
-	return process(len(ctrlBWNames) + len(expriBWNames), mergeCorrectedFilesToBW, jobList)
+	return process(len(ctrlBWNames) + len(experiBWNames), mergeCorrectedFilesToBW, jobList)
 
 def outputBWFile(outputDir, filename):
 	signalBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
