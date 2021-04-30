@@ -1,3 +1,7 @@
+# cython: language_level=3
+
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pyBigWig
 
