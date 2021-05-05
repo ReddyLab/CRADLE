@@ -1,8 +1,6 @@
 import pytest
-import pyximport; pyximport.install()
 
-from CRADLE.correctbiasutils import divideGenome, rotateBWFileArrays
-from CRADLE.correctbiasutils.cython import arraySplit
+from CRADLE.correctbiasutils import divideGenome
 
 # Semi-random regions
 rand_regions = [('chr1', 100, 30789), ('chr1', 100, 123123), ('chr1', 124434, 473629), ('chr1', 1234756, 1657483)]
@@ -62,42 +60,3 @@ gbs_regions = [('chr2', 100, 200100), ('chr2', 124434, 524435), ('chr2', 624434,
 ])
 def testDivideGenomeRand(regions, baseBinSize, genomeBinSize, result):
 	assert divideGenome(regions, baseBinSize, genomeBinSize) == result
-
-@pytest.mark.parametrize("inputArray,numBins,result", [
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 0, [[1, 2, 3, 4, 5, 6, 7, 8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 1, [[1, 2, 3, 4, 5, 6, 7, 8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 2, [[1, 2, 3, 4], [5, 6, 7, 8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 3, [[1, 2, 3], [4, 5, 6], [7, 8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 4, [[1, 2], [3, 4], [5, 6], [7, 8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 5, [[1], [2, 3], [4, 5], [6, 7], [8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 6, [[1], [2], [3], [4, 5], [6, 7], [8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 7, [[1], [2], [3], [4], [5], [6, 7], [8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 8, [[1], [2], [3], [4], [5], [6], [7], [8, 9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 9, [[1], [2], [3], [4], [5], [6], [7], [8], [9]]),
-	([1, 2, 3, 4, 5, 6, 7, 8, 9], 10, [[1], [2], [3], [4], [5], [6], [7], [8], [9]]),
-])
-def testArraySplit(inputArray, numBins, result):
-	assert arraySplit(inputArray, numBins) == result
-
-def testRotateBWFileArrays():
-	inputArray = [
-	  # Results of Job 0
-		[['ctrlFile0Temp0.msl', 'ctrlFile1Temp0.msl'], ['experiFile0Temp0.msl', 'experiFile1Temp0.msl'], ],
-	  # Results of Job 1
-		[['ctrlFile0Temp1.msl', 'ctrlFile1Temp1.msl'], ['experiFile0Temp1.msl', 'experiFile1Temp1.msl'], ],
-	  # Results of Job 2
-		[['ctrlFile0Temp2.msl', 'ctrlFile1Temp2.msl'], ['experiFile0Temp2.msl', 'experiFile1Temp2.msl'], ],
-	]
-
-	output = (
-		[
-			['ctrlFile0Temp0.msl', 'ctrlFile0Temp1.msl', 'ctrlFile0Temp2.msl'],
-			['ctrlFile1Temp0.msl', 'ctrlFile1Temp1.msl', 'ctrlFile1Temp2.msl']
-		],
-		[
-			['experiFile0Temp0.msl', 'experiFile0Temp1.msl', 'experiFile0Temp2.msl'],
-			['experiFile1Temp0.msl', 'experiFile1Temp1.msl', 'experiFile1Temp2.msl']
-		],
-	)
-
-	assert rotateBWFileArrays(inputArray, ['ctrlFile0', 'ctrlFile1'], ['experiFile0', 'experiFile1']) == output
