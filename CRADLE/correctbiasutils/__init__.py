@@ -5,6 +5,8 @@ import math
 import multiprocessing
 import os
 import tempfile
+import matplotlib
+import matplotlib.pyplot as plt
 import numpy as np
 import pyBigWig
 import statsmodels.api as sm
@@ -12,6 +14,8 @@ import statsmodels.api as sm
 from shutil import copyfile
 
 from CRADLE.correctbiasutils.cython import arraySplit, generateNormalizedObBWs
+
+matplotlib.use('Agg')
 
 TRAINING_BIN_SIZE = 1000
 
@@ -465,12 +469,6 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	os.remove(resultFile.name)
 	return None
 
-def getScatterplotSamples(trainingSet):
-	if trainingSet.xRowCount <= 50000:
-		return np.array(range(trainingSet.xRowCount))
-	else:
-		return np.random.choice(np.array(range(trainingSet.xRowCount)), 50000, replace=False)
-
 def alignCoordinatesToHDF(faFile, oldTrainingSet, fragLen):
 	trainingSet = []
 	xRowCount = 0
@@ -500,3 +498,41 @@ def alignCoordinatesToHDF(faFile, oldTrainingSet, fragLen):
 		trainingSet.append(TrainingRegion(chromo, analysisStart, analysisEnd))
 
 	return TrainingSet(trainingRegions=trainingSet, xRowCount=xRowCount)
+
+def getScatterplotSamples(trainingSet):
+	if trainingSet.xRowCount <= 10_000:
+		return np.arange(0, trainingSet.xRowCount)
+	else:
+		return np.random.choice(np.arange(0, trainingSet.xRowCount), 10_000, replace=False)
+
+def figureFileName(outputDir, bwFileName):
+	bwName = '.'.join(bwFileName.rsplit('/', 1)[-1].split(".")[:-1])
+	return os.path.join(outputDir, f"fit_{bwName}.png")
+
+def plot(regRCs, regRCFittedValues, highRCs, highRCFittedValues, figName):
+	fig, ax = plt.subplots()
+
+	corr = np.corrcoef(regRCFittedValues, regRCs)[0, 1]
+	corr = np.round(corr, 2)
+	maxi1 = np.nanmax(regRCFittedValues)
+	maxi2 = np.nanmax(regRCs)
+	maxiRegRC = max(maxi1, maxi2)
+	ax.plot(regRCs, regRCFittedValues, color='g', marker='s', alpha=0.01)
+
+	corr = np.corrcoef(highRCFittedValues, highRCs)[0, 1]
+	corr = np.round(corr, 2)
+	maxi1 = np.nanmax(highRCFittedValues)
+	maxi2 = np.nanmax(highRCs)
+	maxiHighRC = max(maxi1, maxi2)
+	ax.plot(highRCs, highRCFittedValues, color='g', marker='s', alpha=0.01)
+
+	maxi = max(maxiRegRC, maxiHighRC)
+
+	ax.text((maxi-25), 10, corr, ha='center', va='center')
+	ax.set_xlabel("observed")
+	ax.set_ylabel("predicted")
+	ax.set_xlim(0, maxi)
+	ax.set_ylim(0, maxi)
+	ax.plot([0, maxi], [0, maxi], 'k-', color='r')
+	ax.set_aspect('equal', adjustable='box')
+	fig.savefig(figName)

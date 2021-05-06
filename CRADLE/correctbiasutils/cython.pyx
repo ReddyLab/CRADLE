@@ -1,11 +1,7 @@
 # cython: language_level=3
 
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pyBigWig
-
-matplotlib.use('Agg')
 
 cpdef arraySplit(values, numBins, fillValue=np.nan):
 	"""Splits a numpy array of values into numBins "bins". If len(values) is not evenly
@@ -140,25 +136,6 @@ cpdef generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObB
 	obBW.close()
 
 	return normObBWName
-
-cpdef plot(yView, fittedvalues, figName, scatterplotSamples):
-	corr = np.corrcoef(fittedvalues, np.array(yView))[0, 1]
-	corr = np.round(corr, 2)
-	maxi1 = np.nanmax(fittedvalues[scatterplotSamples])
-	maxi2 = np.nanmax(np.array(yView)[scatterplotSamples])
-	maxi = max(maxi1, maxi2)
-
-	plt.plot(np.array(yView)[scatterplotSamples], fittedvalues[scatterplotSamples], color='g', marker='s', alpha=0.01)
-	plt.text((maxi-25), 10, corr, ha='center', va='center')
-	plt.xlabel("observed")
-	plt.ylabel("predicted")
-	plt.xlim(0, maxi)
-	plt.ylim(0, maxi)
-	plt.plot([0, maxi], [0, maxi], 'k-', color='r')
-	plt.gca().set_aspect('equal', adjustable='box')
-	plt.savefig(figName)
-	plt.close()
-	plt.clf()
 
 cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 	tempSignalvals = tempSignalvals.astype(int)

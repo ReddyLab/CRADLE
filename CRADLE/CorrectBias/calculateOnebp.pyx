@@ -14,7 +14,7 @@ import py2bit
 import pyBigWig
 
 from CRADLE.CorrectBias import vari
-from CRADLE.correctbiasutils.cython import writeBedFile, plot
+from CRADLE.correctbiasutils.cython import writeBedFile
 
 cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
 
@@ -894,10 +894,14 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 	COEFCTRL = np.zeros((vari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
 	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
 
-	cdef double [:] YView = np.zeros(xNumRows, dtype=np.float64)
+	readCounts = np.zeros(xNumRows, dtype=np.float64)
+	cdef double [:] readCountsView = readCounts
 
 	cdef int ptr
 	cdef int rcIdx
+
+	ctrlPlotValues = {}
+	experiPlotValues = {}
 
 	for rep in range(vari.CTRLBW_NUM):
 		ptr = 0
@@ -908,7 +912,7 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 
 			rcIdx = 0
 			while rcIdx < f['Y'].shape[0]:
-				YView[rcIdx+ptr] = float(f['Y'][rcIdx])
+				readCountsView[rcIdx+ptr] = float(f['Y'][rcIdx])
 				rcIdx = rcIdx + 1
 
 			ptr = ptr + int(f['Y'].shape[0])
@@ -917,20 +921,16 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 			os.remove(subfileName)
 
 
-		deleteIdx = np.where( (np.array(YView) < np.finfo(np.float32).min) | (np.array(YView) > np.finfo(np.float32).max))[0]
+		deleteIdx = np.where( (readCounts < np.finfo(np.float32).min) | (readCounts > np.finfo(np.float32).max))[0]
 		if len(deleteIdx) != 0:
-			model = sm.GLM(np.delete(np.array(YView).astype(int), deleteIdx), np.delete(np.array(XView), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+			model = sm.GLM(np.delete(readCounts.astype(int), deleteIdx), np.delete(np.array(XView), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 		else:
-			model = sm.GLM(np.array(YView).astype(int), np.array(XView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+			model = sm.GLM(readCounts.astype(int), np.array(XView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
 		coef = model.params
 		COEFCTRL[rep, ] = coef
 
-		## PLOT
-		bwName = '.'.join( vari.CTRLBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
-		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
-
-		plot(YView, model.fittedvalues, figName, scatterplotSamples)
+		ctrlPlotValues[vari.CTRLBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
 	for rep in range(vari.EXPBW_NUM):
 		ptr = 0
@@ -940,7 +940,7 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 
 			rcIdx = 0
 			while rcIdx < f['Y'].shape[0]:
-				YView[rcIdx+ptr] = float(f['Y'][rcIdx])
+				readCountsView[rcIdx+ptr] = float(f['Y'][rcIdx])
 				rcIdx = rcIdx + 1
 
 			ptr = ptr + int(f['Y'].shape[0])
@@ -948,16 +948,16 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 			f.close()
 			os.remove(subfileName)
 
-		deleteIdx = np.where( (np.array(YView) < np.finfo(np.float32).min) | (np.array(YView) > np.finfo(np.float32).max))[0]
+		deleteIdx = np.where( (readCounts < np.finfo(np.float32).min) | (readCounts > np.finfo(np.float32).max))[0]
 		if len(deleteIdx) != 0:
 			model = sm.GLM(
-				np.delete(np.array(YView).astype(int), deleteIdx),
+				np.delete(readCounts.astype(int), deleteIdx),
 				np.delete(np.array(XView), deleteIdx, axis=0),
 				family=sm.families.Poisson(link=sm.genmod.families.links.log)
 			).fit()
 		else:
 			model = sm.GLM(
-				np.array(YView).astype(int),
+				readCounts.astype(int),
 				np.array(XView),
 				family=sm.families.Poisson(link=sm.genmod.families.links.log)
 			).fit()
@@ -965,13 +965,9 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 		coef = model.params
 		COEFEXP[rep, ] = coef
 
-		## PLOT
-		bwName = '.'.join( vari.EXPBW_NAMES[rep].rsplit('/', 1)[-1].split(".")[:-1])
-		figName = vari.OUTPUT_DIR + "/fit_" + bwName + ".png"
+		experiPlotValues[vari.EXPBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
-		plot(YView, model.fittedvalues, figName, scatterplotSamples)
-
-	return COEFCTRL, COEFEXP
+	return COEFCTRL, COEFEXP, ctrlPlotValues, experiPlotValues
 
 
 cpdef memoryView(value):
@@ -1378,7 +1374,7 @@ cpdef selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, last
 	idx = np.intersect1d(idx, overMeanReadCountIdx)
 
 	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
-	
+
 	if len(idx) == 0:
 		return np.array([]), np.array([]), np.array([])
 

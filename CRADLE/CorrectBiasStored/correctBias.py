@@ -1,5 +1,6 @@
 import gc
 import multiprocessing
+import os
 import time
 
 import numpy as np
@@ -88,17 +89,37 @@ def run(args):
 		calculateOneBP.performRegression,
 		[
 			[
-				trainSet90Percentile, scatterplotSamples90Percentile, covariates, vari.CTRLBW_NAMES, vari.CTRLSCALER,
-				vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR, "90_precentile"
+				trainSet90Percentile, covariates, vari.CTRLBW_NAMES, vari.CTRLSCALER, vari.EXPBW_NAMES, vari.EXPSCALER, scatterplotSamples90Percentile
 			],
 			[
-				trainSet90To99Percentile, scatterplotSamples90to99Percentile, covariates, vari.CTRLBW_NAMES, vari.CTRLSCALER,
-				vari.EXPBW_NAMES, vari.EXPSCALER, vari.OUTPUT_DIR, "90_to_99_percentile"
+				trainSet90To99Percentile, covariates, vari.CTRLBW_NAMES, vari.CTRLSCALER, vari.EXPBW_NAMES, vari.EXPSCALER, scatterplotSamples90to99Percentile
 			]
 		]
 	).get()
 	pool.close()
 	pool.join()
+
+
+
+	for name in vari.CTRLBW_NAMES:
+		fileName = utils.figureFileName(vari.OUTPUT_DIR, name)
+		regRCReadCounts, regRCFittedValues = coefResult[0][2][name]
+		highRCReadCounts, highRCFittedValues = coefResult[1][2][name]
+		utils.plot(
+			regRCReadCounts, regRCFittedValues,
+			highRCReadCounts, highRCFittedValues,
+			fileName
+		)
+
+	for name in vari.EXPBW_NAMES:
+		fileName = utils.figureFileName(vari.OUTPUT_DIR, name)
+		regRCReadCounts, regRCFittedValues = coefResult[0][3][name]
+		highRCReadCounts, highRCFittedValues = coefResult[1][3][name]
+		utils.plot(
+			regRCReadCounts, regRCFittedValues,
+			highRCReadCounts, highRCFittedValues,
+			fileName
+		)
 
 	del trainSet90Percentile, trainSet90To99Percentile
 	gc.collect()

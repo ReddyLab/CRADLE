@@ -545,6 +545,27 @@ def run(args):
 	).get()
 	pool.close()
 	pool.join()
+
+	for name in vari.CTRLBW_NAMES:
+		fileName = utils.figureFileName(vari.OUTPUT_DIR, name)
+		regRCReadCounts, regRCFittedValues = coefResult[0][2][name]
+		highRCReadCounts, highRCFittedValues = coefResult[1][2][name]
+		utils.plot(
+			regRCReadCounts, regRCFittedValues,
+			highRCReadCounts, highRCFittedValues,
+			fileName
+		)
+
+	for name in vari.EXPBW_NAMES:
+		fileName = utils.figureFileName(vari.OUTPUT_DIR, name)
+		regRCReadCounts, regRCFittedValues = coefResult[0][3][name]
+		highRCReadCounts, highRCFittedValues = coefResult[1][3][name]
+		utils.plot(
+			regRCReadCounts, regRCFittedValues,
+			highRCReadCounts, highRCFittedValues,
+			fileName
+		)
+
 	del trainSetResult1, trainSetResult2
 	gc.collect()
 

@@ -8,11 +8,11 @@ import py2bit
 import pyBigWig
 
 from CRADLE.correctbiasutils import TrainingRegion, TrainingSet, marshalFile
-from CRADLE.correctbiasutils.cython import coalesceSections, plot
+from CRADLE.correctbiasutils.cython import coalesceSections
 
 COEF_LEN = 7
 
-cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, outputDir, outputLabel):
+cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, scatterplotSamples):
 	xColumnCount = covariates.num + 1
 
 	#### Get X matrix
@@ -35,14 +35,16 @@ cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames
 	COEFCTRL = np.zeros((len(ctrlBWNames), COEF_LEN), dtype=np.float64)
 	COEFEXPR = np.zeros((len(experiBWNames), COEF_LEN), dtype=np.float64)
 
+	ctrlPlotValues = {}
+	experiPlotValues = {}
+
 	for i, bwFileName in enumerate(ctrlBWNames):
 		readCounts = getReadCounts(bwFileName, trainingSet, ctrlScaler[i])
 		model = buildModel(readCounts, xView)
 
 		COEFCTRL[i, :] = getCoefs(model, covariates)
 
-		figName = figureFileName(outputDir, bwFileName, outputLabel)
-		plot(readCounts, model.fittedvalues, figName, scatterplotSamples)
+		ctrlPlotValues[bwFileName] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
 	for i, bwFileName in enumerate(experiBWNames):
 		readCounts = getReadCounts(bwFileName, trainingSet, experiScaler[i])
@@ -50,19 +52,17 @@ cpdef performRegression(trainingSet, scatterplotSamples, covariates, ctrlBWNames
 
 		COEFEXPR[i, :] = getCoefs(model, covariates)
 
-		figName = figureFileName(outputDir, bwFileName, outputLabel)
-		plot(readCounts, model.fittedvalues, figName, scatterplotSamples)
+		experiPlotValues[bwFileName] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
-	return COEFCTRL, COEFEXPR
-
-cpdef figureFileName(outputDir, bwFileName, outputLabel):
-	bwName = '.'.join(bwFileName.rsplit('/', 1)[-1].split(".")[:-1])
-	return os.path.join(outputDir, f"fit_{bwName}_{outputLabel}.png")
+	return COEFCTRL, COEFEXPR, ctrlPlotValues, experiPlotValues
 
 cpdef getReadCounts(bwFileName, trainingSet, scaler):
-	cdef double [:] readCounts = np.zeros(trainingSet.xRowCount, dtype=np.float64)
+	cdef double [:] readCountsView
 	cdef int ptr
 	cdef int posIdx
+
+	readCounts = np.zeros(trainingSet.xRowCount, dtype=np.float64)
+	readCountsView = readCounts
 
 	with pyBigWig.open(bwFileName) as bwFile:
 		ptr = 0
@@ -76,7 +76,7 @@ cpdef getReadCounts(bwFileName, trainingSet, scaler):
 			numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
 			posIdx = 0
 			while posIdx < numPos:
-				readCounts[ptr + posIdx] = regionReadCounts[posIdx]
+				readCountsView[ptr + posIdx] = regionReadCounts[posIdx]
 				posIdx += 1
 
 			ptr += numPos
