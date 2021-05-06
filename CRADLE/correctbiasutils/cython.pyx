@@ -1,11 +1,7 @@
 # cython: language_level=3
 
-import matplotlib
-import matplotlib.pyplot as plt
 import numpy as np
 import pyBigWig
-
-matplotlib.use('Agg')
 
 cpdef arraySplit(values, numBins, fillValue=np.nan):
 	"""Splits a numpy array of values into numBins "bins". If len(values) is not evenly
