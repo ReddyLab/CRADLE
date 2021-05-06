@@ -1,7 +1,6 @@
 # cython: language_level=3
 
 import numpy as np
-import pyBigWig
 
 cpdef arraySplit(values, numBins, fillValue=np.nan):
 	"""Splits a numpy array of values into numBins "bins". If len(values) is not evenly
@@ -53,90 +52,6 @@ cpdef arraySplit(values, numBins, fillValue=np.nan):
 
 	return bins
 
-cpdef generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
-	cdef int currStart
-	cdef int currEnd
-	cdef float currRC
-	cdef int nextStart
-	cdef int nextEnd
-	cdef float nextRC
-	cdef int numIdx
-	cdef int i
-	cdef int coalescedSections
-	cdef long [:] startsView
-	cdef long [:] valuesView
-
-	normObBW = pyBigWig.open(normObBWName, "w")
-	normObBW.addHeader(bwHeader)
-
-	obBW = pyBigWig.open(observedBWName)
-	for region in regions:
-		chromo = region[0]
-		start = int(region[1])
-		end = int(region[2])
-
-		starts = np.arange(start, end)
-		if pyBigWig.numpy == 1:
-			values = obBW.values(chromo, start, end, numpy=True)
-		else:
-			values = np.array(obBW.values(chromo, start, end))
-
-		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
-		starts = starts[idx]
-
-		if len(starts) == 0:
-			continue
-
-		values = values[idx]
-		values = values / scaler
-
-		## merge positions with the same values
-		values = values.astype(int)
-		numIdx = len(values)
-
-		startsView = starts
-		valuesView = values
-
-		currStart = startsView[0]
-		currRC = valuesView[0]
-		currEnd = currStart + 1
-
-		startEntries = []
-		endEntries = []
-		valueEntries = []
-
-		coalescedSections = 1
-		i = 1
-		while i < numIdx:
-			nextStart = startsView[i]
-			nextRC = valuesView[i]
-
-			if nextRC == currRC and nextStart == currEnd:
-				currEnd += 1
-			else:
-				### End a current line
-				startEntries.append(currStart)
-				endEntries.append(currEnd)
-				valueEntries.append(float(currRC))
-
-				### Start a new line
-				currStart = nextStart
-				currEnd = nextStart + 1
-				currRC = nextRC
-				coalescedSections += 1
-
-			i += 1
-
-		startEntries.append(currStart)
-		endEntries.append(currEnd)
-		valueEntries.append(float(currRC))
-
-		normObBW.addEntries([chromo] * coalescedSections, startEntries, ends=endEntries, values=valueEntries)
-	normObBW.close()
-	obBW.close()
-
-	return normObBWName
-
 cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 	tempSignalvals = tempSignalvals.astype(int)
 	numIdx = len(tempSignalvals)
@@ -177,26 +92,31 @@ cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 			subfile.close()
 			break
 
-cpdef coalesceSections(starts, values, analysisEnd=None, binSize=1):
+cpdef coalesceSections(starts, values, analysisEnd=None, stepSize=1):
 	cdef long [:] startsView
-	cdef long [:] signalsView
+	cdef long [:] valuesView
+	cdef long cStepSize = stepSize
 	cdef int i
 	cdef int numIdx
-	cdef int currStart
-	cdef int nextStart
-	cdef int currValue
-	cdef int nextValue
+	cdef long currStart
+	cdef long nextStart
+	cdef long currEnd
+	cdef long currValue
+	cdef long nextValue
 	cdef int coalescedSectionCount
 
 	values = values.astype(int)
-	numIdx = len(values)
+	numIdx = values.size
+
+	if numIdx == 0:
+		return 0, [], [], []
 
 	startsView = starts
 	valuesView = values
 
 	currStart = startsView[0]
 	currValue = valuesView[0]
-	currEnd = currStart + binSize
+	currEnd = currStart + cStepSize
 
 	startEntries = []
 	endEntries = []
@@ -209,7 +129,7 @@ cpdef coalesceSections(starts, values, analysisEnd=None, binSize=1):
 		nextValue = valuesView[i]
 
 		if nextValue == currValue and nextStart == currEnd:
-			currEnd += binSize
+			currEnd += cStepSize
 		else:
 			### End a current line
 			startEntries.append(currStart)
@@ -218,7 +138,7 @@ cpdef coalesceSections(starts, values, analysisEnd=None, binSize=1):
 
 			### Start a new line
 			currStart = nextStart
-			currEnd = nextStart + binSize
+			currEnd = nextStart + cStepSize
 			currValue = nextValue
 			coalescedSectionCount += 1
 

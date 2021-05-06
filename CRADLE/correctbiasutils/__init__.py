@@ -13,7 +13,7 @@ import statsmodels.api as sm
 
 from shutil import copyfile
 
-from CRADLE.correctbiasutils.cython import arraySplit, generateNormalizedObBWs
+from CRADLE.correctbiasutils.cython import arraySplit, coalesceSections
 
 matplotlib.use('Agg')
 
@@ -182,6 +182,39 @@ def genNormalizedObBWs(outputDir, header, regions, ctrlBWNames, ctrlScaler, expe
 def outputNormalizedBWFile(outputDir, filename):
 	normObBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
 	return outputDir + "/" + normObBWName + "_normalized.bw"
+
+def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
+	normObBW = pyBigWig.open(normObBWName, "w")
+	normObBW.addHeader(bwHeader)
+
+	obBW = pyBigWig.open(observedBWName)
+	for region in regions:
+		chromo = region[0]
+		start = int(region[1])
+		end = int(region[2])
+
+		starts = np.arange(start, end)
+		if pyBigWig.numpy == 1:
+			values = obBW.values(chromo, start, end, numpy=True)
+		else:
+			values = np.array(obBW.values(chromo, start, end))
+
+		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
+		starts = starts[idx]
+
+		if len(starts) == 0:
+			continue
+
+		values = values[idx]
+		values = values / scaler
+
+		coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, values)
+
+		normObBW.addEntries([chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
+	normObBW.close()
+	obBW.close()
+
+	return normObBWName
 
 def getScalerTasks(trainingSets, ctrlBWNames, experiBWNames, sampleCount):
 	###### OBTAIN READ COUNTS OF THE FIRST REPLICATE OF CTRLBW.
