@@ -366,7 +366,7 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	fa = faFile.sequence(chromo, (shearStart-1), (shearEnd-1))
 	faFile.close()
 
-        ##### OPEN BIAS FILES
+	##### OPEN BIAS FILES
 	if vari.MAP == 1:
 		mapFile = pyBigWig.open(vari.MAPFILE)
 		mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
@@ -453,7 +453,7 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 					else:
 						pastMer1, mgwIdx, protIdx = edit5merProb(pastMer1, mer1[0], mer1[4])
 
-                        	###  mer2
+				###  mer2
 				fragEndIdx = idx + vari.FRAGLEN
 				mer2 = fa[(fragEndIdx-3):(fragEndIdx+2)]
 				if 'N' in mer2:
@@ -558,7 +558,7 @@ cpdef calculateTrainCovariates(args):
 	fa = faFile.sequence(chromo, (shearStart-1), (shearEnd-1))
 	faFile.close()
 
-        ##### OPEN BIAS FILES
+	##### OPEN BIAS FILES
 	if vari.MAP == 1:
 		mapFile = pyBigWig.open(vari.MAPFILE)
 		mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
@@ -595,7 +595,7 @@ cpdef calculateTrainCovariates(args):
 	startIdx = 2  # index in the fasta file (Included in the range)
 	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the fasta file (Not included in the range)
 
-        ##### INITIALIZE VARIABLES
+	##### INITIALIZE VARIABLES
 	if vari.SHEAR == 1:
 		pastMer1 = -1
 		pastMer2 = -1
@@ -1233,18 +1233,19 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		lastBinEnd = analysisEnd
 
 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > FILTERVALUE
-	selectedIdx, highRCIdx, starts = selectIdx(chromo, regionStart, regionEnd, vari.CTRLBW_NAMES, vari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, vari.FILTERVALUE)
+	ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx = selectIdx(chromo, regionStart, regionEnd, vari.CTRLBW_NAMES, vari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, vari.FILTERVALUE)
 
 	## OUTPUT FILES
 	subfinalCtrlNames = [None] * vari.CTRLBW_NUM
 	subfinalExperiNames = [None] * vari.EXPBW_NUM
 
-	if len(selectedIdx) == 0:
-		return [subfinalCtrlNames, subfinalExperiNames, chromo]
-
 	f = h5py.File(covariFileName, "r")
 
 	for rep in range(vari.CTRLBW_NUM):
+		if len(ctrlSpecificIdx[rep]) == 0:
+			subfinalCtrlNames[rep] = None
+			continue
+
 		## observed read counts
 		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
 		if lastBin:
@@ -1265,20 +1266,28 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 
 		## predicted read counts
 		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFCTRL[rep, 1:], axis=1) + vari.COEFCTRL[rep, 0])
-		prdvals[highRCIdx] = np.exp(np.sum(f['X'][0:][highRCIdx] * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])
+		prdvals[highReadCountIdx] = np.exp(np.sum(f['X'][0:][highReadCountIdx] * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])
 
 		rcArr = rcArr - prdvals
-		rcArr = rcArr[selectedIdx]
+		rcArr = rcArr[ctrlSpecificIdx[rep]]
+		starts = np.array(list(range(analysisStart, analysisEnd)))[ctrlSpecificIdx[rep]]
+		ctrlSpecificIdx[rep] = []
 
 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-		tempStarts = np.delete(starts, idx)
+		starts = np.delete(starts, idx)
 		rcArr = np.delete(rcArr, idx)
 		if len(rcArr) > 0:
 			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False) as subfinalCtrlFile:
 				subfinalCtrlNames[rep] = subfinalCtrlFile.name
-				writeBedFile(subfinalCtrlFile, tempStarts, rcArr, analysisEnd, vari.BINSIZE)
+				writeBedFile(subfinalCtrlFile, starts, rcArr, analysisEnd, vari.BINSIZE)
+		else:
+			subfinalCtrlNames[rep] = None
 
 	for rep in range(vari.EXPBW_NUM):
+		if len(experiSpecificIdx[rep]) == 0:
+			subfinalExperiNames[rep] = None
+			continue
+
 		## observed read counts
 		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
 		if lastBin:
@@ -1300,28 +1309,33 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 
 		## predicted read counts
 		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFEXP[rep, 1:], axis=1) + vari.COEFEXP[rep, 0])
-		prdvals[highRCIdx] = np.exp(np.sum(f['X'][0:][highRCIdx] * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])
+		prdvals[highReadCountIdx] = np.exp(np.sum(f['X'][0:][highReadCountIdx] * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])
 
 		rcArr = rcArr - prdvals
-		rcArr = rcArr[selectedIdx]
+		rcArr = rcArr[experiSpecificIdx[rep]]
+		starts = np.array(list(range(analysisStart, analysisEnd)))[experiSpecificIdx[rep]]
+		experiSpecificIdx[rep] = []
 
 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
-		tempStarts = np.delete(starts, idx)
+		starts = np.delete(starts, idx)
 		rcArr = np.delete(rcArr, idx)
 		if len(rcArr) > 0:
 			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False) as subfinalExperiFile:
 				subfinalExperiNames[rep] = subfinalExperiFile.name
-				writeBedFile(subfinalExperiFile, tempStarts, rcArr, analysisEnd, vari.BINSIZE)
+				writeBedFile(subfinalExperiFile, starts, rcArr, analysisEnd, vari.BINSIZE)
+		else:
+			subfinalExperiNames[rep] = None
 
 	f.close()
 	os.remove(covariFileName)
 
 	return [subfinalCtrlNames, subfinalExperiNames, chromo]
 
-
-cpdef selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBinStart, lastBinEnd, nBins, binSize, highRC, minFragFilterValue):
+def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBinStart, lastBinEnd, nBins, binSize, highRC, minFragFilterValue):
 	meanMinFragFilterValue = int(np.round(minFragFilterValue / (len(ctrlBWNames) + len(experiBWNames))))
 
+	ctrlSpecificIdx = []
+	experiSpecificIdx = []
 	for rep, bwName in enumerate(ctrlBWNames):
 		with pyBigWig.open(bwName) as bw:
 			if lastBinStart is not None:
@@ -1337,16 +1351,17 @@ cpdef selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, last
 			else:
 				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
 				temp[np.where(temp == None)] = 0.0
+			temp = np.array(temp).astype(float)
 
 			if rep == 0:
 				rc_sum = temp
 				highReadCountIdx = np.where(temp > highRC)[0]
-				overMeanReadCountIdx = np.where(temp >= meanMinFragFilterValue)[0]
 
 			else:
+				rc_sum = np.array(rc_sum)
 				rc_sum += temp
-				overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
-				overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
+
+		ctrlSpecificIdx.append( list(np.where(temp >= meanMinFragFilterValue)[0]) )
 
 	for bwName in experiBWNames:
 		with pyBigWig.open(bwName) as bw:
@@ -1364,29 +1379,27 @@ cpdef selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, last
 			else:
 				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
 				temp[np.where(temp == None)] = 0.0
+			temp = np.array(temp).astype(float)
+			rc_sum = np.array(rc_sum).astype(float)
 
 			rc_sum += temp
-
-			overMeanReadCountIdx_temp = np.where(temp >= meanMinFragFilterValue)[0]
-			overMeanReadCountIdx = np.intersect1d(overMeanReadCountIdx, overMeanReadCountIdx_temp)
+		experiSpecificIdx.append( list(np.where(temp >= meanMinFragFilterValue)[0])  )
 
 	idx = np.where(rc_sum > minFragFilterValue)[0].tolist()
-	idx = np.intersect1d(idx, overMeanReadCountIdx)
+	if len(idx) == 0:
+		ctrlSpecificIdx = [ [] for _ in range(len(ctrlBWNames)) ]
+		experiSpecificIdx = [ [] for _ in range(len(experiBWNames)) ]
+		highReadCountIdx = []
+		return ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx
 
 	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
 
-	if len(idx) == 0:
-		return np.array([]), np.array([]), np.array([])
+	for rep in range(len(ctrlBWNames)):
+		ctrlSpecificIdx[rep] = list(np.intersect1d(ctrlSpecificIdx[rep], idx))
 
-	if lastBinStart is not None:
-		starts = np.arange(regionStart, regionEnd, binSize)
-		starts = starts.tolist()
-		starts.extend([regionEnd])
-		starts = np.array(starts)
-	else:
-		starts = np.arange(regionStart, regionEnd, binSize)
+	for rep in range(len(experiBWNames)):
+		experiSpecificIdx[rep] = list(np.intersect1d(experiSpecificIdx[rep], idx))
+
+	return ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx
 
 
-	starts = starts[idx]
-
-	return idx, highReadCountIdx, starts
