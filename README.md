@@ -309,3 +309,8 @@ However, if all your data is in a directory singularity mounts by default you ca
    Derrien T, Estellé J, Marco Sola S, Knowles DG, Raineri E, Guigó R, Ribeca P. Fast computation and applications of genome mappability. PLoS One. 2012;7(1):e30377. <br />
 3) G-quadruplex sturcture <br/>
    Chambers VS, Marsico G, Boutell JM, Di Antonio M, Smith GP, Balasubramanian S. High-throughput sequencing of DNA G-quadruplex structures in the human genome.Nat Biotechnol. 2015 Aug;33(8):877-81.<br />
+   
+ ## Cite CRADLE
+Kim YS, Johnson GD, Seo J, Barrera A, Cowart TN, Majoros WH, Ochoa A, Allen AS, Reddy TE. Correcting signal biases and detecting regulatory elements in STARR-seq data. Genome Res. 2021 May;31(5):877-889. doi: 10.1101/gr.269209.120. Epub 2021 Mar 15. PMID: 33722938; PMCID: PMC8092017.
+
+
