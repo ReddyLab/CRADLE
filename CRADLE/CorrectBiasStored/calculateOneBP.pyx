@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import os
 import tempfile
 import warnings
@@ -39,7 +41,8 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 	experiPlotValues = {}
 
 	for i, bwFileName in enumerate(ctrlBWNames):
-		readCounts = getReadCounts(bwFileName, trainingSet, ctrlScaler[i])
+		rawReadCounts = readCountData(bwFileName, trainingSet)
+		readCounts = getReadCounts(rawReadCounts, trainingSet.xRowCount, ctrlScaler[i])
 		model = buildModel(readCounts, xView)
 
 		COEFCTRL[i, :] = getCoefs(model, covariates)
@@ -47,7 +50,8 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 		ctrlPlotValues[bwFileName] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
 	for i, bwFileName in enumerate(experiBWNames):
-		readCounts = getReadCounts(bwFileName, trainingSet, experiScaler[i])
+		rawReadCounts = readCountData(bwFileName, trainingSet)
+		readCounts = getReadCounts(rawReadCounts, trainingSet.xRowCount, experiScaler[i])
 		model = buildModel(readCounts, xView)
 
 		COEFEXPR[i, :] = getCoefs(model, covariates)
@@ -56,30 +60,40 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 
 	return COEFCTRL, COEFEXPR, ctrlPlotValues, experiPlotValues
 
-cpdef getReadCounts(bwFileName, trainingSet, scaler):
+def readCountData(bwFileName, trainingSet):
+	with pyBigWig.open(bwFileName) as bwFile:
+		if pyBigWig.numpy == 1:
+			for trainingRegion in trainingSet:
+				regionReadCounts = bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd, numpy=True)
+				regionLength = trainingRegion.analysisEnd - trainingRegion.analysisStart
+				yield regionReadCounts, regionLength
+		else:
+			for trainingRegion in trainingSet:
+				regionReadCounts = np.array(
+					bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
+				)
+				regionLength = trainingRegion.analysisEnd - trainingRegion.analysisStart
+				yield regionReadCounts, regionLength
+
+cpdef getReadCounts(rawReadCounts, rowCount, scaler):
 	cdef double [:] readCountsView
 	cdef int ptr
 	cdef int posIdx
 
-	readCounts = np.zeros(trainingSet.xRowCount, dtype=np.float64)
+	readCounts = np.zeros(rowCount, dtype=np.float64)
 	readCountsView = readCounts
 
-	with pyBigWig.open(bwFileName) as bwFile:
-		ptr = 0
-		for trainingRegion in trainingSet:
-			regionReadCounts = np.array(
-				bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
-			)
-			regionReadCounts[np.isnan(regionReadCounts)] = 0.0
-			regionReadCounts = regionReadCounts / scaler
+	ptr = 0
+	for regionReadCounts, regionLength in rawReadCounts:
+		regionReadCounts[np.isnan(regionReadCounts)] = 0.0
+		regionReadCounts = regionReadCounts / scaler
 
-			numPos = trainingRegion.analysisEnd - trainingRegion.analysisStart
-			posIdx = 0
-			while posIdx < numPos:
-				readCountsView[ptr + posIdx] = regionReadCounts[posIdx]
-				posIdx += 1
+		posIdx = 0
+		while posIdx < regionLength:
+			readCountsView[ptr + posIdx] = regionReadCounts[posIdx]
+			posIdx += 1
 
-			ptr += numPos
+		ptr += regionLength
 
 	return readCounts
 
