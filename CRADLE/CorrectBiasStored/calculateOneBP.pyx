@@ -42,7 +42,7 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 		readCounts = getReadCounts(bwFileName, trainingSet, ctrlScaler[i])
 		model = buildModel(readCounts, xView)
 
-		COEFCTRL[i, :] = getCoefs(model, covariates)
+		COEFCTRL[i, :] = getCoefs(model.params, covariates.selected)
 
 		ctrlPlotValues[bwFileName] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
@@ -50,7 +50,7 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 		readCounts = getReadCounts(bwFileName, trainingSet, experiScaler[i])
 		model = buildModel(readCounts, xView)
 
-		COEFEXPR[i, :] = getCoefs(model, covariates)
+		COEFEXPR[i, :] = getCoefs(model.params, covariates.selected)
 
 		experiPlotValues[bwFileName] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
@@ -87,17 +87,17 @@ cpdef buildModel(readCounts, xView):
 	#### do regression
 	return sm.GLM(np.array(readCounts).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
-cpdef getCoefs(model, covariates):
+cpdef getCoefs(modelParams, selectedCovariates):
 	coef = np.zeros(COEF_LEN, dtype=np.float64)
 
-	coef[0] = model.params[0]
+	coef[0] = modelParams[0]
 
 	paramIdx = 1
 	for j in range(1, COEF_LEN):
-		if np.isnan(covariates.selected[j - 1]) == True:
+		if np.isnan(selectedCovariates[j - 1]):
 			coef[j] = np.nan
 		else:
-			coef[j] = model.params[paramIdx]
+			coef[j] = modelParams[paramIdx]
 			paramIdx += 1
 
 	return coef
