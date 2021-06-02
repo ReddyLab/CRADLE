@@ -4,6 +4,7 @@ import marshal
 import math
 import multiprocessing
 import os
+import os.path
 import tempfile
 import matplotlib
 import matplotlib.pyplot as plt
@@ -122,7 +123,7 @@ def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, experiBWNames):
 
 def outputBWFile(outputDir, filename):
 	signalBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
-	return outputDir + "/" + signalBWName + "_corrected.bw"
+	return os.path.join(outputDir, signalBWName + "_corrected.bw")
 
 def mergeCorrectedFilesToBW(tempFiles, bwHeader, signalBWName):
 	signalBW = pyBigWig.open(signalBWName, "w")
@@ -181,7 +182,7 @@ def genNormalizedObBWs(outputDir, header, regions, ctrlBWNames, ctrlScaler, expe
 
 def outputNormalizedBWFile(outputDir, filename):
 	normObBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
-	return outputDir + "/" + normObBWName + "_normalized.bw"
+	return os.path.join(outputDir, normObBWName + "_normalized.bw")
 
 def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
 	normObBW = pyBigWig.open(normObBWName, "w")
@@ -538,8 +539,8 @@ def getScatterplotSamples(trainingSet):
 	else:
 		return np.random.choice(np.arange(0, trainingSet.xRowCount), 10_000, replace=False)
 
-def figureFileName(outputDir, bwFileName):
-	bwName = '.'.join(bwFileName.rsplit('/', 1)[-1].split(".")[:-1])
+def figureFileName(outputDir, bwFilename):
+	bwName = '.'.join(bwFilename.rsplit('/', 1)[-1].split(".")[:-1])
 	return os.path.join(outputDir, f"fit_{bwName}.png")
 
 def plot(regRCs, regRCFittedValues, highRCs, highRCFittedValues, figName):
