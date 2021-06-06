@@ -1,5 +1,3 @@
-import pytest
-
 from CRADLE.correctbiasutils import rotateBWFileArrays
 
 def testRotateBWFileArrays():
