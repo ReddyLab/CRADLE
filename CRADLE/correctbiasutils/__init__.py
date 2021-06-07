@@ -18,7 +18,8 @@ from CRADLE.correctbiasutils.cython import arraySplit, coalesceSections
 
 matplotlib.use('Agg')
 
-TRAINING_BIN_SIZE = 1000
+TRAINING_BIN_SIZE = 1_000
+SCATTERPLOT_SAMPLE_COUNT = 10_000
 
 class TrainingRegion:
 	def __init__(self, chromo, analysisStart, analysisEnd):
@@ -46,11 +47,11 @@ def process(poolSize, function, argumentLists):
 
 	return results
 
-def getResultBWHeader(region, ctrlBWNames):
+def getResultBWHeader(region, ctrlBWName):
 	chromoInData = np.array(region)[:,0]
 
 	chromoInDataUnique = set()
-	bwFile = pyBigWig.open(ctrlBWNames[0])
+	bwFile = pyBigWig.open(ctrlBWName)
 
 	resultBWHeader = []
 	for chromo in chromoInData:
@@ -217,49 +218,39 @@ def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWN
 
 	return normObBWName
 
-def getScalerTasks(trainingSets, ctrlBWNames, experiBWNames, sampleCount):
-	###### OBTAIN READ COUNTS OF THE FIRST REPLICATE OF CTRLBW.
+def getReadCounts(trainingSets, fileName):
+	values = []
 
-	ob1 = pyBigWig.open(ctrlBWNames[0])
+	with pyBigWig.open(fileName) as bwFile:
+		for trainingSet in trainingSets:
+			chromo = trainingSet[0]
+			start = int(trainingSet[1])
+			end = int(trainingSet[2])
 
-	ob1Values = []
-	for trainingSet in trainingSets:
-		chromo = trainingSet[0]
-		start = int(trainingSet[1])
-		end = int(trainingSet[2])
+			temp = np.array(bwFile.values(chromo, start, end))
+			idx = np.where(np.isnan(temp) == True)
+			temp[idx] = 0
+			temp = temp.tolist()
+			values.extend(temp)
 
-		temp = np.array(ob1.values(chromo, start, end))
-		idx = np.where(np.isnan(temp))
-		temp[idx] = 0
-		temp = temp.tolist()
-		ob1Values.extend(temp)
+	return values
 
+def getScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNames):
 	tasks = []
-	for i in range(1, sampleCount):
-		if i < len(ctrlBWNames):
+	ctrlBWCount = len(ctrlBWNames)
+	sampleSetCount = ctrlBWCount + len(experiBWNames)
+	for i in range(1, sampleSetCount):
+		if i < ctrlBWCount:
 			bwName = ctrlBWNames[i]
 		else:
-			bwName = experiBWNames[i - len(ctrlBWNames)]
-		tasks.append([trainingSets, ob1Values, bwName])
+			bwName = experiBWNames[i - ctrlBWCount]
+		tasks.append([trainingSets, observedReadCounts, bwName])
 
 	return tasks
 
-def getScalerForEachSample(trainingSets, ob1Values, bwName):
-	ob2 = pyBigWig.open(bwName)
-	ob2Values = []
-	for trainingSet in trainingSets:
-		chromo = trainingSet[0]
-		start = int(trainingSet[1])
-		end = int(trainingSet[2])
-
-		temp = np.array(ob2.values(chromo, start, end))
-		idx = np.where(np.isnan(temp) == True)
-		temp[idx] = 0
-		temp = temp.tolist()
-		ob2Values.extend(temp)
-	ob2.close()
-
-	model = sm.OLS(ob2Values, ob1Values).fit()
+def getScalerForEachSample(trainingSets, observedReadCounts1Values, bwFileName):
+	observedReadCounts2Values = getReadCounts(trainingSets, bwFileName)
+	model = sm.OLS(observedReadCounts2Values, observedReadCounts1Values).fit()
 	scaler = model.params[0]
 
 	return scaler
@@ -533,11 +524,11 @@ def alignCoordinatesToHDF(faFile, oldTrainingSet, fragLen):
 
 	return TrainingSet(trainingRegions=trainingSet, xRowCount=xRowCount)
 
-def getScatterplotSamples(trainingSet):
-	if trainingSet.xRowCount <= 10_000:
-		return np.arange(0, trainingSet.xRowCount)
+def getScatterplotSampleIndices(populationSize):
+	if populationSize <= SCATTERPLOT_SAMPLE_COUNT:
+		return np.arange(0, populationSize)
 	else:
-		return np.random.choice(np.arange(0, trainingSet.xRowCount), 10_000, replace=False)
+		return np.random.choice(np.arange(0, populationSize), SCATTERPLOT_SAMPLE_COUNT, replace=False)
 
 def figureFileName(outputDir, bwFilename):
 	bwName = '.'.join(bwFilename.rsplit('/', 1)[-1].split(".")[:-1])
