@@ -50,11 +50,15 @@ def run(args):
 		else:
 			trainingSets = np.concatenate((trainSet90Percentile, trainSet90To99Percentile), axis=0).tolist()
 
-		scalerTasks = utils.getScalerTasks(trainingSets, vari.CTRLBW_NAMES, vari.EXPBW_NAMES, vari.SAMPLE_NUM)
+		###### OBTAIN READ COUNTS OF THE FIRST REPLICATE OF CTRLBW.
+		observedReadCounts1Values = utils.getReadCounts(trainingSets, vari.CTRLBW_NAMES[0])
+
+		scalerTasks = utils.getScalerTasks(trainingSets, observedReadCounts1Values, vari.CTRLBW_NAMES, vari.EXPBW_NAMES)
 		scalerResult = utils.process(len(scalerTasks), utils.getScalerForEachSample, scalerTasks)
 
 	else:
-		scalerResult = [1] * vari.SAMPLE_NUM
+		sampleSetCount = len(vari.CTRLBW_NAMES) + len(vari.EXPBW_NAMES)
+		scalerResult = [1] * sampleSetCount
 
 	# Sets vari.CTRLSCALER and vari.EXPSCALER
 	vari.setScaler(scalerResult)
@@ -82,8 +86,8 @@ def run(args):
 		trainSet90Percentile = utils.alignCoordinatesToHDF(faFile, trainSet90Percentile, covariates.fragLen)
 		trainSet90To99Percentile = utils.alignCoordinatesToHDF(faFile, trainSet90To99Percentile, covariates.fragLen)
 
-	scatterplotSamples90Percentile = utils.getScatterplotSamples(trainSet90Percentile)
-	scatterplotSamples90to99Percentile = utils.getScatterplotSamples(trainSet90To99Percentile)
+	scatterplotSamples90Percentile = utils.getScatterplotSampleIndices(trainSet90Percentile.xRowCount)
+	scatterplotSamples90to99Percentile = utils.getScatterplotSampleIndices(trainSet90To99Percentile.xRowCount)
 
 	coefResult = pool.starmap_async(
 		calculateOneBP.performRegression,
@@ -185,7 +189,7 @@ def run(args):
 
 	###### MERGING TEMP FILES
 	print("======  MERGING TEMP FILES \n")
-	resultBWHeader = utils.getResultBWHeader(vari.REGION, vari.CTRLBW_NAMES)
+	resultBWHeader = utils.getResultBWHeader(vari.REGION, vari.CTRLBW_NAMES[0])
 	correctedFileNames = utils.mergeBWFiles(vari.OUTPUT_DIR, resultBWHeader, resultMeta, vari.CTRLBW_NAMES, vari.EXPBW_NAMES)
 
 	print("Output File Names: ")
