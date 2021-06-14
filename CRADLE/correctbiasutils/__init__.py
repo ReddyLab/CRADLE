@@ -186,10 +186,13 @@ def outputNormalizedBWFile(outputDir, filename):
 	return os.path.join(outputDir, normObBWName + "_normalized.bw")
 
 def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
-	normObBW = pyBigWig.open(normObBWName, "w")
+	with pyBigWig.open(observedBWName) as obBW, pyBigWig.open(normObBWName, "w") as normObBW:
+		_generateNormalizedObBWs(bwHeader, scaler, regions, obBW, normObBW)
+	return normObBWName
+
+def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 	normObBW.addHeader(bwHeader)
 
-	obBW = pyBigWig.open(observedBWName)
 	for region in regions:
 		chromo = region[0]
 		start = int(region[1])
@@ -197,9 +200,9 @@ def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWN
 
 		starts = np.arange(start, end)
 		if pyBigWig.numpy == 1:
-			values = obBW.values(chromo, start, end, numpy=True)
+			values = observedBW.values(chromo, start, end, numpy=True)
 		else:
-			values = np.array(obBW.values(chromo, start, end))
+			values = np.array(observedBW.values(chromo, start, end))
 
 		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
 		starts = starts[idx]
@@ -213,10 +216,6 @@ def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWN
 		coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, values)
 
 		normObBW.addEntries([chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
-	normObBW.close()
-	obBW.close()
-
-	return normObBWName
 
 def getReadCounts(trainingSets, fileName):
 	values = []
