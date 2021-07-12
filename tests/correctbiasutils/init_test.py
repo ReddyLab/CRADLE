@@ -1,6 +1,9 @@
+import numpy as np
 import pytest
 
 import CRADLE.correctbiasutils as utils
+
+from tests.mocks.BigWig import BigWig
 
 @pytest.mark.parametrize("outputDir,filename,result", [
 	('test/', 'foo.bw', 'test/foo_corrected.bw'),
@@ -34,6 +37,43 @@ def testOutputNormalizedBWFile(outputDir, filename, result):
 ])
 def testFigureFileName(outputDir, bwFilename, result):
 	assert utils.figureFileName(outputDir, bwFilename) == result
+
+@pytest.mark.parametrize("observedData,header,scaler,regions,resultData", [
+	(
+		{'chr17': [np.nan, np.nan, 0., 1., 1., 5., 6., 6., 0., 7., 8., 10.]},
+		[('chr17', 12)],
+		2.0,
+		[('chr17', 1, 5), ('chr17', 8, 12)],
+		{'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 3., 4., 5.]}
+	),
+	(
+		{
+			'chr17': [np.nan, np.nan, 0., 1., 1., 5., 6., 6., 0., 7., 8., 10.],
+			'chr18': [np.nan, np.nan, 0., 1., 0., 0., 0., 5., 5., 5.]
+		},
+		[('chr17', 12), ('chr18', 10)],
+		2.0,
+		[('chr17', 1, 5), ('chr17', 8, 11), ('chr18', 8, 12)],
+		{
+			'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 3., 4.],
+			'chr18': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 2., 2.]
+		}
+	),
+])
+def test_generateNormalizedObBWs(observedData, header, scaler, regions, resultData):
+	normObBW = BigWig({})
+	observedBW = BigWig(observedData)
+	utils._generateNormalizedObBWs(
+		header,
+		scaler,
+		regions,
+		observedBW,
+		normObBW
+	)
+
+	resultBW = BigWig(resultData)
+	resultBW.header = header
+	assert normObBW == resultBW
 
 @pytest.mark.parametrize('regions,bwFile,result', [
 	([('chr17', 8086770, 8086780), ('chr17', 8086790, 8086800)], 'tests/files/test_ctrl.bw', [('chr17', 83_257_441)]),
