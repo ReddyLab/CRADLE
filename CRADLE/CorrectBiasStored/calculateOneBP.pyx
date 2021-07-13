@@ -116,7 +116,7 @@ cpdef getCoefs(modelParams, selectedCovariates):
 
 	return coef
 
-cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
+cpdef correctReadCount(tasks, covariates, genome, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
 	correctedCtrlReadCounts = [[] for _ in range(len(ctrlBWNames))]
 	correctedExprReadCounts = [[] for _ in range(len(experiBWNames))]
 
@@ -125,8 +125,8 @@ cpdef correctReadCount(tasks, covariates, faFileName, ctrlBWNames, ctrlScaler, C
 		analysisStart = int(taskArgs[1])  # Genomic coordinates(starts from 1)
 		analysisEnd = int(taskArgs[2])
 
-		with py2bit.open(faFileName) as faFile:
-			chromoEnd = int(faFile.chroms(chromo))
+		with py2bit.open(genome) as genomeFile:
+			chromoEnd = int(genomeFile.chroms(chromo))
 
 		###### GENERATE A RESULT MATRIX
 		fragStart = analysisStart - covariates.fragLen + 1

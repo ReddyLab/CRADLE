@@ -82,9 +82,9 @@ def run(args):
 	if len(trainSet90To99Percentile) == 0:
 		trainSet90To99Percentile = vari.REGION
 
-	with py2bit.open(vari.FA) as faFile:
-		trainSet90Percentile = utils.alignCoordinatesToHDF(faFile, trainSet90Percentile, covariates.fragLen)
-		trainSet90To99Percentile = utils.alignCoordinatesToHDF(faFile, trainSet90To99Percentile, covariates.fragLen)
+	with py2bit.open(vari.GENOME) as genome:
+		trainSet90Percentile = utils.alignCoordinatesToHDF(genome, trainSet90Percentile, covariates.fragLen)
+		trainSet90To99Percentile = utils.alignCoordinatesToHDF(genome, trainSet90To99Percentile, covariates.fragLen)
 
 	scatterplotSamples90Percentile = utils.getScatterplotSampleIndices(trainSet90Percentile.xRowCount)
 	scatterplotSamples90to99Percentile = utils.getScatterplotSampleIndices(trainSet90To99Percentile.xRowCount)
@@ -167,7 +167,7 @@ def run(args):
 	crcArgs = zip(
 		taskGroups,
 		[covariates] * jobCount,
-		[vari.FA] * jobCount,
+		[vari.GENOME] * jobCount,
 		[vari.CTRLBW_NAMES] * jobCount,
 		[vari.CTRLSCALER] * jobCount,
 		[vari.COEFCTRL] * jobCount,
