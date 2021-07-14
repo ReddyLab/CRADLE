@@ -67,9 +67,9 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
 
 * Required Arguments
   -  -ctrlbw <br />
-      Ctrl bigwig files. Un-noramlized files are recommended. Each file name should be spaced
+      Ctrl bigwig files. Un-normalized files are recommended. Each file name should be spaced
   -  -expbw <br />
-      Experimental bigwig files. Un-noramlized files are recommended. Each file name should be spaced.
+      Experimental bigwig files. Un-normalized files are recommended. Each file name should be spaced.
   -  -l <br />
       Fragment length
   -  -r <br />
@@ -125,9 +125,9 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
 
 * Required Arguments
   -  -ctrlbw <br />
-      Ctrl bigwig files. Un-noramlized files are recommended. Each file name should be spaced
+      Ctrl bigwig files. Un-normalized files are recommended. Each file name should be spaced
   -  -expbw <br />
-      Experimental bigwig files. Un-noramlized files are recommended. Each file name should be spaced.
+      Experimental bigwig files. Un-normalized files are recommended. Each file name should be spaced.
   -  -r <br />
       Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000
   -  -biasType <br />

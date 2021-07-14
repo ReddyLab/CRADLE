@@ -5,6 +5,7 @@ import pytest
 import CRADLE.correctbiasutils as utils
 
 from tests.mocks.BigWig import BigWig
+from tests.mocks.TwoBit import TwoBit
 
 @pytest.mark.parametrize("outputDir,filename,result", [
 	('test/', 'foo.bw', 'test/foo_corrected.bw'),
@@ -124,6 +125,19 @@ def testGetScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNa
 def testRegionMeans(bwFileName, binCount, chromo, start, end, result):
 	with pyBigWig.open(bwFileName) as bwFile:
 		assert np.allclose(utils.regionMeans(bwFile, binCount, chromo, start, end), [np.float32(x) for x in result], atol=0.00001, equal_nan=True)
+
+def testAlignCoordinatesToCovariateFileBoundaries():
+	genome = TwoBit({ "chr1": "actgtcgattcgctctcgatatagcatagctac", "chr2": "tctcgatcgctctcgcgctagagatccgag" })
+	trainingSet = [("chr1", 2, 20), ("chr1", 4, 20), ("chr1", 20, 29), ("chr1", 20, 32), ("chr2", 10, 15)]
+	fragLen = 5
+	results = utils.TrainingSet([
+		utils.TrainingRegion("chr1", 3, 20),
+		utils.TrainingRegion("chr1", 4, 20),
+		utils.TrainingRegion("chr1", 20, 29),
+		utils.TrainingRegion("chr1", 20, 31),
+		utils.TrainingRegion("chr2", 10, 15),
+	])
+	assert utils.alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen) == results
 
 @pytest.mark.parametrize("populationSize", [(0), (100), (1_000), (10_000), (100_000)])
 def testGetScatterplotSampleIndices(populationSize):

@@ -9,7 +9,7 @@ def getArgs():
 	subparsers = parser.add_subparsers(help="", dest="commandName")
 
 	########### correctBias
-	correctBias_parser = subparsers.add_parser("correctBias", help="Correct shear, pcr, mappability, g-quadruplex sturcture bias from bigwig files")
+	correctBias_parser = subparsers.add_parser("correctBias", help="Correct shear, pcr, mappability, g-quadruplex structure bias from bigwig files")
 
 	correctBias_required = correctBias_parser.add_argument_group("Required Args")
 	correctBias_required.add_argument('-ctrlbw', help="Ctrl bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", nargs='+', required=True)
@@ -35,7 +35,7 @@ def getArgs():
 
 
 	########### correctBias_stored
-	correctBiasStored_parser = subparsers.add_parser("correctBias_stored", help="Correct shear, pcr, mappability, g-quadruplex sturcture bias from bigwig files when there are stored covariate hdf5 files. This is much faster than correctBias.")
+	correctBiasStored_parser = subparsers.add_parser("correctBias_stored", help="Correct shear, pcr, mappability, g-quadruplex structure bias from bigwig files when there are stored covariate hdf5 files. This is much faster than correctBias.")
 
 	correctBiasStored_required = correctBiasStored_parser.add_argument_group("Required Args")
 	correctBiasStored_required.add_argument('-ctrlbw', help="Ctrl bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", nargs='+', required=True)
