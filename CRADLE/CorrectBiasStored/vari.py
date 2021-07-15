@@ -8,7 +8,7 @@ def setGlobalVariables(args):
 	### input bigwig files
 	setInputFiles(args.ctrlbw, args.expbw)
 	setOutputDirectory(args.o)
-	setCovariDir(args.biasType, args.covariDir, args.faFile)
+	setCovariDir(args.biasType, args.covariDir, args.genome)
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.mi)
 	setNumProcess(args.p)
@@ -97,12 +97,12 @@ def setOutputDirectory(outputDir):
 def getStoredCovariates(biasTypes, covariDir):
 	return StoredCovariates(biasTypes, covariDir)
 
-def setCovariDir(biasType, covariDir, faFile):
+def setCovariDir(biasType, covariDir, genome):
 	global COVARI_DIR
 	global COVARI_NAME
 	global SELECT_COVARI
 	global FRAGLEN
-	global FA
+	global GENOME
 	global COVARI_NUM
 	global BINSIZE
 	global COVARI_ORDER
@@ -121,7 +121,7 @@ def setCovariDir(biasType, covariDir, faFile):
 	tempStr = COVARI_NAME.split("_")[1]
 	FRAGLEN = int(tempStr.split("fragLen")[1])
 
-	FA = faFile
+	GENOME = genome
 	BINSIZE = 1
 
 	SELECT_COVARI = np.array([np.nan] * 6)

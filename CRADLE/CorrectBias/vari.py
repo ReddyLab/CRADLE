@@ -70,7 +70,7 @@ def setBiasFiles(args):
 	global MAP
 	global GQUAD
 	global COVARI_NUM
-	global FA
+	global GENOME
 	global COVARI_ORDER
 
 	SHEAR = 0
@@ -78,7 +78,7 @@ def setBiasFiles(args):
 	MAP = 0
 	GQUAD = 0
 
-	FA = args.faFile
+	GENOME = args.genome
 
 	COVARI_NUM = 0
 

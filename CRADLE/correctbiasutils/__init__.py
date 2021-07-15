@@ -493,7 +493,7 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	os.remove(resultFile.name)
 	return None
 
-def alignCoordinatesToHDF(faFile, oldTrainingSet, fragLen):
+def alignCoordinatesToHDF(genome, oldTrainingSet, fragLen):
 	trainingSet = []
 	xRowCount = 0
 
@@ -501,7 +501,7 @@ def alignCoordinatesToHDF(faFile, oldTrainingSet, fragLen):
 		chromo = trainingRegion[0]
 		analysisStart = int(trainingRegion[1])
 		analysisEnd = int(trainingRegion[2])
-		chromoEnd = faFile.chroms(chromo)
+		chromoEnd = genome.chroms(chromo)
 
 		fragStart = analysisStart - fragLen + 1
 		fragEnd = analysisEnd + fragLen - 1

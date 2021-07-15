@@ -28,8 +28,8 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	shearStart = fragStart - 2
 	shearEnd = fragEnd + 2 # not included
 
-	faFile = py2bit.open(vari.FA)
-	chromoEnd = int(faFile.chroms(chromo))
+	genome = py2bit.open(vari.GENOME)
+	chromoEnd = int(genome.chroms(chromo))
 
 	if shearStart < 1:
 		shearStart = 1
@@ -82,8 +82,8 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	result = makeMatrixContinuousFrag(binStart, binEnd, nBins)
 
 	###### GET SEQUENCE
-	fa = faFile.sequence(chromo, (shearStart-1), (shearEnd-1))
-	faFile.close()
+	sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
+	genome.close()
 
 	##### OPEN BIAS FILES
 	if vari.MAP == 1:
@@ -118,9 +118,9 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 		del gquadFile, gquadValue
 
 
-	##### INDEX IN 'fa'
-	startIdx = 2  # index in the fasta file (Included in the range)
-	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the fasta file (Not included in the range)
+	##### INDEX IN 'sequence'
+	startIdx = 2  # index in the genome sequence file (Included in the range)
+	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the genome sequence file (Not included in the range)
 
 	##### INITIALIZE VARIABLES
 	if vari.SHEAR == 1:
@@ -146,7 +146,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 
 		if vari.SHEAR == 1:
 			###  mer1
-			mer1 = fa[(idx-2):(idx+3)]
+			mer1 = sequence[(idx-2):(idx+3)]
 			if 'N' in mer1:
 				pastMer1 = -1
 				mgwIdx = vari.N_MGW
@@ -159,7 +159,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 
 			###  mer2
 			fragEndIdx = idx + vari.FRAGLEN
-			mer2 = fa[(fragEndIdx-3):(fragEndIdx+2)]
+			mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
 			if 'N' in mer2:
 				pastMer2 = -1
 				mgwIdx = mgwIdx + vari.N_MGW
@@ -178,12 +178,12 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 
 
 		if vari.PCR == 1:
-			faIdx = fa[idx:(idx+vari.FRAGLEN)]
+			sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
 			if pastStartGibbs == -1:
-				startGibbs, gibbs = findStartGibbs(faIdx, vari.FRAGLEN)
+				startGibbs, gibbs = findStartGibbs(sequenceIdx, vari.FRAGLEN)
 			else:
-				oldDimer = faIdx[0:2].upper()
-				newDimer = faIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
+				oldDimer = sequenceIdx[0:2].upper()
+				newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
 				startGibbs, gibbs = editStartGibbs(oldDimer, newDimer, pastStartGibbs)
 
 			annealIdx, denatureIdx = convertGibbs(gibbs)
@@ -308,8 +308,8 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	shearStart = fragStart - 2
 	shearEnd = fragEnd + 2 # not included
 
-	faFile = py2bit.open(vari.FA)
-	chromoEnd = int(faFile.chroms(chromo))
+	genome = py2bit.open(vari.GENOME)
+	chromoEnd = int(genome.chroms(chromo))
 
 	if shearStart < 1:
 		shearStart = 1
@@ -363,8 +363,8 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	result = makeMatrixDiscreteFrag(binStart, binEnd, nBins)
 
 	###### GET SEQUENCE
-	fa = faFile.sequence(chromo, (shearStart-1), (shearEnd-1))
-	faFile.close()
+	sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
+	genome.close()
 
 	##### OPEN BIAS FILES
 	if vari.MAP == 1:
@@ -442,7 +442,7 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 
 			if vari.SHEAR == 1:
 				###  mer1
-				mer1 = fa[(idx-2):(idx+3)]
+				mer1 = sequence[(idx-2):(idx+3)]
 				if 'N' in mer1:
 					pastMer1 = -1
 					mgwIdx = vari.N_MGW
@@ -455,7 +455,7 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 
 				###  mer2
 				fragEndIdx = idx + vari.FRAGLEN
-				mer2 = fa[(fragEndIdx-3):(fragEndIdx+2)]
+				mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
 				if 'N' in mer2:
 					pastMer2 = -1
 					mgwIdx = mgwIdx + vari.N_MGW
@@ -473,12 +473,12 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 				covariIdxPtr = covariIdxPtr + 2
 
 			if vari.PCR == 1:
-				faIdx = fa[idx:(idx+vari.FRAGLEN)]
+				sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
 				if pastStartGibbs == -1:
-					startGibbs, gibbs = findStartGibbs(faIdx, vari.FRAGLEN)
+					startGibbs, gibbs = findStartGibbs(sequenceIdx, vari.FRAGLEN)
 				else:
-					oldDimer = faIdx[0:2].upper()
-					newDimer = faIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
+					oldDimer = sequenceIdx[0:2].upper()
+					newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
 					startGibbs, gibbs = editStartGibbs(oldDimer, newDimer, pastStartGibbs)
 
 				annealIdx, denatureIdx = convertGibbs(gibbs)
@@ -535,8 +535,8 @@ cpdef calculateTrainCovariates(args):
 	shearStart = fragStart - 2
 	shearEnd = fragEnd + 2 # not included
 
-	faFile = py2bit.open(vari.FA)
-	chromoEnd = int(faFile.chroms(chromo))
+	genome = py2bit.open(vari.GENOME)
+	chromoEnd = int(genome.chroms(chromo))
 
 	if shearStart < 1:
 		shearStart = 1
@@ -555,8 +555,8 @@ cpdef calculateTrainCovariates(args):
 	result = makeMatrixContinuousFragTrain(binStart, binEnd, nBins)
 
 	###### GET SEQUENCE
-	fa = faFile.sequence(chromo, (shearStart-1), (shearEnd-1))
-	faFile.close()
+	sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
+	genome.close()
 
 	##### OPEN BIAS FILES
 	if vari.MAP == 1:
@@ -591,9 +591,9 @@ cpdef calculateTrainCovariates(args):
 		del gquadFile, gquadValue
 
 
-	##### INDEX IN 'fa'
-	startIdx = 2  # index in the fasta file (Included in the range)
-	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the fasta file (Not included in the range)
+	##### INDEX IN 'sequence'
+	startIdx = 2  # index in the genome sequence file (Included in the range)
+	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the genome sequence file (Not included in the range)
 
 	##### INITIALIZE VARIABLES
 	if vari.SHEAR == 1:
@@ -619,7 +619,7 @@ cpdef calculateTrainCovariates(args):
 
 		if vari.SHEAR == 1:
 			###  mer1
-			mer1 = fa[(idx-2):(idx+3)]
+			mer1 = sequence[(idx-2):(idx+3)]
 			if 'N' in mer1:
 				pastMer1 = -1
 				mgwIdx = vari.N_MGW
@@ -632,7 +632,7 @@ cpdef calculateTrainCovariates(args):
 
 			##  mer2
 			fragEndIdx = idx + vari.FRAGLEN
-			mer2 = fa[(fragEndIdx-3):(fragEndIdx+2)]
+			mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
 			if 'N' in mer2:
 				pastMer2 = -1
 				mgwIdx = mgwIdx + vari.N_MGW
@@ -651,12 +651,12 @@ cpdef calculateTrainCovariates(args):
 
 
 		if vari.PCR == 1:
-			faIdx = fa[idx:(idx+vari.FRAGLEN)]
+			sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
 			if pastStartGibbs == -1:
-				startGibbs, gibbs = findStartGibbs(faIdx, vari.FRAGLEN)
+				startGibbs, gibbs = findStartGibbs(sequenceIdx, vari.FRAGLEN)
 			else:
-				oldDimer = faIdx[0:2].upper()
-				newDimer = faIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
+				oldDimer = sequenceIdx[0:2].upper()
+				newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
 				startGibbs, gibbs = editStartGibbs(oldDimer, newDimer, pastStartGibbs)
 
 			annealIdx, denatureIdx = convertGibbs(gibbs)

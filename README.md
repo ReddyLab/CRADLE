@@ -59,7 +59,7 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
                    -l 500
                    -r /data/YoungSook/target_region.bed
                    -biasType shear pcr map gquad
-                   -faFile /data/YoungSook/hg38.2bit
+                   -genome /data/YoungSook/hg38.2bit
                    -kmer 50
                    -o /data/YoungSook/CRADLE_result
                    -bl /data/YoungSook/blacklist_regions.bed
@@ -76,8 +76,8 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
       Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000
   -  -biasType <br />
       Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type map, -mapFile and -kmer are required. If you type gquad, -gquadFile is required
-  -  -faFile <br />
-       .2bit files. You can download .2bit files in UCSC genome browser. <br/> <br/>
+  -  -genome <br />
+       The human genome sequence, in .2bit format. For information on downloading the genome, see [https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/) §§ "Files" and "How to Download"<br/> <br/>
 * Optional Arguments <br />
    !! Warning !! Some optional arguments are required depending on what you put in required arguments. <br />
   -  -binSize <br />
@@ -117,7 +117,7 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
                           -r /data/YoungSook/target_region.bed
                           -biasType shear pcr map gquad
                           -covariDir /data/YoungSook/hg39_fragLen500_kmer50
-                          -faFile /data/YoungSook/hg38.2bit
+                          -genome /data/YoungSook/hg38.2bit
                           -kmer 50
                           -o /data/YoungSook/CRADLE_result
                           -bl /data/YoungSook/blacklist_regions.bed
@@ -134,8 +134,8 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
       Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr.
   -  -covariDir <br />
       The directory of hdf files that have covariate values. The directory name of covariate files should be 'refGenome_fragLen(fragment length)_kmer(the length of sequenced reads)' ex) hg38_fragLen300_kmer36
-  -  -faFile <br/>
-      .2bit files. You can download .2bit files in UCSC genome browser. <br/> <br/>
+  -  -genome <br/>
+      The human genome sequence, in .2bit format. For information on downloading the genome, see [https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/) §§ "Files" and "How to Download"<br/> <br/>
 
 * Optional Arguments
   -  -mi <br />
@@ -278,7 +278,7 @@ singularity run --bind /data cradle.sif correctBias_stored \
     -expbw /data/unnormalized/exp_unnormalized.bw \
     -r /data/ref_genome/regionfile_correctionModel \
     -biasType shear pcr map gquad \
-    -faFile /data/ref_genome/hg38/hg38.2bit \
+    -genome /data/ref_genome/hg38/hg38.2bit \
     -covariDir /data/covariateFiles/hg38_fragLen1000_kmer50 \
     -mi 125 \
     -p 10 \
@@ -294,7 +294,7 @@ However, if all your data is in a directory singularity mounts by default you ca
     -expbw unnormalized/exp_unnormalized.bw \
     -r ref_genome/regionfile_correctionModel \
     -biasType shear pcr map gquad \
-    -faFile ref_genome/hg38/hg38.2bit \
+    -genome ref_genome/hg38/hg38.2bit \
     -covariDir covariateFiles/hg38_fragLen1000_kmer50 \
     -mi 125 \
     -p 10 \
@@ -309,7 +309,7 @@ However, if all your data is in a directory singularity mounts by default you ca
    Derrien T, Estellé J, Marco Sola S, Knowles DG, Raineri E, Guigó R, Ribeca P. Fast computation and applications of genome mappability. PLoS One. 2012;7(1):e30377. <br />
 3) G-quadruplex sturcture <br/>
    Chambers VS, Marsico G, Boutell JM, Di Antonio M, Smith GP, Balasubramanian S. High-throughput sequencing of DNA G-quadruplex structures in the human genome.Nat Biotechnol. 2015 Aug;33(8):877-81.<br />
-   
+
  ## Cite CRADLE
 Kim YS, Johnson GD, Seo J, Barrera A, Cowart TN, Majoros WH, Ochoa A, Allen AS, Reddy TE. Correcting signal biases and detecting regulatory elements in STARR-seq data. Genome Res. 2021 May;31(5):877-889. doi: 10.1101/gr.269209.120. Epub 2021 Mar 15. PMID: 33722938; PMCID: PMC8092017.
 
