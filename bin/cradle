@@ -2,6 +2,7 @@
 
 import argparse
 import multiprocessing as mp
+import sys
 
 def getArgs():
 	parser = argparse.ArgumentParser("cradle")
@@ -89,9 +90,20 @@ def getArgs():
 
 	return parser
 
+def checkDeprecations():
+	if '-faFile' in sys.argv:
+		print("""
+********************************************************************************
+* The "-faFile" argument has been deprecated in favor of "-genome" and may be  *
+* removed in a future release. The functionality isn't changing, just the      *
+* argument name. Please update your scripts to use "-genome".                  *
+********************************************************************************
+		""")
 
 def main():
 	args = getArgs().parse_args()
+
+	checkDeprecations()
 
 	### Correcting bias
 	if(args.commandName == "correctBias"):

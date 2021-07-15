@@ -78,6 +78,8 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
       Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type map, -mapFile and -kmer are required. If you type gquad, -gquadFile is required
   -  -genome <br />
        The human genome sequence, in .2bit format. For information on downloading the genome, see [https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/) §§ "Files" and "How to Download"<br/> <br/>
+  -  -faFile <br/>
+      The same as `-genome`. This argument is deprecated and may be removed in a future release. Please use `-genome` instead.<br/> <br/>
 * Optional Arguments <br />
    !! Warning !! Some optional arguments are required depending on what you put in required arguments. <br />
   -  -binSize <br />
@@ -136,6 +138,8 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
       The directory of hdf files that have covariate values. The directory name of covariate files should be 'refGenome_fragLen(fragment length)_kmer(the length of sequenced reads)' ex) hg38_fragLen300_kmer36
   -  -genome <br/>
       The human genome sequence, in .2bit format. For information on downloading the genome, see [https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/) §§ "Files" and "How to Download"<br/> <br/>
+  -  -faFile <br/>
+      The same as `-genome`. This argument is deprecated and may be removed in a future release. Please use `-genome` instead.<br/> <br/>
 
 * Optional Arguments
   -  -mi <br />
