@@ -1,4 +1,5 @@
 import numpy as np
+import pyBigWig
 import pytest
 
 import CRADLE.correctbiasutils as utils
@@ -104,6 +105,25 @@ def testGetScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNa
 	result = utils.getScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNames)
 	expectedResult = [[trainingSets, observedReadCounts, fileName] for fileName in resultBWList]
 	assert result == expectedResult
+
+@pytest.mark.parametrize("bwFileName,binCount,chromo,start,end,result", [
+	# chr17 8,088,775-8,088,787
+	# [28., 28., 28., 28., 28., 28., 28., 28., 30., 30., 30., 30.]
+	('tests/files/test_ctrl.bw', 1, 'chr17', 8_088_775, 8_088_787, [28.666666666666668]),
+	('tests/files/test_ctrl.bw', 2, 'chr17', 8_088_775, 8_088_787, [28., 29.333333333333332]),
+	('tests/files/test_ctrl.bw', 3, 'chr17', 8_088_775, 8_088_787, [28., 28., 30.]),
+	('tests/files/test_ctrl.bw', 4, 'chr17', 8_088_775, 8_088_787, [28., 28., 28.666666666666668, 30.]),
+	('tests/files/test_ctrl.bw', 5, 'chr17', 8_088_775, 8_088_787, [28., 28., 28., 28.666666666666668, 30.]),
+	('tests/files/test_ctrl.bw', 6, 'chr17', 8_088_775, 8_088_787, [28., 28., 28., 28., 30., 30.]),
+	('tests/files/test_ctrl.bw', 7, 'chr17', 8_088_775, 8_088_787, [28., 28., 28., 28., 28., 30., 30.]),
+	# chr17 8,086,770-8,086,785
+	# [nan,  nan,  nan, 130., 130., 128., 128., 128., 130., 130., 130., 130., 130., 126., 126.]
+	('tests/files/test_ctrl.bw', 1, 'chr17', 8_086_770, 8_086_785, [np.nan]),
+	('tests/files/test_ctrl.bw', 2, 'chr17', 8_086_770, 8_086_785, [np.nan, 128.75]),
+])
+def testRegionMeans(bwFileName, binCount, chromo, start, end, result):
+	with pyBigWig.open(bwFileName) as bwFile:
+		assert np.allclose(utils.regionMeans(bwFile, binCount, chromo, start, end), [np.float32(x) for x in result], atol=0.00001, equal_nan=True)
 
 @pytest.mark.parametrize("populationSize", [(0), (100), (1_000), (10_000), (100_000)])
 def testGetScatterplotSampleIndices(populationSize):
