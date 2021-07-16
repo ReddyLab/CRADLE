@@ -4,9 +4,12 @@
 # Ignore build artifacts
 build
 CRADLE/**/*.c
+CRADLE/**/*.so
+CRADLE/**/*.html
 dist
 CRADLE.egg-info
 *.pyc
 
 # Ignore test runs
 test_cradle*
+test_output/**

@@ -517,14 +517,14 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	return correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastBin, nBins)
 
 
-cpdef calculateTrainCovariates(args):
+cpdef calculateTrainCovariates(region):
 	### supress numpy nan-error message
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
-	chromo = args[0]
-	analysisStart = int(args[1])  # Genomic coordinates(starts from 1)
-	analysisEnd = int(args[2])  # not included
+	chromo = region.chromo
+	analysisStart = region.start  # Genomic coordinates(starts from 1)
+	analysisEnd = region.end  # not included
 
 	binStart = int((analysisStart + analysisStart + vari.BINSIZE) / float(2))
 	binEnd = int((analysisEnd - vari.BINSIZE + analysisEnd) / float(2))
