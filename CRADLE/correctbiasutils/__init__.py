@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import io
 import linecache
 import marshal
@@ -6,15 +8,16 @@ import multiprocessing
 import os
 import os.path
 import tempfile
-import matplotlib
-import matplotlib.pyplot as plt
+import matplotlib # type: ignore
+import matplotlib.pyplot as plt # type: ignore
 import numpy as np
-import pyBigWig
-import statsmodels.api as sm
+import pyBigWig # type: ignore
+import statsmodels.api as sm # type: ignore
 
 from shutil import copyfile
+from typing import Iterator, List, Type
 
-from CRADLE.correctbiasutils.cython import arraySplit, coalesceSections
+from CRADLE.correctbiasutils.cython import arraySplit, coalesceSections # type: ignore
 
 matplotlib.use('Agg')
 
@@ -25,74 +28,188 @@ SONICATION_SHEAR_BIAS_OFFSET = 2
 # Used to adjust coordinates between 0 and 1-based systems.
 START_INDEX_ADJUSTMENT = 1
 
-class ChromoRegion:
-	def __init__(self, chromo, start, end):
-		self.chromo = chromo
-		self.start = int(start)
-		self.end = int(end)
-		self._length = self.end - self.start
+class ChromoRegionMergeException(Exception):
+	pass
 
-	def __len__(self):
+class ChromoRegion:
+	"""Describes a Chromosome region. Index is 0-based and half-closed"""
+	def __init__(self, chromo: str, start: int, end: int) -> None:
+		assert start <= end
+		self.chromo = chromo
+		self.start = start
+		self._end = end
+		self._length = self._end - self.start
+
+	@property
+	def end(self) -> int:
+		return self._end
+
+	@end.setter
+	def end(self, value: int) -> None:
+		assert value >= self.start
+
+		self._end = value
+		self._length = self._end - self.start
+
+	def contiguousWith(self, o: ChromoRegion) -> bool:
+		if self.chromo != o.chromo:
+			return False
+
+		if self.start < o.start:
+			return self.end >= o.start
+		else:
+			return o.end >= self.start
+
+	def __add__(self, o: ChromoRegion) -> ChromoRegion:
+		if not self.contiguousWith(o):
+			raise ChromoRegionMergeException(f"Regions are not contiguous: {self.chromo}:{self.start}-{self.end}, {o.chromo}:{o.start}-{o.end}")
+
+		return ChromoRegion(self.chromo, min(self.start, o.start), max(self.end, o.end))
+
+	def __sub__(self, o: ChromoRegion) -> List[ChromoRegion]:
+		if not self.contiguousWith(o):
+			return [ChromoRegion(self.chromo, self.start, self.end)]
+
+		if o.start <= self.start and o.end >= self.end:
+			return []
+		elif o.start > self.start and o.end < self.end:
+			return [ChromoRegion(self.chromo, self.start, o.start), ChromoRegion(self.chromo, o.end, self.end)]
+		elif o.start <= self.start and o.end < self.end:
+			return [ChromoRegion(self.chromo, o.end, self.end)]
+		elif o.start > self.start and o.end >= self.end:
+			return [ChromoRegion(self.chromo, self.start, o.start)]
+
+		# Should not happen, the above conditions are exhaustive
+		return []
+
+	def __len__(self) -> int:
 		return self._length
 
 	def __eq__(self, o: object) -> bool:
+		if not isinstance(o, ChromoRegion):
+			return NotImplemented
+
 		return (self.chromo == o.chromo
 			and self.start == o.start
 			and self.end == o.end
 			and self._length == o._length)
 
-	def __repr__(self):
+	# __lt__ has been implemented specifically for sorting -- both the "list.sort()" method
+	# and "sorted" function use __lt__ for comparing objects.
+	def __lt__(self, o: object) -> bool:
+		if not isinstance(o, ChromoRegion):
+			return NotImplemented
+
+		if self.chromo == o.chromo:
+			return self.start < o.start
+
+		return self.chromo < o.chromo
+
+	def __repr__(self) -> str:
 		return f"({self.chromo}:{self.start}-{self.end})"
 
+# Not quite a set in the mathematical sense.
 class ChromoRegionSet:
-	def __init__(self, trainingRegions=None):
-		self.trainingRegions = []
+	def __init__(self, regions: List[ChromoRegion]=None) -> None:
+		self.regions = []
 		self.chromos = set()
 		self.cumulativeRegionSize = 0
-		if trainingRegions is not None:
-			self.trainingRegions = trainingRegions
-			for region in self.trainingRegions:
+		if regions is not None:
+			self.regions = regions
+			for region in self.regions:
 				self.chromos.add(region.chromo)
 				self.cumulativeRegionSize += len(region)
 
-	def __add__(self, o):
-		newTrainingSet = ChromoRegionSet()
-		newTrainingSet.trainingRegions = self.trainingRegions + o.trainingRegions
-		newTrainingSet.cumulativeRegionSize = self.cumulativeRegionSize + o.cumulativeRegionSize
-		newTrainingSet.chromos = self.chromos.union(o.chromos)
-
-		return newTrainingSet
-
-	def __sub__(self, o):
-		pass
-
-	def addRegion(self, region):
-		self.trainingRegions.append(region)
+	def addRegion(self, region: ChromoRegion) -> None:
+		self.regions.append(region)
 		self.chromos.add(region.chromo)
 		self.cumulativeRegionSize += len(region)
 
+	def sortRegions(self) -> None:
+		self.regions.sort(key=lambda r: r.start)
+		self.regions.sort(key=lambda r: r.chromo)
+
+	def mergeRegions(self) -> None:
+		if len(self.regions) == 1:
+			return
+
+		self.sortRegions()
+
+		mergedRegions = []
+		currentRegion = self.regions[0]
+
+		for region in self.regions[1:]:
+			if currentRegion.contiguousWith(region):
+				currentRegion = currentRegion + region
+			else:
+				mergedRegions.append(currentRegion)
+				currentRegion = region
+		mergedRegions.append(currentRegion)
+
+		mergedCumulativeLength = 0
+		for region in mergedRegions:
+			mergedCumulativeLength += len(region)
+
+		self.regions = mergedRegions
+		self.cumulativeRegionSize = mergedCumulativeLength
+
+	def __add__(self, o: ChromoRegionSet) -> ChromoRegionSet:
+		"""Simple conacatenation of sets. No region merging is done."""
+		newRegionSet = ChromoRegionSet()
+		newRegionSet.regions = self.regions + o.regions
+		newRegionSet.cumulativeRegionSize = self.cumulativeRegionSize + o.cumulativeRegionSize
+		newRegionSet.chromos = self.chromos.union(o.chromos)
+
+		return newRegionSet
+
+	def __sub__(self, o: ChromoRegionSet) -> ChromoRegionSet:
+		regionWorkingSet = self.regions
+		for removeRegion in o:
+			tempRegions = []
+			for region in regionWorkingSet:
+				tempRegions.extend(region - removeRegion)
+			regionWorkingSet = tempRegions
+
+		return ChromoRegionSet(regionWorkingSet)
+
 	def __len__(self) -> int:
-		return len(self.trainingRegions)
+		return len(self.regions)
 
-	def __iter__(self):
-		def regionGenerator():
-			for region in self.trainingRegions:
-				yield region
+	def __iter__(self) ->  Iterator[ChromoRegion]:
+		for region in self.regions:
+			yield region
 
-		return regionGenerator()
+	def __eq__(self, o: object) -> bool:
+		if not isinstance(o, ChromoRegionSet):
+			return NotImplemented
 
-	def __eq__(self, o):
-		if len(self.trainingRegions) != len(o.trainingRegions):
+		if len(self.regions) != len(o.regions):
 			return False
 
-		for selfRegion, oRegion in zip(self.trainingRegions, o.trainingRegions):
+		if self.cumulativeRegionSize != o.cumulativeRegionSize:
+			return False
+
+		for selfRegion, oRegion in zip(sorted(self), sorted(o)):
 			if selfRegion != oRegion:
 				return False
 
-		return self.cumulativeRegionSize == o.cumulativeRegionSize
+		return True
 
-	def __repr__(self):
-		return f"[{', '.join([str(region) for region in self.trainingRegions])}]"
+	def __repr__(self) -> str:
+		return f"[{', '.join([str(region) for region in self.regions])}]"
+
+	@classmethod
+	def loadBed(cls: Type[ChromoRegionSet], filename: str) -> ChromoRegionSet:
+		regionSet = ChromoRegionSet()
+
+		with open(filename) as regionFile:
+			regionLines = regionFile.readlines()
+
+		for line in regionLines:
+			temp = line.split()
+			regionSet.addRegion(ChromoRegion(temp[0], int(temp[1]), int(temp[2])))
+
+		return regionSet
 
 def process(poolSize, function, argumentLists):
 	pool = multiprocessing.Pool(poolSize)

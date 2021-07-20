@@ -8,7 +8,7 @@ clean:
 	-rm CRADLE/**/*.c
 
 dist: $(PYTHON_FILES) $(CYTHON_FILES)
-	if [[ -z $$(pip list | grep -e "^build\s") ]]; then pip install build; fi
+	if [ -z $$(pip list | grep -e "^build\s") ]; then pip install build; fi
 	python -m build
 
 install: dist

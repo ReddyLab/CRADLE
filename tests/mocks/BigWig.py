@@ -26,6 +26,15 @@ class BigWig:
 		else:
 			return data
 
+	def chroms(self, chrom=None):
+		if chrom is None:
+			return {k: len(self.data[k]) for k in self.data}
+
+		if chrom in self.data:
+			return len(self.data[chrom])
+
+		return None
+
 	def addEntries(self, chroms, starts, ends=None, values=None):
 		'''This is not an exact replica of pyBigWig's behavior. That
 		version of addEntries has some more arguments and accepts inputs

@@ -18,7 +18,18 @@ def testAddHeader():
 ])
 def testValues(data, location, numpy, result):
 	bw = BigWig(data)
-	assert np.array_equal(bw.values(location[0], location[1], location[2], numpy), result, equal_nan=True)
+	assert np.array_equal(bw.values(*location, numpy), result, equal_nan=True)
+
+@pytest.mark.parametrize("bigwig, chrom, result", [
+	(BigWig({'chr1': [np.nan, np.nan, 0., 1., 1., 5., 6., 6., 0., 7., 8., 10.]}), 'chr1', 12),
+	(BigWig({'chr1': [np.nan, np.nan, 0., 1., 1., 5., 6., 6., 0., 7., 8., 10.]}), 'chr2', None),
+	(BigWig({'chr1': [np.nan, np.nan, 0., 1., 1., 5., 6., 6., 0., 7., 8., 10.]}), None, {'chr1': 12}),
+])
+def testChroms(bigwig, chrom, result):
+	if chrom is None:
+		assert bigwig.chroms() == result
+	else:
+		assert bigwig.chroms(chrom) == result
 
 @pytest.mark.parametrize("data,chroms,starts,ends,values,results", [
 	(
