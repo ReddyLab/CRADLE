@@ -9,28 +9,33 @@ import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
-from CRADLE.correctbiasutils import TrainingRegion, TrainingSet, marshalFile
+from CRADLE.correctbiasutils import SONICATION_SHEAR_BIAS_OFFSET, START_INDEX_ADJUSTMENT, TrainingRegion, TrainingSet, marshalFile
 from CRADLE.correctbiasutils.cython import coalesceSections
 
 COEF_LEN = 7
+
+# The covariate values stored in the HDF files start at index 0 (0-index, obviously)
+# The lowest start point for an analysis region is 3 (1-indexed), so we need to subtract
+# 3 from the analysis start and end points to match them up with correct covariate values
+# in the HDF files.
+COVARIATE_FILE_INDEX_OFFSET = 3
 
 cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, scatterplotSamples):
 	xColumnCount = covariates.num + 1
 
 	#### Get X matrix
-	xView = np.ones((trainingSet.xRowCount, xColumnCount), dtype=np.float64)
+	xView = np.ones((trainingSet.cumulativeRegionSize, xColumnCount), dtype=np.float64)
 
 	cdef int currentRow = 0
 
 	for trainingRegion in trainingSet:
-		region_length = trainingRegion.analysisEnd - trainingRegion.analysisStart
-		hdfFileName = covariates.hdfFileName(trainingRegion.chromo)
-		with h5py.File(hdfFileName, "r") as hdfFile:
+		covariateFileName = covariates.covariateFileName(trainingRegion.chromo)
+		with h5py.File(covariateFileName, "r") as covariateValues:
 			non_selected_rows = np.where(np.isnan(covariates.selected))
-			temp = hdfFile['covari'][trainingRegion.analysisStart - 3:trainingRegion.analysisEnd - 3]
+			temp = covariateValues['covari'][trainingRegion.analysisStart - COVARIATE_FILE_INDEX_OFFSET:trainingRegion.analysisEnd - COVARIATE_FILE_INDEX_OFFSET]
 			temp = np.delete(temp, non_selected_rows, 1)
-			xView[currentRow:currentRow + region_length, 1:xColumnCount] = temp
-			currentRow += region_length
+			xView[currentRow:currentRow + trainingRegion.length, 1:xColumnCount] = temp
+			currentRow += trainingRegion.length
 	#### END Get X matrix
 
 	#### Initialize COEF arrays
@@ -42,7 +47,7 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 
 	for i, bwFileName in enumerate(ctrlBWNames):
 		rawReadCounts = readCountData(bwFileName, trainingSet)
-		readCounts = getReadCounts(rawReadCounts, trainingSet.xRowCount, ctrlScaler[i])
+		readCounts = getReadCounts(rawReadCounts, trainingSet.cumulativeRegionSize, ctrlScaler[i])
 		model = buildModel(readCounts, xView)
 
 		COEFCTRL[i, :] = getCoefs(model.params, covariates.selected)
@@ -51,7 +56,7 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 
 	for i, bwFileName in enumerate(experiBWNames):
 		rawReadCounts = readCountData(bwFileName, trainingSet)
-		readCounts = getReadCounts(rawReadCounts, trainingSet.xRowCount, experiScaler[i])
+		readCounts = getReadCounts(rawReadCounts, trainingSet.cumulativeRegionSize, experiScaler[i])
 		model = buildModel(readCounts, xView)
 
 		COEFEXPR[i, :] = getCoefs(model.params, covariates.selected)
@@ -65,15 +70,13 @@ def readCountData(bwFileName, trainingSet):
 		if pyBigWig.numpy == 1:
 			for trainingRegion in trainingSet:
 				regionReadCounts = bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd, numpy=True)
-				regionLength = trainingRegion.analysisEnd - trainingRegion.analysisStart
-				yield regionReadCounts, regionLength
+				yield regionReadCounts, trainingRegion.length
 		else:
 			for trainingRegion in trainingSet:
 				regionReadCounts = np.array(
 					bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
 				)
-				regionLength = trainingRegion.analysisEnd - trainingRegion.analysisStart
-				yield regionReadCounts, regionLength
+				yield regionReadCounts, trainingRegion.length
 
 cpdef getReadCounts(rawReadCounts, rowCount, scaler):
 	cdef double [:] readCountsView
@@ -125,32 +128,41 @@ cpdef correctReadCount(tasks, covariates, genome, ctrlBWNames, ctrlScaler, COEFC
 		analysisStart = int(taskArgs[1])  # Genomic coordinates(starts from 1)
 		analysisEnd = int(taskArgs[2])
 
+		# TODO: Pre-compute this
 		with py2bit.open(genome) as genomeFile:
 			chromoEnd = int(genomeFile.chroms(chromo))
 
 		###### GENERATE A RESULT MATRIX
-		fragStart = analysisStart - covariates.fragLen + 1
-		fragEnd = analysisEnd + covariates.fragLen - 1
-		shearStart = fragStart - 2
-		shearEnd = fragEnd + 2
 
+		#
+		# Adjust analysis boundaries for use with covariate values file
+		#
+		# Define a region of fragments of length fragLen
+		fragRegionStart = analysisStart - covariates.fragLen + START_INDEX_ADJUSTMENT
+		fragRegionEnd = analysisEnd + covariates.fragLen - START_INDEX_ADJUSTMENT
+
+		# Define a region that includes base pairs used to model shearing/sonication bias
+		shearStart = fragRegionStart - SONICATION_SHEAR_BIAS_OFFSET
+		shearEnd = fragRegionEnd + SONICATION_SHEAR_BIAS_OFFSET
+
+		# Make sure the analysisStart and analysisEnd fall within the boundaries of the region
+		# covariates have been precomputed for
 		if shearStart < 1:
-			shearStart = 1
-			fragStart = 3
-			analysisStart = max(analysisStart, fragStart)
-		if shearEnd > chromoEnd:
-			shearEnd = chromoEnd
-			fragEnd = shearEnd - 2
-			analysisEnd = min(analysisEnd, fragEnd)
+			fragRegionStart = SONICATION_SHEAR_BIAS_OFFSET + START_INDEX_ADJUSTMENT
+			analysisStart = max(analysisStart, fragRegionStart)
 
+		if shearEnd > chromoEnd:
+			fragRegionEnd = chromoEnd - SONICATION_SHEAR_BIAS_OFFSET
+			analysisEnd = min(analysisEnd, fragRegionEnd)
+		#
+		# End adjust boundaries
+		#
 		###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAGNUM_FILTER_VALUE
 		ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx = selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, highRC, minFragFilterValue)
 
 		## OUTPUT FILES
-		subfinalCtrlReadCounts = [None] * len(ctrlBWNames)
-		subfinalExperiReadCounts = [None] * len(experiBWNames)
-		hdfFileName = covariates.hdfFileName(chromo)
-		with h5py.File(hdfFileName, "r") as hdfFile:
+		covariateFileName = covariates.covariateFileName(chromo)
+		with h5py.File(covariateFileName, "r") as covariateValues:
 			for rep, bwName in enumerate(ctrlBWNames):
 				if len(ctrlSpecificIdx[rep]) == 0:
 					correctedCtrlReadCounts[rep].append((chromo, None))
@@ -163,13 +175,13 @@ cpdef correctReadCount(tasks, covariates, genome, ctrlBWNames, ctrlScaler, COEFC
 
 				prdvals = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFCTRL[rep, 1:],
+						(covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)] * covariates.selected) * COEFCTRL[rep, 1:],
 						axis=1
 					) + COEFCTRL[rep, 0]
 				)
 				prdvals[highReadCountIdx] = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFCTRL_HIGHRC[rep, 1:],
+						(covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)][highReadCountIdx] * covariates.selected) * COEFCTRL_HIGHRC[rep, 1:],
 						axis=1
 					) + COEFCTRL_HIGHRC[rep, 0]
 				)
@@ -200,13 +212,13 @@ cpdef correctReadCount(tasks, covariates, genome, ctrlBWNames, ctrlScaler, COEFC
 
 				prdvals = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)] * covariates.selected) * COEFEXP[rep, 1:],
+						(covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)] * covariates.selected) * COEFEXP[rep, 1:],
 						axis=1
 					) + COEFEXP[rep, 0]
 				)
 				prdvals[highReadCountIdx] = np.exp(
 					np.nansum(
-						(hdfFile['covari'][(analysisStart-3):(analysisEnd-3)][highReadCountIdx] * covariates.selected) * COEFEXP_HIGHRC[rep, 1:],
+						(covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)][highReadCountIdx] * covariates.selected) * COEFEXP_HIGHRC[rep, 1:],
 						axis=1
 					) + COEFEXP_HIGHRC[rep, 0]
 				)

@@ -47,7 +47,7 @@ class StoredCovariates:
 			self.order.extend(["Gquad_gquad"])
 		self.num = len(self.order) - 1
 
-	def hdfFileName(self, chromosome):
+	def covariateFileName(self, chromosome):
 		return self.directory + "/" + self.name + "_" + chromosome + ".hdf5"
 
 def setInputFiles(ctrlbwFiles, expbwFiles):

@@ -1,7 +1,7 @@
 import numpy as np
 
 class BigWig:
-	'''A mock for interacting with bigwig files. Don't use large regions/coordinates
+	'''A mock for the pyBigWig data structure. Don't use large regions/coordinates
 	as this will create an array large enough to contain the entire thing.
 
 	E.g., `b.addEntries(['chr17'], [8_000_000], [8_000_001], [1.0])` will create

@@ -20,17 +20,43 @@ matplotlib.use('Agg')
 
 TRAINING_BIN_SIZE = 1_000
 SCATTERPLOT_SAMPLE_COUNT = 10_000
+SONICATION_SHEAR_BIAS_OFFSET = 2
+
+# Used to adjust coordinates between 0 and 1-based systems.
+START_INDEX_ADJUSTMENT = 1
 
 class TrainingRegion:
 	def __init__(self, chromo, analysisStart, analysisEnd):
 		self.chromo = chromo
 		self.analysisStart = analysisStart
 		self.analysisEnd = analysisEnd
+		self._length = self.analysisEnd - self.analysisStart
+
+	@property
+	def length(self):
+		return self._length
+
+	def __eq__(self, o: object) -> bool:
+		return (self.chromo == o.chromo
+			and self.analysisStart == o.analysisStart
+			and self.analysisEnd == o.analysisEnd
+			and self.length == o.length)
+
+	def __repr__(self):
+		return f"({self.chromo}:{self.analysisStart}-{self.analysisEnd})"
 
 class TrainingSet:
-	def __init__(self, trainingRegions, xRowCount):
-		self.trainingRegions = trainingRegions
-		self.xRowCount = xRowCount
+	def __init__(self, trainingRegions=None):
+		self.trainingRegions = []
+		self.cumulativeRegionSize = 0
+		if trainingRegions is not None:
+			self.trainingRegions = trainingRegions
+			for region in self.trainingRegions:
+				self.cumulativeRegionSize += region.length
+
+	def addRegion(self, region):
+		self.trainingRegions.append(region)
+		self.cumulativeRegionSize += region.length
 
 	def __iter__(self):
 		def regionGenerator():
@@ -38,6 +64,19 @@ class TrainingSet:
 				yield region
 
 		return regionGenerator()
+
+	def __eq__(self, o):
+		if len(self.trainingRegions) != len(o.trainingRegions):
+			return False
+
+		for selfRegion, oRegion in zip(self.trainingRegions, o.trainingRegions):
+			if selfRegion != oRegion:
+				return False
+
+		return self.cumulativeRegionSize == o.cumulativeRegionSize
+
+	def __repr__(self):
+		return f"[{', '.join([str(region) for region in self.trainingRegions])}]"
 
 def process(poolSize, function, argumentLists):
 	pool = multiprocessing.Pool(poolSize)
@@ -493,35 +532,36 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	os.remove(resultFile.name)
 	return None
 
-def alignCoordinatesToHDF(genome, oldTrainingSet, fragLen):
-	trainingSet = []
-	xRowCount = 0
+def alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen):
+	newTrainingSet = TrainingSet()
 
-	for trainingRegion in oldTrainingSet:
+	for trainingRegion in trainingSet:
 		chromo = trainingRegion[0]
 		analysisStart = int(trainingRegion[1])
 		analysisEnd = int(trainingRegion[2])
 		chromoEnd = genome.chroms(chromo)
 
-		fragStart = analysisStart - fragLen + 1
-		fragEnd = analysisEnd + fragLen - 1
-		shearStart = fragStart - 2
-		shearEnd = fragEnd + 2
+		# Define a region of fragments of length fragLen
+		fragRegionStart = analysisStart - fragLen + START_INDEX_ADJUSTMENT
+		fragRegionEnd = analysisEnd + fragLen - START_INDEX_ADJUSTMENT
 
+		# Define a region that includes base pairs used to model shearing/sonication bias
+		shearStart = fragRegionStart - SONICATION_SHEAR_BIAS_OFFSET
+		shearEnd = fragRegionEnd + SONICATION_SHEAR_BIAS_OFFSET
+
+		# Make sure the analysisStart and analysisEnd fall within the boundaries of the region
+		# covariates have been precomputed for
 		if shearStart < 1:
-			shearStart = 1
-			fragStart = 3
-			analysisStart = max(analysisStart, fragStart)
+			fragRegionStart = SONICATION_SHEAR_BIAS_OFFSET + START_INDEX_ADJUSTMENT
+			analysisStart = max(analysisStart, fragRegionStart)
 
 		if shearEnd > chromoEnd:
-			shearEnd = chromoEnd
-			fragEnd = shearEnd - 2
-			analysisEnd = min(analysisEnd, fragEnd)  # not included
+			fragRegionEnd = chromoEnd - SONICATION_SHEAR_BIAS_OFFSET
+			analysisEnd = min(analysisEnd, fragRegionEnd)
 
-		xRowCount += (analysisEnd - analysisStart)
-		trainingSet.append(TrainingRegion(chromo, analysisStart, analysisEnd))
+		newTrainingSet.addRegion(TrainingRegion(chromo, analysisStart, analysisEnd))
 
-	return TrainingSet(trainingRegions=trainingSet, xRowCount=xRowCount)
+	return newTrainingSet
 
 def getScatterplotSampleIndices(populationSize):
 	if populationSize <= SCATTERPLOT_SAMPLE_COUNT:

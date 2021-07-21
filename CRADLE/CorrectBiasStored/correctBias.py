@@ -83,11 +83,11 @@ def run(args):
 		trainSet90To99Percentile = vari.REGION
 
 	with py2bit.open(vari.GENOME) as genome:
-		trainSet90Percentile = utils.alignCoordinatesToHDF(genome, trainSet90Percentile, covariates.fragLen)
-		trainSet90To99Percentile = utils.alignCoordinatesToHDF(genome, trainSet90To99Percentile, covariates.fragLen)
+		trainSet90Percentile = utils.alignCoordinatesToCovariateFileBoundaries(genome, trainSet90Percentile, covariates.fragLen)
+		trainSet90To99Percentile = utils.alignCoordinatesToCovariateFileBoundaries(genome, trainSet90To99Percentile, covariates.fragLen)
 
-	scatterplotSamples90Percentile = utils.getScatterplotSampleIndices(trainSet90Percentile.xRowCount)
-	scatterplotSamples90to99Percentile = utils.getScatterplotSampleIndices(trainSet90To99Percentile.xRowCount)
+	scatterplotSamples90Percentile = utils.getScatterplotSampleIndices(trainSet90Percentile.cumulativeRegionSize)
+	scatterplotSamples90to99Percentile = utils.getScatterplotSampleIndices(trainSet90To99Percentile.cumulativeRegionSize)
 
 	coefResult = pool.starmap_async(
 		calculateOneBP.performRegression,
