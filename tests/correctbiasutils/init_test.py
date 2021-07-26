@@ -7,6 +7,8 @@ import CRADLE.correctbiasutils as utils
 from tests.mocks.BigWig import BigWig
 from tests.mocks.TwoBit import TwoBit
 
+from CRADLE.correctbiasutils import ChromoRegion, ChromoRegionSet
+
 @pytest.mark.parametrize("outputDir,filename,result", [
 	('test/', 'foo.bw', 'test/foo_corrected.bw'),
 	('test', 'foo.bw', 'test/foo_corrected.bw'),
@@ -45,7 +47,7 @@ def testFigureFileName(outputDir, bwFilename, result):
 		{'chr17': [np.nan, np.nan, 0., 1., 1., 5., 6., 6., 0., 7., 8., 10.]},
 		[('chr17', 12)],
 		2.0,
-		[('chr17', 1, 5), ('chr17', 8, 12)],
+		ChromoRegionSet([ChromoRegion('chr17', 1, 5), ChromoRegion('chr17', 8, 12)]),
 		{'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 3., 4., 5.]}
 	),
 	(
@@ -55,7 +57,7 @@ def testFigureFileName(outputDir, bwFilename, result):
 		},
 		[('chr17', 12), ('chr18', 10)],
 		2.0,
-		[('chr17', 1, 5), ('chr17', 8, 11), ('chr18', 8, 12)],
+		ChromoRegionSet([ChromoRegion('chr17', 1, 5), ChromoRegion('chr17', 8, 11), ChromoRegion('chr18', 8, 12)]),
 		{
 			'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 3., 4.],
 			'chr18': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 2., 2.]
@@ -78,19 +80,19 @@ def test_generateNormalizedObBWs(observedData, header, scaler, regions, resultDa
 	assert normObBW == resultBW
 
 @pytest.mark.parametrize('regions,bwFile,result', [
-	([('chr17', 8086770, 8086780), ('chr17', 8086790, 8086800)], 'tests/files/test_ctrl.bw', [('chr17', 83_257_441)]),
-	([('chr17', 8086770, 8086780), ('chr17', 8086790, 8086800)], 'tests/files/test_exp.bw', [('chr17', 83_257_441)]),
+	(ChromoRegionSet([ChromoRegion('chr17', 8086770, 8086780), ChromoRegion('chr17', 8086790, 8086800)]), 'tests/files/test_ctrl.bw', [('chr17', 83_257_441)]),
+	(ChromoRegionSet([ChromoRegion('chr17', 8086770, 8086780), ChromoRegion('chr17', 8086790, 8086800)]), 'tests/files/test_exp.bw', [('chr17', 83_257_441)]),
 ])
 def testGetResultHeader(regions, bwFile, result):
 	assert utils.getResultBWHeader(regions, bwFile) == result
 
 @pytest.mark.parametrize('trainingSets,bwFile,result', [
 	(
-		[('chr17', 8086770, 8086780), ('chr17', 8086790, 8086800)],
+		ChromoRegionSet([ChromoRegion('chr17', 8086770, 8086780), ChromoRegion('chr17', 8086790, 8086800)]),
 		'tests/files/test_ctrl.bw',
 		[0., 0., 0., 130., 130., 128., 128., 128., 130., 130., 122., 118., 122., 122., 122., 122., 122., 122., 122., 120.]),
 	(
-		[('chr17', 8086770, 8086780), ('chr17', 8086790, 8086800)],
+		ChromoRegionSet([ChromoRegion('chr17', 8086770, 8086780), ChromoRegion('chr17', 8086790, 8086800)]),
 		'tests/files/test_exp.bw',
 		[0., 0., 0., 130., 130., 128., 128., 128., 130., 130., 122., 118., 122., 122., 122., 122., 122., 122., 122., 120.])
 ])
@@ -128,14 +130,19 @@ def testRegionMeans(bwFileName, binCount, chromo, start, end, result):
 
 def testAlignCoordinatesToCovariateFileBoundaries():
 	genome = TwoBit({ "chr1": "actgtcgattcgctctcgatatagcatagctac", "chr2": "tctcgatcgctctcgcgctagagatccgag" })
-	trainingSet = [("chr1", 2, 20), ("chr1", 4, 20), ("chr1", 20, 29), ("chr1", 20, 32), ("chr2", 10, 15)]
+	trainingSet = ChromoRegionSet([
+		ChromoRegion("chr1", 2, 20),
+		ChromoRegion("chr1", 4, 20),
+		ChromoRegion("chr1", 20, 29),
+		ChromoRegion("chr1", 20, 32),
+		ChromoRegion("chr2", 10, 15)])
 	fragLen = 5
-	results = utils.TrainingSet([
-		utils.TrainingRegion("chr1", 3, 20),
-		utils.TrainingRegion("chr1", 4, 20),
-		utils.TrainingRegion("chr1", 20, 29),
-		utils.TrainingRegion("chr1", 20, 31),
-		utils.TrainingRegion("chr2", 10, 15),
+	results = ChromoRegionSet([
+		ChromoRegion("chr1", 3, 20),
+		ChromoRegion("chr1", 4, 20),
+		ChromoRegion("chr1", 20, 29),
+		ChromoRegion("chr1", 20, 31),
+		ChromoRegion("chr2", 10, 15),
 	])
 	assert utils.alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen) == results
 

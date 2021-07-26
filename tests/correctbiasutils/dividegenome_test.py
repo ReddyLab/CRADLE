@@ -1,12 +1,12 @@
 import pytest
 
-from CRADLE.correctbiasutils import divideGenome
+from CRADLE.correctbiasutils import divideGenome, ChromoRegion, ChromoRegionSet
 
 # Semi-random regions
-rand_regions = [('chr1', 100, 30789), ('chr1', 100, 123123), ('chr1', 124434, 473629), ('chr1', 1234756, 1657483)]
+rand_regions = ChromoRegionSet([ChromoRegion('chr1', 100, 30789), ChromoRegion('chr1', 100, 123123), ChromoRegion('chr1', 124434, 473629), ChromoRegion('chr1', 1234756, 1657483)])
 
 # Regions that are exactly, or 1 off of, a multiple of genomeBinSize long
-gbs_regions = [('chr2', 100, 200100), ('chr2', 124434, 524435), ('chr2', 624434, 824433)]
+gbs_regions = ChromoRegionSet([ChromoRegion('chr2', 100, 200100), ChromoRegion('chr2', 124434, 524435), ChromoRegion('chr2', 624434, 824433)])
 
 @pytest.mark.parametrize("regions,baseBinSize,genomeBinSize,result", [
 	(rand_regions, 1, 50_000, [

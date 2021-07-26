@@ -4,6 +4,8 @@ import sys
 import numpy as np
 import pyBigWig
 
+from CRADLE.correctbiasutils import ChromoRegion, ChromoRegionSet
+
 def setGlobalVariables(args):
 	### input bigwig files
 	setInputFiles(args.ctrlbw, args.expbw)
@@ -77,7 +79,6 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 	EXPBW_NAMES = [0] * EXPBW_NUM
 	for i in range(EXPBW_NUM):
 		EXPBW_NAMES[i] = expbwFiles[i]
-
 
 def setOutputDirectory(outputDir):
 	global OUTPUT_DIR
@@ -155,61 +156,54 @@ def setCovariDir(biasType, covariDir, genome):
 		COVARI_NUM = COVARI_NUM + 1
 		COVARI_ORDER.extend(["Gquad_gquad"])
 
+def setAnlaysisRegion(regionsFilename, bl):
+	global REGIONS
 
-def setAnlaysisRegion(region, bl):
-	global REGION
+	with open(regionsFilename) as regions:
+		regionLines = regions.readlines()
 
-	REGION = []
-	inputFilename = region
-	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
+	baseRegions = []
+	for line in regionLines:
+		chromo, start, end = line.split()
+		start = int(start)
+		end = int(end)
+		baseRegions.append((chromo, start, end))
 
-	for i in range(len(inputFile)):
-		temp = inputFile[i].split()
-		temp[1] = int(temp[1])
-		temp[2] = int(temp[2])
-		REGION.append(temp)
-	inputStream.close()
-
-	if len(REGION) > 1:
-		REGION = np.array(REGION)
-		REGION = REGION[np.lexsort(( REGION[:,1].astype(int), REGION[:,0])  ) ]
-		REGION = REGION.tolist()
-
-		regionMerged = []
+	mergedRegions = baseRegions
+	if len(baseRegions) > 1:
+		baseRegions = np.array(baseRegions)
+		sortedRegions = baseRegions[np.lexsort(( baseRegions[:,1].astype(int), baseRegions[:,0])  ) ]
+		sortedRegions = sortedRegions.tolist()
 
 		pos = 0
-		pastChromo = REGION[pos][0]
-		pastStart = int(REGION[pos][1])
-		pastEnd = int(REGION[pos][2])
-		regionMerged.append([pastChromo, pastStart, pastEnd])
+		pastChromo, pastStart, pastEnd = sortedRegions[pos]
+
+		mergedRegions = [[pastChromo, pastStart, pastEnd]]
 		resultIdx = 0
 
 		pos = 1
-		while pos < len(REGION):
-			currChromo = REGION[pos][0]
-			currStart = int(REGION[pos][1])
-			currEnd = int(REGION[pos][2])
+		while pos < len(sortedRegions):
+			currChromo, currStart, currEnd = sortedRegions[pos]
 
 			if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
-				maxEnd = np.max([currEnd, pastEnd])
-				regionMerged[resultIdx][2] = maxEnd
+				maxEnd = max(currEnd, pastEnd)
+				mergedRegions[resultIdx][2] = maxEnd
 				pos = pos + 1
 				pastChromo = currChromo
 				pastStart = currStart
 				pastEnd = maxEnd
 			else:
-				regionMerged.append([currChromo, currStart, currEnd])
+				mergedRegions.append([currChromo, currStart, currEnd])
 				resultIdx = resultIdx + 1
 				pos = pos + 1
 				pastChromo = currChromo
 				pastStart = currStart
 				pastEnd = currEnd
 
-		REGION = regionMerged
-
 	## BL
-	if bl is not None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
+	regionsWoBL = mergedRegions
+	if bl is not None:  ### REMOVE BLACKLIST REGIONS FROM 'REGIONS'
+		regionsWoBL = []
 		blRegionTemp = []
 		inputStream = open(bl)
 		inputFile = inputStream.readlines()
@@ -257,11 +251,8 @@ def setAnlaysisRegion(region, bl):
 					pastEnd = currEnd
 			blRegion = np.array(blRegion)
 
-		regionWoBL = []
-		for region in REGION:
-			regionChromo = region[0]
-			regionStart = int(region[1])
-			regionEnd = int(region[2])
+		for region in mergedRegions:
+			regionChromo, regionStart, regionEnd = region
 
 			overlappedBL = []
 			## overlap Case 1 : A blacklist region completely covers the region.
@@ -292,7 +283,7 @@ def setAnlaysisRegion(region, bl):
 				overlappedBL.extend( blRegion[idx].tolist() )
 
 			if len(overlappedBL) == 0:
-				regionWoBL.append(region)
+				regionsWoBL.append(region)
 				continue
 
 			overlappedBL = np.array(overlappedBL)
@@ -312,36 +303,30 @@ def setAnlaysisRegion(region, bl):
 						currStart = blEnd
 						continue
 
-					regionWoBL.append([ regionChromo, currStart, blStart ])
+					regionsWoBL.append([regionChromo, currStart, blStart])
 					currStart = blEnd
 
 				if (pos == (len(overlappedBL)-1)) and (blEnd < regionEnd):
 					if blEnd == regionEnd:
 						break
-					regionWoBL.append([ regionChromo, blEnd, regionEnd ])
+					regionsWoBL.append([regionChromo, blEnd, regionEnd])
 
-		REGION = regionWoBL
+	# check if all chromosomes in the REGIONS in bigwig files
+	finalRegions = ChromoRegionSet()
+	with pyBigWig.open(CTRLBW_NAMES[0]) as bw:
+		for region in regionsWoBL:
+			chromo, start, end = region
 
-	# check if all chromosomes in the REGION in bigwig files
-	bw = pyBigWig.open(CTRLBW_NAMES[0])
-	regionFinal = []
-	for regionIdx in range(len(REGION)):
-		chromo = REGION[regionIdx][0]
-		start = int(REGION[regionIdx][1])
-		end = int(REGION[regionIdx][2])
-
-		chromoLen = bw.chroms(chromo)
-		if chromoLen is None:
-			continue
-		if end > chromoLen:
-			REGION[regionIdx][2] = chromoLen
-			if chromoLen <= start:
+			chromoLen = bw.chroms(chromo)
+			if chromoLen is None or chromoLen <= start:
 				continue
-		regionFinal.append([chromo, start, end])
-	bw.close()
 
-	REGION = regionFinal
+			if end > chromoLen:
+				end = chromoLen
 
+			finalRegions.addRegion(ChromoRegion(chromo, start, end))
+
+	REGIONS = finalRegions
 
 def setFilterCriteria(minFrag):
 	global MIN_FRAG_FILTER_VALUE
@@ -350,7 +335,6 @@ def setFilterCriteria(minFrag):
 		MIN_FRAG_FILTER_VALUE = SAMPLE_NUM
 	else:
 		MIN_FRAG_FILTER_VALUE = int(minFrag)
-
 
 def setScaler(scalerResult):
 	global CTRLSCALER
@@ -365,7 +349,6 @@ def setScaler(scalerResult):
 
 	for i in range(EXPBW_NUM):
 		EXPSCALER[i] = scalerResult[i+CTRLBW_NUM-1]
-
 
 def setNumProcess(numProcess):
 	global NUMPROCESS
@@ -382,7 +365,6 @@ def setNumProcess(numProcess):
 	if NUMPROCESS > systemCPUs:
 		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
 		NUMPROCESS = systemCPUs
-
 
 def setNormalization(norm, generateNormBW):
 	global I_NORM

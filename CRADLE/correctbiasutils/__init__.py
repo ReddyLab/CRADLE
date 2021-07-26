@@ -25,38 +25,54 @@ SONICATION_SHEAR_BIAS_OFFSET = 2
 # Used to adjust coordinates between 0 and 1-based systems.
 START_INDEX_ADJUSTMENT = 1
 
-class TrainingRegion:
-	def __init__(self, chromo, analysisStart, analysisEnd):
+class ChromoRegion:
+	def __init__(self, chromo, start, end):
 		self.chromo = chromo
-		self.analysisStart = analysisStart
-		self.analysisEnd = analysisEnd
-		self._length = self.analysisEnd - self.analysisStart
+		self.start = int(start)
+		self.end = int(end)
+		self._length = self.end - self.start
 
-	@property
-	def length(self):
+	def __len__(self):
 		return self._length
 
 	def __eq__(self, o: object) -> bool:
 		return (self.chromo == o.chromo
-			and self.analysisStart == o.analysisStart
-			and self.analysisEnd == o.analysisEnd
-			and self.length == o.length)
+			and self.start == o.start
+			and self.end == o.end
+			and self._length == o._length)
 
 	def __repr__(self):
-		return f"({self.chromo}:{self.analysisStart}-{self.analysisEnd})"
+		return f"({self.chromo}:{self.start}-{self.end})"
 
-class TrainingSet:
+class ChromoRegionSet:
 	def __init__(self, trainingRegions=None):
 		self.trainingRegions = []
+		self.chromos = set()
 		self.cumulativeRegionSize = 0
 		if trainingRegions is not None:
 			self.trainingRegions = trainingRegions
 			for region in self.trainingRegions:
-				self.cumulativeRegionSize += region.length
+				self.chromos.add(region.chromo)
+				self.cumulativeRegionSize += len(region)
+
+	def __add__(self, o):
+		newTrainingSet = ChromoRegionSet()
+		newTrainingSet.trainingRegions = self.trainingRegions + o.trainingRegions
+		newTrainingSet.cumulativeRegionSize = self.cumulativeRegionSize + o.cumulativeRegionSize
+		newTrainingSet.chromos = self.chromos.union(o.chromos)
+
+		return newTrainingSet
+
+	def __sub__(self, o):
+		pass
 
 	def addRegion(self, region):
 		self.trainingRegions.append(region)
-		self.cumulativeRegionSize += region.length
+		self.chromos.add(region.chromo)
+		self.cumulativeRegionSize += len(region)
+
+	def __len__(self) -> int:
+		return len(self.trainingRegions)
 
 	def __iter__(self):
 		def regionGenerator():
@@ -86,21 +102,12 @@ def process(poolSize, function, argumentLists):
 
 	return results
 
-def getResultBWHeader(region, ctrlBWName):
-	chromoInData = np.array(region)[:,0]
-
-	chromoInDataUnique = set()
-	bwFile = pyBigWig.open(ctrlBWName)
-
-	resultBWHeader = []
-	for chromo in chromoInData:
-		if chromo in chromoInDataUnique:
-			continue
-		chromoInDataUnique.add(chromo)
-		chromoSize = bwFile.chroms(chromo)
-		resultBWHeader.append( (chromo, chromoSize) )
-
-	bwFile.close()
+def getResultBWHeader(regions, ctrlBWName):
+	with pyBigWig.open(ctrlBWName) as bwFile:
+		resultBWHeader = []
+		for chromo in regions.chromos:
+			chromoSize = bwFile.chroms(chromo)
+			resultBWHeader.append( (chromo, chromoSize) )
 
 	return resultBWHeader
 
@@ -192,19 +199,18 @@ def divideGenome(regions, baseBinSize=1, genomeBinSize=50000):
 	# Adjust the genome bin size to be a multiple of base bin Size
 	genomeBinSize -= genomeBinSize % baseBinSize
 
-	tasks = []
+	# Return an list of tuples of values instead of a ChromoRegionSet because this will be used in Cython code.
+	# And the less "python" interaction Cython has, the better. Presumedly python tuples are lighter weight
+	# than regular objects.
+	newRegions = []
 	for region in regions:
-		regionChromo = region[0]
-		regionStart = int(region[1])
-		regionEnd = int(region[2])
-
-		binStart = regionStart
-		while binStart < regionEnd:
+		binStart = region.start
+		while binStart < region.end:
 			binEnd = binStart + genomeBinSize
-			tasks.append((regionChromo, binStart, min(binEnd, regionEnd)))
+			newRegions.append((region.chromo, binStart, min(binEnd, region.end)))
 			binStart = binEnd
 
-	return tasks
+	return newRegions
 
 def genNormalizedObBWs(outputDir, header, regions, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler):
 	# copy the first replicate
@@ -233,15 +239,11 @@ def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 	normObBW.addHeader(bwHeader)
 
 	for region in regions:
-		chromo = region[0]
-		start = int(region[1])
-		end = int(region[2])
-
-		starts = np.arange(start, end)
+		starts = np.arange(region.start, region.end)
 		if pyBigWig.numpy == 1:
-			values = observedBW.values(chromo, start, end, numpy=True)
+			values = observedBW.values(region.chromo, region.start, region.end, numpy=True)
 		else:
-			values = np.array(observedBW.values(chromo, start, end))
+			values = np.array(observedBW.values(region.chromo, region.start, region.end))
 
 		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
 		starts = starts[idx]
@@ -254,18 +256,14 @@ def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 
 		coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, values)
 
-		normObBW.addEntries([chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
+		normObBW.addEntries([region.chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
 
-def getReadCounts(trainingSets, fileName):
+def getReadCounts(trainingSet, fileName):
 	values = []
 
 	with pyBigWig.open(fileName) as bwFile:
-		for trainingSet in trainingSets:
-			chromo = trainingSet[0]
-			start = int(trainingSet[1])
-			end = int(trainingSet[2])
-
-			temp = np.array(bwFile.values(chromo, start, end))
+		for region in trainingSet:
+			temp = np.array(bwFile.values(region.chromo, region.start, region.end))
 			idx = np.where(np.isnan(temp) == True)
 			temp[idx] = 0
 			temp = temp.tolist()
@@ -273,7 +271,7 @@ def getReadCounts(trainingSets, fileName):
 
 	return values
 
-def getScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNames):
+def getScalerTasks(trainingSet, observedReadCounts, ctrlBWNames, experiBWNames):
 	tasks = []
 	ctrlBWCount = len(ctrlBWNames)
 	sampleSetCount = ctrlBWCount + len(experiBWNames)
@@ -282,20 +280,20 @@ def getScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNames)
 			bwName = ctrlBWNames[i]
 		else:
 			bwName = experiBWNames[i - ctrlBWCount]
-		tasks.append([trainingSets, observedReadCounts, bwName])
+		tasks.append([trainingSet, observedReadCounts, bwName])
 
 	return tasks
 
-def getScalerForEachSample(trainingSets, observedReadCounts1Values, bwFileName):
-	observedReadCounts2Values = getReadCounts(trainingSets, bwFileName)
+def getScalerForEachSample(trainingSet, observedReadCounts1Values, bwFileName):
+	observedReadCounts2Values = getReadCounts(trainingSet, bwFileName)
 	model = sm.OLS(observedReadCounts2Values, observedReadCounts1Values).fit()
 	scaler = model.params[0]
 
 	return scaler
 
 def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
-	trainSet1 = []
-	trainSet2 = []
+	trainSet1 = ChromoRegionSet()
+	trainSet2 = ChromoRegionSet()
 
 	### trainSet1
 	for binIdx in range(5):
@@ -303,8 +301,8 @@ def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 			continue
 
 		regionNum = int(trainingSetMetas[binIdx][2])
-		candiRegionFile = trainingSetMetas[binIdx][3]
-		candiRegionNum = int(trainingSetMetas[binIdx][4])
+		candiRegionNum = int(trainingSetMetas[binIdx][3])
+		candiRegionFile = trainingSetMetas[binIdx][4]
 
 		if candiRegionNum < regionNum:
 			subfileStream = open(candiRegionFile)
@@ -312,13 +310,13 @@ def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 
 			for line in subfileLines:
 				temp = line.split()
-				trainSet1.append([temp[0], int(temp[1]), int(temp[2])])
+				trainSet1.addRegion(ChromoRegion(temp[0], int(temp[1]), int(temp[2])))
 		else:
 			selectRegionIdx = np.random.choice(list(range(candiRegionNum)), regionNum, replace=False)
 
 			for idx in selectRegionIdx:
 				temp = linecache.getline(candiRegionFile, idx+1).split()
-				trainSet1.append([temp[0], int(temp[1]), int(temp[2])])
+				trainSet1.addRegion(ChromoRegion(temp[0], int(temp[1]), int(temp[2])))
 		os.remove(candiRegionFile)
 
 	### trainSet2
@@ -328,8 +326,8 @@ def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 
 		# downLimit = int(trainingSetMetas[binIdx][0])
 		regionNum = int(trainingSetMetas[binIdx][2])
-		candiRegionFile = trainingSetMetas[binIdx][3]
-		candiRegionNum = int(trainingSetMetas[binIdx][4])
+		candiRegionNum = int(trainingSetMetas[binIdx][3])
+		candiRegionFile = trainingSetMetas[binIdx][4]
 
 		# if downLimit == rc99Percentile:
 		# 	subfileStream = open(candiRegionFile)
@@ -338,7 +336,7 @@ def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 		# 	i = len(subfile) - 1
 		# 	while regionNum > 0 and i >= 0:
 		# 		temp = subfile[i].split()
-		# 		trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
+		# 		trainSet2.addRegion(ChromoRegion(temp[0], int(temp[1]), int(temp[2])))
 		# 		i = i - 1
 		# 		regionNum = regionNum - 1
 
@@ -350,13 +348,13 @@ def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 
 			for line in subfileLines:
 				temp = line.split()
-				trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
+				trainSet2.addRegion(ChromoRegion(temp[0], int(temp[1]), int(temp[2])))
 		else:
 			selectRegionIdx = np.random.choice(list(range(candiRegionNum)), regionNum, replace=False)
 
 			for idx in selectRegionIdx:
 				temp = linecache.getline(candiRegionFile, idx+1).split()
-				trainSet2.append([ temp[0], int(temp[1]), int(temp[2])])
+				trainSet2.addRegion(ChromoRegion(temp[0], int(temp[1]), int(temp[2])))
 
 		os.remove(candiRegionFile)
 
@@ -383,14 +381,10 @@ def getCandidateTrainingSet(rcPercentile, regions, ctrlBWName, outputDir):
 	totalBinNum = 0
 	with pyBigWig.open(ctrlBWName) as ctrlBW:
 		for region in regions:
-			regionChromo = region[0]
-			regionStart = int(region[1])
-			regionEnd = int(region[2])
-
-			numBin = max(1, (regionEnd - regionStart) // TRAINING_BIN_SIZE)
+			numBin = max(1, len(region) // TRAINING_BIN_SIZE)
 			totalBinNum += numBin
 
-			means = regionMeans(ctrlBW, numBin, regionChromo, regionStart, regionEnd)
+			means = regionMeans(ctrlBW, numBin, region.chromo, region.start, region.end)
 
 			meanRC.extend(means)
 
@@ -482,28 +476,24 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	'''
 	fileBuffer = io.StringIO()
 	for region in regions:
-		regionChromo = region[0]
-		regionStart = int(region[1])
-		regionEnd = int(region[2])
-
-		numBin = (regionEnd - regionStart) // TRAINING_BIN_SIZE
+		numBin = len(region) // TRAINING_BIN_SIZE
 		if numBin == 0:
 			numBin = 1
 
-			meanValue = regionMeans(ctrlBW, numBin, regionChromo, regionStart, regionEnd)[0]
+			meanValue = regionMeans(ctrlBW, numBin, region.chromo, region.start, region.end)[0]
 
 			if np.isnan(meanValue) or meanValue == 0:
 				continue
 
 			if (meanValue >= downLimit) and (meanValue < upLimit):
-				fileBuffer.write(f"{regionChromo}\t{regionStart}\t{regionEnd}\n")
+				fileBuffer.write(f"{region.chromo}\t{region.start}\t{region.end}\n")
 				numOfCandiRegion += 1
 		else:
-			regionEnd = numBin * TRAINING_BIN_SIZE + regionStart
+			regionEnd = numBin * TRAINING_BIN_SIZE + region.start
 
-			meanValues = np.array(regionMeans(ctrlBW, numBin, regionChromo, regionStart, regionEnd))
+			meanValues = np.array(regionMeans(ctrlBW, numBin, region.chromo, region.start, regionEnd))
 
-			pos = np.arange(0, numBin) * TRAINING_BIN_SIZE + regionStart
+			pos = np.arange(0, numBin) * TRAINING_BIN_SIZE + region.start
 
 			idx = np.where((meanValues != None) & (meanValues > 0))
 			meanValues = meanValues[idx]
@@ -518,7 +508,7 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 
 			numOfCandiRegion += len(starts)
 			for start in starts:
-				fileBuffer.write(f"{regionChromo}\t{start}\t{start + TRAINING_BIN_SIZE}\n")
+				fileBuffer.write(f"{region.chromo}\t{start}\t{start + TRAINING_BIN_SIZE}\n")
 
 	resultFile.write(fileBuffer.getvalue())
 	ctrlBW.close()
@@ -526,20 +516,19 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	fileBuffer.close()
 
 	if numOfCandiRegion != 0:
-		resultLine.extend([ resultFile.name, numOfCandiRegion ])
+		resultLine.extend([numOfCandiRegion, resultFile.name])
 		return resultLine
 
 	os.remove(resultFile.name)
 	return None
 
 def alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen):
-	newTrainingSet = TrainingSet()
+	newTrainingSet = ChromoRegionSet()
 
 	for trainingRegion in trainingSet:
-		chromo = trainingRegion[0]
-		analysisStart = int(trainingRegion[1])
-		analysisEnd = int(trainingRegion[2])
-		chromoEnd = genome.chroms(chromo)
+		chromoEnd = genome.chroms(trainingRegion.chromo)
+		analysisStart = trainingRegion.start
+		analysisEnd = trainingRegion.end
 
 		# Define a region of fragments of length fragLen
 		fragRegionStart = analysisStart - fragLen + START_INDEX_ADJUSTMENT
@@ -559,7 +548,7 @@ def alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen):
 			fragRegionEnd = chromoEnd - SONICATION_SHEAR_BIAS_OFFSET
 			analysisEnd = min(analysisEnd, fragRegionEnd)
 
-		newTrainingSet.addRegion(TrainingRegion(chromo, analysisStart, analysisEnd))
+		newTrainingSet.addRegion(ChromoRegion(trainingRegion.chromo, analysisStart, analysisEnd))
 
 	return newTrainingSet
 

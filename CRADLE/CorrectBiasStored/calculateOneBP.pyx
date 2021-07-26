@@ -9,7 +9,7 @@ import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
-from CRADLE.correctbiasutils import SONICATION_SHEAR_BIAS_OFFSET, START_INDEX_ADJUSTMENT, TrainingRegion, TrainingSet, marshalFile
+from CRADLE.correctbiasutils import SONICATION_SHEAR_BIAS_OFFSET, START_INDEX_ADJUSTMENT, ChromoRegion, ChromoRegionSet, marshalFile
 from CRADLE.correctbiasutils.cython import coalesceSections
 
 COEF_LEN = 7
@@ -32,10 +32,10 @@ cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experi
 		covariateFileName = covariates.covariateFileName(trainingRegion.chromo)
 		with h5py.File(covariateFileName, "r") as covariateValues:
 			non_selected_rows = np.where(np.isnan(covariates.selected))
-			temp = covariateValues['covari'][trainingRegion.analysisStart - COVARIATE_FILE_INDEX_OFFSET:trainingRegion.analysisEnd - COVARIATE_FILE_INDEX_OFFSET]
+			temp = covariateValues['covari'][trainingRegion.start - COVARIATE_FILE_INDEX_OFFSET:trainingRegion.end - COVARIATE_FILE_INDEX_OFFSET]
 			temp = np.delete(temp, non_selected_rows, 1)
-			xView[currentRow:currentRow + trainingRegion.length, 1:xColumnCount] = temp
-			currentRow += trainingRegion.length
+			xView[currentRow:currentRow + len(trainingRegion), 1:xColumnCount] = temp
+			currentRow += len(trainingRegion)
 	#### END Get X matrix
 
 	#### Initialize COEF arrays
@@ -69,14 +69,14 @@ def readCountData(bwFileName, trainingSet):
 	with pyBigWig.open(bwFileName) as bwFile:
 		if pyBigWig.numpy == 1:
 			for trainingRegion in trainingSet:
-				regionReadCounts = bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd, numpy=True)
-				yield regionReadCounts, trainingRegion.length
+				regionReadCounts = bwFile.values(trainingRegion.chromo, trainingRegion.start, trainingRegion.end, numpy=True)
+				yield regionReadCounts, len(trainingRegion)
 		else:
 			for trainingRegion in trainingSet:
 				regionReadCounts = np.array(
-					bwFile.values(trainingRegion.chromo, trainingRegion.analysisStart, trainingRegion.analysisEnd)
+					bwFile.values(trainingRegion.chromo, trainingRegion.start, trainingRegion.end)
 				)
-				yield regionReadCounts, trainingRegion.length
+				yield regionReadCounts, len(trainingRegion)
 
 cpdef getReadCounts(rawReadCounts, rowCount, scaler):
 	cdef double [:] readCountsView
@@ -119,14 +119,14 @@ cpdef getCoefs(modelParams, selectedCovariates):
 
 	return coef
 
-cpdef correctReadCount(tasks, covariates, genome, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
+cpdef correctReadCount(regions, covariates, genome, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
 	correctedCtrlReadCounts = [[] for _ in range(len(ctrlBWNames))]
 	correctedExprReadCounts = [[] for _ in range(len(experiBWNames))]
 
-	for taskArgs in tasks:
-		chromo = taskArgs[0]
-		analysisStart = int(taskArgs[1])  # Genomic coordinates(starts from 1)
-		analysisEnd = int(taskArgs[2])
+	for region in regions:
+		chromo = region[0]
+		analysisStart = region[1]  # Genomic coordinates(starts from 1)
+		analysisEnd = region[2]
 
 		# TODO: Pre-compute this
 		with py2bit.open(genome) as genomeFile:
