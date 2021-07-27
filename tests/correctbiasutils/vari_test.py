@@ -1,7 +1,7 @@
 import pytest
 import pyximport; pyximport.install()
 
-from CRADLE.CorrectBiasStored.vari import setAnlaysisRegion
+from CRADLE.correctbiasutils.vari import setAnlaysisRegion
 from CRADLE.correctbiasutils import ChromoRegion, ChromoRegionSet
 from tests.mocks.BigWig import BigWig
 

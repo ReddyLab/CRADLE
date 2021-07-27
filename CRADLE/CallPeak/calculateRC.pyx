@@ -7,6 +7,7 @@ import scipy.stats
 import statsmodels.sandbox.stats.multicomp
 
 from CRADLE.CallPeak import vari
+from CRADLE.correctbiasutils import vari as commonVari
 
 cpdef getVariance(region):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
@@ -22,15 +23,15 @@ cpdef getVariance(region):
 		numBin = 1
 
 	totalRC = []
-	for rep in range(vari.CTRLBW_NUM):
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
+	for rep in range(commonVari.CTRLBW_NUM):
+		bw = pyBigWig.open(commonVari.CTRLBW_NAMES[rep])
 		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
 		temp[np.where(temp == None)] = np.nan
 		totalRC.append(temp.tolist())
 		bw.close()
 
-	for rep in range(vari.EXPBW_NUM):
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
+	for rep in range(commonVari.EXPBW_NUM):
+		bw = pyBigWig.open(commonVari.EXPBW_NAMES[rep])
 		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
 		temp[np.where(temp == None)] = np.nan
 		totalRC.append(temp.tolist())
@@ -58,8 +59,8 @@ cpdef getRegionCutoff(region):
 		numBin = 1
 
 	sampleRC = []
-	for rep in range(vari.CTRLBW_NUM):
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
+	for rep in range(commonVari.CTRLBW_NUM):
+		bw = pyBigWig.open(commonVari.CTRLBW_NAMES[rep])
 		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
 		temp[np.where(temp == None)] = np.nan
 		sampleRC.append(temp.tolist())
@@ -68,8 +69,8 @@ cpdef getRegionCutoff(region):
 	ctrlMean = np.nanmean(np.array(sampleRC), axis=0)
 
 	sampleRC = []
-	for rep in range(vari.EXPBW_NUM):
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
+	for rep in range(commonVari.EXPBW_NUM):
+		bw = pyBigWig.open(commonVari.EXPBW_NAMES[rep])
 		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
 		temp[np.where(temp == None)] = np.nan
 		sampleRC.append(temp.tolist())
@@ -115,8 +116,8 @@ cpdef defineRegion(region):
 
 	#### ctrlMean
 	sampleRC1 = []
-	for rep in range(vari.CTRLBW_NUM):
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
+	for rep in range(commonVari.CTRLBW_NUM):
+		bw = pyBigWig.open(commonVari.CTRLBW_NAMES[rep])
 		temp = np.array(bw.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum))
 		temp[np.where(temp == None)] = np.nan
 		temp = temp.tolist()
@@ -135,8 +136,8 @@ cpdef defineRegion(region):
 
 	#### expMean
 	sampleRC2 = []
-	for rep in range(vari.EXPBW_NUM):
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
+	for rep in range(commonVari.EXPBW_NUM):
+		bw = pyBigWig.open(commonVari.EXPBW_NAMES[rep])
 		temp = np.array(bw.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum))
 		temp[np.where(temp == None)] = np.nan
 		temp = temp.tolist()
@@ -230,13 +231,13 @@ cpdef defineRegion(region):
 
 
 	### variance check
-	CTRLBW = [0] * vari.CTRLBW_NUM
-	EXPBW = [0] * vari.EXPBW_NUM
+	CTRLBW = [0] * commonVari.CTRLBW_NUM
+	EXPBW = [0] * commonVari.EXPBW_NUM
 
-	for rep in range(vari.CTRLBW_NUM):
-		CTRLBW[rep] = pyBigWig.open(vari.CTRLBW_NAMES[rep])
-	for rep in range(vari.EXPBW_NUM):
-		EXPBW[rep] = pyBigWig.open(vari.EXPBW_NAMES[rep])
+	for rep in range(commonVari.CTRLBW_NUM):
+		CTRLBW[rep] = pyBigWig.open(commonVari.CTRLBW_NAMES[rep])
+	for rep in range(commonVari.EXPBW_NUM):
+		EXPBW[rep] = pyBigWig.open(commonVari.EXPBW_NAMES[rep])
 
 	if len(definedRegion) == 0:
 		return None
@@ -250,11 +251,11 @@ cpdef defineRegion(region):
 		end = int(definedRegion[regionIdx][2])
 
 		rc = []
-		for rep in range(vari.CTRLBW_NUM):
+		for rep in range(commonVari.CTRLBW_NUM):
 			rcTemp = np.nanmean(CTRLBW[rep].values(chromo, start, end))
 			rc.extend([rcTemp])
 
-		for rep in range(vari.EXPBW_NUM):
+		for rep in range(commonVari.EXPBW_NUM):
 			rcTemp = np.nanmean(EXPBW[rep].values(chromo, start, end))
 			rc.extend([rcTemp])
 
@@ -276,14 +277,14 @@ cpdef defineRegion(region):
 	if len(definedRegion) == 0:
 		return None
 
-	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=vari.OUTPUT_DIR, delete=False)
+	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=commonVari.OUTPUT_DIR, delete=False)
 	for line in definedRegion:
 		subfile.write('\t'.join([str(x) for x in line]) + "\n")
 	subfile.close()
 
-	for rep in range(vari.CTRLBW_NUM):
+	for rep in range(commonVari.CTRLBW_NUM):
 		CTRLBW[rep].close()
-	for rep in range(vari.EXPBW_NUM):
+	for rep in range(commonVari.EXPBW_NUM):
 		EXPBW[rep].close()
 
 	return subfile.name
@@ -308,7 +309,7 @@ cpdef restrictRegionLen(definedRegion):
 				newStart = start + newBinIdx * newRegionSize
 				newEnd = newStart + newRegionSize
 				if(newBinIdx == ((newNumBin)-1)):
-					newEnd = end			    
+					newEnd = end
 				definedRegion_new.append([chromo, newStart, newEnd, groupType])
 		else:
 			definedRegion_new.append(definedRegion[regionIdx])
@@ -322,7 +323,7 @@ cpdef doWindowApproach(arg):
 	inputStream = open(inputFilename)
 	inputFile = inputStream.readlines()
 
-	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=vari.OUTPUT_DIR, delete=False)
+	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=commonVari.OUTPUT_DIR, delete=False)
 	simesP = []
 	writtenRegionNum = 0
 
@@ -334,14 +335,14 @@ cpdef doWindowApproach(arg):
 		regionTheta = int(temp[4])
 
 		totalRC = []
-		for rep in range(vari.CTRLBW_NUM):
-			bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
+		for rep in range(commonVari.CTRLBW_NUM):
+			bw = pyBigWig.open(commonVari.CTRLBW_NAMES[rep])
 			temp = bw.values(regionChromo, regionStart, regionEnd)
 			totalRC.append(temp)
 			bw.close()
 
-		for rep in range(vari.EXPBW_NUM):
-			bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
+		for rep in range(commonVari.EXPBW_NUM):
+			bw = pyBigWig.open(commonVari.EXPBW_NAMES[rep])
 			temp = bw.values(regionChromo, regionStart, regionEnd)
 			totalRC.append(temp)
 			bw.close()
@@ -385,7 +386,7 @@ cpdef doWindowApproach(arg):
 				continue
 
 			rc = rc.tolist()
-			if rc == vari.ALL_ZERO:
+			if rc == ([0] * commonVari.SAMPLE_NUM):
 				windowPvalue.extend([np.nan])
 				windowEnrich.extend([np.nan])
 
@@ -448,13 +449,13 @@ cpdef doStatTesting(rc):
 	ctrlRC = []
 	expRC = []
 
-	for rep in range(vari.CTRLBW_NUM):
+	for rep in range(commonVari.CTRLBW_NUM):
 		rc[rep] = float(rc[rep])
 		ctrlRC.extend([rc[rep]])
 
-	for rep in range(vari.EXPBW_NUM):
-		rc[rep + vari.CTRLBW_NUM] = float(rc[rep+vari.CTRLBW_NUM])
-		expRC.extend([rc[rep + vari.CTRLBW_NUM] ])
+	for rep in range(commonVari.EXPBW_NUM):
+		rc[rep + commonVari.CTRLBW_NUM] = float(rc[rep+commonVari.CTRLBW_NUM])
+		expRC.extend([rc[rep + commonVari.CTRLBW_NUM] ])
 
 	ctrlVar = np.nanvar(ctrlRC)
 	expVar = np.nanvar(expRC)
@@ -515,16 +516,16 @@ cpdef doFDRprocedure(args):
 	inputStream = open(inputFilename)
 	inputFile = inputStream.readlines()
 
-	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=vari.OUTPUT_DIR, delete=False)
+	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=commonVari.OUTPUT_DIR, delete=False)
 
 	### open bw files to store diff value
-	ctrlBW = [0] * vari.CTRLBW_NUM
-	expBW = [0] * vari.EXPBW_NUM
+	ctrlBW = [0] * commonVari.CTRLBW_NUM
+	expBW = [0] * commonVari.EXPBW_NUM
 
-	for i in range(vari.CTRLBW_NUM):
-		ctrlBW[i] = pyBigWig.open(vari.CTRLBW_NAMES[i])
-	for i in range(vari.EXPBW_NUM):
-		expBW[i] = pyBigWig.open(vari.EXPBW_NAMES[i])
+	for i in range(commonVari.CTRLBW_NUM):
+		ctrlBW[i] = pyBigWig.open(commonVari.CTRLBW_NAMES[i])
+	for i in range(commonVari.EXPBW_NUM):
+		expBW[i] = pyBigWig.open(commonVari.EXPBW_NAMES[i])
 
 	for regionIdx in selectRegionIdx:
 		regionInfo = inputFile[regionIdx].split()
@@ -583,13 +584,13 @@ cpdef doFDRprocedure(args):
 				selectWindowVector[2] = pastEnd
 
 			ctrlRC = []
-			for rep in range(vari.CTRLBW_NUM):
+			for rep in range(commonVari.CTRLBW_NUM):
 				ctrlRC.append(ctrlBW[rep].values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 			ctrlRC = np.array(ctrlRC)
 			ctrlRCPosMean = np.mean(ctrlRC, axis=0)
 
 			expRC = []
-			for rep in range(vari.EXPBW_NUM):
+			for rep in range(commonVari.EXPBW_NUM):
 				expRC.append(expBW[rep].values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 			expRC = np.array(expRC)
 			expRCPosMean = np.mean(expRC, axis=0)
@@ -625,13 +626,13 @@ cpdef doFDRprocedure(args):
 				selectWindowVector.extend([ np.min(pastQvalueSets) ])
 
 				ctrlRC = []
-				for rep in range(vari.CTRLBW_NUM):
+				for rep in range(commonVari.CTRLBW_NUM):
 					ctrlRC.append(ctrlBW[rep].values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				ctrlRC = np.array(ctrlRC)
 				ctrlRCPosMean = np.mean(ctrlRC, axis=0)
 
 				expRC = []
-				for rep in range(vari.EXPBW_NUM):
+				for rep in range(commonVari.EXPBW_NUM):
 					expRC.append(expBW[rep].values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				expRC = np.array(expRC)
 				expRCPosMean = np.mean(expRC, axis=0)
@@ -667,13 +668,13 @@ cpdef doFDRprocedure(args):
 				selectWindowVector.extend([ np.min(pastQvalueSets) ])
 
 				ctrlRC = []
-				for rep in range(vari.CTRLBW_NUM):
+				for rep in range(commonVari.CTRLBW_NUM):
 					ctrlRC.append(ctrlBW[rep].values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				ctrlRC = np.array(ctrlRC)
 				ctrlRCPosMean = np.mean(ctrlRC, axis=0)
 
 				expRC = []
-				for rep in range(vari.EXPBW_NUM):
+				for rep in range(commonVari.EXPBW_NUM):
 					expRC.append(expBW[rep].values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				expRC = np.array(expRC)
 				expRCPosMean = np.mean(expRC, axis=0)
@@ -695,9 +696,9 @@ cpdef doFDRprocedure(args):
 
 	subfile.close()
 
-	for rep in range(vari.CTRLBW_NUM):
+	for rep in range(commonVari.CTRLBW_NUM):
 		ctrlBW[rep].close()
-	for rep in range(vari.EXPBW_NUM):
+	for rep in range(commonVari.EXPBW_NUM):
 		expBW[rep].close()
 
 	os.remove(inputFilename)

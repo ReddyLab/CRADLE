@@ -7,17 +7,17 @@ import statsmodels.sandbox.stats.multicomp
 
 from CRADLE.CallPeak import vari
 from CRADLE.CallPeak import calculateRC
-
+from CRADLE.correctbiasutils import vari as commonVari
 
 def mergePeaks(peakResult):
 	## open bigwig files to calculate effect size
-	ctrlBW = [0] * vari.CTRLBW_NUM
-	expBW = [0] * vari.EXPBW_NUM
+	ctrlBW = [0] * commonVari.CTRLBW_NUM
+	expBW = [0] * commonVari.EXPBW_NUM
 
-	for i in range(vari.CTRLBW_NUM):
-		ctrlBW[i] = pyBigWig.open(vari.CTRLBW_NAMES[i])
-	for i in range(vari.EXPBW_NUM):
-		expBW[i] = pyBigWig.open(vari.EXPBW_NAMES[i])
+	for i in range(commonVari.CTRLBW_NUM):
+		ctrlBW[i] = pyBigWig.open(commonVari.CTRLBW_NAMES[i])
+	for i in range(commonVari.EXPBW_NUM):
+		expBW[i] = pyBigWig.open(commonVari.EXPBW_NAMES[i])
 
 	mergedPeak = []
 
@@ -47,13 +47,13 @@ def mergePeaks(peakResult):
 		regionEnd = int(mergedPeak[resultIdx][2])
 
 		ctrlRC = []
-		for rep in range(vari.CTRLBW_NUM):
+		for rep in range(commonVari.CTRLBW_NUM):
 			rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
 			ctrlRC.extend([rc])
 		ctrlRCPosMean = np.nanmean(ctrlRC)
 
 		expRC = []
-		for rep in range(vari.EXPBW_NUM):
+		for rep in range(commonVari.EXPBW_NUM):
 			rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
 			expRC.extend([rc])
 		expRCPosMean = np.nanmean(expRC)
@@ -63,9 +63,9 @@ def mergePeaks(peakResult):
 		mergedPeak[resultIdx][6] = diffPos
 		mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
 
-		for i in range(vari.CTRLBW_NUM):
+		for i in range(commonVari.CTRLBW_NUM):
 			ctrlBW[i].close()
-		for i in range(vari.EXPBW_NUM):
+		for i in range(commonVari.EXPBW_NUM):
 			expBW[i].close()
 
 		return mergedPeak
@@ -103,13 +103,13 @@ def mergePeaks(peakResult):
 			regionEnd = int(mergedPeak[resultIdx][2])
 
 			ctrlRC = []
-			for rep in range(vari.CTRLBW_NUM):
+			for rep in range(commonVari.CTRLBW_NUM):
 				rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
 				ctrlRC.extend([rc])
 			ctrlRCPosMean = np.nanmean(ctrlRC)
 
 			expRC = []
-			for rep in range(vari.EXPBW_NUM):
+			for rep in range(commonVari.EXPBW_NUM):
 				rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
 				expRC.extend([rc])
 			expRCPosMean = np.nanmean(expRC)
@@ -144,13 +144,13 @@ def mergePeaks(peakResult):
 			regionEnd = int(mergedPeak[resultIdx][2])
 
 			ctrlRC = []
-			for rep in range(vari.CTRLBW_NUM):
+			for rep in range(commonVari.CTRLBW_NUM):
 				rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
 				ctrlRC.extend([rc])
 			ctrlRCPosMean = np.nanmean(ctrlRC)
 
 			expRC = []
-			for rep in range(vari.EXPBW_NUM):
+			for rep in range(commonVari.EXPBW_NUM):
 				rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
 				expRC.extend([rc])
 			expRCPosMean = np.nanmean(expRC)
@@ -166,21 +166,21 @@ def mergePeaks(peakResult):
 
 		i = i + 1
 
-	for i in range(vari.CTRLBW_NUM):
+	for i in range(commonVari.CTRLBW_NUM):
 		ctrlBW[i].close()
-	for i in range(vari.EXPBW_NUM):
+	for i in range(commonVari.EXPBW_NUM):
 		expBW[i].close()
 
 	return mergedPeak
 
 
 def calculateCohenD(ctrlRC, expRC):
-	dof = vari.CTRLBW_NUM + vari.EXPBW_NUM - 2
+	dof = commonVari.CTRLBW_NUM + commonVari.EXPBW_NUM - 2
 
 	ctrlRC_mean = np.mean(ctrlRC)
 	expRC_mean = np.mean(expRC)
 
-	s = np.sqrt( (  (vari.CTRLBW_NUM-1)*np.power(np.std(ctrlRC, ddof=1), 2) + (vari.EXPBW_NUM-1)*np.power(np.std(expRC, ddof=1), 2)  ) / dof )
+	s = np.sqrt( (  (commonVari.CTRLBW_NUM-1)*np.power(np.std(ctrlRC, ddof=1), 2) + (commonVari.EXPBW_NUM-1)*np.power(np.std(expRC, ddof=1), 2)  ) / dof )
 
 	cohenD = (expRC_mean - ctrlRC_mean) / s
 
@@ -218,13 +218,14 @@ def filterSmallPeaks(peakResult):
 def run(args):
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS ...\n")
+	commonVari.setGlobalVariables(args)
 	vari.setGlobalVariables(args)
 
 	##### CALCULATE vari.FILTER_CUTOFF
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
 	regionTotal = 0
 	taskVari = []
-	for region in vari.REGION:
+	for region in commonVari.REGIONS:
 		regionSize = int(region[2]) - int(region[1])
 		regionTotal = regionTotal + regionSize
 		taskVari.append(region)
@@ -232,10 +233,10 @@ def run(args):
 		if regionTotal > 3* np.power(10, 8):
 			break
 
-	if len(taskVari) < vari.NUMPROCESS:
+	if len(taskVari) < commonVari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(taskVari))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
+		pool = multiprocessing.Pool(commonVari.NUMPROCESS)
 
 	resultFilter = pool.map_async(calculateRC.getVariance, taskVari).get()
 	pool.close()
@@ -261,7 +262,7 @@ def run(args):
 	# 1)  CALCULATE REGION_CUFOFF
 	regionTotal = 0
 	taskDiff = []
-	for region in vari.REGION:
+	for region in commonVari.REGIONS:
 		regionSize = int(region[2]) - int(region[1])
 		regionTotal = regionTotal + regionSize
 		taskDiff.append(region)
@@ -269,10 +270,10 @@ def run(args):
 		if regionTotal > 3* np.power(10, 8):
 			break
 
-	if len(taskDiff) < vari.NUMPROCESS:
+	if len(taskDiff) < commonVari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(taskDiff))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
+		pool = multiprocessing.Pool(commonVari.NUMPROCESS)
 	resultDiff = pool.map_async(calculateRC.getRegionCutoff, taskDiff).get()
 	pool.close()
 	pool.join()
@@ -291,11 +292,11 @@ def run(args):
 
 
 	# 2)  DEINING REGIONS WITH 'vari.REGION_CUTOFF'
-	if len(vari.REGION) < vari.NUMPROCESS:
-		pool = multiprocessing.Pool(len(vari.REGION))
+	if len(commonVari.REGIONS) < commonVari.NUMPROCESS:
+		pool = multiprocessing.Pool(len(commonVari.REGIONS))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
-	resultRegion = pool.map_async(calculateRC.defineRegion, vari.REGION).get()
+		pool = multiprocessing.Pool(commonVari.NUMPROCESS)
+	resultRegion = pool.map_async(calculateRC.defineRegion, commonVari.REGIONS).get()
 	pool.close()
 	pool.join()
 	gc.collect()
@@ -309,15 +310,15 @@ def run(args):
 			taskWindow.append(resultRegion[i])
 	del resultRegion
 
-	if len(taskWindow) < vari.NUMPROCESS:
+	if len(taskWindow) < commonVari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(taskWindow))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
+		pool = multiprocessing.Pool(commonVari.NUMPROCESS)
 	resultTTest = pool.map_async(calculateRC.doWindowApproach, taskWindow).get()
 	pool.close()
 	pool.join()
 
-	metaFilename = vari.OUTPUT_DIR + "/metaData_pvalues"
+	metaFilename = os.path.join(commonVari.OUTPUT_DIR, "metaData_pvalues")
 	metaStream = open(metaFilename, "w")
 	for i in range(len(resultTTest)):
 		if resultTTest[i] is not None:
@@ -414,13 +415,13 @@ def run(args):
 
 	if len(taskCallPeak) == 0:
 		print("======= COMPLETED! ===========")
-		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
+		print("There is no peak detected in %s." % commonVari.OUTPUT_DIR)
 		return
 
-	if len(taskCallPeak) < vari.NUMPROCESS:
+	if len(taskCallPeak) < commonVari.NUMPROCESS:
 		pool = multiprocessing.Pool(len(taskCallPeak))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
+		pool = multiprocessing.Pool(commonVari.NUMPROCESS)
 	resultCallPeak = pool.map_async(calculateRC.doFDRprocedure, taskCallPeak).get()
 	pool.close()
 	pool.join()
@@ -442,7 +443,7 @@ def run(args):
 
 	if len(peakResult) == 0:
 		print("======= COMPLETED! ===========")
-		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
+		print("There is no peak detected in %s." % commonVari.OUTPUT_DIR)
 		return
 
 
@@ -454,7 +455,7 @@ def run(args):
 	numActi = 0
 	numRepress = 0
 
-	outputFilename = vari.OUTPUT_DIR + "/CRADLE_peaks"
+	outputFilename = commonVari.OUTPUT_DIR + "/CRADLE_peaks"
 	outputStream = open(outputFilename, "w")
 	outputStream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
@@ -494,9 +495,7 @@ def run(args):
 	outputStream.close()
 
 	print("======= COMPLETED! ===========")
-	print("The peak result was saved in %s" % vari.OUTPUT_DIR)
+	print("The peak result was saved in %s" % commonVari.OUTPUT_DIR)
 	print("Total number of peaks: %s" % len(finalResult))
 	print("Activated peaks: %s" % numActi)
 	print("Repressed peaks: %s" % numRepress)
-
-	return

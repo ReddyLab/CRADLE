@@ -15,20 +15,20 @@ def getArgs():
 	correctBias_required = correctBias_parser.add_argument_group("Required Args")
 	correctBias_required.add_argument('-ctrlbw', help="Ctrl bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", nargs='+', required=True)
 	correctBias_required.add_argument('-expbw', help="Experimental bigwig files. Un-noramlized files are recommended. Each file name should be spaced. ex) -expbw file1.bw file2.bw", nargs='+', required=True)
-	correctBias_required.add_argument('-l', help="Fragment length.", required=True)
+	correctBias_required.add_argument('-l', type=int, help="Fragment length.", required=True)
 	correctBias_required.add_argument('-r', help="Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000", required=True)
 	correctBias_required.add_argument('-biasType', help="Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type map, -mapFile and -kmer are required. If you type gquad, -gquadFile is required", nargs='+', required=True)
 	correctBias_required.add_argument('-genome', '-faFile', help=".2bit file.", required=True) # faFile is deprecated
 
 	correctBias_optional = correctBias_parser.add_argument_group("Optional Args")
-	correctBias_optional.add_argument('-binSize', help="The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)", default=1)
-	correctBias_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples")
+	correctBias_optional.add_argument('-binSize', type=int, help="The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)", default=1)
+	correctBias_optional.add_argument('-mi', type=int, help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples")
 	correctBias_optional.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")
 	correctBias_optional.add_argument('-kmer', help="The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'")
 	correctBias_optional.add_argument('-gquadFile', help="Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
 	correctBias_optional.add_argument('-gquadMax', help="The maximum gquad score. This is used to normalize Gquad score. default=78.6", default=78.6)
-	correctBias_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult")
-	correctBias_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
+	correctBias_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.", required=False, default="CRADLE_correctionResult")
+	correctBias_optional.add_argument('-p', type=int, help="The number of cpus. default=(available cpus)/2")
 	correctBias_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 	correctBias_optional.add_argument('-norm', help="Whether normalization is needed for input bigwig files. Choose either 'True' or 'False'. default=True", default='True')
 	correctBias_optional.add_argument('-generateNormBW', help="If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False", default='False')
@@ -47,9 +47,9 @@ def getArgs():
 	correctBiasStored_required.add_argument('-genome', '-faFile', help=".2bit file.", required=True) # faFile is deprecated
 
 	correctBiasStored_optional = correctBiasStored_parser.add_argument_group("Optional Args")
-	correctBiasStored_optional.add_argument('-mi', help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples")
-	correctBiasStored_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.")
-	correctBiasStored_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
+	correctBiasStored_optional.add_argument('-mi', type=int, help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples")
+	correctBiasStored_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.", required=False, default="CRADLE_correctionResult")
+	correctBiasStored_optional.add_argument('-p', type=int, help="The number of cpus. default=(available cpus)/2")
 	correctBiasStored_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 	correctBiasStored_optional.add_argument('-norm', help="Whether normalization is needed for input bigwig files. Choose either 'True' or 'False'. default=True", default='True')
 	correctBiasStored_optional.add_argument('-generateNormBW', help="If you want to generate normalized observed bigwig files, type 'True' (only works when '-norm True'). If you don't want, type 'False'. default=False", default='False')
@@ -66,13 +66,13 @@ def getArgs():
 	callPeak_required.add_argument('-fdr', help="FDR control", required=True)
 
 	callPeak_optional = callPeak_parser.add_argument_group("Optional Args")
-	callPeak_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_peak_result.")
+	callPeak_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_peak_result.", required=False, default="CRADLE_peak_result")
 	callPeak_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
 	callPeak_optional.add_argument('-rbin', help="The size of a bin used for defining regions. rbin cannot be smaller than wbin. default = 300")
 	callPeak_optional.add_argument('-wbin', help="The size of a bin used for testing differential activity. wbin cannot be larger than rbin. default = rbin/6")
-	callPeak_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2")
-	callPeak_optional.add_argument('-d', help="The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=10")
-	callPeak_optional.add_argument('-pl', help="Minimum peak length. default=wbin")
+	callPeak_optional.add_argument('-p', type=int, help="The number of cpus. default=(available cpus)/2")
+	callPeak_optional.add_argument('-d', type=int, help="The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=10", default=10)
+	callPeak_optional.add_argument('-pl', type=int, help="Minimum peak length. default=wbin")
 	callPeak_optional.add_argument('-stat', help="Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test")
 
 
@@ -85,8 +85,8 @@ def getArgs():
 	normalize_required.add_argument('-expbw', help="Unnormalized experimental  bigwig files. Each file name should be spaced. ex) -ctrlbw file1.bw file2.bw", required=True, nargs="+")
 
 	normalize_optional = normalize_parser.add_argument_group("Optional Args")
-	normalize_optional.add_argument('-p', help="The number of cpus. default=(available cpus)/2", required=False)
-	normalize_optional.add_argument('-o', help="Output directory. All normalized bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_normalization.", required=False)
+	normalize_optional.add_argument('-p', type=int, help="The number of cpus. default=(available cpus)/2", required=False)
+	normalize_optional.add_argument('-o', help="Output directory. All normalized bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_normalization.", required=False, default="CRADLE_normalization")
 
 	return parser
 
