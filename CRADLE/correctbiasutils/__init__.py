@@ -589,3 +589,4 @@ def plot(regRCs, regRCFittedValues, highRCs, highRCFittedValues, figName):
 	ax.plot([0, maxi], [0, maxi], 'k-', color='r')
 	ax.set_aspect('equal', adjustable='box')
 	fig.savefig(figName)
+	plt.close(fig)
