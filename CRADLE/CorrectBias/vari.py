@@ -1,39 +1,8 @@
 import math
-import multiprocessing
-import os
 import sys
 import numpy as np
-import pyBigWig
-
-from CRADLE.correctbiasutils import ChromoRegionSet
 
 def setGlobalVariables(args):
-	global REGIONS
-
-	### input bigwig files
-	setInputFiles(args.ctrlbw, args.expbw)
-	setOutputDirectory(args.o)
-	setBiasFiles(args)
-	setFragLen(args.l)
-	with pyBigWig.open(CTRLBW_NAMES[0]) as ctrlBW:
-		regionSet = ChromoRegionSet.loadBed(args.r)
-		blacklistRegionSet = ChromoRegionSet.loadBed(args.bl) if args.bl else None
-		REGIONS = setAnlaysisRegion(regionSet, blacklistRegionSet, ctrlBW)
-	setFilterCriteria(args.mi)
-	setBinSize(args.binSize)
-	setNumProcess(args.p)
-	setNormalization(args.norm, args.generateNormBW)
-	seed = setRngSeed(args.rngSeed)
-	writeRngSeed(seed, args.o)
-
-def setInputFiles(ctrlbwFiles, expbwFiles):
-	global CTRLBW_NAMES
-	global EXPBW_NAMES
-
-	global CTRLBW_NUM
-	global EXPBW_NUM
-	global SAMPLE_NUM
-
 	global COEFCTRL
 	global COEFEXP
 	global COEFCTRL_HIGHRC
@@ -41,35 +10,13 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 
 	global HIGHRC
 
+	global FRAGLEN
+	global BINSIZE
 
-	CTRLBW_NUM = len(ctrlbwFiles)
-	EXPBW_NUM = len(expbwFiles)
-	SAMPLE_NUM = CTRLBW_NUM + EXPBW_NUM
-
-	CTRLBW_NAMES = [0] * CTRLBW_NUM
-	for i in range(CTRLBW_NUM):
-		CTRLBW_NAMES[i] = ctrlbwFiles[i]
-
-	EXPBW_NAMES = [0] * EXPBW_NUM
-	for i in range(EXPBW_NUM):
-		EXPBW_NAMES[i] = expbwFiles[i]
-
-
-def setOutputDirectory(outputDir):
-	global OUTPUT_DIR
-
-	if outputDir is None:
-		outputDir = os.getcwd() + "/CRADLE_correctionResult"
-
-	if outputDir[-1] == "/":
-		outputDir = outputDir[:-1]
-
-	OUTPUT_DIR = outputDir
-
-	dirExist = os.path.isdir(OUTPUT_DIR)
-	if not dirExist:
-		os.makedirs(OUTPUT_DIR)
-
+	### input bigwig files
+	setBiasFiles(args)
+	FRAGLEN = args.l
+	BINSIZE = args.binSize
 
 def setBiasFiles(args):
 	global SHEAR   # indicator variable whether each type of bias will be corrected.
@@ -697,106 +644,3 @@ def setBiasFiles(args):
 		for i in range(guadFileNum):
 			GQAUDFILE[i] = args.gquadFile[i]
 		GQAUD_MAX = args.gquadMax
-
-def setFragLen(fragLen):
-	global FRAGLEN
-	FRAGLEN = int(fragLen)
-
-def setAnlaysisRegion(regionSet, blacklistRegionSet, ctrlBW):
-	regionSet.mergeRegions()
-
-	if blacklistRegionSet is not None:
-		blacklistRegionSet.mergeRegions()
-		regionSetWoBL = regionSet - blacklistRegionSet
-	else:
-		regionSetWoBL = regionSet
-
-	finalRegionSet = ChromoRegionSet()
-	for region in regionSetWoBL:
-		chromoLen = ctrlBW.chroms(region.chromo)
-		if chromoLen is None or chromoLen <= region.start:
-			continue
-
-		if region.end > chromoLen:
-			region.end = chromoLen
-
-		finalRegionSet.addRegion(region)
-
-	return finalRegionSet
-
-def setFilterCriteria(minFrag):
-	global FILTERVALUE
-
-	if minFrag is None:
-		FILTERVALUE = SAMPLE_NUM
-	else:
-		FILTERVALUE = int(minFrag)
-
-
-def setScaler(scalerResult):
-	global CTRLSCALER
-	global EXPSCALER
-
-	CTRLSCALER = [0] * CTRLBW_NUM
-	EXPSCALER = [0] * EXPBW_NUM
-	CTRLSCALER[0] = 1
-
-	for i in range(1, CTRLBW_NUM):
-		CTRLSCALER[i] = scalerResult[i-1]
-	for i in range(EXPBW_NUM):
-		EXPSCALER[i] = scalerResult[i+CTRLBW_NUM-1]
-
-
-def setBinSize(binSize):
-	global BINSIZE
-
-	BINSIZE = int(binSize)
-
-
-def setNumProcess(numProcess):
-	global NUMPROCESS
-
-	systemCPUs = int(multiprocessing.cpu_count())
-
-	if numProcess is None:
-		NUMPROCESS = int(systemCPUs / 2.0 )
-		if NUMPROCESS < 1:
-			NUMPROCESS = 1
-	else:
-		NUMPROCESS = int(numProcess)
-
-	if NUMPROCESS > systemCPUs:
-		print("ERROR: You specified too many cpus! (-p). Running with the maximum cpus in the system")
-		NUMPROCESS = systemCPUs
-
-
-def setNormalization(norm, generateNormBW):
-	global I_NORM
-	global I_GENERATE_NormBW
-
-	if norm.lower() == 'false':
-		I_NORM = False
-	else:
-		I_NORM = True
-
-	if generateNormBW.lower() == 'false':
-		I_GENERATE_NormBW = False
-	else:
-		I_GENERATE_NormBW = True
-
-	if (not I_NORM) and I_GENERATE_NormBW:
-		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NormBW is 'True'")
-		sys.exit()
-def setRngSeed(seed):
-
-	if seed is None:
-		seed = np.random.randint(0, 2**32 - 1)
-
-	np.random.seed(seed)
-	print(f"RNG Seed: {seed}")
-	return seed
-
-def writeRngSeed(seed, outputDir):
-	seedFileName = os.path.join(outputDir, "rngseed.txt")
-	with open(seedFileName, "w") as seedFile:
-		seedFile.write(f"{seed}\n")

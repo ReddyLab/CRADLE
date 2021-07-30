@@ -15,6 +15,7 @@ import pyBigWig
 
 from CRADLE.CorrectBias import vari
 from CRADLE.correctbiasutils.cython import writeBedFile
+from CRADLE.correctbiasutils import vari as commonVari
 
 cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
 
@@ -133,7 +134,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	resultEndIdx = -1
 
 	##### STORE COVARI RESULTS
-	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
+	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=commonVari.OUTPUT_DIR, delete=True)
 	covariFileName = covariFileTemp.name
 	covariFileTemp.close()
 
@@ -400,7 +401,7 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 
 
 	##### STORE COVARI RESULTS
-	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
+	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=commonVari.OUTPUT_DIR, delete=True)
 	covariFileName = covariFileTemp.name
 	covariFileTemp.close()
 
@@ -606,7 +607,7 @@ cpdef calculateTrainCovariates(region):
 	resultEndIdx = -1
 
 	##### STORE COVARI RESULTS
-	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
+	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=commonVari.OUTPUT_DIR, delete=True)
 	covariFileName = covariFileTemp.name
 	covariFileTemp.close()
 
@@ -771,8 +772,8 @@ cpdef calculateTrainCovariates(region):
 
 
 	### output read counts
-	for rep in range(vari.SAMPLE_NUM):
-		rcFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=vari.OUTPUT_DIR, delete=True)
+	for rep in range(commonVari.SAMPLE_NUM):
+		rcFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=commonVari.OUTPUT_DIR, delete=True)
 		rcFileName = rcFileTemp.name
 		rcFileTemp.close()
 
@@ -782,26 +783,26 @@ cpdef calculateTrainCovariates(region):
 
 		returnLine.extend([ rcFileName ])
 
-		if rep < vari.CTRLBW_NUM:
-			bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
+		if rep < commonVari.CTRLBW_NUM:
+			bw = pyBigWig.open(commonVari.CTRLBW_NAMES[rep])
 		else:
-			bw = pyBigWig.open(vari.EXPBW_NAMES[rep-vari.CTRLBW_NUM])
+			bw = pyBigWig.open(commonVari.EXPBW_NAMES[rep-commonVari.CTRLBW_NUM])
 
 		temp = np.array(bw.values(chromo, analysisStart, analysisEnd))
 		numPos = len(temp)
 
 
 		for binIdx in range(nBins):
-			if rep < vari.CTRLBW_NUM:
+			if rep < commonVari.CTRLBW_NUM:
 				if (binIdx + vari.BINSIZE) >= numPos:
-					rc = np.nanmean(temp[binIdx:]) / float(vari.CTRLSCALER[rep])
+					rc = np.nanmean(temp[binIdx:]) / float(commonVari.CTRLSCALER[rep])
 				else:
-					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.CTRLSCALER[rep])
+					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(commonVari.CTRLSCALER[rep])
 			else:
 				if (binIdx + vari.BINSIZE) >= numPos:
-					rc = np.nanmean(temp[binIdx:]) / float(vari.EXPSCALER[rep-vari.CTRLBW_NUM])
+					rc = np.nanmean(temp[binIdx:]) / float(commonVari.EXPSCALER[rep-commonVari.CTRLBW_NUM])
 				else:
-					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(vari.EXPSCALER[rep-vari.CTRLBW_NUM])
+					rc = np.nanmean(temp[binIdx:(binIdx + vari.BINSIZE)]) / float(commonVari.EXPSCALER[rep-commonVari.CTRLBW_NUM])
 
 			if np.isnan(rc):
 				rc = float(0)
@@ -891,8 +892,8 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 
 
 	### COEFFICIENTS
-	COEFCTRL = np.zeros((vari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
-	COEFEXP = np.zeros((vari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
+	COEFCTRL = np.zeros((commonVari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
+	COEFEXP = np.zeros((commonVari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
 
 	readCounts = np.zeros(xNumRows, dtype=np.float64)
 	cdef double [:] readCountsView = readCounts
@@ -903,7 +904,7 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 	ctrlPlotValues = {}
 	experiPlotValues = {}
 
-	for rep in range(vari.CTRLBW_NUM):
+	for rep in range(commonVari.CTRLBW_NUM):
 		ptr = 0
 
 		for fileIdx in range(len(covariFiles)):
@@ -930,12 +931,12 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 		coef = model.params
 		COEFCTRL[rep, ] = coef
 
-		ctrlPlotValues[vari.CTRLBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
+		ctrlPlotValues[commonVari.CTRLBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
-	for rep in range(vari.EXPBW_NUM):
+	for rep in range(commonVari.EXPBW_NUM):
 		ptr = 0
 		for fileIdx in range(len(covariFiles)):
-			subfileName = covariFiles[fileIdx][rep + 2 + vari.CTRLBW_NUM]
+			subfileName = covariFiles[fileIdx][rep + 2 + commonVari.CTRLBW_NUM]
 			f = h5py.File(subfileName, "r")
 
 			rcIdx = 0
@@ -965,7 +966,7 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 		coef = model.params
 		COEFEXP[rep, ] = coef
 
-		experiPlotValues[vari.EXPBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
+		experiPlotValues[commonVari.EXPBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
 	return COEFCTRL, COEFEXP, ctrlPlotValues, experiPlotValues
 
@@ -1232,22 +1233,22 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		lastBinStart = regionEnd
 		lastBinEnd = analysisEnd
 
-	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > FILTERVALUE
-	ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx = selectIdx(chromo, regionStart, regionEnd, vari.CTRLBW_NAMES, vari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, vari.FILTERVALUE)
+	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAG_FILTER_VALUE
+	ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx = selectIdx(chromo, regionStart, regionEnd, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, commonVari.MIN_FRAG_FILTER_VALUE)
 
 	## OUTPUT FILES
-	subfinalCtrlNames = [None] * vari.CTRLBW_NUM
-	subfinalExperiNames = [None] * vari.EXPBW_NUM
+	subfinalCtrlNames = [None] * commonVari.CTRLBW_NUM
+	subfinalExperiNames = [None] * commonVari.EXPBW_NUM
 
 	f = h5py.File(covariFileName, "r")
 
-	for rep in range(vari.CTRLBW_NUM):
+	for rep in range(commonVari.CTRLBW_NUM):
 		if len(ctrlSpecificIdx[rep]) == 0:
 			subfinalCtrlNames[rep] = None
 			continue
 
 		## observed read counts
-		bw = pyBigWig.open(vari.CTRLBW_NAMES[rep])
+		bw = pyBigWig.open(commonVari.CTRLBW_NAMES[rep])
 		if lastBin:
 			rcArr = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
 			rcArr[np.where(rcArr==None)] = float(0)
@@ -1261,7 +1262,7 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		else:
 			rcArr = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
 			rcArr[np.where(rcArr==None)] = float(0)
-		rcArr = rcArr / vari.CTRLSCALER[rep]
+		rcArr = rcArr / commonVari.CTRLSCALER[rep]
 		bw.close()
 
 		## predicted read counts
@@ -1277,19 +1278,19 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		starts = np.delete(starts, idx)
 		rcArr = np.delete(rcArr, idx)
 		if len(rcArr) > 0:
-			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False) as subfinalCtrlFile:
+			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=commonVari.OUTPUT_DIR, delete=False) as subfinalCtrlFile:
 				subfinalCtrlNames[rep] = subfinalCtrlFile.name
 				writeBedFile(subfinalCtrlFile, starts, rcArr, analysisEnd, vari.BINSIZE)
 		else:
 			subfinalCtrlNames[rep] = None
 
-	for rep in range(vari.EXPBW_NUM):
+	for rep in range(commonVari.EXPBW_NUM):
 		if len(experiSpecificIdx[rep]) == 0:
 			subfinalExperiNames[rep] = None
 			continue
 
 		## observed read counts
-		bw = pyBigWig.open(vari.EXPBW_NAMES[rep])
+		bw = pyBigWig.open(commonVari.EXPBW_NAMES[rep])
 		if lastBin:
 			rcArr = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
 			rcArr[np.where(rcArr==None)] = float(0)
@@ -1303,7 +1304,7 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		else:
 			rcArr = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
 			rcArr[np.where(rcArr==None)] = float(0)
-		rcArr = rcArr / vari.EXPSCALER[rep]
+		rcArr = rcArr / commonVari.EXPSCALER[rep]
 		bw.close()
 
 
@@ -1320,7 +1321,7 @@ cpdef correctReadCount(covariFileName, chromo, analysisStart, analysisEnd, lastB
 		starts = np.delete(starts, idx)
 		rcArr = np.delete(rcArr, idx)
 		if len(rcArr) > 0:
-			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=vari.OUTPUT_DIR, delete=False) as subfinalExperiFile:
+			with tempfile.NamedTemporaryFile(mode="w+t", suffix=".bed", dir=commonVari.OUTPUT_DIR, delete=False) as subfinalExperiFile:
 				subfinalExperiNames[rep] = subfinalExperiFile.name
 				writeBedFile(subfinalExperiFile, starts, rcArr, analysisEnd, vari.BINSIZE)
 		else:

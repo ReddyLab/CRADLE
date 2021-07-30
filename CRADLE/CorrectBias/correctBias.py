@@ -12,6 +12,7 @@ import CRADLE.correctbiasutils as utils
 
 from CRADLE.CorrectBias import vari
 from CRADLE.CorrectBias import calculateOnebp
+from CRADLE.correctbiasutils import vari as commonVari
 
 
 def checkArgs(args):
@@ -22,13 +23,10 @@ def checkArgs(args):
 	if ('gquad' in args.biasType) and (args.gquadFile is None) :
 		sys.exit("Error: Gquadruplex File is required to correct g-gquadruplex bias")
 
-	if args.o is None:
-		args.o = os.getcwd() + "/" + "CRADE_correction_result"
-
 def getScaler(trainingSet):
 
 	###### OBTAIN READ COUNTS OF THE FIRST REPLICATE OF CTRLBW.
-	ob1 = pyBigWig.open(vari.CTRLBW_NAMES[0])
+	ob1 = pyBigWig.open(commonVari.CTRLBW_NAMES[0])
 
 	ob1Values = []
 	for region in trainingSet:
@@ -52,7 +50,7 @@ def getScaler(trainingSet):
 	ob1.close()
 
 	tasks = []
-	for i in range(1, vari.SAMPLE_NUM):
+	for i in range(1, commonVari.SAMPLE_NUM):
 		tasks.append([i, trainingSet, ob1Values])
 
 	###### OBTAIN A SCALER FOR EACH SAMPLE
@@ -67,10 +65,10 @@ def getScaler(trainingSet):
 
 def getScalerForEachSample(taskNum, trainingSet, ob1Values):
 
-	if taskNum < vari.CTRLBW_NUM:
-		ob2 = pyBigWig.open(vari.CTRLBW_NAMES[taskNum])
+	if taskNum < commonVari.CTRLBW_NUM:
+		ob2 = pyBigWig.open(commonVari.CTRLBW_NAMES[taskNum])
 	else:
-		ob2 = pyBigWig.open(vari.EXPBW_NAMES[taskNum - vari.CTRLBW_NUM])
+		ob2 = pyBigWig.open(commonVari.EXPBW_NAMES[taskNum - commonVari.CTRLBW_NUM])
 
 	ob2Values = []
 	for region in trainingSet:
@@ -107,7 +105,7 @@ def mergeCorrectedBedfilesTobw(args):
 	observedBWName = args[4]
 
 	signalBWName = '.'.join( observedBWName.rsplit('/', 1)[-1].split(".")[:-1])
-	signalBWName = vari.OUTPUT_DIR + "/"+ signalBWName + "_corrected.bw"
+	signalBWName = commonVari.OUTPUT_DIR + "/"+ signalBWName + "_corrected.bw"
 	signalBW = pyBigWig.open(signalBWName, "w")
 	signalBW.addHeader(bwHeader)
 
@@ -151,20 +149,20 @@ def run(args):
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
 	checkArgs(args)
+	commonVari.setGlobalVariables(args)
 	vari.setGlobalVariables(args)
-
 
 	###### SELECT TRAIN SETS
 	print("======  SELECTING TRAIN SETS .... \n")
 	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
 		RC_PERCENTILE,
-		vari.REGIONS,
-		vari.CTRLBW_NAMES[0],
-		vari.OUTPUT_DIR
+		commonVari.REGIONS,
+		commonVari.CTRLBW_NAMES[0],
+		commonVari.OUTPUT_DIR
 	)
 	vari.HIGHRC = rc90Percentile
 
-	trainingSetMeta = utils.process(min(11, vari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta)
+	trainingSetMeta = utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta)
 
 	print("-- RUNNING TIME of getting trainSetMeta : %s hour(s)" % ((time.time()-startTime)/3600) )
 
@@ -176,23 +174,23 @@ def run(args):
 
 	###### NORMALIZING READ COUNTS
 	print("======  NORMALIZING READ COUNTS ....")
-	if vari.I_NORM:
+	if commonVari.I_NORM:
 		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
-			scalerResult = getScaler(vari.REGIONS)
+			scalerResult = getScaler(commonVari.REGIONS)
 		else:
 			scalerResult = getScaler(trainSet90Percentile + trainSet90To99Percentile)
 	else:
-		scalerResult = [1] * vari.SAMPLE_NUM
+		scalerResult = [1] * commonVari.SAMPLE_NUM
 
 	# Sets vari.CTRLSCALER and vari.EXPSCALER
-	vari.setScaler(scalerResult)
+	commonVari.setScaler(scalerResult)
 
-	if vari.I_NORM:
+	if commonVari.I_NORM:
 		print("NORMALIZING CONSTANT: ")
 		print("CTRLBW: ")
-		print(vari.CTRLSCALER)
+		print(commonVari.CTRLSCALER)
 		print("EXPBW: ")
-		print(vari.EXPSCALER)
+		print(commonVari.EXPSCALER)
 		print("\n\n")
 
 	print("-- RUNNING TIME of calculating scalers : %s hour(s)" % ((time.time()-startTime)/3600) )
@@ -202,12 +200,12 @@ def run(args):
 	print("======  FITTING TRAIN SETS TO THE CORRECTION MODEL ....\n")
 	## SELECTING TRAINING SET
 	if len(trainSet90Percentile) == 0:
-		trainSet90Percentile = vari.REGIONS
+		trainSet90Percentile = commonVari.REGIONS
 
-	if len(trainSet90Percentile) < vari.NUMPROCESS:
+	if len(trainSet90Percentile) < commonVari.NUMPROCESS:
 		numProcess = len(trainSet90Percentile)
 	else:
-		numProcess = vari.NUMPROCESS
+		numProcess = commonVari.NUMPROCESS
 
 	pool = multiprocessing.Pool(numProcess)
 	trainSetResult1 = pool.map_async(calculateOnebp.calculateTrainCovariates, trainSet90Percentile).get()
@@ -221,11 +219,11 @@ def run(args):
 	### trainSet2
 	## SELECTING TRAINING SET
 	if len(trainSet90To99Percentile) == 0:
-		trainSet90To99Percentile = vari.REGIONS
-	if len(trainSet90To99Percentile) < vari.NUMPROCESS:
+		trainSet90To99Percentile = commonVari.REGIONS
+	if len(trainSet90To99Percentile) < commonVari.NUMPROCESS:
 		numProcess = len(trainSet90To99Percentile)
 	else:
-		numProcess = vari.NUMPROCESS
+		numProcess = commonVari.NUMPROCESS
 
 	pool = multiprocessing.Pool(numProcess)
 	trainSetResult2 = pool.map_async(calculateOnebp.calculateTrainCovariates, trainSet90To99Percentile).get()
@@ -255,8 +253,8 @@ def run(args):
 	pool.close()
 	pool.join()
 
-	for name in vari.CTRLBW_NAMES:
-		fileName = utils.figureFileName(vari.OUTPUT_DIR, name)
+	for name in commonVari.CTRLBW_NAMES:
+		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
 		regRCReadCounts, regRCFittedValues = coefResult[0][2][name]
 		highRCReadCounts, highRCFittedValues = coefResult[1][2][name]
 		utils.plot(
@@ -265,8 +263,8 @@ def run(args):
 			fileName
 		)
 
-	for name in vari.EXPBW_NAMES:
-		fileName = utils.figureFileName(vari.OUTPUT_DIR, name)
+	for name in commonVari.EXPBW_NAMES:
+		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
 		regRCReadCounts, regRCFittedValues = coefResult[0][3][name]
 		highRCReadCounts, highRCFittedValues = coefResult[1][3][name]
 		utils.plot(
@@ -301,12 +299,12 @@ def run(args):
 
 	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL
 	print("======  FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL \n")
-	tasks = utils.divideGenome(vari.REGIONS)
+	tasks = utils.divideGenome(commonVari.REGIONS)
 
-	if len(tasks) < vari.NUMPROCESS:
+	if len(tasks) < commonVari.NUMPROCESS:
 		numProcess = len(tasks)
 	else:
-		numProcess = vari.NUMPROCESS
+		numProcess = commonVari.NUMPROCESS
 
 	pool = multiprocessing.Pool(numProcess)
 	resultMeta = pool.map_async(calculateOnebp.calculateTaskCovariates, tasks).get()
@@ -320,15 +318,15 @@ def run(args):
 
 	###### MERGING TEMP FILES
 	print("======  MERGING TEMP FILES \n")
-	resultBWHeader = utils.getResultBWHeader(vari.REGIONS, vari.CTRLBW_NAMES[0])
+	resultBWHeader = utils.getResultBWHeader(commonVari.REGIONS, commonVari.CTRLBW_NAMES[0])
 
 	jobList = []
-	for i in range(vari.CTRLBW_NUM):
-		jobList.append([resultMeta, resultBWHeader, 0, (i+1), vari.CTRLBW_NAMES[i]]) # resultMeta, ctrl, rep
-	for i in range(vari.EXPBW_NUM):
-		jobList.append([resultMeta, resultBWHeader, 1, (i+1), vari.EXPBW_NAMES[i]]) # resultMeta, ctrl, rep
+	for i in range(commonVari.CTRLBW_NUM):
+		jobList.append([resultMeta, resultBWHeader, 0, (i+1), commonVari.CTRLBW_NAMES[i]]) # resultMeta, ctrl, rep
+	for i in range(commonVari.EXPBW_NUM):
+		jobList.append([resultMeta, resultBWHeader, 1, (i+1), commonVari.EXPBW_NAMES[i]]) # resultMeta, ctrl, rep
 
-	pool = multiprocessing.Pool(vari.SAMPLE_NUM)
+	pool = multiprocessing.Pool(commonVari.SAMPLE_NUM)
 	correctedFileNames = pool.map_async(mergeCorrectedBedfilesTobw, jobList).get()
 	pool.close()
 	pool.join()
@@ -338,16 +336,16 @@ def run(args):
 
 	print("======  Completed Correcting Read Counts! \n\n")
 
-	if vari.I_GENERATE_NormBW:
+	if commonVari.I_GENERATE_NORM_BW:
 		print("======  Generating normalized observed bigwigs \n\n")
 		normObFileNames = utils.genNormalizedObBWs(
-			vari.OUTPUT_DIR,
+			commonVari.OUTPUT_DIR,
 			resultBWHeader,
-			vari.REGIONS,
-			vari.CTRLBW_NAMES,
-			vari.CTRLSCALER,
-			vari.EXPBW_NAMES,
-			vari.EXPSCALER
+			commonVari.REGIONS,
+			commonVari.CTRLBW_NAMES,
+			commonVari.CTRLSCALER,
+			commonVari.EXPBW_NAMES,
+			commonVari.EXPSCALER
 		)
 
 		print("Nomralized observed bigwig file names: ")
