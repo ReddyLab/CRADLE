@@ -8,54 +8,30 @@ From: alpine:3.11.5
   Singularity container for running CRADLE
 
 %post
-  export PYTHON_VERSION=3.9.5
-
   cd ~
 
   #Installing dependencies
   apk -v update
 
+  # hdf5, hdf5-dev are only in edge right now.
+  apk add hdf5 hdf5-dev --repository=https://dl-cdn.alpinelinux.org/alpine/edge/community/
+
   # dependencies we'll keep
-  apk add ca-certificates libressl xz libbz2 libstdc++ zlib lapack libjpeg-turbo openblas libffi
+  apk add ca-certificates libressl xz libbz2 libstdc++ zlib lapack libjpeg-turbo openblas libffi python3
 
   # dependencies we'll delete after use
-  apk add wget git pkgconfig zlib-dev bzip2 bzip2-dev openblas-dev lapack-dev libjpeg-turbo-dev coreutils findutils gcc gfortran g++ gdbm-dev libc-dev libffi-dev libnsl-dev libressl-dev libtirpc-dev linux-headers make ncurses-dev readline-dev sqlite-dev util-linux-dev xz-dev
+  apk add wget git pkgconfig zlib-dev bzip2 bzip2-dev openblas-dev lapack-dev libjpeg-turbo-dev coreutils findutils \
+    gcc gfortran g++ gdbm-dev libc-dev libffi-dev libnsl-dev libressl-dev libtirpc-dev linux-headers make ncurses-dev \
+    readline-dev sqlite-dev util-linux-dev xz-dev python3-dev
 
   # Download CRADLE
-  git clone --depth 1 --branch v0.24.0 https://github.com/ReddyLab/CRADLE.git
-
-  # Build and install libhdf5 because it's not available from apk
-  wget -O hdf5.tar.bz "https://hdf-wordpress-1.s3.amazonaws.com/wp-content/uploads/manual/HDF5/HDF5_1_12_0/source/hdf5-1.12.0.tar.bz2"
-  bunzip2 hdf5.tar.bz
-  tar xvf hdf5.tar
-  ls
-  cd hdf5-1.12.0
-  ./configure --prefix=/usr/local
-  make
-  make install
-  cd ..
-  rm -rf hdf5-1.12.0
-  rm hdf5.tar
-
-  # Build and install python $PYTHON_VERSION
-  wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz"
-  mkdir -p /usr/src/python
-  tar -xJC /usr/src/python --strip-components=1 -f python.tar.xz
-  rm python.tar.xz
-
-  cd /usr/src/python
-  ./configure
-  make
-  make install
-
-  cd ~
-  rm -rf /usr/src/python
+  git clone --depth 1 --branch v0.24.1 https://github.com/ReddyLab/CRADLE.git
 
   python3 --version
   python3 -m ensurepip
   pip3 install --upgrade pip setuptools
-  ln -s /usr/local/bin/pip3 /usr/local/bin/pip
-  ln -sf /usr/local/bin/python3 /usr/local/bin/python
+  ln -sf /usr/bin/pip3 /usr/bin/pip
+  ln -sf /usr/bin/python3 /usr/bin/python
 
   pip install wheel
 
@@ -66,7 +42,9 @@ From: alpine:3.11.5
   cd ~
   rm -rf CRADLE
 
-  apk del wget git pkgconfig zlib-dev bzip2 bzip2-dev openblas-dev lapack-dev libjpeg-turbo-dev coreutils findutils gcc gfortran g++ gdbm-dev libc-dev libffi-dev libnsl-dev libressl-dev libtirpc-dev linux-headers make ncurses-dev readline-dev sqlite-dev util-linux-dev xz-dev
+  apk del wget git pkgconfig zlib-dev bzip2 bzip2-dev openblas-dev lapack-dev libjpeg-turbo-dev coreutils findutils \
+    gcc gfortran g++ gdbm-dev libc-dev libffi-dev libnsl-dev libressl-dev libtirpc-dev linux-headers make ncurses-dev \
+    readline-dev sqlite-dev util-linux-dev xz-dev hdf5-dev python3-dev
 
   rm -rf /root/.cache/*
 %runscript
