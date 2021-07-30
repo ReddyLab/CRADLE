@@ -680,30 +680,29 @@ def figureFileName(outputDir, bwFilename):
 	return os.path.join(outputDir, f"fit_{bwName}.png")
 
 def plot(regRCs, regRCFittedValues, highRCs, highRCFittedValues, figName):
-	fig, ax = plt.subplots()
-
 	corr = np.corrcoef(regRCFittedValues, regRCs)[0, 1]
 	corr = np.round(corr, 2)
 	maxi1 = np.nanmax(regRCFittedValues)
 	maxi2 = np.nanmax(regRCs)
 	maxiRegRC = max(maxi1, maxi2)
-	ax.plot(regRCs, regRCFittedValues, color='g', marker='s', alpha=0.01)
+	plt.plot(regRCs, regRCFittedValues, color='g', marker='s', alpha=0.01)
 
 	corr = np.corrcoef(highRCFittedValues, highRCs)[0, 1]
 	corr = np.round(corr, 2)
 	maxi1 = np.nanmax(highRCFittedValues)
 	maxi2 = np.nanmax(highRCs)
 	maxiHighRC = max(maxi1, maxi2)
-	ax.plot(highRCs, highRCFittedValues, color='g', marker='s', alpha=0.01)
+	plt.plot(highRCs, highRCFittedValues, color='g', marker='s', alpha=0.01)
 
 	maxi = max(maxiRegRC, maxiHighRC)
 
-	ax.text((maxi-25), 10, corr, ha='center', va='center')
-	ax.set_xlabel("observed")
-	ax.set_ylabel("predicted")
-	ax.set_xlim(0, maxi)
-	ax.set_ylim(0, maxi)
-	ax.plot([0, maxi], [0, maxi], 'k-', color='r')
-	ax.set_aspect('equal', adjustable='box')
-	fig.savefig(figName)
-	plt.close(fig)
+	plt.text((maxi-25), 10, corr, ha='center', va='center')
+	plt.xlabel("observed")
+	plt.ylabel("predicted")
+	plt.xlim(0, maxi)
+	plt.ylim(0, maxi)
+	plt.plot([0, maxi], [0, maxi], 'k-', color='r')
+	plt.gca().set_aspect('equal', adjustable='box')
+	plt.savefig(figName)
+	plt.close()
+	plt.clf()
