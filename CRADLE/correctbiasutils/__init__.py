@@ -7,6 +7,7 @@ import math
 import multiprocessing
 import os
 import os.path
+import struct
 import tempfile
 import matplotlib # type: ignore
 import matplotlib.pyplot as plt # type: ignore
@@ -24,6 +25,8 @@ matplotlib.use('Agg')
 TRAINING_BIN_SIZE = 1_000
 SCATTERPLOT_SAMPLE_COUNT = 10_000
 SONICATION_SHEAR_BIAS_OFFSET = 2
+
+CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT = "@5sLLf"
 
 # Used to adjust coordinates between 0 and 1-based systems.
 START_INDEX_ADJUSTMENT = 1
@@ -250,9 +253,9 @@ class ChromoRegionSet:
 
 		return regionSet
 
-def process(poolSize, function, argumentLists):
-	pool = multiprocessing.Pool(poolSize)
-	results = pool.starmap_async(function, argumentLists).get()
+def process(poolSize, function, argumentLists, context="spawn"):
+	pool = multiprocessing.get_context(context).Pool(poolSize)
+	results = pool.starmap(function, argumentLists)
 	pool.close()
 	pool.join()
 
@@ -263,7 +266,7 @@ def getResultBWHeader(regions, ctrlBWName):
 		resultBWHeader = []
 		for chromo in regions.chromos:
 			chromoSize = bwFile.chroms(chromo)
-			resultBWHeader.append( (chromo, chromoSize) )
+			resultBWHeader.append((chromo, chromoSize))
 
 	return resultBWHeader
 
@@ -318,9 +321,9 @@ def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, experiBWNames):
 
 	jobList = []
 	for i, ctrlFile in enumerate(ctrlBWNames):
-		jobList.append([ctrlFiles[i], header, outputBWFile(outputDir, ctrlFile)])
+		jobList.append((ctrlFiles[i], header, outputBWFile(outputDir, ctrlFile)))
 	for i, experiFile in enumerate(experiBWNames):
-		jobList.append([experiFiles[i], header, outputBWFile(outputDir, experiFile)])
+		jobList.append((experiFiles[i], header, outputBWFile(outputDir, experiFile)))
 
 	return process(len(ctrlBWNames) + len(experiBWNames), mergeCorrectedFilesToBW, jobList)
 
@@ -331,18 +334,23 @@ def outputBWFile(outputDir, filename):
 def mergeCorrectedFilesToBW(tempFiles, bwHeader, signalBWName):
 	signalBW = pyBigWig.open(signalBWName, "w")
 	signalBW.addHeader(bwHeader)
+	dataReadSize = struct.calcsize(CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT) * 1_000_000 # a somewhat arbitrary choice
 
 	for tempFile in tempFiles:
 		with open(tempFile, 'rb') as dataFile:
-			correctedReadCounts = marshal.load(dataFile)
-
-		for counts in correctedReadCounts:
-			chromo, readCounts = counts
-			if readCounts is None:
-				continue
-
-			sectionCount, starts, ends, values = readCounts
-			signalBW.addEntries([chromo] * sectionCount, starts, ends=ends, values=values)
+			data = dataFile.read(dataReadSize)
+			while data != b'':
+				chromos = []
+				starts = []
+				ends = []
+				values = []
+				for chromo, start, end, value in struct.iter_unpack(CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT, data):
+					chromos.append(chromo.decode('utf-8').strip())
+					starts.append(start)
+					ends.append(end)
+					values.append(value)
+				signalBW.addEntries(chromos, starts, ends=ends, values=values)
+				data = dataFile.read(dataReadSize)
 
 		os.remove(tempFile)
 
@@ -375,9 +383,9 @@ def genNormalizedObBWs(outputDir, header, regions, ctrlBWNames, ctrlScaler, expe
 
 	jobList = []
 	for i, ctrlBWName in enumerate(ctrlBWNames[1:], start=1):
-		jobList.append([header, float(ctrlScaler[i]), regions, ctrlBWName, outputNormalizedBWFile(outputDir, ctrlBWName)])
+		jobList.append((header, float(ctrlScaler[i]), regions, ctrlBWName, outputNormalizedBWFile(outputDir, ctrlBWName)))
 	for i, experiBWName in enumerate(experiBWNames):
-		jobList.append([header, float(experiScaler[i]), regions, experiBWName, outputNormalizedBWFile(outputDir, experiBWName)])
+		jobList.append((header, float(experiScaler[i]), regions, experiBWName, outputNormalizedBWFile(outputDir, experiBWName)))
 
 
 	return process(len(ctrlBWNames) + len(experiBWNames) - 1, generateNormalizedObBWs, jobList)
@@ -411,7 +419,6 @@ def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 		values = values / scaler
 
 		coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, values)
-
 		normObBW.addEntries([region.chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
 
 def getReadCounts(trainingSet, fileName):
@@ -436,7 +443,7 @@ def getScalerTasks(trainingSet, observedReadCounts, ctrlBWNames, experiBWNames):
 			bwName = ctrlBWNames[i]
 		else:
 			bwName = experiBWNames[i - ctrlBWCount]
-		tasks.append([trainingSet, observedReadCounts, bwName])
+		tasks.append((trainingSet, observedReadCounts, bwName))
 
 	return tasks
 
@@ -559,17 +566,17 @@ def getCandidateTrainingSet(rcPercentile, regions, ctrlBWName, outputDir):
 	for i in range(5):
 		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
 		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
-		temp = [rc1, rc2, trainingRegionNum1, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile]
+		temp = (rc1, rc2, trainingRegionNum1, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile)
 		trainingSetMeta.append(temp)  ## RC criteria1(down), RC criteria2(up), # of bases, candidate regions
 
 	for i in range(5, 11):
 		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
 		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
 		if i == 10:
-			temp = [rc1, rc2, 3*trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile]
+			temp = (rc1, rc2, 3*trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile)
 			rc99Percentile = rc1
 		else:
-			temp = [rc1, rc2, trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile] # RC criteria1(down), RC criteria2(up), # of bases, candidate regions
+			temp = (rc1, rc2, trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile) # RC criteria1(down), RC criteria2(up), # of bases, candidate regions
 		if i == 5:
 			rc90Percentile = rc1
 
@@ -584,52 +591,7 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	numOfCandiRegion = 0
 
 	resultFile = tempfile.NamedTemporaryFile(mode="w+t", suffix=".txt", dir=outputDir, delete=False)
-	'''
-	if downLimit == rc99Percentile:
-		result = []
 
-		for region in regions:
-			regionChromo = region[0]
-			regionStart = int(region[1])
-			regionEnd = int(region[2])
-
-			numBin = int( (regionEnd - regionStart) / TRAINING_BIN_SIZE )
-			if numBin == 0:
-				numBin = 1
-				meanValue = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))[0]
-
-				if meanValue is None:
-					continue
-
-				if (meanValue >= downLimit) and (meanValue < upLimit):
-					result.append([regionChromo, regionStart, regionEnd, meanValue])
-
-			else:
-				regionEnd = numBin * TRAINING_BIN_SIZE + regionStart
-				meanValues = np.array(ctrlBW.stats(regionChromo, regionStart, regionEnd, nBins=numBin, type="mean"))
-				pos = np.array(list(range(0, numBin))) * TRAINING_BIN_SIZE + regionStart
-
-				idx = np.where(meanValues != None)
-				meanValues = meanValues[idx]
-				pos = pos[idx]
-
-				idx = np.where((meanValues >= downLimit) & (meanValues < upLimit))
-				start = pos[idx]
-				end = start + TRAINING_BIN_SIZE
-				meanValues = meanValues[idx]
-				chromoArray = [regionChromo] * len(start)
-				result.extend(np.column_stack((chromoArray, start, end, meanValues)).tolist())
-
-		if len(result) == 0:
-			return None
-
-		result = np.array(result)
-		result = result[result[:,3].astype(float).astype(int).argsort()][:,0:3].tolist()
-
-		numOfCandiRegion = len(result)
-		for i in range(len(result)):
-			resultFile.write('\t'.join([str(x) for x in result[i]]) + "\n")
-	'''
 	fileBuffer = io.StringIO()
 	for region in regions:
 		numBin = len(region) // TRAINING_BIN_SIZE
@@ -671,12 +633,14 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	resultFile.close()
 	fileBuffer.close()
 
-	if numOfCandiRegion != 0:
-		resultLine.extend([numOfCandiRegion, resultFile.name])
-		return resultLine
+	if numOfCandiRegion == 0:
+		os.remove(resultFile.name)
+		return None
 
-	os.remove(resultFile.name)
-	return None
+	resultLine.extend([numOfCandiRegion, resultFile.name])
+	return resultLine
+
+
 
 def alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen):
 	newTrainingSet = ChromoRegionSet()

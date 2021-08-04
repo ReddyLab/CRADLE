@@ -1,6 +1,7 @@
 # cython: language_level=3
 
 import os
+import struct
 import tempfile
 import warnings
 import h5py
@@ -9,16 +10,16 @@ import statsmodels.api as sm
 import py2bit
 import pyBigWig
 
-from CRADLE.correctbiasutils import SONICATION_SHEAR_BIAS_OFFSET, START_INDEX_ADJUSTMENT, ChromoRegion, ChromoRegionSet, marshalFile
+from CRADLE.correctbiasutils import CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT, SONICATION_SHEAR_BIAS_OFFSET, START_INDEX_ADJUSTMENT, ChromoRegion, ChromoRegionSet, marshalFile
 from CRADLE.correctbiasutils.cython import coalesceSections
 
-COEF_LEN = 7
+cdef int COEF_LEN = 7
 
 # The covariate values stored in the HDF files start at index 0 (0-index, obviously)
 # The lowest start point for an analysis region is 3 (1-indexed), so we need to subtract
 # 3 from the analysis start and end points to match them up with correct covariate values
 # in the HDF files.
-COVARIATE_FILE_INDEX_OFFSET = 3
+cdef int COVARIATE_FILE_INDEX_OFFSET = 3
 
 cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, scatterplotSamples):
 	xColumnCount = covariates.num + 1
@@ -120,13 +121,35 @@ cpdef getCoefs(modelParams, selectedCovariates):
 	return coef
 
 cpdef correctReadCount(regions, covariates, genome, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
-	correctedCtrlReadCounts = [[] for _ in range(len(ctrlBWNames))]
-	correctedExprReadCounts = [[] for _ in range(len(experiBWNames))]
+	cdef int reg = 0 # region index
+	cdef int regCount = len(regions) # region count
+	cdef int analysisStart
+	cdef int analysisEnd
+	cdef int fragLen = covariates.fragLen
+	cdef int fragRegionStart
+	cdef int fragRegionEnd
+	cdef int shearStart
+	cdef int shearEnd
+	cdef int chromoEnd
+	cdef int startIndexAdjustment = START_INDEX_ADJUSTMENT
+	cdef int soncationShearBiasOffset = SONICATION_SHEAR_BIAS_OFFSET
 
-	for region in regions:
-		chromo = region[0]
-		analysisStart = region[1]  # Genomic coordinates(starts from 1)
-		analysisEnd = region[2]
+	cdef int rep = 0 # replicate index
+	cdef int ctrlBWNameCount = len(ctrlBWNames)
+	cdef int experiBWNameCount = len(experiBWNames)
+
+	cdef int outIdx # index used for iterating over read counts when outputting them to a temp file
+	cdef int coalescedSectionCount
+
+	correctedCtrlReadCountFiles = [tempfile.NamedTemporaryFile(mode="wb", suffix=".msl", dir=outputDir, delete=False) for _ in ctrlBWNames]
+	correctedExprReadCountFiles = [tempfile.NamedTemporaryFile(mode="wb", suffix=".msl", dir=outputDir, delete=False) for _ in experiBWNames]
+
+	while reg < regCount:
+		chromo = regions[reg][0]
+		analysisStart = regions[reg][1]  # Genomic coordinates(starts from 1)
+		analysisEnd = regions[reg][2]
+
+		chromoBytes = bytes(chromo, "utf-8") # used later when writing values to a file
 
 		# TODO: Pre-compute this
 		with py2bit.open(genome) as genomeFile:
@@ -138,21 +161,21 @@ cpdef correctReadCount(regions, covariates, genome, ctrlBWNames, ctrlScaler, COE
 		# Adjust analysis boundaries for use with covariate values file
 		#
 		# Define a region of fragments of length fragLen
-		fragRegionStart = analysisStart - covariates.fragLen + START_INDEX_ADJUSTMENT
-		fragRegionEnd = analysisEnd + covariates.fragLen - START_INDEX_ADJUSTMENT
+		fragRegionStart = analysisStart - fragLen + startIndexAdjustment
+		fragRegionEnd = analysisEnd + fragLen - startIndexAdjustment
 
 		# Define a region that includes base pairs used to model shearing/sonication bias
-		shearStart = fragRegionStart - SONICATION_SHEAR_BIAS_OFFSET
-		shearEnd = fragRegionEnd + SONICATION_SHEAR_BIAS_OFFSET
+		shearStart = fragRegionStart - soncationShearBiasOffset
+		shearEnd = fragRegionEnd + soncationShearBiasOffset
 
 		# Make sure the analysisStart and analysisEnd fall within the boundaries of the region
 		# covariates have been precomputed for
 		if shearStart < 1:
-			fragRegionStart = SONICATION_SHEAR_BIAS_OFFSET + START_INDEX_ADJUSTMENT
+			fragRegionStart = soncationShearBiasOffset + startIndexAdjustment
 			analysisStart = max(analysisStart, fragRegionStart)
 
 		if shearEnd > chromoEnd:
-			fragRegionEnd = chromoEnd - SONICATION_SHEAR_BIAS_OFFSET
+			fragRegionEnd = chromoEnd - soncationShearBiasOffset
 			analysisEnd = min(analysisEnd, fragRegionEnd)
 		#
 		# End adjust boundaries
@@ -163,12 +186,13 @@ cpdef correctReadCount(regions, covariates, genome, ctrlBWNames, ctrlScaler, COE
 		## OUTPUT FILES
 		covariateFileName = covariates.covariateFileName(chromo)
 		with h5py.File(covariateFileName, "r") as covariateValues:
-			for rep, bwName in enumerate(ctrlBWNames):
+			rep = 0
+			while rep < ctrlBWNameCount:
 				if len(ctrlSpecificIdx[rep]) == 0:
-					correctedCtrlReadCounts[rep].append((chromo, None))
+					rep += 1
 					continue
 
-				with pyBigWig.open(bwName) as bwFile:
+				with pyBigWig.open(ctrlBWNames[rep]) as bwFile:
 					rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
 					rcArr[np.isnan(rcArr)] = 0.0
 					rcArr = rcArr / ctrlScaler[rep]
@@ -194,18 +218,19 @@ cpdef correctReadCount(regions, covariates, genome, ctrlBWNames, ctrlScaler, COE
 				idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
 				starts = np.delete(starts, idx)
 				rcArr = np.delete(rcArr, idx)
-				if len(rcArr) > 0:
-					subfinalReadCounts = coalesceSections(starts, rcArr, analysisEnd, binsize)
-					correctedCtrlReadCounts[rep].append((chromo, subfinalReadCounts))
-				else:
-					correctedCtrlReadCounts[rep].append((chromo, None))
 
-			for rep, bwName in enumerate(experiBWNames):
+				if len(rcArr) > 0:
+					coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, rcArr, analysisEnd, binsize)
+					writeCorrectedReads(correctedCtrlReadCountFiles[rep], chromoBytes, coalescedSectionCount, startEntries, endEntries, valueEntries)
+				rep += 1
+
+			rep = 0
+			while rep < experiBWNameCount:
 				if len(experiSpecificIdx[rep]) == 0:
-					correctedExprReadCounts[rep].append((chromo, None))
+					rep += 1
 					continue
 
-				with pyBigWig.open(bwName) as bwFile:
+				with pyBigWig.open(experiBWNames[rep]) as bwFile:
 					rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
 					rcArr[np.isnan(rcArr)] = 0.0
 					rcArr = rcArr / experiScaler[rep]
@@ -232,13 +257,17 @@ cpdef correctReadCount(regions, covariates, genome, ctrlBWNames, ctrlScaler, COE
 				starts = np.delete(starts, idx)
 				rcArr = np.delete(rcArr, idx)
 				if len(rcArr) > 0:
-					subfinalReadCounts = coalesceSections(starts, rcArr, analysisEnd, binsize)
-					correctedExprReadCounts[rep].append( (chromo, subfinalReadCounts) )
-				else:
-					correctedExprReadCounts[rep].append((chromo, None) )
+					coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, rcArr, analysisEnd, binsize)
+					writeCorrectedReads(correctedExprReadCountFiles[rep], chromoBytes, coalescedSectionCount, startEntries, endEntries, valueEntries)
+				rep += 1
 
-	ctrlNames = [marshalFile(outputDir, readCounts) for readCounts in correctedCtrlReadCounts]
-	exprNames = [marshalFile(outputDir, readCounts) for readCounts in correctedExprReadCounts]
+		reg += 1
+
+	ctrlNames = [tempFile.name for tempFile in correctedCtrlReadCountFiles]
+	exprNames = [tempFile.name for tempFile in correctedExprReadCountFiles]
+
+	[tempFile.close() for tempFile in correctedCtrlReadCountFiles]
+	[tempFile.close() for tempFile in correctedExprReadCountFiles]
 
 	return [ctrlNames, exprNames]
 
@@ -286,4 +315,8 @@ cpdef selectIdx(chromo, analysisStart, analysisEnd, ctrlBWNames, experiBWNames, 
 
 	return ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx
 
-
+cpdef writeCorrectedReads(outFile, chrom, sectionCount, starts, ends, values):
+	cdef int outIdx = 0
+	while outIdx < sectionCount:
+		outFile.write(struct.pack(CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT, chrom, starts[outIdx], ends[outIdx], values[outIdx]))
+		outIdx += 1
