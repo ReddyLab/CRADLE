@@ -108,8 +108,12 @@ cpdef coalesceSections(starts, values, analysisEnd=None, stepSize=1):
 	values = values.astype(int)
 	numIdx = values.size
 
+	startEntries = []
+	endEntries = []
+	valueEntries = []
+
 	if numIdx == 0:
-		return 0, [], [], []
+		return 0, startEntries, endEntries, valueEntries
 
 	startsView = starts
 	valuesView = values
@@ -117,10 +121,6 @@ cpdef coalesceSections(starts, values, analysisEnd=None, stepSize=1):
 	currStart = startsView[0]
 	currValue = valuesView[0]
 	currEnd = currStart + cStepSize
-
-	startEntries = []
-	endEntries = []
-	valueEntries = []
 
 	coalescedSectionCount = 1
 	i = 1

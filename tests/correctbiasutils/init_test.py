@@ -106,7 +106,7 @@ def testGetReadCounts(trainingSets, bwFile, result):
 ])
 def testGetScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNames, resultBWList):
 	result = utils.getScalerTasks(trainingSets, observedReadCounts, ctrlBWNames, experiBWNames)
-	expectedResult = [[trainingSets, observedReadCounts, fileName] for fileName in resultBWList]
+	expectedResult = [(trainingSets, observedReadCounts, fileName) for fileName in resultBWList]
 	assert result == expectedResult
 
 @pytest.mark.parametrize("bwFileName,binCount,chromo,start,end,result", [

@@ -162,7 +162,7 @@ def run(args):
 	)
 	vari.HIGHRC = rc90Percentile
 
-	trainingSetMeta = utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta)
+	trainingSetMeta = utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta, context="fork")
 
 	print("-- RUNNING TIME of getting trainSetMeta : %s hour(s)" % ((time.time()-startTime)/3600) )
 
