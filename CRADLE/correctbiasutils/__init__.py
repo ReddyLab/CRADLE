@@ -103,31 +103,72 @@ class ChromoRegion:
 		if self.chromo == o.chromo:
 			return self.start < o.start
 
-		return self.chromo < o.chromo
+		selfChromo = self.chromo
+		if selfChromo.startswith("chr"):
+			selfChromo = selfChromo[3:]
+
+		otherChromo = o.chromo
+		if otherChromo.startswith("chr"):
+			otherChromo = otherChromo[3:]
+
+		if selfChromo.isdigit() and otherChromo.isdigit():
+			return int(selfChromo) < int(otherChromo)
+
+		if not selfChromo.isdigit() and otherChromo.isdigit():
+			return False # sort letters higher than numbers
+
+		if selfChromo.isdigit() and not otherChromo.isdigit():
+			return True # sort letters higher than numbers
+
+		return selfChromo < otherChromo # sort lexigraphically
 
 	def __repr__(self) -> str:
 		return f"({self.chromo}:{self.start}-{self.end})"
 
 # Not quite a set in the mathematical sense.
 class ChromoRegionSet:
+	regions: list[ChromoRegion]
+	_chromoSet: set[str]
+	_chromos: list[str]
+	cumulativeRegionSize: int
+	_chromoOrderDirty: bool
+
 	def __init__(self, regions: List[ChromoRegion]=None) -> None:
 		self.regions = []
-		self.chromos = set()
+		self._chromoSet = set()
+		self._chromos = []
 		self.cumulativeRegionSize = 0
+		self._chromoOrderDirty = False
 		if regions is not None:
 			self.regions = regions
 			for region in self.regions:
-				self.chromos.add(region.chromo)
+				if region.chromo not in self._chromoSet:
+					self._chromoSet.add(region.chromo)
+					self._chromos.append(region.chromo)
 				self.cumulativeRegionSize += len(region)
 
 	def addRegion(self, region: ChromoRegion) -> None:
+		self._chromoSet.add(region.chromo)
 		self.regions.append(region)
-		self.chromos.add(region.chromo)
 		self.cumulativeRegionSize += len(region)
+		self._chromoOrderDirty = True
+
+	@property
+	def chromos(self):
+		if self._chromoOrderDirty:
+			chromoSet = set()
+			chromos = []
+			for region in self.regions:
+				if region.chromo not in chromoSet:
+					chromoSet.add(region.chromo)
+					chromos.append(region.chromo)
+			self._chromos = chromos
+		self._chromoOrderDirty = False
+		return self._chromos
 
 	def sortRegions(self) -> None:
-		self.regions.sort(key=lambda r: r.start)
-		self.regions.sort(key=lambda r: r.chromo)
+		self.regions.sort()
+		self._chromoOrderDirty = True
 
 	def mergeRegions(self) -> None:
 		if len(self.regions) == 1:
@@ -155,10 +196,8 @@ class ChromoRegionSet:
 
 	def __add__(self, o: ChromoRegionSet) -> ChromoRegionSet:
 		"""Simple conacatenation of sets. No region merging is done."""
-		newRegionSet = ChromoRegionSet()
-		newRegionSet.regions = self.regions + o.regions
-		newRegionSet.cumulativeRegionSize = self.cumulativeRegionSize + o.cumulativeRegionSize
-		newRegionSet.chromos = self.chromos.union(o.chromos)
+		newRegionSet = ChromoRegionSet(self.regions + o.regions)
+		newRegionSet.sortRegions()
 
 		return newRegionSet
 

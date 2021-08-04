@@ -16,10 +16,14 @@ def testChromoRegionSetAddRegion(regionSet, region, result):
 	(ChromoRegionSet([ChromoRegion("chr1", 20, 200), ChromoRegion("chr1", 10, 100)]), ChromoRegionSet([ChromoRegion("chr1", 10, 100), ChromoRegion("chr1", 20, 200)])),
 	(ChromoRegionSet([ChromoRegion("chr1", 20, 200), ChromoRegion("chr2", 10, 100)]), ChromoRegionSet([ChromoRegion("chr1", 20, 200), ChromoRegion("chr2", 10, 100)])),
 	(ChromoRegionSet([ChromoRegion("chr1", 20, 200), ChromoRegion("chr2", 10, 100), ChromoRegion("chr1", 10, 100)]), ChromoRegionSet([ChromoRegion("chr1", 10, 100), ChromoRegion("chr1", 20, 200), ChromoRegion("chr2", 10, 100)])),
+	(ChromoRegionSet([ChromoRegion("chr10", 10, 100), ChromoRegion("chr2", 20, 200), ChromoRegion("chrX", 20, 200), ChromoRegion("chr1", 20, 200)]), ChromoRegionSet([ChromoRegion("chr1", 20, 200), ChromoRegion("chr2", 20, 200), ChromoRegion("chr10", 10, 100), ChromoRegion("chrX", 20, 200)])),
 ])
 def testChromoRegionSetSortRegions(regionSet, result):
 	regionSet.sortRegions()
-	assert regionSet == result
+
+	# regionSet == result sorts as part of the comparison, so we have to compare the region lists directly
+	assert regionSet.regions == result.regions
+	assert regionSet.chromos == result.chromos
 
 @pytest.mark.parametrize("regionSet, result", [
 	(ChromoRegionSet([ChromoRegion("chr1", 10, 100)]), ChromoRegionSet([ChromoRegion("chr1", 10, 100)])),
@@ -44,6 +48,11 @@ def testChromoRegionMergeRegions(regionSet, result):
 		ChromoRegionSet([ChromoRegion("chr1", 10, 100), ChromoRegion("chr1", 10, 100)]),
 		ChromoRegionSet([ChromoRegion("chr1", 20, 200)]),
 		ChromoRegionSet([ChromoRegion("chr1", 10, 100), ChromoRegion("chr1", 20, 200), ChromoRegion("chr1", 10, 100)])
+	),
+	(
+		ChromoRegionSet([ChromoRegion("chr1", 10, 100), ChromoRegion("chr1", 10, 100)]),
+		ChromoRegionSet([ChromoRegion("chr2", 20, 200)]),
+		ChromoRegionSet([ChromoRegion("chr1", 10, 100), ChromoRegion("chr1", 10, 100), ChromoRegion("chr2", 20, 200)])
 	)
 ])
 def testChromoRegionSetAdd(regionSet1, regionSet2, result):

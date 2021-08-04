@@ -1,3 +1,5 @@
+import array
+
 import numpy as np
 import pytest
 import pyximport; pyximport.install()
@@ -62,6 +64,6 @@ def testCoalesceSections(starts, values, analysisEnd, stepSize, sectionCount, st
 	values = values[idx]
 	result =  coalesceSections(starts, values, analysisEnd, stepSize)
 	assert result[0] == sectionCount
-	assert result[1] == startEntries
-	assert result[2] == endEntries
-	assert result[3] == valueEntries
+	assert result[1] == array.array('L', startEntries)
+	assert result[2] == array.array('L', endEntries)
+	assert result[3] == array.array('f', valueEntries)
