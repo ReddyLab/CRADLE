@@ -17,14 +17,19 @@ RC_PERCENTILE = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
 
 def run(args):
 	startTime = time.time()
-	###### INITIALIZE PARAMETERS
-	print("======  INITIALIZING PARAMETERS .... \n")
+	runningTime = startTime
+
+	print("")
+	print("======  INITIALIZING PARAMETERS ....")
 	commonVari.setGlobalVariables(args)
 	vari.setGlobalVariables(args)
 	covariates = vari.getStoredCovariates(args.biasType, args.covariDir)
+	print("======  COMPLETED INITIALIZING PARAMETERS ....\n")
 
-	###### SELECT TRAIN SETS
-	print("======  SELECTING TRAIN SETS .... \n")
+	print("======  SELECTING TRAINING SETS ....")
+	selectingTime = time.time()
+	print("-- Getting candidate training sets ....")
+	runningTime = time.time()
 	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
 		RC_PERCENTILE,
 		commonVari.REGIONS,
@@ -33,16 +38,24 @@ def run(args):
 	)
 	highRC = rc90Percentile
 
+	print(f"-- Completed getting candidate training sets .... : {(time.time() - runningTime) / 60} min")
+	print("-- Filling Training Sets ....")
+	runningTime = time.time()
 	trainingSetMeta = utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta)
 
+	print(f"-- Completed filling training sets .... : {(time.time() - runningTime) / 60} min")
+	print("-- Selecting training sets from trainSetMeta ....")
+	runningTime = time.time()
 	trainSet90Percentile, trainSet90To99Percentile = utils.selectTrainingSetFromMeta(trainingSetMeta, rc99Percentile)
 	del trainingSetMeta
 
-	print("-- RUNNING TIME of selecting training sets from trainSetMeta : %s hour(s)" % ((time.time() - startTime) / 3600) )
+	print(f"-- Completed selecting training sets from trainSetMeta : {((time.time() - runningTime) / 60)} min(s)")
+	print(f"======  COMPLETED SELECTING TRAINING SETS .... : {(time.time() - selectingTime) / 60} min\n")
 
-
-	###### NORMALIZING READ COUNTS
 	print("======  NORMALIZING READ COUNTS ....")
+	normalizingTime = time.time()
+	print("-- Calculating scalers ....")
+	runningTime = time.time()
 	if commonVari.I_NORM:
 		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
 			trainingSet = commonVari.REGIONS
@@ -63,17 +76,15 @@ def run(args):
 	commonVari.setScaler(scalerResult)
 
 	if commonVari.I_NORM:
-		print("NORMALIZING CONSTANT: ")
-		print("CTRLBW: ")
-		print(commonVari.CTRLSCALER)
-		print("EXPBW: ")
-		print(commonVari.EXPSCALER)
-		print("\n\n")
+		print("NORMALIZING CONSTANTS: ")
+		print(f"* CTRLBW: {commonVari.CTRLSCALER}")
+		print(f"* EXPBW: {commonVari.EXPSCALER}")
+		print("")
 
-	print("-- RUNNING TIME of calculating scalers : %s hour(s)" % ((time.time() - startTime) / 3600) )
+	print(f"-- Completed calculating scalers: {((time.time() - runningTime) / 60)} min(s)")
 
-	## PERFORM REGRESSION
-	print("======  PERFORMING REGRESSION ....\n")
+	print("-- Performing regression ....")
+	runningTime = time.time()
 	pool = multiprocessing.Pool(2)
 
 	if len(trainSet90Percentile) == 0:
@@ -101,8 +112,6 @@ def run(args):
 	).get()
 	pool.close()
 	pool.join()
-
-
 
 	for name in commonVari.CTRLBW_NAMES:
 		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
@@ -133,28 +142,28 @@ def run(args):
 	coefExpHighrc = coefResult[1][1]
 
 
-	print("The order of coefficients:")
-	print(covariates.order)
+	print(f"The order of coefficients: {covariates.order}")
 
 	noNanIdx = [0]
 	temp = np.where(np.isnan(covariates.selected) == False)[0] + 1
 	temp = temp.tolist()
 	noNanIdx.extend(temp)
 
-	print("COEF_CTRL: ")
+	print("* COEF_CTRL: ")
 	print(np.array(coefCtrl)[:,noNanIdx])
-	print("COEF_EXP: ")
+	print("* COEF_EXP: ")
 	print(np.array(coefExp)[:,noNanIdx])
-	print("COEF_CTRL_HIGHRC: ")
+	print("* COEF_CTRL_HIGHRC: ")
 	print(np.array(coefCtrlHighrc)[:,noNanIdx])
-	print("COEF_EXP_HIGHRC: ")
+	print("* COEF_EXP_HIGHRC: ")
 	print(np.array(coefExpHighrc)[:,noNanIdx])
+	print("")
 
-	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time() - startTime) / 3600) )
+	print(f"-- Completed performing regression: {(time.time() - runningTime) / 60} min(s)")
+	print(f"======  COMPLETED NORMALIZING READ COUNTS: {(time.time() - normalizingTime) / 60}\n")
 
-
-	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL
-	print("======  FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL \n")
+	print("======  FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL")
+	fittingTime = time.time()
 	tasks = utils.divideGenome(commonVari.REGIONS)
 	# `vari.NUMPROCESS * len(vari.CTRLBW_NAMES)` seems like a good number of jobs
 	#   to split the work into. This keeps each individual job from using too much
@@ -163,6 +172,8 @@ def run(args):
 	jobCount = min(len(tasks), commonVari.NUMPROCESS * len(commonVari.CTRLBW_NAMES))
 	processCount = min(len(tasks), commonVari.NUMPROCESS)
 	taskGroups = arraySplit(tasks, jobCount, fillValue=None)
+	print("-- Correcting read counts ....")
+	runningTime = time.time()
 	crcArgs = zip(
 		taskGroups,
 		[covariates] * jobCount,
@@ -182,22 +193,24 @@ def run(args):
 	)
 	resultMeta = utils.process(processCount, calculateOneBP.correctReadCount, crcArgs)
 
+	print(f"-- Completed correcting read counts: {((time.time() - runningTime) / 60)} min(s)")
+
 	gc.collect()
 
-	print("-- RUNNING TIME of calculating Task covariates : %s hour(s)" % ((time.time() - startTime) / 3600) )
-
-	###### MERGING TEMP FILES
-	print("======  MERGING TEMP FILES \n")
+	print("-- Merging temp files ....")
+	runningTime = time.time()
 	resultBWHeader = utils.getResultBWHeader(commonVari.REGIONS, commonVari.CTRLBW_NAMES[0])
 	correctedFileNames = utils.mergeBWFiles(commonVari.OUTPUT_DIR, resultBWHeader, resultMeta, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES)
 
-	print("Output File Names: ")
-	print(correctedFileNames)
+	print("* Output file names: ")
+	print(f"{correctedFileNames}\n")
+	print(f"-- Completed merging temp files: {((time.time() - runningTime) / 60)} min(s)")
 
-	print("======  Completed Correcting Read Counts! \n\n")
+	print(f"======  COMPLETED FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL: {((time.time() - fittingTime) / 60)} min(s)\n")
 
 	if commonVari.I_GENERATE_NORM_BW:
-		print("======  Generating normalized observed bigwigs \n\n")
+		print("======  GENERATING NORMALIZED OBSERVED BIGWIGS")
+		runningTime = time.time()
 		normObFileNames = utils.genNormalizedObBWs(
 			commonVari.OUTPUT_DIR,
 			resultBWHeader,
@@ -208,7 +221,8 @@ def run(args):
 			commonVari.EXPSCALER
 		)
 
-		print("Nomralized observed bigwig file names: ")
-		print(normObFileNames)
+		print("* Nomralized observed bigwig file names: ")
+		print(f"{normObFileNames}\n")
+		print(f"====== COMPLETED GENERATING NORMALIZED OBSERVED BIGWIGS: {((time.time() - runningTime) / 60)} min(s)\n")
 
-	print("-- RUNNING TIME: %s hour(s)" % ((time.time() - startTime) / 3600) )
+	print(f"-- TOTAL RUNNING TIME: {((time.time() - startTime) / 3600)} hour(s)")
