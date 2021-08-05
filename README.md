@@ -232,7 +232,7 @@ cradle normalize -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.b
 
 
 ### 2) callPeak
-You will get 'CARDLE_peak' as a result file which has the following format:
+You will get 'CRADLE_peak' as a result file which has the following format:
 ```
 chr start   end Name    score   strand  effectSize  inputCount  outputCount -log(pvalue)    -log(qvalue)  cohen's D
 chr1	70367085	70367210	chr1:70367085-70367210	.	.	133	-8	125	14.57	13.8 3.2
@@ -250,7 +250,7 @@ chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8 12.3
 * The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of p value and q value. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values.
 * The 11th column: Cohen's D, standarized effect size. This column will have 'nan' values in the case where there is only one replicate in either -ctrlbw or -expbw.
 
-### 3) Normliaze
+### 3) Normalize
    Normalized bigwigs files of which file name has '_normalized' in the suffix. The number of generated corrected bigwigs files will be the same as the total number of  bigwigs files used as input (this includes both control and experimental bigwigs).
 
 
