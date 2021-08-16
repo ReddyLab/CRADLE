@@ -11,7 +11,9 @@ import statsmodels.api as sm
 import CRADLE.correctbiasutils as utils
 
 from CRADLE.CorrectBias import vari
-from CRADLE.CorrectBias import calculateOnebp
+from CRADLE.CorrectBias.regression import performRegression
+from CRADLE.CorrectBias.taskCovariates import calculateTaskCovariates
+from CRADLE.CorrectBias.trainCovariates import calculateTrainCovariates
 from CRADLE.correctbiasutils import vari as commonVari
 
 
@@ -208,7 +210,7 @@ def run(args):
 		numProcess = commonVari.NUMPROCESS
 
 	pool = multiprocessing.Pool(numProcess)
-	trainSetResult1 = pool.map_async(calculateOnebp.calculateTrainCovariates, trainSet90Percentile).get()
+	trainSetResult1 = pool.map_async(calculateTrainCovariates, trainSet90Percentile).get()
 	pool.close()
 	pool.join()
 	del pool, trainSet90Percentile
@@ -226,7 +228,7 @@ def run(args):
 		numProcess = commonVari.NUMPROCESS
 
 	pool = multiprocessing.Pool(numProcess)
-	trainSetResult2 = pool.map_async(calculateOnebp.calculateTrainCovariates, trainSet90To99Percentile).get()
+	trainSetResult2 = pool.map_async(calculateTrainCovariates, trainSet90To99Percentile).get()
 	pool.close()
 	pool.join()
 	del pool, trainSet90To99Percentile
@@ -244,7 +246,7 @@ def run(args):
 	startTime = time.time()
 	pool = multiprocessing.Pool(2)
 	coefResult = pool.starmap_async(
-		calculateOnebp.performRegression,
+		performRegression,
 		[
 			(trainSetResult1, scatterplotSamples90Percentile),
 			(trainSetResult2, scatterplotSamples90to99Percentile)
@@ -307,7 +309,7 @@ def run(args):
 		numProcess = commonVari.NUMPROCESS
 
 	pool = multiprocessing.Pool(numProcess)
-	resultMeta = pool.map_async(calculateOnebp.calculateTaskCovariates, tasks).get()
+	resultMeta = pool.map_async(calculateTaskCovariates, tasks).get()
 	pool.close()
 	pool.join()
 	del pool

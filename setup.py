@@ -7,12 +7,32 @@ from Cython.Distutils import build_ext
 
 ext_modules = [
 	Extension(
-		'CRADLE.CorrectBias.calculateOnebp',
-		['CRADLE/CorrectBias/calculateOnebp.pyx'],
+		'CRADLE.CorrectBias.trainCovariates',
+		['CRADLE/CorrectBias/trainCovariates.pyx'],
 		extra_compile_args=["-fno-strict-aliasing"]),
 	Extension(
-		'CRADLE.CorrectBiasStored.calculateOneBP',
-		['CRADLE/CorrectBiasStored/calculateOneBP.pyx'],
+		'CRADLE.CorrectBias.taskCovariates',
+		['CRADLE/CorrectBias/taskCovariates.pyx'],
+		extra_compile_args=["-fno-strict-aliasing"]),
+	Extension(
+		'CRADLE.CorrectBias.regression',
+		['CRADLE/CorrectBias/regression.pyx'],
+		extra_compile_args=["-fno-strict-aliasing"]),
+	Extension(
+		'CRADLE.CorrectBias.readCounts',
+		['CRADLE/CorrectBias/readCounts.pyx'],
+		extra_compile_args=["-fno-strict-aliasing"]),
+	Extension(
+		'CRADLE.CorrectBias.covariateUtils',
+		['CRADLE/CorrectBias/covariateUtils.pyx'],
+		extra_compile_args=["-fno-strict-aliasing"]),
+	Extension(
+		'CRADLE.CorrectBiasStored.readCounts',
+		['CRADLE/CorrectBiasStored/readCounts.pyx'],
+		extra_compile_args=["-fno-strict-aliasing"]),
+	Extension(
+		'CRADLE.CorrectBiasStored.regression',
+		['CRADLE/CorrectBiasStored/regression.pyx'],
 		extra_compile_args=["-fno-strict-aliasing"]),
 	Extension(
 		'CRADLE.CallPeak.calculateRC',

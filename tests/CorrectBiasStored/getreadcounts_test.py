@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 import pyximport; pyximport.install()
 
-from CRADLE.CorrectBiasStored.calculateOneBP import getReadCounts
+from CRADLE.CorrectBiasStored.regression import getReadCounts
 
 @pytest.mark.parametrize("rawReadCounts,rowCount,scaler,result", [
 	([(np.array([1, 2, 3, 4, 5]), 5)], 5, 2, [0.5, 1., 1.5, 2., 2.5]),
