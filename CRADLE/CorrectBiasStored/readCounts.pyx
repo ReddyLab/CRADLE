@@ -93,17 +93,14 @@ cpdef correctReadCounts(regions, covariates, genome, ctrlBWNames, ctrlScaler, CO
 					rcArr[np.isnan(rcArr)] = 0.0
 					rcArr = rcArr / ctrlScaler[rep]
 
+                rawValues = covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)]
+                rawCovariateValues = rawValues * covariates.selected
+
 				prdvals = np.exp(
-					np.nansum(
-						(covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)] * covariates.selected) * COEFCTRL[rep, 1:],
-						axis=1
-					) + COEFCTRL[rep, 0]
+					np.nansum((rawCovariateValues) * COEFCTRL[rep, 1:], axis=1) + COEFCTRL[rep, 0]
 				)
 				prdvals[highReadCountIdx] = np.exp(
-					np.nansum(
-						(covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)][highReadCountIdx] * covariates.selected) * COEFCTRL_HIGHRC[rep, 1:],
-						axis=1
-					) + COEFCTRL_HIGHRC[rep, 0]
+					np.nansum((rawCovariateValues[highReadCountIdx]) * COEFCTRL_HIGHRC[rep, 1:], axis=1) + COEFCTRL_HIGHRC[rep, 0]
 				)
 
 				rcArr = rcArr - prdvals
