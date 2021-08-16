@@ -35,13 +35,15 @@ class ChromoRegionMergeException(Exception):
 	pass
 
 class ChromoRegion:
+	__slots__ = ["chromo", "start", "_end", "_length"]
+
 	"""Describes a Chromosome region. Index is 0-based and half-closed"""
 	def __init__(self, chromo: str, start: int, end: int) -> None:
 		assert start <= end
 		self.chromo = chromo
 		self.start = start
 		self._end = end
-		self._length = self._end - self.start
+		self._length = end - start
 
 	@property
 	def end(self) -> int:
@@ -130,6 +132,8 @@ class ChromoRegion:
 
 # Not quite a set in the mathematical sense.
 class ChromoRegionSet:
+	__slots__ = ["regions", "_chromoSet", "_chromos", "cumulativeRegionSize", "_chromoOrderDirty"]
+
 	regions: list[ChromoRegion]
 	_chromoSet: set[str]
 	_chromos: list[str]

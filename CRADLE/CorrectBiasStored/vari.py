@@ -7,6 +7,8 @@ def setGlobalVariables(args):
 	setCovariDir(args.biasType, args.covariDir, args.genome)
 
 class StoredCovariates:
+	__slots__ = ["directory", "name", "fragLen", "order", "selected", "num"]
+
 	def __init__(self, biasTypes, directory):
 		self.directory = directory.rstrip('/')
 		self.name = self.directory.split('/')[-1]
