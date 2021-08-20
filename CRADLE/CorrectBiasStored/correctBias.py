@@ -10,7 +10,8 @@ import CRADLE.correctbiasutils as utils
 from CRADLE.correctbiasutils.cython import arraySplit
 from CRADLE.correctbiasutils import vari as commonVari
 from CRADLE.CorrectBiasStored import vari
-from CRADLE.CorrectBiasStored import calculateOneBP
+from CRADLE.CorrectBiasStored.regression import performRegression
+from CRADLE.CorrectBiasStored.readCounts import correctReadCounts
 
 
 RC_PERCENTILE = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
@@ -100,7 +101,7 @@ def run(args):
 	scatterplotSamples90to99Percentile = utils.getScatterplotSampleIndices(trainSet90To99Percentile.cumulativeRegionSize)
 
 	coefResult = pool.starmap_async(
-		calculateOneBP.performRegression,
+		performRegression,
 		[
 			[
 				trainSet90Percentile, covariates, commonVari.CTRLBW_NAMES, commonVari.CTRLSCALER, commonVari.EXPBW_NAMES, commonVari.EXPSCALER, scatterplotSamples90Percentile
@@ -191,7 +192,7 @@ def run(args):
 		[vari.BINSIZE] * jobCount,
 		[commonVari.OUTPUT_DIR] * jobCount
 	)
-	resultMeta = utils.process(processCount, calculateOneBP.correctReadCount, crcArgs)
+	resultMeta = utils.process(processCount, correctReadCounts, crcArgs)
 
 	print(f"-- Completed correcting read counts: {((time.time() - runningTime) / 60)} min(s)")
 
