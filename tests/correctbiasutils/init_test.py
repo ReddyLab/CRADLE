@@ -5,7 +5,6 @@ import pytest
 import CRADLE.correctbiasutils as utils
 
 from tests.mocks.BigWig import BigWig
-from tests.mocks.TwoBit import TwoBit
 
 from CRADLE.correctbiasutils import ChromoRegion, ChromoRegionSet
 
@@ -129,7 +128,7 @@ def testRegionMeans(bwFileName, binCount, chromo, start, end, result):
 		assert np.allclose(utils.regionMeans(bwFile, binCount, chromo, start, end), [np.float32(x) for x in result], atol=0.00001, equal_nan=True)
 
 def testAlignCoordinatesToCovariateFileBoundaries():
-	genome = TwoBit({ "chr1": "actgtcgattcgctctcgatatagcatagctac", "chr2": "tctcgatcgctctcgcgctagagatccgag" })
+	chromoEnds = { "chr1": len("actgtcgattcgctctcgatatagcatagctac"), "chr2": len("tctcgatcgctctcgcgctagagatccgag") }
 	trainingSet = ChromoRegionSet([
 		ChromoRegion("chr1", 2, 20),
 		ChromoRegion("chr1", 4, 20),
@@ -144,7 +143,7 @@ def testAlignCoordinatesToCovariateFileBoundaries():
 		ChromoRegion("chr1", 20, 31),
 		ChromoRegion("chr2", 10, 15),
 	])
-	assert utils.alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen) == results
+	assert utils.alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainingSet, fragLen) == results
 
 @pytest.mark.parametrize("populationSize", [(0), (100), (1_000), (10_000), (100_000)])
 def testGetScatterplotSampleIndices(populationSize):

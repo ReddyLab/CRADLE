@@ -94,8 +94,9 @@ def run(args):
 		trainSet90To99Percentile = commonVari.REGIONS
 
 	with py2bit.open(vari.GENOME) as genome:
-		trainSet90Percentile = utils.alignCoordinatesToCovariateFileBoundaries(genome, trainSet90Percentile, covariates.fragLen)
-		trainSet90To99Percentile = utils.alignCoordinatesToCovariateFileBoundaries(genome, trainSet90To99Percentile, covariates.fragLen)
+		chromoEnds = {chromo: int(genome.chroms(chromo)) for chromo in commonVari.REGIONS.chromos}
+		trainSet90Percentile = utils.alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainSet90Percentile, covariates.fragLen)
+		trainSet90To99Percentile = utils.alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainSet90To99Percentile, covariates.fragLen)
 
 	scatterplotSamples90Percentile = utils.getScatterplotSampleIndices(trainSet90Percentile.cumulativeRegionSize)
 	scatterplotSamples90to99Percentile = utils.getScatterplotSampleIndices(trainSet90To99Percentile.cumulativeRegionSize)
@@ -173,12 +174,13 @@ def run(args):
 	jobCount = min(len(tasks), commonVari.NUMPROCESS * len(commonVari.CTRLBW_NAMES))
 	processCount = min(len(tasks), commonVari.NUMPROCESS)
 	taskGroups = arraySplit(tasks, jobCount, fillValue=None)
+
 	print("-- Correcting read counts ....")
 	runningTime = time.time()
 	crcArgs = zip(
 		taskGroups,
 		[covariates] * jobCount,
-		[vari.GENOME] * jobCount,
+		[chromoEnds] * jobCount,
 		[commonVari.CTRLBW_NAMES] * jobCount,
 		[commonVari.CTRLSCALER] * jobCount,
 		[coefCtrl] * jobCount,
