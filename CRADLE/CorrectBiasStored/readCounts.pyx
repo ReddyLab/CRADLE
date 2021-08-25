@@ -4,7 +4,6 @@ import struct
 import tempfile
 import h5py
 import numpy as np
-import py2bit
 import pyBigWig
 
 from CRADLE.correctbiasutils import CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT, SONICATION_SHEAR_BIAS_OFFSET, START_INDEX_ADJUSTMENT, ChromoRegion, ChromoRegionSet, marshalFile
@@ -16,7 +15,7 @@ from CRADLE.correctbiasutils.cython import coalesceSections
 # in the HDF files.
 cdef int COVARIATE_FILE_INDEX_OFFSET = 3
 
-cpdef correctReadCounts(regions, covariates, genome, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
+cpdef correctReadCounts(regions, covariates, chromoEnds, ctrlBWNames, ctrlScaler, COEFCTRL, COEFCTRL_HIGHRC, experiBWNames, experiScaler, COEFEXP, COEFEXP_HIGHRC, highRC, minFragFilterValue, binsize, outputDir):
 	cdef int reg = 0 # region index
 	cdef int regCount = len(regions) # region count
 	cdef int analysisStart
@@ -44,12 +43,9 @@ cpdef correctReadCounts(regions, covariates, genome, ctrlBWNames, ctrlScaler, CO
 		chromo = regions[reg][0]
 		analysisStart = regions[reg][1]  # Genomic coordinates(starts from 1)
 		analysisEnd = regions[reg][2]
+		chromoEnd = chromoEnds[chromo]
 
 		chromoBytes = bytes(chromo, "utf-8") # used later when writing values to a file
-
-		# TODO: Pre-compute this
-		with py2bit.open(genome) as genomeFile:
-			chromoEnd = int(genomeFile.chroms(chromo))
 
 		###### GENERATE A RESULT MATRIX
 
@@ -93,8 +89,8 @@ cpdef correctReadCounts(regions, covariates, genome, ctrlBWNames, ctrlScaler, CO
 					rcArr[np.isnan(rcArr)] = 0.0
 					rcArr = rcArr / ctrlScaler[rep]
 
-                rawValues = covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)]
-                rawCovariateValues = rawValues * covariates.selected
+				rawValues = covariateValues['covari'][(analysisStart - COVARIATE_FILE_INDEX_OFFSET):(analysisEnd - COVARIATE_FILE_INDEX_OFFSET)]
+				rawCovariateValues = rawValues * covariates.selected
 
 				prdvals = np.exp(
 					np.nansum((rawCovariateValues) * COEFCTRL[rep, 1:], axis=1) + COEFCTRL[rep, 0]

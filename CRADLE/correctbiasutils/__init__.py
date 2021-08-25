@@ -646,11 +646,11 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 
 
 
-def alignCoordinatesToCovariateFileBoundaries(genome, trainingSet, fragLen):
+def alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainingSet, fragLen):
 	newTrainingSet = ChromoRegionSet()
 
 	for trainingRegion in trainingSet:
-		chromoEnd = genome.chroms(trainingRegion.chromo)
+		chromoEnd = chromoEnds[trainingRegion.chromo]
 		analysisStart = trainingRegion.start
 		analysisEnd = trainingRegion.end
 
