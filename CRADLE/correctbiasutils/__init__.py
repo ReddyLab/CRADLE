@@ -19,6 +19,7 @@ from shutil import copyfile
 from typing import Iterator, List, Type
 
 from CRADLE.correctbiasutils.cython import arraySplit, coalesceSections # type: ignore
+from CRADLE.logging import timer
 
 matplotlib.use('Agg')
 
@@ -458,6 +459,7 @@ def getScalerForEachSample(trainingSet, observedReadCounts1Values, bwFileName):
 
 	return scaler
 
+@timer("Selecting Training Sets from trainingSetMetas", 1, "m")
 def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 	trainSet1 = ChromoRegionSet()
 	trainSet2 = ChromoRegionSet()
@@ -541,6 +543,8 @@ def regionMeans(bwFile, binCount, chromo, start, end):
 
 	return means
 
+
+@timer("Getting Candidate Training Sets", 1, "m")
 def getCandidateTrainingSet(rcPercentile, regions, ctrlBWName, outputDir):
 	trainRegionNum = math.pow(10, 6) / float(TRAINING_BIN_SIZE)
 
