@@ -9,12 +9,15 @@ import pyBigWig
 import statsmodels.api as sm
 
 import CRADLE.correctbiasutils as utils
+import CRADLE.CorrectBias.regression as reg
 
 from CRADLE.CorrectBias import vari
-from CRADLE.CorrectBias.regression import performRegression
 from CRADLE.CorrectBias.taskCovariates import calculateTaskCovariates
 from CRADLE.CorrectBias.trainCovariates import calculateTrainCovariates
 from CRADLE.correctbiasutils import vari as commonVari
+from CRADLE.logging import timer
+
+RC_PERCENTILE = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
 
 
 def checkArgs(args):
@@ -24,6 +27,35 @@ def checkArgs(args):
 		sys.exit("Error: Kmer is required to correct mappability bias")
 	if ('gquad' in args.biasType) and (args.gquadFile is None) :
 		sys.exit("Error: Gquadruplex File is required to correct g-gquadruplex bias")
+
+
+@timer("INITIALIZING PARAMETERS")
+def init(args):
+	checkArgs(args)
+	commonVari.setGlobalVariables(args)
+	vari.setGlobalVariables(args)
+
+
+@timer("Filling Training Sets", 1)
+def fillTrainingSets(trainingSetMeta):
+	return utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta, context="fork")
+
+
+@timer("SELECTING TRAINING SETS")
+def selectTrainingSets():
+	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
+		RC_PERCENTILE,
+		commonVari.REGIONS,
+		commonVari.CTRLBW_NAMES[0],
+		commonVari.OUTPUT_DIR
+	)
+	vari.HIGHRC = rc90Percentile
+
+	trainingSetMeta = fillTrainingSets(trainingSetMeta)
+
+	trainSet90Percentile, trainSet90To99Percentile = utils.selectTrainingSetFromMeta(trainingSetMeta, rc99Percentile)
+	return trainSet90Percentile, trainSet90To99Percentile
+
 
 def getScaler(trainingSet):
 
@@ -65,6 +97,7 @@ def getScaler(trainingSet):
 
 	return scalerResult
 
+
 def getScalerForEachSample(taskNum, trainingSet, ob1Values):
 
 	if taskNum < commonVari.CTRLBW_NUM:
@@ -98,6 +131,125 @@ def getScalerForEachSample(taskNum, trainingSet, ob1Values):
 	scaler = model.params[0]
 
 	return scaler
+
+
+@timer("Calculating Scalers", 1)
+def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
+	if commonVari.I_NORM:
+		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
+			scalerResult = getScaler(commonVari.REGIONS)
+		else:
+			scalerResult = getScaler(trainSet90Percentile + trainSet90To99Percentile)
+	else:
+		scalerResult = [1] * commonVari.SAMPLE_NUM
+
+	# Sets vari.CTRLSCALER and vari.EXPSCALER
+	commonVari.setScaler(scalerResult)
+
+	if commonVari.I_NORM:
+		print("NORMALIZING CONSTANT: ")
+		print("CTRLBW: ")
+		print(commonVari.CTRLSCALER)
+		print("EXPBW: ")
+		print(commonVari.EXPSCALER)
+
+
+@timer("Calculating Covariates", 1)
+def calculateTrainingCovariates(trainingSet):
+	if len(trainingSet) == 0:
+		trainingSet = commonVari.REGIONS
+
+	if len(trainingSet) < commonVari.NUMPROCESS:
+		numProcess = len(trainingSet)
+	else:
+		numProcess = commonVari.NUMPROCESS
+
+	pool = multiprocessing.Pool(numProcess)
+	covariates = pool.map_async(calculateTrainCovariates, trainingSet).get()
+	pool.close()
+	pool.join()
+	del pool
+
+	return covariates
+
+
+@timer("PERFORMING REGRESSION")
+def performRegression(trainSetResult1, trainSetResult2):
+	scatterplotSamples90Percentile = getScatterplotSamples(trainSetResult1)
+	scatterplotSamples90to99Percentile = getScatterplotSamples(trainSetResult2)
+
+	pool = multiprocessing.Pool(2)
+	coefResult = pool.starmap_async(
+		reg.performRegression,
+		[
+			(trainSetResult1, scatterplotSamples90Percentile),
+			(trainSetResult2, scatterplotSamples90to99Percentile)
+		]
+	).get()
+	pool.close()
+	pool.join()
+
+	for name in commonVari.CTRLBW_NAMES:
+		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
+		regRCReadCounts, regRCFittedValues = coefResult[0][2][name]
+		highRCReadCounts, highRCFittedValues = coefResult[1][2][name]
+		utils.plot(
+			regRCReadCounts, regRCFittedValues,
+			highRCReadCounts, highRCFittedValues,
+			fileName
+		)
+
+	for name in commonVari.EXPBW_NAMES:
+		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
+		regRCReadCounts, regRCFittedValues = coefResult[0][3][name]
+		highRCReadCounts, highRCFittedValues = coefResult[1][3][name]
+		utils.plot(
+			regRCReadCounts, regRCFittedValues,
+			highRCReadCounts, highRCFittedValues,
+			fileName
+		)
+
+	gc.collect()
+
+	vari.COEFCTRL = coefResult[0][0]
+	vari.COEFEXP = coefResult[0][1]
+	vari.COEFCTRL_HIGHRC = coefResult[1][0]
+	vari.COEFEXP_HIGHRC = coefResult[1][1]
+
+	print("The order of coefficients:")
+	print(vari.COVARI_ORDER)
+
+	print("COEF_CTRL: ")
+	print(vari.COEFCTRL)
+	print("COEF_EXP: ")
+	print(vari.COEFEXP)
+	print("COEF_CTRL_HIGHRC: ")
+	print(vari.COEFCTRL_HIGHRC)
+	print("COEF_EXP_HIGHRC: ")
+	print(vari.COEFEXP_HIGHRC)
+
+
+@timer("Fitting All Analysis Regions to the Correction Model", 1)
+def fitToCorrectionModel():
+	tasks = utils.divideGenome(commonVari.REGIONS)
+
+	if len(tasks) < commonVari.NUMPROCESS:
+		numProcess = len(tasks)
+	else:
+		numProcess = commonVari.NUMPROCESS
+
+	pool = multiprocessing.Pool(numProcess)
+
+	# `caluculateTaskCovariates` calls `correctReadCounts`. `correctReadCounts` is the function that
+	# fits regions to the correction model.
+	resultMeta = pool.map_async(calculateTaskCovariates, tasks).get()
+	pool.close()
+	pool.join()
+	del pool
+	gc.collect()
+
+	return resultMeta
+
 
 def mergeCorrectedBedfilesTobw(args):
 	meta = args[0]
@@ -133,195 +285,9 @@ def mergeCorrectedBedfilesTobw(args):
 
 	return signalBWName
 
-def getScatterplotSamples(covariFiles):
-	xNumRows = 0
-	for covariFile in covariFiles:
-		xNumRows += int(covariFile[1])
 
-	if xNumRows <= 50000:
-		return np.array(range(xNumRows))
-	else:
-		return np.random.choice(np.array(range(xNumRows)), 50000, replace=False)
-
-RC_PERCENTILE = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
-
-def run(args):
-
-	startTime = time.time()
-	###### INITIALIZE PARAMETERS
-	print("======  INITIALIZING PARAMETERS .... \n")
-	checkArgs(args)
-	commonVari.setGlobalVariables(args)
-	vari.setGlobalVariables(args)
-
-	###### SELECT TRAIN SETS
-	print("======  SELECTING TRAIN SETS .... \n")
-	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
-		RC_PERCENTILE,
-		commonVari.REGIONS,
-		commonVari.CTRLBW_NAMES[0],
-		commonVari.OUTPUT_DIR
-	)
-	vari.HIGHRC = rc90Percentile
-
-	trainingSetMeta = utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta, context="fork")
-
-	print("-- RUNNING TIME of getting trainSetMeta : %s hour(s)" % ((time.time()-startTime)/3600) )
-
-	trainSet90Percentile, trainSet90To99Percentile = utils.selectTrainingSetFromMeta(trainingSetMeta, rc99Percentile)
-	del trainingSetMeta
-
-	print("-- RUNNING TIME of selecting train set from trainSetMeta : %s hour(s)" % ((time.time()-startTime)/3600) )
-
-
-	###### NORMALIZING READ COUNTS
-	print("======  NORMALIZING READ COUNTS ....")
-	if commonVari.I_NORM:
-		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
-			scalerResult = getScaler(commonVari.REGIONS)
-		else:
-			scalerResult = getScaler(trainSet90Percentile + trainSet90To99Percentile)
-	else:
-		scalerResult = [1] * commonVari.SAMPLE_NUM
-
-	# Sets vari.CTRLSCALER and vari.EXPSCALER
-	commonVari.setScaler(scalerResult)
-
-	if commonVari.I_NORM:
-		print("NORMALIZING CONSTANT: ")
-		print("CTRLBW: ")
-		print(commonVari.CTRLSCALER)
-		print("EXPBW: ")
-		print(commonVari.EXPSCALER)
-		print("\n\n")
-
-	print("-- RUNNING TIME of calculating scalers : %s hour(s)" % ((time.time()-startTime)/3600) )
-
-
-	###### FITTING TRAIN SETS TO THE CORRECTION MODEL
-	print("======  FITTING TRAIN SETS TO THE CORRECTION MODEL ....\n")
-	## SELECTING TRAINING SET
-	if len(trainSet90Percentile) == 0:
-		trainSet90Percentile = commonVari.REGIONS
-
-	if len(trainSet90Percentile) < commonVari.NUMPROCESS:
-		numProcess = len(trainSet90Percentile)
-	else:
-		numProcess = commonVari.NUMPROCESS
-
-	pool = multiprocessing.Pool(numProcess)
-	trainSetResult1 = pool.map_async(calculateTrainCovariates, trainSet90Percentile).get()
-	pool.close()
-	pool.join()
-	del pool, trainSet90Percentile
-	gc.collect()
-	print("-- RUNNING TIME of calculating 1st Train Cavariates : %s hour(s)" % ((time.time()-startTime)/3600) )
-
-
-	### trainSet2
-	## SELECTING TRAINING SET
-	if len(trainSet90To99Percentile) == 0:
-		trainSet90To99Percentile = commonVari.REGIONS
-	if len(trainSet90To99Percentile) < commonVari.NUMPROCESS:
-		numProcess = len(trainSet90To99Percentile)
-	else:
-		numProcess = commonVari.NUMPROCESS
-
-	pool = multiprocessing.Pool(numProcess)
-	trainSetResult2 = pool.map_async(calculateTrainCovariates, trainSet90To99Percentile).get()
-	pool.close()
-	pool.join()
-	del pool, trainSet90To99Percentile
-	gc.collect()
-
-	print("-- RUNNING TIME of calculating 2nd Train Cavariates : %s hour(s)" % ((time.time()-startTime)/3600) )
-
-
-	## PERFORM REGRESSION
-	print("======  PERFORMING REGRESSION ....\n")
-
-	scatterplotSamples90Percentile = getScatterplotSamples(trainSetResult1)
-	scatterplotSamples90to99Percentile = getScatterplotSamples(trainSetResult2)
-
-	startTime = time.time()
-	pool = multiprocessing.Pool(2)
-	coefResult = pool.starmap_async(
-		performRegression,
-		[
-			(trainSetResult1, scatterplotSamples90Percentile),
-			(trainSetResult2, scatterplotSamples90to99Percentile)
-		]
-	).get()
-	pool.close()
-	pool.join()
-
-	for name in commonVari.CTRLBW_NAMES:
-		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
-		regRCReadCounts, regRCFittedValues = coefResult[0][2][name]
-		highRCReadCounts, highRCFittedValues = coefResult[1][2][name]
-		utils.plot(
-			regRCReadCounts, regRCFittedValues,
-			highRCReadCounts, highRCFittedValues,
-			fileName
-		)
-
-	for name in commonVari.EXPBW_NAMES:
-		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
-		regRCReadCounts, regRCFittedValues = coefResult[0][3][name]
-		highRCReadCounts, highRCFittedValues = coefResult[1][3][name]
-		utils.plot(
-			regRCReadCounts, regRCFittedValues,
-			highRCReadCounts, highRCFittedValues,
-			fileName
-		)
-
-	del trainSetResult1, trainSetResult2
-	gc.collect()
-
-	vari.COEFCTRL = coefResult[0][0]
-	vari.COEFEXP = coefResult[0][1]
-	vari.COEFCTRL_HIGHRC = coefResult[1][0]
-	vari.COEFEXP_HIGHRC = coefResult[1][1]
-
-	print("The order of coefficients:")
-	print(vari.COVARI_ORDER)
-
-
-	print("COEF_CTRL: ")
-	print(vari.COEFCTRL)
-	print("COEF_EXP: ")
-	print(vari.COEFEXP)
-	print("COEF_CTRL_HIGHRC: ")
-	print(vari.COEFCTRL_HIGHRC)
-	print("COEF_EXP_HIGHRC: ")
-	print(vari.COEFEXP_HIGHRC)
-
-	print("-- RUNNING TIME of performing regression : %s hour(s)" % ((time.time()-startTime)/3600) )
-
-
-	###### FITTING THE TEST  SETS TO THE CORRECTION MODEL
-	print("======  FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL \n")
-	tasks = utils.divideGenome(commonVari.REGIONS)
-
-	if len(tasks) < commonVari.NUMPROCESS:
-		numProcess = len(tasks)
-	else:
-		numProcess = commonVari.NUMPROCESS
-
-	pool = multiprocessing.Pool(numProcess)
-	resultMeta = pool.map_async(calculateTaskCovariates, tasks).get()
-	pool.close()
-	pool.join()
-	del pool
-	gc.collect()
-
-	print("-- RUNNING TIME of calculating Task covariates : %s hour(s)" % ((time.time()-startTime)/3600) )
-
-
-	###### MERGING TEMP FILES
-	print("======  MERGING TEMP FILES \n")
-	resultBWHeader = utils.getResultBWHeader(commonVari.REGIONS, commonVari.CTRLBW_NAMES[0])
-
+@timer("Merging Temp Files", 1)
+def mergeTempFiles(resultBWHeader, resultMeta):
 	jobList = []
 	for i in range(commonVari.CTRLBW_NUM):
 		jobList.append([resultMeta, resultBWHeader, 0, (i+1), commonVari.CTRLBW_NAMES[i]]) # resultMeta, ctrl, rep
@@ -336,21 +302,62 @@ def run(args):
 	print("Output File Names: ")
 	print(correctedFileNames)
 
-	print("======  Completed Correcting Read Counts! \n\n")
+
+@timer("CORRECTING READ COUNTS")
+def correctReadCounts(resultBWHeader):
+	resultMeta = fitToCorrectionModel()
+	mergeTempFiles(resultBWHeader, resultMeta)
+
+def getScatterplotSamples(covariFiles):
+	xNumRows = 0
+	for covariFile in covariFiles:
+		xNumRows += int(covariFile[1])
+
+	if xNumRows <= 50000:
+		return np.array(range(xNumRows))
+	else:
+		return np.random.choice(np.array(range(xNumRows)), 50000, replace=False)
+
+
+@timer("GENERATING NORMALIZED OBSERVED BIGWIGS")
+def normalizeBigWigs(resultBWHeader):
+	normObFileNames = utils.genNormalizedObBWs(
+		commonVari.OUTPUT_DIR,
+		resultBWHeader,
+		commonVari.REGIONS,
+		commonVari.CTRLBW_NAMES,
+		commonVari.CTRLSCALER,
+		commonVari.EXPBW_NAMES,
+		commonVari.EXPSCALER
+	)
+
+	print("Nomralized observed bigwig file names: ")
+	print(normObFileNames)
+
+
+def run(args):
+	startTime = time.perf_counter()
+
+	init(args)
+
+	trainSet90Percentile, trainSet90To99Percentile = selectTrainingSets()
+
+	calculateScalers(trainSet90Percentile, trainSet90To99Percentile)
+
+	trainSetResult1 = calculateTrainingCovariates(trainSet90Percentile)
+	trainSetResult2 = calculateTrainingCovariates(trainSet90To99Percentile)
+	del trainSet90Percentile, trainSet90To99Percentile
+	gc.collect()
+
+	performRegression(trainSetResult1, trainSetResult2)
+	del trainSetResult1, trainSetResult2
+
+	resultBWHeader = utils.getResultBWHeader(commonVari.REGIONS, commonVari.CTRLBW_NAMES[0])
+
+	correctReadCounts(resultBWHeader)
 
 	if commonVari.I_GENERATE_NORM_BW:
-		print("======  Generating normalized observed bigwigs \n\n")
-		normObFileNames = utils.genNormalizedObBWs(
-			commonVari.OUTPUT_DIR,
-			resultBWHeader,
-			commonVari.REGIONS,
-			commonVari.CTRLBW_NAMES,
-			commonVari.CTRLSCALER,
-			commonVari.EXPBW_NAMES,
-			commonVari.EXPSCALER
-		)
+		normalizeBigWigs(resultBWHeader)
 
-		print("Nomralized observed bigwig file names: ")
-		print(normObFileNames)
 
-	print("-- RUNNING TIME: %s hour(s)" % ((time.time()-startTime)/3600) )
+	print(f"-- RUNNING TIME: {((time.perf_counter() - startTime)/3600)} hour(s)")
