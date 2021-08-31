@@ -18,7 +18,7 @@ from CRADLE.logging import timer
 RC_PERCENTILE = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
 
 
-@timer("INITIALIZING PARAMETERS", 0, "m")
+@timer("INITIALIZING PARAMETERS")
 def init(args):
 	commonVari.setGlobalVariables(args)
 	vari.setGlobalVariables(args)
@@ -32,12 +32,12 @@ def init(args):
 	return covariates, chromoEnds, resultBWHeader
 
 
-@timer("Filling Training Sets", 1, "m")
+@timer("Filling Training Sets", 1)
 def fillTrainingSets(trainingSetMeta):
 	return utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta)
 
 
-@timer("SELECTING TRAINING SETS", 0, "m")
+@timer("SELECTING TRAINING SETS")
 def selectTrainingSets():
 	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
 		RC_PERCENTILE,
@@ -55,7 +55,7 @@ def selectTrainingSets():
 	return trainSet90Percentile, trainSet90To99Percentile, highRC
 
 
-@timer("Calculating Scalers", 1, "m")
+@timer("Calculating Scalers", 1)
 def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
 	if commonVari.I_NORM:
 		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
@@ -83,7 +83,7 @@ def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
 		print("")
 
 
-@timer("Performing Regression", 1, "m")
+@timer("Performing Regression", 1)
 def performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile ):
 	pool = multiprocessing.Pool(2)
 
@@ -161,19 +161,19 @@ def performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To
 	return coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc
 
 
-@timer("NORMALIZING READ COUNTS", 0, "m")
+@timer("NORMALIZING READ COUNTS")
 def normalizeReadCounts(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile):
 	calculateScalers(trainSet90Percentile, trainSet90To99Percentile)
 
 	return performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile)
 
 
-@timer("Correcting Read Counts", 1, "m")
+@timer("Correcting Read Counts", 1)
 def correctReads(processCount, crcArgs):
 	return utils.process(processCount, rc.correctReadCounts, crcArgs)
 
 
-@timer("Merging Temp Files", 1, "m")
+@timer("Merging Temp Files", 1)
 def mergeTempFiles(resultBWHeader, resultMeta):
 	correctedFileNames = utils.mergeBWFiles(commonVari.OUTPUT_DIR, resultBWHeader, resultMeta, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES)
 
@@ -181,7 +181,7 @@ def mergeTempFiles(resultBWHeader, resultMeta):
 	print(f"{correctedFileNames}\n")
 
 
-@timer("FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL", 0, "m")
+@timer("FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL")
 def correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc, highRC, resultBWHeader):
 	tasks = utils.divideGenome(commonVari.REGIONS)
 	# `vari.NUMPROCESS * len(vari.CTRLBW_NAMES)` seems like a good number of jobs
@@ -217,7 +217,7 @@ def correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc,
 	mergeTempFiles(resultBWHeader, resultMeta)
 
 
-@timer("GENERATING NORMALIZED OBSERVED BIGWIGS", 0, "m")
+@timer("GENERATING NORMALIZED OBSERVED BIGWIGS")
 def normalizeBigWigs(resultBWHeader):
 	normObFileNames = utils.genNormalizedObBWs(
 		commonVari.OUTPUT_DIR,
