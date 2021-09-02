@@ -4,7 +4,17 @@ import numpy as np
 
 def setGlobalVariables(args):
 	### input bigwig files
+	global I_GENERATE_NORM_BW
+	global I_NORM
+	global MIN_FRAG_FILTER_VALUE
+
+	sampleNum = len(args.ctrlbw) + len(args.expbw)
+
+	I_GENERATE_NORM_BW, I_NORM = setNormalization(args.norm, args.generateNormBW)
+	MIN_FRAG_FILTER_VALUE = setFilterCriteria(args.mi, sampleNum)
 	setCovariDir(args.biasType, args.covariDir, args.genome)
+	seed = setRngSeed(args.rngSeed)
+	writeRngSeed(seed, args.o)
 
 class StoredCovariates:
 	__slots__ = ["directory", "name", "fragLen", "order", "selected", "num"]
@@ -42,8 +52,10 @@ class StoredCovariates:
 	def covariateFileName(self, chromosome):
 		return self.directory + "/" + self.name + "_" + chromosome + ".hdf5"
 
+
 def getStoredCovariates(biasTypes, covariDir):
 	return StoredCovariates(biasTypes, covariDir)
+
 
 def setCovariDir(biasType, covariDir, genome):
 	global COVARI_DIR
@@ -102,3 +114,36 @@ def setCovariDir(biasType, covariDir, genome):
 		SELECT_COVARI[5] = 1
 		COVARI_NUM = COVARI_NUM + 1
 		COVARI_ORDER.extend(["Gquad_gquad"])
+
+
+def setFilterCriteria(minFrag, sampleNum):
+	if minFrag is None:
+		return sampleNum
+	else:
+		return minFrag
+
+
+def setNormalization(norm, generateNormBW):
+	norm = not norm.lower() == 'false'
+	generateNormBW = not generateNormBW.lower() == 'false'
+
+	if (not norm) and generateNormBW:
+		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NORM_BW is 'True'")
+		sys.exit()
+
+	return generateNormBW, norm
+
+
+def setRngSeed(seed):
+	if seed is None:
+		seed = np.random.randint(0, 2**32 - 1)
+
+	np.random.seed(seed)
+	print(f"RNG Seed: {seed}")
+	return seed
+
+
+def writeRngSeed(seed, outputDir):
+	seedFileName = os.path.join(outputDir, "rngseed.txt")
+	with open(seedFileName, "w") as seedFile:
+		seedFile.write(f"{seed}\n")

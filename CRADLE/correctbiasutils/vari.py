@@ -14,9 +14,6 @@ def setGlobalVariables(args):
 	global EXPBW_NUM
 	global SAMPLE_NUM
 
-	global I_GENERATE_NORM_BW
-	global I_NORM
-	global MIN_FRAG_FILTER_VALUE
 	global NUMPROCESS
 	global OUTPUT_DIR
 	global REGIONS
@@ -30,13 +27,10 @@ def setGlobalVariables(args):
 	OUTPUT_DIR = setOutputDirectory(args.o)
 	with pyBigWig.open(CTRLBW_NAMES[0]) as ctrlBW:
 		regionSet = ChromoRegionSet.loadBed(args.r)
-		blacklistRegionSet = ChromoRegionSet.loadBed(args.bl) if args.bl else None
+		blacklistRegionSet = ChromoRegionSet.loadBed(args.bl) if "bl" in dir(args) and args.bl else None
 		REGIONS = setAnlaysisRegion(regionSet, blacklistRegionSet, ctrlBW)
-	MIN_FRAG_FILTER_VALUE = setFilterCriteria(args.mi)
 	NUMPROCESS = setNumProcess(args.p)
-	I_GENERATE_NORM_BW, I_NORM = setNormalization(args.norm, args.generateNormBW)
-	seed = setRngSeed(args.rngSeed)
-	writeRngSeed(seed, args.o)
+
 
 def setOutputDirectory(outputDir):
 	if not os.path.isdir(outputDir):
@@ -66,12 +60,6 @@ def setAnlaysisRegion(regionSet, blacklistRegionSet, ctrlBW):
 
 	return finalRegionSet
 
-def setFilterCriteria(minFrag):
-	if minFrag is None:
-		return SAMPLE_NUM
-	else:
-		return minFrag
-
 def setScaler(scalerResult):
 	global CTRLSCALER
 	global EXPSCALER
@@ -97,26 +85,3 @@ def setNumProcess(numProcess):
 		numProcess = systemCPUs
 
 	return numProcess
-
-def setNormalization(norm, generateNormBW):
-	norm = not norm.lower() == 'false'
-	generateNormBW = not generateNormBW.lower() == 'false'
-
-	if (not norm) and generateNormBW:
-		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NORM_BW is 'True'")
-		sys.exit()
-
-	return generateNormBW, norm
-
-def setRngSeed(seed):
-	if seed is None:
-		seed = np.random.randint(0, 2**32 - 1)
-
-	np.random.seed(seed)
-	print(f"RNG Seed: {seed}")
-	return seed
-
-def writeRngSeed(seed, outputDir):
-	seedFileName = os.path.join(outputDir, "rngseed.txt")
-	with open(seedFileName, "w") as seedFile:
-		seedFile.write(f"{seed}\n")
