@@ -27,7 +27,15 @@ TRAINING_BIN_SIZE = 1_000
 SCATTERPLOT_SAMPLE_COUNT = 10_000
 SONICATION_SHEAR_BIAS_OFFSET = 2
 
-CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT = "@5sLLf"
+CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT = "=LLf"
+
+# 10_000_000 here is a somewhat arbitrary choice, but I've tried 1_000_000 and
+# 100_000_000 on a significant run and not much changed.
+# 100_000_000:  --  Completed Merging Temp Files .... : 27.71366087388333 min(s)
+# 10_000_000:   --  Completed Merging Temp Files .... : 27.868539819183333 min(s)
+# 1_000_000:    --  Completed Merging Temp Files .... : 28.09171124881666 min(s)
+# I think 10_000_000 is a good memory tradeoff.
+MERGE_FILES_BUFFER_SIZE = 10_000_000
 
 # Used to adjust coordinates between 0 and 1-based systems.
 START_INDEX_ADJUSTMENT = 1
@@ -130,6 +138,7 @@ class ChromoRegion:
 
 	def __repr__(self) -> str:
 		return f"({self.chromo}:{self.start}-{self.end})"
+
 
 # Not quite a set in the mathematical sense.
 class ChromoRegionSet:
@@ -258,6 +267,7 @@ class ChromoRegionSet:
 
 		return regionSet
 
+
 def process(poolSize, function, argumentLists, context="spawn"):
 	pool = multiprocessing.get_context(context).Pool(poolSize)
 	results = pool.starmap(function, argumentLists)
@@ -265,6 +275,7 @@ def process(poolSize, function, argumentLists, context="spawn"):
 	pool.join()
 
 	return results
+
 
 def getResultBWHeader(regions, ctrlBWName):
 	with pyBigWig.open(ctrlBWName) as bwFile:
@@ -275,101 +286,68 @@ def getResultBWHeader(regions, ctrlBWName):
 
 	return resultBWHeader
 
-def marshalFile(outputDir, data):
-	with tempfile.NamedTemporaryFile(mode="wb", suffix=".msl", dir=outputDir, delete=False) as outputFile:
-		name = outputFile.name
-		marshal.dump(data, outputFile)
-
-	return name
-
-def rotateBWFileArrays(tempFiles, ctrlBWNames, experiBWNames):
-	# The tempFiles list isn't in a useful shape. It's a list of pairs of lists of files
-	# Example:
-	# [
-	#   # Results of Job 0
-	#	[['ctrlFile0Temp0.msl', 'ctrlFile1Temp0.msl'], ['experiFile0Temp0.msl', 'experiFile1Temp0.msl'], ],
-	#   # Results of Job 1
-	#	[['ctrlFile0Temp1.msl', 'ctrlFile1Temp1.msl'], ['experiFile0Temp1.msl', 'experiFile1Temp1.msl'], ],
-	#   # Results of Job 2
-	#	[['ctrlFile0Temp2.msl', 'ctrlFile1Temp2.msl'], ['experiFile0Temp2.msl', 'experiFile1Temp2.msl'], ],
-	# ]
-	#
-	# The following code rearranges the file names so they are in this shape:
-	# [
-	#	[
-	# 		['ctrlFile0Temp0.msl', 'ctrlFile0Temp1.msl', 'ctrlFile0Temp2.msl'],
-	# 		['ctrlFile1Temp0.msl', 'ctrlFile1Temp1.msl', 'ctrlFile1Temp2.msl']
-	# 	],
-	#	[
-	# 		['experiFile0Temp0.msl', 'experiFile0Temp1.msl', 'experiFile0Temp2.msl'],
-	# 		['experiFile1Temp0.msl', 'experiFile1Temp1.msl', 'experiFile1Temp2.msl']
-	# 	],
-	# ]
-	#
-	# Which matches what we want to do with the files better -- combine all temp files for a particular file together
-	# into a single BigWig file
-
-	ctrlFiles = [[] for _ in range(len(ctrlBWNames))]
-	experiFiles = [[] for _ in range(len(experiBWNames))]
-	for jobFiles in tempFiles:
-		jobCtrl = jobFiles[0]
-		jobExperi = jobFiles[1]
-		for i, ctrlFile in enumerate(jobCtrl):
-			ctrlFiles[i].append(ctrlFile)
-		for i, experiFile in enumerate(jobExperi):
-			experiFiles[i].append(experiFile)
-
-	return ctrlFiles, experiFiles
-
-def mergeBWFiles(outputDir, header, tempFiles, ctrlBWNames, experiBWNames):
-	ctrlFiles, experiFiles = rotateBWFileArrays(tempFiles, ctrlBWNames, experiBWNames)
-
-	jobList = []
-	for i, ctrlFile in enumerate(ctrlBWNames):
-		jobList.append((ctrlFiles[i], header, outputBWFile(outputDir, ctrlFile)))
-	for i, experiFile in enumerate(experiBWNames):
-		jobList.append((experiFiles[i], header, outputBWFile(outputDir, experiFile)))
-
-	return process(len(ctrlBWNames) + len(experiBWNames), mergeCorrectedFilesToBW, jobList)
 
 def outputBWFile(outputDir, filename):
 	signalBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
 	return os.path.join(outputDir, signalBWName + "_corrected.bw")
 
-def mergeCorrectedFilesToBW(tempFiles, bwHeader, signalBWName):
+
+def outputCorrectedTmpFile(outputDir, chromo, chromoId, filename):
+	signalBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
+	return os.path.join(outputDir, f"{signalBWName}_{chromo}_{chromoId}_corrected.tmp")
+
+
+def outputNormalizedTmpFile(outputDir, filename):
+	normObBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
+	return os.path.join(outputDir, normObBWName + "_normalized.tmp")
+
+
+def mergeBWFiles(outputDir, header, fileChromoInfo, ctrlBWNames, experiBWNames):
+	jobList = []
+	for ctrlFile in ctrlBWNames:
+		jobList.append((ctrlFile, header, fileChromoInfo, outputBWFile(outputDir, ctrlFile), outputDir))
+	for experiFile in experiBWNames:
+		jobList.append((experiFile, header, fileChromoInfo, outputBWFile(outputDir, experiFile), outputDir))
+
+	return process(len(ctrlBWNames) + len(experiBWNames), mergeCorrectedFilesToBW, jobList)
+
+
+def mergeCorrectedFilesToBW(replicateFile, bwHeader, fileChromoInfo, signalBWName, outputDir):
 	signalBW = pyBigWig.open(signalBWName, "w")
 	signalBW.addHeader(bwHeader)
-	dataReadSize = struct.calcsize(CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT) * 1_000_000 # a somewhat arbitrary choice
+	dataReadSize = struct.calcsize(CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT) * MERGE_FILES_BUFFER_SIZE
+	starts = np.zeros(MERGE_FILES_BUFFER_SIZE, dtype=np.int32)
+	ends = np.zeros(MERGE_FILES_BUFFER_SIZE, dtype=np.int32)
+	values = np.zeros(MERGE_FILES_BUFFER_SIZE, dtype=np.float32)
 
-	for tempFile in tempFiles:
-		with open(tempFile, 'rb') as dataFile:
+	for chromo, chromoId in fileChromoInfo:
+		chromos = [chromo] * MERGE_FILES_BUFFER_SIZE
+		tempFile = outputCorrectedTmpFile(outputDir, chromo, chromoId, replicateFile)
+		with open(tempFile, "rb") as dataFile:
 			data = dataFile.read(dataReadSize)
 			while data != b'':
-				chromos = []
-				starts = []
-				ends = []
-				values = []
-				for chromo, start, end, value in struct.iter_unpack(CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT, data):
-					chromos.append(chromo.decode('utf-8').strip())
-					starts.append(start)
-					ends.append(end)
-					values.append(value)
-				signalBW.addEntries(chromos, starts, ends=ends, values=values)
+				total = 0
+				for start, end, value in struct.iter_unpack(CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT, data):
+					starts[total] = start
+					ends[total] = end
+					values[total] = value
+					total += 1
+				signalBW.addEntries(chromos[:total], starts[:total], ends=ends[:total], values=values[:total])
 				data = dataFile.read(dataReadSize)
-
 		os.remove(tempFile)
-
 	signalBW.close()
 
 	return signalBWName
 
+
 def divideGenome(regions, baseBinSize=1, genomeBinSize=50000):
+	"""Splits regions larger than ~genomeBinSize into several regions genomeBinSize big."""
 
 	# Adjust the genome bin size to be a multiple of base bin Size
 	genomeBinSize -= genomeBinSize % baseBinSize
 
 	# Return an list of tuples of values instead of a ChromoRegionSet because this will be used in Cython code.
-	# And the less "python" interaction Cython has, the better. Presumedly python tuples are lighter weight
+	# And the less "python" interaction Cython has, the better. Python tuples are lighter weight
 	# than regular objects.
 	newRegions = []
 	for region in regions:
@@ -380,6 +358,7 @@ def divideGenome(regions, baseBinSize=1, genomeBinSize=50000):
 			binStart = binEnd
 
 	return newRegions
+
 
 def genNormalizedObBWs(outputDir, header, regions, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler):
 	# copy the first replicate
@@ -392,17 +371,19 @@ def genNormalizedObBWs(outputDir, header, regions, ctrlBWNames, ctrlScaler, expe
 	for i, experiBWName in enumerate(experiBWNames):
 		jobList.append((header, float(experiScaler[i]), regions, experiBWName, outputNormalizedBWFile(outputDir, experiBWName)))
 
-
 	return process(len(ctrlBWNames) + len(experiBWNames) - 1, generateNormalizedObBWs, jobList)
+
 
 def outputNormalizedBWFile(outputDir, filename):
 	normObBWName = '.'.join(filename.rsplit('/', 1)[-1].split(".")[:-1])
 	return os.path.join(outputDir, normObBWName + "_normalized.bw")
 
+
 def generateNormalizedObBWs(bwHeader, scaler, regions, observedBWName, normObBWName):
 	with pyBigWig.open(observedBWName) as obBW, pyBigWig.open(normObBWName, "w") as normObBW:
 		_generateNormalizedObBWs(bwHeader, scaler, regions, obBW, normObBW)
 	return normObBWName
+
 
 def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 	normObBW.addHeader(bwHeader)
@@ -412,7 +393,7 @@ def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 		if pyBigWig.numpy == 1:
 			values = observedBW.values(region.chromo, region.start, region.end, numpy=True)
 		else:
-			values = np.array(observedBW.values(region.chromo, region.start, region.end))
+			values = np.array(observedBW.values(region.chromo, region.start, region.end), dtype=np.float32)
 
 		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
 		starts = starts[idx]
@@ -427,18 +408,23 @@ def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 		coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, values)
 		normObBW.addEntries([region.chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
 
+
 def getReadCounts(trainingSet, fileName):
 	values = []
 
 	with pyBigWig.open(fileName) as bwFile:
 		for region in trainingSet:
-			temp = np.array(bwFile.values(region.chromo, region.start, region.end))
+			if pyBigWig.numpy == 1:
+				temp = bwFile.values(region.chromo, region.start, region.end, numpy=True)
+			else:
+				temp = np.array(bwFile.values(region.chromo, region.start, region.end), dtype=np.float32)
 			idx = np.where(np.isnan(temp) == True)
 			temp[idx] = 0
 			temp = temp.tolist()
 			values.extend(temp)
 
 	return values
+
 
 def getScalerTasks(trainingSet, observedReadCounts, ctrlBWNames, experiBWNames):
 	tasks = []
@@ -453,12 +439,14 @@ def getScalerTasks(trainingSet, observedReadCounts, ctrlBWNames, experiBWNames):
 
 	return tasks
 
+
 def getScalerForEachSample(trainingSet, observedReadCounts1Values, bwFileName):
 	observedReadCounts2Values = getReadCounts(trainingSet, bwFileName)
 	model = sm.OLS(observedReadCounts2Values, observedReadCounts1Values).fit()
 	scaler = model.params[0]
 
 	return scaler
+
 
 @timer("Selecting Training Sets from trainingSetMetas", 1, "m")
 def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
@@ -530,11 +518,12 @@ def selectTrainingSetFromMeta(trainingSetMetas, rc99Percentile):
 
 	return trainSet1, trainSet2
 
+
 def regionMeans(bwFile, binCount, chromo, start, end):
 	if pyBigWig.numpy == 1:
 		values = bwFile.values(chromo, start, end, numpy=True)
 	else:
-		values = np.array(bwFile.values(chromo, start, end))
+		values = np.array(bwFile.values(chromo, start, end), dtype=np.float32)
 
 	if binCount == 1:
 		means = [np.mean(values)]
@@ -568,32 +557,40 @@ def getCandidateTrainingSet(rcPercentile, regions, ctrlBWName, outputDir):
 
 	trainingRegionNum1 = int(np.round(trainRegionNum * 0.5 / 5))
 	trainingRegionNum2 = int(np.round(trainRegionNum * 0.5 / 9))
-	trainingSetMeta = []
-	rc90Percentile = None
-	rc99Percentile = None
 
-	for i in range(5):
-		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
-		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
-		temp = (rc1, rc2, trainingRegionNum1, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile)
-		trainingSetMeta.append(temp)  ## RC criteria1(down), RC criteria2(up), # of bases, candidate regions
+	rc00pctl = int(np.percentile(meanRC, rcPercentile[0]))
+	rc20pctl = int(np.percentile(meanRC, rcPercentile[1]))
+	rc40pctl = int(np.percentile(meanRC, rcPercentile[2]))
+	rc60pctl = int(np.percentile(meanRC, rcPercentile[3]))
+	rc80pctl = int(np.percentile(meanRC, rcPercentile[4]))
+	rc90pctl = int(np.percentile(meanRC, rcPercentile[5]))
+	rc92pctl = int(np.percentile(meanRC, rcPercentile[6]))
+	rc94pctl = int(np.percentile(meanRC, rcPercentile[7]))
+	rc96pctl = int(np.percentile(meanRC, rcPercentile[8]))
+	rc98pctl = int(np.percentile(meanRC, rcPercentile[9]))
+	rc99pctl = int(np.percentile(meanRC, rcPercentile[10]))
+	rc100pctl = int(np.percentile(meanRC, rcPercentile[11]))
 
-	for i in range(5, 11):
-		rc1 = int(np.percentile(meanRC, int(rcPercentile[i])))
-		rc2 = int(np.percentile(meanRC, int(rcPercentile[i+1])))
-		if i == 10:
-			temp = (rc1, rc2, 3*trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile)
-			rc99Percentile = rc1
-		else:
-			temp = (rc1, rc2, trainingRegionNum2, regions, ctrlBWName, outputDir, rc90Percentile, rc99Percentile) # RC criteria1(down), RC criteria2(up), # of bases, candidate regions
-		if i == 5:
-			rc90Percentile = rc1
+	trainingSetMeta = [
+		(rc00pctl, rc20pctl, trainingRegionNum1, regions, ctrlBWName, outputDir),
+		(rc20pctl, rc40pctl, trainingRegionNum1, regions, ctrlBWName, outputDir),
+		(rc40pctl, rc60pctl, trainingRegionNum1, regions, ctrlBWName, outputDir),
+		(rc60pctl, rc80pctl, trainingRegionNum1, regions, ctrlBWName, outputDir),
+		(rc80pctl, rc90pctl, trainingRegionNum1, regions, ctrlBWName, outputDir),
 
-		trainingSetMeta.append(temp)
+		(rc90pctl, rc92pctl, trainingRegionNum2, regions, ctrlBWName, outputDir),
+		(rc92pctl, rc94pctl, trainingRegionNum2, regions, ctrlBWName, outputDir),
+		(rc94pctl, rc96pctl, trainingRegionNum2, regions, ctrlBWName, outputDir),
+		(rc96pctl, rc98pctl, trainingRegionNum2, regions, ctrlBWName, outputDir),
+		(rc98pctl, rc99pctl, trainingRegionNum2, regions, ctrlBWName, outputDir),
 
-	return trainingSetMeta, rc90Percentile, rc99Percentile
+		(rc99pctl, rc100pctl, 3*trainingRegionNum2, regions, ctrlBWName, outputDir)
+	]
 
-def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWName, outputDir, rc90Percentile = None, rc99Percentile = None):
+	return trainingSetMeta, rc90pctl, rc99pctl
+
+
+def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWName, outputDir):
 	ctrlBW = pyBigWig.open(ctrlBWName)
 
 	resultLine = [downLimit, upLimit, trainingRegionNum]
@@ -650,7 +647,6 @@ def fillTrainingSetMeta(downLimit, upLimit, trainingRegionNum, regions, ctrlBWNa
 	return resultLine
 
 
-
 def alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainingSet, fragLen):
 	newTrainingSet = ChromoRegionSet()
 
@@ -681,15 +677,18 @@ def alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainingSet, fragLen):
 
 	return newTrainingSet
 
+
 def getScatterplotSampleIndices(populationSize):
 	if populationSize <= SCATTERPLOT_SAMPLE_COUNT:
 		return np.arange(0, populationSize)
 	else:
 		return np.random.choice(np.arange(0, populationSize), SCATTERPLOT_SAMPLE_COUNT, replace=False)
 
+
 def figureFileName(outputDir, bwFilename):
 	bwName = '.'.join(bwFilename.rsplit('/', 1)[-1].split(".")[:-1])
 	return os.path.join(outputDir, f"fit_{bwName}.png")
+
 
 def plot(regRCs, regRCFittedValues, highRCs, highRCFittedValues, figName):
 	corr = np.corrcoef(regRCFittedValues, regRCs)[0, 1]

@@ -27,10 +27,6 @@ ext_modules = [
 		['CRADLE/CorrectBias/covariateUtils.pyx'],
 		extra_compile_args=["-fno-strict-aliasing"]),
 	Extension(
-		'CRADLE.CorrectBiasStored.readCounts',
-		['CRADLE/CorrectBiasStored/readCounts.pyx'],
-		extra_compile_args=["-fno-strict-aliasing"]),
-	Extension(
 		'CRADLE.CorrectBiasStored.regression',
 		['CRADLE/CorrectBiasStored/regression.pyx'],
 		extra_compile_args=["-fno-strict-aliasing"]),
