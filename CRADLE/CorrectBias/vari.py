@@ -10,6 +10,10 @@ def setGlobalVariables(args):
 
 	global HIGHRC
 
+	global I_GENERATE_NORM_BW
+	global I_NORM
+	global MIN_FRAG_FILTER_VALUE
+
 	global FRAGLEN
 	global BINSIZE
 
@@ -17,6 +21,14 @@ def setGlobalVariables(args):
 	setBiasFiles(args)
 	FRAGLEN = args.l
 	BINSIZE = args.binSize
+
+	sampleNum = len(args.ctrlbw) + len(args.expbw)
+
+	I_GENERATE_NORM_BW, I_NORM = setNormalization(args.norm, args.generateNormBW)
+	MIN_FRAG_FILTER_VALUE = setFilterCriteria(args.mi, sampleNum)
+	seed = setRngSeed(args.rngSeed)
+	writeRngSeed(seed, args.o)
+
 
 def setBiasFiles(args):
 	global SHEAR   # indicator variable whether each type of bias will be corrected.
@@ -644,3 +656,36 @@ def setBiasFiles(args):
 		for i in range(guadFileNum):
 			GQAUDFILE[i] = args.gquadFile[i]
 		GQAUD_MAX = args.gquadMax
+
+
+def setFilterCriteria(minFrag, sampleNum):
+	if minFrag is None:
+		return sampleNum
+	else:
+		return minFrag
+
+
+def setNormalization(norm, generateNormBW):
+	norm = not norm.lower() == 'false'
+	generateNormBW = not generateNormBW.lower() == 'false'
+
+	if (not norm) and generateNormBW:
+		print("ERROR: I_NOMR should be 'True' if I_GENERATE_NORM_BW is 'True'")
+		sys.exit()
+
+	return generateNormBW, norm
+
+
+def setRngSeed(seed):
+	if seed is None:
+		seed = np.random.randint(0, 2**32 - 1)
+
+	np.random.seed(seed)
+	print(f"RNG Seed: {seed}")
+	return seed
+
+
+def writeRngSeed(seed, outputDir):
+	seedFileName = os.path.join(outputDir, "rngseed.txt")
+	with open(seedFileName, "w") as seedFile:
+		seedFile.write(f"{seed}\n")
