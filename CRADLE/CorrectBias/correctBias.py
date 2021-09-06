@@ -135,7 +135,7 @@ def getScalerForEachSample(taskNum, trainingSet, ob1Values):
 
 @timer("Calculating Scalers", 1)
 def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
-	if commonVari.I_NORM:
+	if vari.I_NORM:
 		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
 			scalerResult = getScaler(commonVari.REGIONS)
 		else:
@@ -146,7 +146,7 @@ def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
 	# Sets vari.CTRLSCALER and vari.EXPSCALER
 	commonVari.setScaler(scalerResult)
 
-	if commonVari.I_NORM:
+	if vari.I_NORM:
 		print("NORMALIZING CONSTANT: ")
 		print("CTRLBW: ")
 		print(commonVari.CTRLSCALER)
@@ -356,7 +356,7 @@ def run(args):
 
 	correctReadCounts(resultBWHeader)
 
-	if commonVari.I_GENERATE_NORM_BW:
+	if vari.I_GENERATE_NORM_BW:
 		normalizeBigWigs(resultBWHeader)
 
 

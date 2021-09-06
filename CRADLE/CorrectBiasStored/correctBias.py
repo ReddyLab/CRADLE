@@ -57,7 +57,7 @@ def selectTrainingSets():
 
 @timer("Calculating Scalers", 1)
 def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
-	if commonVari.I_NORM:
+	if vari.I_NORM:
 		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
 			trainingSet = commonVari.REGIONS
 		else:
@@ -76,7 +76,7 @@ def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
 	# Sets vari.CTRLSCALER and vari.EXPSCALER
 	commonVari.setScaler(scalerResult)
 
-	if commonVari.I_NORM:
+	if vari.I_NORM:
 		print("NORMALIZING CONSTANTS: ")
 		print(f"* CTRLBW: {commonVari.CTRLSCALER}")
 		print(f"* EXPBW: {commonVari.EXPSCALER}")
@@ -205,7 +205,7 @@ def correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc,
 		[coefExp] * jobCount,
 		[coefExpHighrc] * jobCount,
 		[highRC] * jobCount,
-		[commonVari.MIN_FRAG_FILTER_VALUE] * jobCount,
+		[vari.MIN_FRAG_FILTER_VALUE] * jobCount,
 		[vari.BINSIZE] * jobCount,
 		[commonVari.OUTPUT_DIR] * jobCount
 	)
@@ -249,7 +249,7 @@ def run(args):
 
 	correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc, highRC, resultBWHeader)
 
-	if commonVari.I_GENERATE_NORM_BW:
+	if vari.I_GENERATE_NORM_BW:
 		normalizeBigWigs(resultBWHeader)
 
 	print(f"-- TOTAL RUNNING TIME: {((time.perf_counter() - startTime) / 3600)} hour(s)")

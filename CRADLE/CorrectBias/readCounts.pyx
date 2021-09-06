@@ -24,7 +24,7 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 		lastBinEnd = analysisEnd
 
 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAG_FILTER_VALUE
-	ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx = selectIdx(chromo, regionStart, regionEnd, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, commonVari.MIN_FRAG_FILTER_VALUE)
+	ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx = selectIdx(chromo, regionStart, regionEnd, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, vari.MIN_FRAG_FILTER_VALUE)
 
 	## OUTPUT FILES
 	subfinalCtrlNames = [None] * commonVari.CTRLBW_NUM
