@@ -109,6 +109,7 @@ cpdef correctReadCounts(regions, covariates, chromoEnds, ctrlBWNames, ctrlScaler
 				rcArr = np.delete(rcArr, idx)
 
 				if len(rcArr) > 0:
+					rcArr = np.rint(rcArr)
 					coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, rcArr, analysisEnd, binsize)
 					writeCorrectedReads(correctedCtrlReadCountFiles[rep], chromoBytes, coalescedSectionCount, startEntries, endEntries, valueEntries)
 				rep += 1
@@ -145,7 +146,9 @@ cpdef correctReadCounts(regions, covariates, chromoEnds, ctrlBWNames, ctrlScaler
 				idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
 				starts = np.delete(starts, idx)
 				rcArr = np.delete(rcArr, idx)
+
 				if len(rcArr) > 0:
+					rcArr = np.rint(rcArr)
 					coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, rcArr, analysisEnd, binsize)
 					writeCorrectedReads(correctedExprReadCountFiles[rep], chromoBytes, coalescedSectionCount, startEntries, endEntries, valueEntries)
 				rep += 1

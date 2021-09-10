@@ -422,6 +422,7 @@ def _generateNormalizedObBWs(bwHeader, scaler, regions, observedBW, normObBW):
 
 		values = values[idx]
 		values = values / scaler
+		values = np.rint(values)
 
 		coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, values)
 		normObBW.addEntries([region.chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
