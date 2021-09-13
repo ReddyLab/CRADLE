@@ -47,7 +47,7 @@ def testFigureFileName(outputDir, bwFilename, result):
 		[('chr17', 12)],
 		2.0,
 		ChromoRegionSet([ChromoRegion('chr17', 1, 5), ChromoRegion('chr17', 8, 12)]),
-		{'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 3., 4., 5.]}
+		{'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 4., 4., 5.]}
 	),
 	(
 		{
@@ -58,7 +58,7 @@ def testFigureFileName(outputDir, bwFilename, result):
 		2.0,
 		ChromoRegionSet([ChromoRegion('chr17', 1, 5), ChromoRegion('chr17', 8, 11), ChromoRegion('chr18', 8, 12)]),
 		{
-			'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 3., 4.],
+			'chr17': [np.nan, np.nan, np.nan, 0., 0., np.nan, np.nan, np.nan, np.nan, 4., 4.],
 			'chr18': [np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, np.nan, 2., 2.]
 		}
 	),

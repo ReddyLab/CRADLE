@@ -93,6 +93,9 @@ cpdef writeBedFile(subfile, tempStarts, tempSignalvals, analysisEnd, binsize):
 			break
 
 cpdef coalesceSections(starts, values, analysisEnd=None, stepSize=1):
+	""" Coalesce adjacent sections with the same values into a single sections.
+	Note: This also coerces all the values to integers.
+	"""
 	cdef long [:] startsView
 	cdef long [:] valuesView
 	cdef long cStepSize = stepSize
