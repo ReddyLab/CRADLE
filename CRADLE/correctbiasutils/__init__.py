@@ -712,7 +712,7 @@ def plot(regRCs, regRCFittedValues, highRCs, highRCFittedValues, figName):
 	plt.ylabel("predicted")
 	plt.xlim(0, maxi)
 	plt.ylim(0, maxi)
-	plt.plot([0, maxi], [0, maxi], 'k-', color='r')
+	plt.plot([0, maxi], [0, maxi], 'k-')
 	plt.gca().set_aspect('equal', adjustable='box')
 	plt.savefig(figName)
 	plt.close()
