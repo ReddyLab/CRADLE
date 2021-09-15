@@ -67,7 +67,8 @@ def readCountData(bwFileName, trainingSet):
 		else:
 			for trainingRegion in trainingSet:
 				regionReadCounts = np.array(
-					bwFile.values(trainingRegion.chromo, trainingRegion.start, trainingRegion.end)
+					bwFile.values(trainingRegion.chromo, trainingRegion.start, trainingRegion.end),
+					dtype=np.float32
 				)
 				yield regionReadCounts, len(trainingRegion)
 
