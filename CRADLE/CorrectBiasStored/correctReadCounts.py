@@ -1,11 +1,11 @@
 import struct
 
-import h5py
+import h5py # type: ignore
 import numpy as np
-import pyBigWig
+import pyBigWig # type: ignore
 
 from CRADLE.correctbiasutils import CORRECTED_RC_TEMP_FILE_STRUCT_FORMAT, SONICATION_SHEAR_BIAS_OFFSET, START_INDEX_ADJUSTMENT, outputCorrectedTmpFile
-from CRADLE.correctbiasutils.cython import coalesceSections
+from CRADLE.correctbiasutils.cython import coalesceSections # type: ignore
 
 # The covariate values stored in the HDF files start at index 0 (0-index, obviously)
 # The lowest start point for an analysis region is 3 (1-indexed), so we need to subtract
