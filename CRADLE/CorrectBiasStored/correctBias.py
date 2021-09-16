@@ -74,7 +74,16 @@ def divideWorkByChrom(workRegionSets: list[list[tuple[str, int, int]]]) -> list[
 	]
 	"""
 	currentChrom = None
-	currentChromCount = -1  # important for the case where a chromosome is split across work sets
+
+	# `currentChromCount` is used to distinguish between the same chromosome in different work sets. I.e.,
+	# if part of the chr1 regions are in the first work set and part of the chr1 regions are in the second
+	# work set then chr1 will have a `currentChromCount` of 0 for the first work set and a `currentChromCount`
+	# of 1 for the second work set. The number is eventually used for naming the temp files so, for instance,
+	# two processes working on chr1 regions for "Input1.bw" won't both write to "Input1_chr1.tmp". Instead,
+	# the process working on the first part of the chromosome will write to "Input1_chr1_0.tmp" and the
+	# process working on the second part of the chromosome will write to "Input1_chr1_1.tmp". The temp files
+	# will also be ordered correctly for evntual merging into "Input1_corrected.bw"
+	currentChromCount = -1
 
 	allWorkChromoSets = []
 	for workRegionSet in workRegionSets:
