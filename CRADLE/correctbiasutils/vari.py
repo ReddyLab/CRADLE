@@ -1,8 +1,6 @@
 import multiprocessing
 import os
-import sys
-import numpy as np
-import pyBigWig
+import pyBigWig # type: ignore
 
 from CRADLE.correctbiasutils import ChromoRegionSet
 
