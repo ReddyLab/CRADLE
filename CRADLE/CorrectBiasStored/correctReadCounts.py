@@ -127,7 +127,7 @@ def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, s
 
 def selectOverallIdx(chromo, analysisStart, analysisEnd, bwFiles, minFragFilterValue, meanMinFragFilterValue):
 	readCountSums = np.zeros(analysisEnd - analysisStart, dtype=np.float32)
-	prevIdx = np.arange(analysisEnd-analysisStart)
+	replicateIdx = np.arange(analysisEnd - analysisStart)
 
 	for bwFile in bwFiles:
 		if pyBigWig.numpy == 1:
