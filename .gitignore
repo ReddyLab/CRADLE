@@ -6,6 +6,7 @@ build
 CRADLE/**/*.c
 CRADLE/**/*.so
 CRADLE/**/*.html
+CRADLE/**/*.swp
 dist
 CRADLE.egg-info
 *.pyc
@@ -13,3 +14,5 @@ CRADLE.egg-info
 # Ignore test runs
 test_cradle*
 test_output/**
+
+
