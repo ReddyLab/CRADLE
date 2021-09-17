@@ -43,39 +43,40 @@ def writeCorrectedReads(outFile, sectionCount, starts, ends, values):
 
 def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, scalers, COEFs, COEF_HIGHRCs, highRC, minFragFilterValue, binsize, outputDir):
 	meanMinFragFilterValue = int(np.round(minFragFilterValue / len(bwNames)))
+	bwFiles = [pyBigWig.open(bwName) for bwName in bwNames]
+	trainingFile = pyBigWig.open(trainingBWName)
 
 	for chromoRegionData in regions:
 		chromo, chromoId, chromoRegions = chromoRegionData
+		covariateFile = h5py.File(covariates.covariateFileName(chromo), "r")
+		covariateValues = covariateFile['covari']
 
 		# Align regions to the covariate file boundaries, generate the "overall" indices used later and load up the training read counts
 		# all in one loop
 		overallIndices = []
 		adjustedChromoRegions = []
-		with pyBigWig.open(trainingBWName) as bwFile:
-			trainingReadCounts = np.zeros(bwFile.chroms(chromo), dtype=np.float32)
-			for region in chromoRegions:
-				# Align the region to covariate file boundaries
-				start, end = alignCoordinatesToCovariateFileBoundaries(region, chromoEnds, covariates.fragLen)
-				adjustedChromoRegions.append((start, end))
+		trainingReadCounts = np.zeros(trainingFile.chroms(chromo), dtype=np.float32)
 
-				# generate the "overall" index of locations with total read counts > minFragFilterValue
-				overallIndices.append(selectOverallIdx(chromo, start, end, bwNames, minFragFilterValue))
+		for region in chromoRegions:
+			# Align the region to covariate file boundaries
+			start, end = alignCoordinatesToCovariateFileBoundaries(region, chromoEnds, covariates.fragLen)
+			adjustedChromoRegions.append((start, end))
 
-				# load the training read counts
-				if pyBigWig.numpy == 1:
-					trainingReadCounts[start:end] = bwFile.values(chromo, start, end, numpy=True)
-				else:
-					trainingReadCounts[start:end] = bwFile.values(chromo, start, end)
+			# generate the "overall" index of locations with total read counts > minFragFilterValue
+			overallIndices.append(selectOverallIdx(chromo, start, end, bwFiles, minFragFilterValue))
 
-			trainingReadCounts[np.isnan(trainingReadCounts)] = 0.0
+			# load the training read counts
+			if pyBigWig.numpy == 1:
+				trainingReadCounts[start:end] = trainingFile.values(chromo, start, end, numpy=True)
+			else:
+				trainingReadCounts[start:end] = trainingFile.values(chromo, start, end)
+
+		trainingReadCounts[np.isnan(trainingReadCounts)] = 0.0
 
 		del chromoRegions # We don't need this anymore and should break if we use it
 
-		for bwName, scaler, COEF, COEF_HIGHRC in zip(bwNames, scalers, COEFs, COEF_HIGHRCs):
-			bwFile = pyBigWig.open(bwName)
+		for bwName, bwFile, scaler, COEF, COEF_HIGHRC in zip(bwNames, bwFiles, scalers, COEFs, COEF_HIGHRCs):
 			correctedReadCountOutputFile = open(outputCorrectedTmpFile(outputDir, chromo, chromoId, bwName), "wb")
-			covariateFile = h5py.File(covariates.covariateFileName(chromo), "r")
-			covariateValues = covariateFile['covari']
 
 			for region, overallIdx in zip(adjustedChromoRegions, overallIndices):
 				analysisStart, analysisEnd = region
@@ -118,21 +119,23 @@ def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, s
 					rcArr = np.rint(rcArr)
 					coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, rcArr, analysisEnd, binsize)
 					writeCorrectedReads(correctedReadCountOutputFile, coalescedSectionCount, startEntries, endEntries, valueEntries)
-			bwFile.close()
-			covariateFile.close()
 			correctedReadCountOutputFile.close()
+		covariateFile.close()
+
+	for file in bwFiles:
+		file.close()
+	trainingFile.close()
 
 
-def selectOverallIdx(chromo, analysisStart, analysisEnd, bwNames, minFragFilterValue):
+def selectOverallIdx(chromo, analysisStart, analysisEnd, bwFiles, minFragFilterValue):
 	readCountSums = np.zeros(analysisEnd - analysisStart, dtype=np.float32)
 
-	for bwName in bwNames:
-		with pyBigWig.open(bwName) as bwFile:
-			if pyBigWig.numpy == 1:
-				readCounts = bwFile.values(chromo, analysisStart, analysisEnd, numpy=True)
-			else:
-				readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd), dtype=np.float32)
-			readCounts[np.isnan(readCounts)] = 0.0
+	for bwFile in bwFiles:
+		if pyBigWig.numpy == 1:
+			readCounts = bwFile.values(chromo, analysisStart, analysisEnd, numpy=True)
+		else:
+			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd), dtype=np.float32)
+		readCounts[np.isnan(readCounts)] = 0.0
 
 		readCountSums += readCounts
 
