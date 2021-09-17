@@ -124,7 +124,7 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBinStart, lastBinEnd, nBins, binSize, highRC, minFragFilterValue):
 	meanMinFragFilterValue = int(np.round(minFragFilterValue / (len(ctrlBWNames) + len(experiBWNames))))
 
-	for rep, bwName in enumerate(ctrlBWNames):
+	for rep, bwName in enumerate(ctrlBWNames + experiBWNames):
 		with pyBigWig.open(bwName) as bw:
 			if lastBinStart is not None:
 				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
@@ -144,41 +144,15 @@ def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBi
 			if rep == 0:
 				rc_sum = temp
 				highReadCountIdx = np.where(temp > highRC)[0]
-				prevIdx = np.where(temp >= meanMinFragFilterValue)[0]
+				replicateIdx = np.where(temp >= meanMinFragFilterValue)[0]
 			else:
 				rc_sum = np.array(rc_sum)
 				rc_sum += temp
 
-				currIdx = np.where(temp >= meanMinFragFilterValue)[0]
-				currIdx = np.intersect1d(prevIdx, currIdx)
-				prevIdx = currIdx
-
-	for bwName in experiBWNames:
-		with pyBigWig.open(bwName) as bw:
-
-			if lastBinStart is not None:
-				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=(nBins-1)))
-				temp[np.where(temp == None)] = 0.0
-				temp = temp.tolist()
-
-				last_value = bw.stats(chromo, lastBinStart, lastBinEnd, type="mean", nBins=1)[0]
-				if last_value is None:
-					last_value = 0.0
-				temp.extend([last_value])
-				temp = np.array(temp)
-			else:
-				temp = np.array(bw.stats(chromo, regionStart, regionEnd, type="mean", nBins=nBins))
-				temp[np.where(temp == None)] = 0.0
-			temp = np.array(temp).astype(float)
-			rc_sum = np.array(rc_sum).astype(float)
-			rc_sum += temp
-
-			currIdx = np.where(temp >= meanMinFragFilterValue)[0]
-			currIdx = np.intersect1d(prevIdx, currIdx)
-			prevIdx = currIdx
-
+				replicateIdx = selectReplicateIdx(temp, replicateIdx, meanMinFragFilterValue)
+		
 	idx = np.where(rc_sum > minFragFilterValue)[0].tolist()
-	overallIdx = np.intersect1d(idx, currIdx)
+	overallIdx = np.intersect1d(idx, replicateIdx)
 
 	if len(overallIdx) == 0:
 		highReadCountIdx = []
@@ -187,3 +161,14 @@ def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBi
 	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
 
 	return overallIdx, highReadCountIdx
+
+def selectReplicateIdx(readCounts, prevReplicateIdx, meanMinFragFilterValue):
+	currReplicateIdx = np.where(readCounts >= meanMinFragFilterValue)[0]
+	currReplicateIdx = np.intersect1d(currReplicateIdx, prevReplicateIdx)
+
+	return currReplicateIdx
+
+
+
+
+

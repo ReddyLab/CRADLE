@@ -136,18 +136,24 @@ def selectOverallIdx(chromo, analysisStart, analysisEnd, bwFiles, minFragFilterV
 			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd), dtype=np.float32)
 		readCounts[np.isnan(readCounts)] = 0.0
 
-		currIdx = np.where(readCounts > meanMinFragFilterValue)[0]
-		currIdx = np.intersect1d(prevIdx, currIdx)
-		prevIdx = currIdx
+		replicateIdx = selectReplicateIdx(readCounts, replicateIdx, meanMinFragFilterValue)
 
 		readCountSums += readCounts
 
 	idx = np.where(readCountSums > minFragFilterValue)[0]
-	idx = np.intersect1d(idx, currIdx)
+	idx = np.intersect1d(idx, replicateIdx)
 
 	return idx
 
 def selectHighRCIdx(trainingReadCounts, idx, highRC):
 	highReadCountIdx = np.where(trainingReadCounts > highRC)[0]
 	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
+
 	return highReadCountIdx
+
+def selectReplicateIdx(readCounts, prevReplicateIdx, meanMinFragFilterValue):
+        currReplicateIdx = np.where(readCounts >= meanMinFragFilterValue)[0]
+        currReplicateIdx = np.intersect1d(currReplicateIdx, prevReplicateIdx)
+
+        return currReplicateIdx
+
