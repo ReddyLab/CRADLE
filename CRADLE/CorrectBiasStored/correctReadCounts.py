@@ -63,7 +63,7 @@ def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, s
 			adjustedChromoRegions.append((start, end))
 
 			# generate the "overall" index of locations with total read counts > minFragFilterValue
-			overallIndices.append(selectOverallIdx(chromo, start, end, bwFiles, minFragFilterValue))
+			overallIndices.append(selectOverallIdx(chromo, start, end, bwFiles, minFragFilterValue, meanMinFragFilterValue))
 
 			# load the training read counts
 			if pyBigWig.numpy == 1:
@@ -74,6 +74,9 @@ def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, s
 		trainingReadCounts[np.isnan(trainingReadCounts)] = 0.0
 
 		del chromoRegions # We don't need this anymore and should break if we use it
+		
+		if len(overallIndices) == 0:
+			continue
 
 		for bwName, bwFile, scaler, COEF, COEF_HIGHRC in zip(bwNames, bwFiles, scalers, COEFs, COEF_HIGHRCs):
 			correctedReadCountOutputFile = open(outputCorrectedTmpFile(outputDir, chromo, chromoId, bwName), "wb")
@@ -87,11 +90,6 @@ def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, s
 				else:
 					rcArr = np.array(bwFile.values(chromo, analysisStart, analysisEnd))
 				rcArr[np.isnan(rcArr)] = 0.0
-				readCountIdx = selectReplicateIdx(rcArr, overallIdx, meanMinFragFilterValue)
-
-				if len(readCountIdx) == 0:
-					# No locations in the region reach the read count threshold of meanMinFragFilterValue
-					continue
 
 				rcArr = rcArr / scaler
 
@@ -108,8 +106,8 @@ def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, s
 				)
 
 				rcArr = rcArr - prdvals
-				rcArr = rcArr[readCountIdx]
-				starts = np.arange(analysisStart, analysisEnd)[readCountIdx]
+				rcArr = rcArr[overallIdx]
+				starts = np.arange(analysisStart, analysisEnd)[overallIdx]
 
 				outOfRangeIdx = np.where((rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
 				starts = np.delete(starts, outOfRangeIdx)
@@ -127,8 +125,9 @@ def correctReadCount(regions, chromoEnds, covariates, trainingBWName, bwNames, s
 	trainingFile.close()
 
 
-def selectOverallIdx(chromo, analysisStart, analysisEnd, bwFiles, minFragFilterValue):
+def selectOverallIdx(chromo, analysisStart, analysisEnd, bwFiles, minFragFilterValue, meanMinFragFilterValue):
 	readCountSums = np.zeros(analysisEnd - analysisStart, dtype=np.float32)
+	prevIdx = np.arange(analysisEnd-analysisStart)
 
 	for bwFile in bwFiles:
 		if pyBigWig.numpy == 1:
@@ -137,9 +136,14 @@ def selectOverallIdx(chromo, analysisStart, analysisEnd, bwFiles, minFragFilterV
 			readCounts = np.array(bwFile.values(chromo, analysisStart, analysisEnd), dtype=np.float32)
 		readCounts[np.isnan(readCounts)] = 0.0
 
+		currIdx = np.where(readCounts > meanMinFragFilterValue)[0]
+		currIdx = np.intersect1d(prevIdx, currIdx)
+		prevIdx = currIdx
+
 		readCountSums += readCounts
 
 	idx = np.where(readCountSums > minFragFilterValue)[0]
+	idx = np.intersect1d(idx, currIdx)
 
 	return idx
 
@@ -147,8 +151,3 @@ def selectHighRCIdx(trainingReadCounts, idx, highRC):
 	highReadCountIdx = np.where(trainingReadCounts > highRC)[0]
 	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
 	return highReadCountIdx
-
-def selectReplicateIdx(readCounts, idx, meanMinFragFilterValue):
-	replicateIdx = np.where(readCounts >= meanMinFragFilterValue)[0]
-	replicateIdx = np.intersect1d(replicateIdx, idx)
-	return replicateIdx

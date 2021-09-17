@@ -24,7 +24,7 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 		lastBinEnd = analysisEnd
 
 	###### GET POSITIONS WHERE THE NUMBER OF FRAGMENTS > MIN_FRAG_FILTER_VALUE
-	ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx = selectIdx(chromo, regionStart, regionEnd, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, vari.MIN_FRAG_FILTER_VALUE)
+	overallIdx, highReadCountIdx = selectIdx(chromo, regionStart, regionEnd, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES, lastBinStart, lastBinEnd, nBins, vari.BINSIZE, vari.HIGHRC, vari.MIN_FRAG_FILTER_VALUE)
 
 	## OUTPUT FILES
 	subfinalCtrlNames = [None] * commonVari.CTRLBW_NUM
@@ -33,7 +33,7 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 	f = h5py.File(covariFileName, "r")
 
 	for rep in range(commonVari.CTRLBW_NUM):
-		if len(ctrlSpecificIdx[rep]) == 0:
+		if len(overallIdx) == 0:
 			subfinalCtrlNames[rep] = None
 			continue
 
@@ -60,9 +60,8 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 		prdvals[highReadCountIdx] = np.exp(np.sum(f['X'][0:][highReadCountIdx] * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])
 
 		rcArr = rcArr - prdvals
-		rcArr = rcArr[ctrlSpecificIdx[rep]]
-		starts = np.array(list(range(analysisStart, analysisEnd)))[ctrlSpecificIdx[rep]]
-		ctrlSpecificIdx[rep] = []
+		rcArr = rcArr[overallIdx]
+		starts = np.array(list(range(analysisStart, analysisEnd)))[overallIdx]
 
 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
 		starts = np.delete(starts, idx)
@@ -75,7 +74,7 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 			subfinalCtrlNames[rep] = None
 
 	for rep in range(commonVari.EXPBW_NUM):
-		if len(experiSpecificIdx[rep]) == 0:
+		if len(overallIdx) == 0:
 			subfinalExperiNames[rep] = None
 			continue
 
@@ -103,10 +102,9 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 		prdvals[highReadCountIdx] = np.exp(np.sum(f['X'][0:][highReadCountIdx] * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])
 
 		rcArr = rcArr - prdvals
-		rcArr = rcArr[experiSpecificIdx[rep]]
-		starts = np.array(list(range(analysisStart, analysisEnd)))[experiSpecificIdx[rep]]
+		rcArr = rcArr[overallIdx]
+		starts = np.array(list(range(analysisStart, analysisEnd)))[overallIdx]
 
-		experiSpecificIdx[rep] = []
 		idx = np.where( (rcArr < np.finfo(np.float32).min) | (rcArr > np.finfo(np.float32).max))
 		starts = np.delete(starts, idx)
 		rcArr = np.delete(rcArr, idx)
@@ -126,8 +124,6 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBinStart, lastBinEnd, nBins, binSize, highRC, minFragFilterValue):
 	meanMinFragFilterValue = int(np.round(minFragFilterValue / (len(ctrlBWNames) + len(experiBWNames))))
 
-	ctrlSpecificIdx = []
-	experiSpecificIdx = []
 	for rep, bwName in enumerate(ctrlBWNames):
 		with pyBigWig.open(bwName) as bw:
 			if lastBinStart is not None:
@@ -148,12 +144,14 @@ def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBi
 			if rep == 0:
 				rc_sum = temp
 				highReadCountIdx = np.where(temp > highRC)[0]
-
+				prevIdx = np.where(temp >= meanMinFragFilterValue)[0]
 			else:
 				rc_sum = np.array(rc_sum)
 				rc_sum += temp
 
-		ctrlSpecificIdx.append( list(np.where(temp >= meanMinFragFilterValue)[0]) )
+				currIdx = np.where(temp >= meanMinFragFilterValue)[0]
+				currIdx = np.intersect1d(prevIdx, currIdx)
+				prevIdx = currIdx
 
 	for bwName in experiBWNames:
 		with pyBigWig.open(bwName) as bw:
@@ -173,23 +171,19 @@ def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBi
 				temp[np.where(temp == None)] = 0.0
 			temp = np.array(temp).astype(float)
 			rc_sum = np.array(rc_sum).astype(float)
-
 			rc_sum += temp
-		experiSpecificIdx.append( list(np.where(temp >= meanMinFragFilterValue)[0])  )
+
+			currIdx = np.where(temp >= meanMinFragFilterValue)[0]
+			currIdx = np.intersect1d(prevIdx, currIdx)
+			prevIdx = currIdx
 
 	idx = np.where(rc_sum > minFragFilterValue)[0].tolist()
-	if len(idx) == 0:
-		ctrlSpecificIdx = [ [] for _ in range(len(ctrlBWNames)) ]
-		experiSpecificIdx = [ [] for _ in range(len(experiBWNames)) ]
+	overallIdx = np.intersect1d(idx, currIdx)
+
+	if len(overallIdx) == 0:
 		highReadCountIdx = []
-		return ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx
+		return overallIdx, highReadCountIdx
 
 	highReadCountIdx = np.intersect1d(highReadCountIdx, idx)
 
-	for rep in range(len(ctrlBWNames)):
-		ctrlSpecificIdx[rep] = list(np.intersect1d(ctrlSpecificIdx[rep], idx))
-
-	for rep in range(len(experiBWNames)):
-		experiSpecificIdx[rep] = list(np.intersect1d(experiSpecificIdx[rep], idx))
-
-	return ctrlSpecificIdx, experiSpecificIdx, highReadCountIdx
+	return overallIdx, highReadCountIdx
