@@ -25,7 +25,7 @@ From: alpine:3.11.5
     readline-dev sqlite-dev util-linux-dev xz-dev python3-dev
 
   # Download CRADLE
-  git clone --depth 1 --branch v0.24.2 https://github.com/ReddyLab/CRADLE.git
+  git clone --depth 1 --branch v0.25.0 https://github.com/ReddyLab/CRADLE.git
 
   python3 --version
   python3 -m ensurepip
