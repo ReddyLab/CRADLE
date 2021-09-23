@@ -1,32 +1,30 @@
-# cython: language_level=3
-
 import h5py
 import numpy as np
 import statsmodels.api as sm
 import pyBigWig
 
-cdef int COEF_LEN = 7
+COEF_LEN = 7
 
 # The covariate values stored in the HDF files start at index 0 (0-index, obviously)
 # The lowest start point for an analysis region is 3 (1-indexed), so we need to subtract
 # 3 from the analysis start and end points to match them up with correct covariate values
 # in the HDF files.
-cdef int COVARIATE_FILE_INDEX_OFFSET = 3
+COVARIATE_FILE_INDEX_OFFSET = 3
 
-cpdef performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, scatterplotSamples):
+def performRegression(trainingSet, covariates, ctrlBWNames, ctrlScaler, experiBWNames, experiScaler, scatterplotSamples):
 	xColumnCount = covariates.num + 1
 
 	#### Get X matrix
 	xView = np.ones((trainingSet.cumulativeRegionSize, xColumnCount), dtype=np.float64)
 
-	cdef int currentRow = 0
+	currentRow = 0
 
 	for trainingRegion in trainingSet:
 		covariateFileName = covariates.covariateFileName(trainingRegion.chromo)
 		with h5py.File(covariateFileName, "r") as covariateValues:
-			non_selected_rows = np.where(np.isnan(covariates.selected))
+			nonSelectedRows = np.where(np.isnan(covariates.selected))
 			temp = covariateValues['covari'][trainingRegion.start - COVARIATE_FILE_INDEX_OFFSET:trainingRegion.end - COVARIATE_FILE_INDEX_OFFSET]
-			temp = np.delete(temp, non_selected_rows, 1)
+			temp = np.delete(temp, nonSelectedRows, 1)
 			xView[currentRow:currentRow + len(trainingRegion), 1:xColumnCount] = temp
 			currentRow += len(trainingRegion)
 	#### END Get X matrix
@@ -72,13 +70,8 @@ def readCountData(bwFileName, trainingSet):
 				)
 				yield regionReadCounts, len(trainingRegion)
 
-cpdef getReadCounts(rawReadCounts, rowCount, scaler):
-	cdef double [:] readCountsView
-	cdef int ptr
-	cdef int posIdx
-
+def getReadCounts(rawReadCounts, rowCount, scaler):
 	readCounts = np.zeros(rowCount, dtype=np.float64)
-	readCountsView = readCounts
 
 	ptr = 0
 	for regionReadCounts, regionLength in rawReadCounts:
@@ -87,18 +80,18 @@ cpdef getReadCounts(rawReadCounts, rowCount, scaler):
 
 		posIdx = 0
 		while posIdx < regionLength:
-			readCountsView[ptr + posIdx] = regionReadCounts[posIdx]
+			readCounts[ptr + posIdx] = regionReadCounts[posIdx]
 			posIdx += 1
 
 		ptr += regionLength
 
 	return readCounts
 
-cpdef buildModel(readCounts, xView):
+def buildModel(readCounts, xView):
 	#### do regression
 	return sm.GLM(np.array(readCounts).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
 
-cpdef getCoefs(modelParams, selectedCovariates):
+def getCoefs(modelParams, selectedCovariates):
 	coef = np.zeros(COEF_LEN, dtype=np.float64)
 
 	coef[0] = modelParams[0]
