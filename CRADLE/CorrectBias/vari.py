@@ -1,6 +1,7 @@
 import math
 import sys
 import numpy as np
+import os
 
 def setGlobalVariables(args):
 	global COEFCTRL
