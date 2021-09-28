@@ -34,27 +34,27 @@ def divideWork(regionSet: List[Tuple[str, int, int]], totalBaseCount: int, numPr
 	allJobs: List[List[Tuple[str, int, int]]] = []
 	for chromo, start, end in regionSet[1:]:
 		regionLength = end - start
-		newJobSize = currentJobSize + regionLength
+		currentJobSize += regionLength
 
 		# We want len(allJobs) to equal numProcesses so if len(allJobs) == numProcesses - 1
 		# then we are currently filling in the very last work set and all the rest of the
 		# regions should be added to currentJobList. Once the rest of the regions are added
 		# to currentJobList the for loop will end and currentJobList will be appended to allJobs.
 		# This will make len(allJobs) == numProcesses, like we want.
-		if newJobSize < idealWorkSize or len(allJobs) == numProcesses - 1:
-			currentJobSize = newJobSize
+		if currentJobSize < idealWorkSize or len(allJobs) == numProcesses - 1:
 			currentJobList.append((chromo, start, end))
-		elif newJobSize - idealWorkSize < (regionLength / 5): # It's just a little too big, but that's okay.
+		elif currentJobSize - idealWorkSize < (regionLength / 5): # It's just a little too big, but that's okay.
 			currentJobList.append((chromo, start, end))
 			allJobs.append(currentJobList)
 			currentJobSize = 0
 			currentJobList = []
 		else:
 			allJobs.append(currentJobList)
-			currentJobSize = 0
+			currentJobSize = end - start
 			currentJobList = [(chromo, start, end)]
-	allJobs.append(currentJobList)
-	assert numProcesses == len(allJobs)
+
+	if len(currentJobList) > 0:
+		allJobs.append(currentJobList)
 
 	return allJobs
 
@@ -264,7 +264,7 @@ def normalizeReadCounts(covariates, chromoEnds, trainSet90Percentile, trainSet90
 
 @timer("Correcting Read Counts", 1)
 def correctReads(crcArgs):
-	utils.process(commonVari.NUMPROCESS, crc.correctReadCount, crcArgs)
+	utils.process(min(len(crcArgs), commonVari.NUMPROCESS), crc.correctReadCount, crcArgs)
 
 
 @timer("Merging Temp Files", 1)
