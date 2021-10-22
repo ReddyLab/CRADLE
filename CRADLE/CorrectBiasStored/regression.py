@@ -89,7 +89,9 @@ def getReadCounts(rawReadCounts, rowCount, scaler):
 
 def buildModel(readCounts, xView):
 	#### do regression
-	return sm.GLM(np.array(readCounts).astype(int), np.array(xView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+	logLink = sm.genmod.families.links.log()
+	poisson = sm.families.Poisson(link=logLink)
+	return sm.GLM(np.array(readCounts).astype(int), np.array(xView), family=poisson).fit()
 
 def getCoefs(modelParams, selectedCovariates):
 	coef = np.zeros(COEF_LEN, dtype=np.float64)

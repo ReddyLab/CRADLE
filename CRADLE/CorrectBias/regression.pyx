@@ -69,10 +69,16 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 
 
 		deleteIdx = np.where( (readCounts < np.finfo(np.float32).min) | (readCounts > np.finfo(np.float32).max))[0]
+		loglink = sm.genmod.families.links.log()
+		poisson = sm.families.Poisson(link=loglink)
 		if len(deleteIdx) != 0:
-			model = sm.GLM(np.delete(readCounts.astype(int), deleteIdx), np.delete(np.array(XView), deleteIdx, axis=0), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+			model = sm.GLM(
+				np.delete(readCounts.astype(int), deleteIdx),
+				np.delete(np.array(XView), deleteIdx, axis=0),
+				family=poisson
+			).fit()
 		else:
-			model = sm.GLM(readCounts.astype(int), np.array(XView), family=sm.families.Poisson(link=sm.genmod.families.links.log)).fit()
+			model = sm.GLM(readCounts.astype(int), np.array(XView), family=poisson).fit()
 
 		coef = model.params
 		COEFCTRL[rep, ] = coef
@@ -96,17 +102,19 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 			os.remove(subfileName)
 
 		deleteIdx = np.where( (readCounts < np.finfo(np.float32).min) | (readCounts > np.finfo(np.float32).max))[0]
+		loglink = sm.genmod.families.links.log()
+		poisson = sm.families.Poisson(link=loglink)
 		if len(deleteIdx) != 0:
 			model = sm.GLM(
 				np.delete(readCounts.astype(int), deleteIdx),
 				np.delete(np.array(XView), deleteIdx, axis=0),
-				family=sm.families.Poisson(link=sm.genmod.families.links.log)
+				family=poisson
 			).fit()
 		else:
 			model = sm.GLM(
 				readCounts.astype(int),
 				np.array(XView),
-				family=sm.families.Poisson(link=sm.genmod.families.links.log)
+				family=poisson
 			).fit()
 
 		coef = model.params
