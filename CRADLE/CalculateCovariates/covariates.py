@@ -42,7 +42,7 @@ def fitToCorrectionModel():
 
 	# `caluculateTaskCovariates` calls `correctReadCounts`. `correctReadCounts` is the function that
 	# fits regions to the correction model.
-	resultMeta = pool.map_async(calculateTaskCovariates, tasks).get()
+	resultMeta = pool.starmap_async(calculateTaskCovariates, tasks).get()
 	pool.close()
 	pool.join()
 	del pool

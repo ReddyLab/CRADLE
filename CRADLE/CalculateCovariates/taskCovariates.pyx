@@ -500,44 +500,38 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	return []
 
 
-cpdef calculateTaskCovariates(args):
-	chromo = args[0]
-	analysisStart = int(args[1])  # Genomic coordinates(starts from 1)
-	analysisEnd = int(args[2])
+cpdef calculateTaskCovariates(chromo, analysisStart, analysisEnd):
 
 	#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
 	if (analysisStart + vari.BINSIZE) >= analysisEnd:
-		firstBinPos = int((analysisStart + analysisEnd) / float(2))
+		firstBinPos = (analysisStart + analysisEnd) // 2
 		lastBinPos = firstBinPos
 		nBins = 1
 		lastBin = False
-		result = calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
-		return result
+		return calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
 
-	firstBinPos = int((2*analysisStart + vari.BINSIZE) / float(2))
+	firstBinPos = (2*analysisStart + vari.BINSIZE) // 2
 	if (analysisStart + 2*vari.BINSIZE) > analysisEnd:
-		secondBinPos = int((analysisStart + vari.BINSIZE + analysisEnd) / float(2))
+		secondBinPos = (analysisStart + vari.BINSIZE + analysisEnd) // 2
 		lastBinPos = secondBinPos
 		nBins = 2
 		lastBin = True
 	else:
-		secondBinPos = int((2*analysisStart + 3 * vari.BINSIZE) / float(2))
-		leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
-		nBins = int((analysisEnd - analysisStart) / float(vari.BINSIZE))
-		if leftValue != 0:
-			nBins = nBins + 1
-			lastBin = True
-			lastBinPos = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )  ## should be included in the analysis
-		else:
+		secondBinPos = (2*analysisStart + 3*vari.BINSIZE) // 2
+		leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
+		nBins = (analysisEnd - analysisStart) // float(vari.BINSIZE)
+		if leftValue == 0:
 			lastBin = False
 			lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
+		else:
+			nBins += 1
+			lastBin = True
+			lastBinPos = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2  ## should be included in the analysis
 
-	if (secondBinPos-firstBinPos) <= vari.FRAGLEN:
-		result = calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
-		return result
-	else:
-		result = calculateDiscreteFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
-		return result
+	if secondBinPos - firstBinPos <= vari.FRAGLEN:
+		return calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
+
+	return calculateDiscreteFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
 
 
 cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
