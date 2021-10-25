@@ -126,7 +126,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	covariFileTemp.close()
 
 	f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	for idx in range(startIdx, endIdx):
 		covariIdx = [0] * vari.COVARI_NUM
@@ -388,7 +388,7 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	covariFileTemp.close()
 
 	f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	resultIdx = 0
 	while resultIdx < nBins: # for each bin
