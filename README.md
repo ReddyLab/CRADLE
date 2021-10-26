@@ -238,7 +238,7 @@ cradle covariates -l 500
                   -kmer 50
                   -gquadFile /data/YoungSook/gquad/GSE63874_Na_K_PDS_plus_hits_intersect_hg38_uniq_K.bw /data/YoungSook/gquad/GSE63874_Na_K_PDS_minus_hits_intersect_hg38_uniq_K.bw
                   -genome /data/YoungSook/hg38.2bit
-                  -o /data/YoungSook/CRADLE_covariates
+                  -o /data/YoungSook/hg38_fragLen1000_kmer100
 ```
 
 * Required Arguments
@@ -266,7 +266,9 @@ cradle covariates -l 500
   -  -gquadMax <br />
       The maximum gquad score. This is used to normalize Gquad score. default=78.6
   -  -o <br />
-      Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.
+      Output directory. All calculated covariate files will be stored here. If the directory doesn't exist, cradle will make the directory. default=`CRADLE_covariates`. The output covariate files will be named {output_directory}_{chromosome}.hdf5 (e.g., `CRADLE_covariates_chrX.hdf5`)
+
+      Note that, to make the files compatible with the CRADLE correctBias_stored step, the directory should be named {genome}_fragLen{fragment length}_kmer{sequencing read count}. For example, `hg38_fragLen1000_kmer100`.
   -  -p <br />
       The number of cpus. default=(available cpus)/2
   -  -bl <br />

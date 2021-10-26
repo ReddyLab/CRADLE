@@ -160,7 +160,7 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 	return covariates, pastMer1, pastMer2, pastStartGibbs
 
 
-cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariDataSet, result, shearStart, fragEnd, binStart, binEnd):
+cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariDataSet, result, analysisStart, shearStart, fragEnd, binStart, binEnd):
 	##### INITIALIZE VARIABLES
 	if vari.SHEAR == 1:
 		pastMer1 = -1
@@ -201,7 +201,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 				for covariPos in range(vari.COVARI_NUM):
 					line.extend([ result[resultStartIdx, (covariPos+1)]  ])
 					result[resultStartIdx, (covariPos+1)] = float(0)
-				covariDataSet[numPoppedPos] = line
+				covariDataSet[analysisStart + numPoppedPos, :] = line
 
 				numPoppedPos = numPoppedPos + 1
 				if maxBinPos >= binEnd:
@@ -241,7 +241,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 					line = []
 					for covariPos in range(vari.COVARI_NUM):
 						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[numPoppedPos] = line
+					covariDataSet[analysisStart + numPoppedPos, :] = line
 
 					numPoppedPos = numPoppedPos + 1
 
@@ -249,7 +249,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 					line = []
 					for covariPos in range(vari.COVARI_NUM):
 						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[numPoppedPos] = line
+					covariDataSet[analysisStart + numPoppedPos, :] = line
 
 					numPoppedPos = numPoppedPos + 1
 			else:
@@ -257,14 +257,13 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 					line = []
 					for covariPos in range(vari.COVARI_NUM):
 						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[numPoppedPos] = line
+					covariDataSet[analysisStart + numPoppedPos, :] = line
 
 					numPoppedPos = numPoppedPos + 1
 
 
-cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, shearStart, binStart, binEnd, nBins):
-	resultIdx = 0
-	while resultIdx < nBins: # for each bin
+cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, analysisStart, shearStart, binStart, binEnd, nBins):
+	for resultIdx in range(nBins): # for each bin
 		if resultIdx == (nBins-1):
 			pos = binEnd
 		else:
@@ -296,45 +295,46 @@ cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, c
 
 			line += covariates
 
-		covariDataSet[resultIdx] = line
-
-		resultIdx += 1
-
-		if resultIdx == nBins:
-			break
+		covariDataSet[analysisStart + resultIdx, :] = line
 
 
-cpdef calculateTaskCovariates(chromo, analysisStart, analysisEnd):
-	continuousFrag = False
-
-	#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
-	#### TODO: What is the logic here? why do these things determine continuousFrag for discreteFrag?
-	if (analysisStart + vari.BINSIZE) >= analysisEnd:
-		firstBinPos = (analysisStart + analysisEnd) // 2
-		lastBinPos = firstBinPos
-		nBins = 1
-		continuousFrag = True
-	else:
-		firstBinPos = (2*analysisStart + vari.BINSIZE) // 2
-		if (analysisStart + 2*vari.BINSIZE) > analysisEnd:
-			secondBinPos = (analysisStart + vari.BINSIZE + analysisEnd) // 2
-			lastBinPos = secondBinPos
-			nBins = 2
-		else:
-			secondBinPos = (2*analysisStart + 3*vari.BINSIZE) // 2
-			leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
-			nBins = (analysisEnd - analysisStart) // float(vari.BINSIZE)
-			if leftValue == 0:
-				lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
-			else:
-				nBins += 1
-				lastBinPos = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2  ## should be included in the analysis
-
-		if secondBinPos - firstBinPos <= vari.FRAGLEN:
-			continuousFrag = True
-
+cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 	with py2bit.open(vari.GENOME) as genome:
 		chromoEnd = int(genome.chroms(chromo))
+
+	##### CREATE COVARIATE FILE
+	f = h5py.File(outputFilename, "w")
+	covariDataSet = f.create_dataset("covari", (chromoEnd, vari.COVARI_NUM), dtype='f', compression="gzip")
+
+	##### CALCULATE COVARIATE VALUES
+	for _chromo, analysisStart, analysisEnd in regions:
+		continuousFrag = False
+
+		#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
+		#### TODO: What is the logic here? why do these things determine continuousFrag for discreteFrag?
+		if (analysisStart + vari.BINSIZE) >= analysisEnd:
+			firstBinPos = (analysisStart + analysisEnd) // 2
+			lastBinPos = firstBinPos
+			nBins = 1
+			continuousFrag = True
+		else:
+			firstBinPos = (2*analysisStart + vari.BINSIZE) // 2
+			if (analysisStart + 2*vari.BINSIZE) > analysisEnd:
+				secondBinPos = (analysisStart + vari.BINSIZE + analysisEnd) // 2
+				lastBinPos = secondBinPos
+				nBins = 2
+			else:
+				secondBinPos = (2*analysisStart + 3*vari.BINSIZE) // 2
+				leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
+				nBins = (analysisEnd - analysisStart) // float(vari.BINSIZE)
+				if leftValue == 0:
+					lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
+				else:
+					nBins += 1
+					lastBinPos = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2  ## should be included in the analysis
+
+			if secondBinPos - firstBinPos <= vari.FRAGLEN:
+				continuousFrag = True
 
 		###### CALCULATE INDEX VARIABLE
 		fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins = calculateBoundaries(chromoEnd, analysisStart, analysisEnd, firstBinPos, lastBinPos)
@@ -342,30 +342,22 @@ cpdef calculateTaskCovariates(chromo, analysisStart, analysisEnd):
 		###### GET SEQUENCE
 		sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
 
-	##### GET BIASES INFO FROM FILES
-	if vari.MAP == 1:
-		mapValueView = mapValues(chromo, fragStart, fragEnd)
+		##### GET BIASES INFO FROM FILES
+		if vari.MAP == 1:
+			mapValueView = mapValues(chromo, fragStart, fragEnd)
 
-	if vari.GQUAD == 1:
-		gquadValueView = gquadValues(chromo, fragStart, fragEnd)
-
-	##### STORE COVARI RESULTS
-	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=commonVari.OUTPUT_DIR, delete=True)
-	covariFileName = covariFileTemp.name
-	covariFileTemp.close()
-
-	with h5py.File(covariFileName, "w") as f:
-		covariDataSet = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+		if vari.GQUAD == 1:
+			gquadValueView = gquadValues(chromo, fragStart, fragEnd)
 
 		if continuousFrag:
 			###### GENERATE A RESULT MATRIX
 			result = makeMatrixContinuousFrag(binStart, binEnd, nBins)
 
-			calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariDataSet, result, shearStart, fragEnd, binStart, binEnd)
+			calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariDataSet, result, analysisStart, shearStart, fragEnd, binStart, binEnd)
 		else:
-			calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, shearStart, binStart, binEnd, nBins)
+			calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, analysisStart, shearStart, binStart, binEnd, nBins)
 
-	return covariFileName
+	f.close()
 
 
 cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
