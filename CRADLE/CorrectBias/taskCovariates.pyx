@@ -353,9 +353,6 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 				fragEnd = shearEnd - 2
 
 
-	###### GENERATE A RESULT MATRIX
-	result = makeMatrixDiscreteFrag(binStart, binEnd, nBins)
-
 	###### GET SEQUENCE
 	sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
 	genome.close()
@@ -570,9 +567,3 @@ cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
 		result[vari.FRAGLEN, 0] = binEnd
 
 	return result
-
-
-cpdef makeMatrixDiscreteFrag(binStart, binEnd, nBins):
-	cdef double [:,:] resultView = np.zeros((nBins, vari.COVARI_NUM), dtype=np.float64)
-
-	return resultView
