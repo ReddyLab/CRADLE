@@ -96,7 +96,7 @@ cpdef gquadValues(chromo, fragStart, fragEnd):
 
 
 cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValues, gquadValues):
-	covariIdx = np.zeros(vari.COVARI_NUM)
+	covariates = np.zeros(vari.COVARI_NUM)
 	covariIdxPtr = 0
 
 	if vari.SHEAR == 1:
@@ -127,8 +127,8 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 			mgwIdx = mgwIdx + add1
 			protIdx = protIdx + add2
 
-		covariIdx[covariIdxPtr] = mgwIdx
-		covariIdx[covariIdxPtr+1] = protIdx
+		covariates[covariIdxPtr] = mgwIdx
+		covariates[covariIdxPtr+1] = protIdx
 		covariIdxPtr += 2
 
 	if vari.PCR == 1:
@@ -142,8 +142,8 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 
 		annealIdx, denatureIdx = cu.convertGibbs(gibbs)
 
-		covariIdx[covariIdxPtr] = annealIdx
-		covariIdx[covariIdxPtr+1] = denatureIdx
+		covariates[covariIdxPtr] = annealIdx
+		covariates[covariIdxPtr+1] = denatureIdx
 		covariIdxPtr += 2
 
 	if vari.MAP == 1:
@@ -151,13 +151,13 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 		map2 = mapValues[(idx+vari.FRAGLEN-2-vari.KMER)]
 		mapIdx = map1 + map2
 
-		covariIdx[covariIdxPtr] = mapIdx
+		covariates[covariIdxPtr] = mapIdx
 		covariIdxPtr += 1
 
 	if vari.GQUAD == 1:
-		covariIdx[covariIdxPtr] = np.nanmax(np.asarray(gquadValues[(idx-2):(idx+vari.FRAGLEN-2)]))
+		covariates[covariIdxPtr] = np.nanmax(np.asarray(gquadValues[(idx-2):(idx+vari.FRAGLEN-2)]))
 
-	return covariIdx, pastMer1, pastMer2, pastStartGibbs
+	return covariates, pastMer1, pastMer2, pastStartGibbs
 
 
 cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariDataSet, result, shearStart, fragEnd, binStart, binEnd):
@@ -176,7 +176,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the genome sequence file (Not included in the range)
 
 	for idx in range(startIdx, endIdx):
-		covariIdx, pastMer1, pastMer2, pastStartGibbs = fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
+		covariates, pastMer1, pastMer2, pastStartGibbs = fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
 
 		### DETERMINE WHICH ROWS TO EDIT IN RESULT MATRIX
 		thisFragStart = idx + shearStart
@@ -225,14 +225,14 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 		if resultEndIdx < resultStartIdx:
 			for pos in range(resultStartIdx, (vari.FRAGLEN+1)):
 				for covariPos in range(vari.COVARI_NUM):
-					result[pos, covariPos+1] = result[pos, covariPos+1] + covariIdx[covariPos]
+					result[pos, covariPos+1] = result[pos, covariPos+1] + covariates[covariPos]
 			for pos in range(0, resultEndIdx):
 				for covariPos in range(vari.COVARI_NUM):
-					result[pos, covariPos+1] = result[pos, covariPos+1] + covariIdx[covariPos]
+					result[pos, covariPos+1] = result[pos, covariPos+1] + covariates[covariPos]
 		else:
 			for pos in range(resultStartIdx, resultEndIdx):
 				for covariPos in range(vari.COVARI_NUM):
-					result[pos, covariPos+1] = result[pos, covariPos+1] + covariIdx[covariPos]
+					result[pos, covariPos+1] = result[pos, covariPos+1] + covariates[covariPos]
 
 		if idx == (endIdx-1): # the last fragment
 			### pop the rest of positions that are not np.nan
