@@ -9,15 +9,11 @@ import CRADLE.CorrectBias.covariateUtils as cu
 from CRADLE.CalculateCovariates import vari
 from CRADLE.correctbiasutils import vari as commonVari
 
-cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
-	###### CALCULATE INDEX VARIABLE
+def calculateBoundaries(chromoEnd, genome, analysisStart, analysisEnd, binStart, binEnd, lastBin):
 	fragStart = binStart + 1 - vari.FRAGLEN
 	fragEnd = binEnd + vari.FRAGLEN  # not included
 	shearStart = fragStart - 2
 	shearEnd = fragEnd + 2 # not included
-
-	genome = py2bit.open(vari.GENOME)
-	chromoEnd = int(genome.chroms(chromo))
 
 	if shearStart < 1:
 		shearStart = 1
@@ -26,12 +22,12 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 		analysisStart = max(analysisStart, fragStart)
 
 		###### EDIT BINSTART/ BINEND
-		nBins = int( (analysisEnd - analysisStart) / float(vari.BINSIZE) )
-		leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
+		nBins = (analysisEnd - analysisStart) // vari.BINSIZE
+		leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
 		if leftValue != 0:
 			nBins = nBins + 1
 			lastBin = True
-			binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
+			binEnd = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2
 		else:
 			lastBin = False
 			binEnd = binStart + (nBins-1) * vari.BINSIZE
@@ -49,12 +45,12 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 			analysisEnd = analysisEndModified
 
 			###### EDIT BINSTART/ BINEND
-			nBins = int( (analysisEnd - analysisStart) / float(vari.BINSIZE) )
-			leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
+			nBins = (analysisEnd - analysisStart) // vari.BINSIZE
+			leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
 			if leftValue != 0:
 				nBins = nBins + 1
 				lastBin = True
-				binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
+				binEnd = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2
 			else:
 				lastBin = False
 				binEnd = binStart + (nBins-1) * vari.BINSIZE
@@ -66,6 +62,115 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 				shearEnd = chromoEnd
 				fragEnd = shearEnd - 2
 
+	return analysisStart, analysisEnd, fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins, lastBin
+
+
+def mapValues(chromo, fragStart, fragEnd):
+	mapFile = pyBigWig.open(vari.MAPFILE)
+	mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
+
+	mapValue[np.where(mapValue == 0)] = np.nan
+	mapValue = np.log(mapValue)
+	mapValue[np.where(np.isnan(mapValue))] = -6.0
+
+	mapValueView = cu.memoryView(mapValue)
+	mapFile.close()
+
+	return mapValueView
+
+
+def gquadValues(chromo, fragStart, fragEnd):
+	gquadFile = [0] * len(vari.GQAUDFILE)
+	gquadValue = [0] * len(vari.GQAUDFILE)
+
+	for i in range(len(vari.GQAUDFILE)):
+		gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
+		gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
+		gquadFile[i].close()
+
+	gquadValue = np.array(gquadValue)
+	gquadValue = np.nanmax(gquadValue, axis=0)
+	gquadValue[np.where(gquadValue == 0)] = np.nan
+	gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
+
+	gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
+	gquadValueView = cu.memoryView(gquadValue)
+
+	return gquadValueView
+
+
+def fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValues, gquadValues):
+	covariIdx = np.zeros(vari.COVARI_NUM)
+	covariIdxPtr = 0
+
+	if vari.SHEAR == 1:
+		###  mer1
+		mer1 = sequence[(idx-2):(idx+3)]
+		if 'N' in mer1:
+			pastMer1 = -1
+			mgwIdx = vari.N_MGW
+			protIdx = vari.N_PROT
+		else:
+			if pastMer1 == -1: # there is no information on pastMer1
+				pastMer1, mgwIdx, protIdx = cu.find5merProb(mer1)
+			else:
+				pastMer1, mgwIdx, protIdx = cu.edit5merProb(pastMer1, mer1[0], mer1[4])
+
+		###  mer2
+		fragEndIdx = idx + vari.FRAGLEN
+		mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
+		if 'N' in mer2:
+			pastMer2 = -1
+			mgwIdx = mgwIdx + vari.N_MGW
+			protIdx = protIdx + vari.N_PROT
+		else:
+			if pastMer2 == -1:
+				pastMer2, add1, add2 = cu.findComple5merProb(mer2)
+			else:
+				pastMer2, add1, add2 = cu.editComple5merProb(pastMer2, mer2[0], mer2[4])
+			mgwIdx = mgwIdx + add1
+			protIdx = protIdx + add2
+
+		covariIdx[covariIdxPtr] = mgwIdx
+		covariIdx[covariIdxPtr+1] = protIdx
+		covariIdxPtr += 2
+
+	if vari.PCR == 1:
+		sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
+		if pastStartGibbs == -1:
+			startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, vari.FRAGLEN)
+		else:
+			oldDimer = sequenceIdx[0:2].upper()
+			newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
+			startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs)
+
+		annealIdx, denatureIdx = cu.convertGibbs(gibbs)
+
+		covariIdx[covariIdxPtr] = annealIdx
+		covariIdx[covariIdxPtr+1] = denatureIdx
+		covariIdxPtr += 2
+
+	if vari.MAP == 1:
+		map1 = mapValues[(idx-2)]
+		map2 = mapValues[(idx+vari.FRAGLEN-2-vari.KMER)]
+		mapIdx = map1 + map2
+
+		covariIdx[covariIdxPtr] = mapIdx
+		covariIdxPtr += 1
+
+	if vari.GQUAD == 1:
+		covariIdx[covariIdxPtr] = np.nanmax(np.asarray(gquadValues[(idx-2):(idx+vari.FRAGLEN-2)]))
+
+	return covariIdx, pastMer1, pastMer2, pastStartGibbs
+
+
+cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
+	genome = py2bit.open(vari.GENOME)
+	chromoEnd = int(genome.chroms(chromo))
+
+	###### CALCULATE INDEX VARIABLE
+	analysisStart, analysisEnd, fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins, lastBin = calculateBoundaries(chromoEnd, genome, analysisStart, analysisEnd, binStart, binEnd, lastBin)
+
 	###### GENERATE A RESULT MATRIX
 	result = makeMatrixContinuousFrag(binStart, binEnd, nBins)
 
@@ -75,35 +180,10 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 
 	##### OPEN BIAS FILES
 	if vari.MAP == 1:
-		mapFile = pyBigWig.open(vari.MAPFILE)
-		mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
-
-		mapValue[np.where(mapValue == 0)] = np.nan
-		mapValue = np.log(mapValue)
-		mapValue[np.where(np.isnan(mapValue))] = float(-6)
-
-		mapValueView = cu.memoryView(mapValue)
-		mapFile.close()
-		del mapFile, mapValue
+		mapValueView = mapValues(chromo, fragStart, fragEnd)
 
 	if vari.GQUAD == 1:
-		gquadFile = [0] * len(vari.GQAUDFILE)
-		gquadValue = [0] * len(vari.GQAUDFILE)
-
-		for i in range(len(vari.GQAUDFILE)):
-			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
-			gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
-			gquadFile[i].close()
-
-		gquadValue = np.array(gquadValue)
-		gquadValue = np.nanmax(gquadValue, axis=0)
-		gquadValue[np.where(gquadValue == 0)] = np.nan
-		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
-
-		gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
-		gquadView = cu.memoryView(gquadValue)
-
-		del gquadFile, gquadValue
+		gquadValueView = gquadValues(chromo, fragStart, fragEnd)
 
 
 	##### INDEX IN 'sequence'
@@ -129,70 +209,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	for idx in range(startIdx, endIdx):
-		covariIdx = [0] * vari.COVARI_NUM
-		covariIdxPtr = 0
-
-		if vari.SHEAR == 1:
-			###  mer1
-			mer1 = sequence[(idx-2):(idx+3)]
-			if 'N' in mer1:
-				pastMer1 = -1
-				mgwIdx = vari.N_MGW
-				protIdx = vari.N_PROT
-			else:
-				if pastMer1 == -1: # there is no information on pastMer1
-					pastMer1, mgwIdx, protIdx = cu.find5merProb(mer1)
-				else:
-					pastMer1, mgwIdx, protIdx = cu.edit5merProb(pastMer1, mer1[0], mer1[4])
-
-			###  mer2
-			fragEndIdx = idx + vari.FRAGLEN
-			mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
-			if 'N' in mer2:
-				pastMer2 = -1
-				mgwIdx = mgwIdx + vari.N_MGW
-				protIdx = protIdx + vari.N_PROT
-			else:
-				if pastMer2 == -1:
-					pastMer2, add1, add2 = cu.findComple5merProb(mer2)
-				else:
-					pastMer2, add1, add2 = cu.editComple5merProb(pastMer2, mer2[0], mer2[4])
-				mgwIdx = mgwIdx + add1
-				protIdx = protIdx + add2
-
-			covariIdx[covariIdxPtr] = mgwIdx
-			covariIdx[covariIdxPtr+1] = protIdx
-			covariIdxPtr = covariIdxPtr + 2
-
-
-		if vari.PCR == 1:
-			sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
-			if pastStartGibbs == -1:
-				startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, vari.FRAGLEN)
-			else:
-				oldDimer = sequenceIdx[0:2].upper()
-				newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
-				startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs)
-
-			annealIdx, denatureIdx = cu.convertGibbs(gibbs)
-
-			covariIdx[covariIdxPtr] = annealIdx
-			covariIdx[covariIdxPtr+1] = denatureIdx
-			covariIdxPtr = covariIdxPtr + 2
-
-		if vari.MAP == 1:
-			map1 = mapValueView[(idx-2)]
-			map2 = mapValueView[(idx+vari.FRAGLEN-2-vari.KMER)]
-			mapIdx = map1 + map2
-
-			covariIdx[covariIdxPtr] = mapIdx
-			covariIdxPtr = covariIdxPtr + 1
-
-		if vari.GQUAD == 1:
-			gquadIdx = np.nanmax(np.asarray(gquadView[(idx-2):(idx+vari.FRAGLEN-2)]))
-
-			covariIdx[covariIdxPtr] = gquadIdx
-			covariIdxPtr = covariIdxPtr + 1
+		covariIdx, pastMer1, pastMer2, pastStartGibbs = fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
 
 		### DETERMINE WHICH ROWS TO EDIT IN RESULT MATRIX
 		thisFragStart = idx + shearStart
@@ -285,62 +302,11 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 
 
 cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
-	###### CALCULATE INDEX VARIABLE
-	fragStart = binStart + 1 - vari.FRAGLEN
-	fragEnd = binEnd + vari.FRAGLEN  # not included
-	shearStart = fragStart - 2
-	shearEnd = fragEnd + 2 # not included
-
 	genome = py2bit.open(vari.GENOME)
 	chromoEnd = int(genome.chroms(chromo))
 
-	if shearStart < 1:
-		shearStart = 1
-		fragStart = 3
-		binStart = max(binStart, fragStart)
-		analysisStart = max(analysisStart, fragStart)
-
-		###### EDIT BINSTART/ BINEND
-		nBins = int( (analysisEnd-analysisStart) / float(vari.BINSIZE) )
-		leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
-		if leftValue != 0:
-			nBins = nBins + 1
-			lastBin = True
-			binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
-		else:
-			lastBin = False
-			binEnd = binStart + (nBins-1) * vari.BINSIZE
-
-		fragEnd = binEnd + vari.FRAGLEN
-		shearEnd = fragEnd + 2
-
-	if shearEnd > chromoEnd:
-		analysisEndModified = min(analysisEnd, chromoEnd - 2)  # not included
-
-		if analysisEndModified == analysisEnd:
-			shearEnd = chromoEnd
-			fragEnd = shearEnd - 2
-		else:
-			analysisEnd = analysisEndModified
-
-			###### EDIT BINSTART/ BINEND
-			nBins = int( (analysisEnd-analysisStart) / float(vari.BINSIZE) )
-			leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
-			if leftValue != 0:
-				nBins = nBins + 1
-				lastBin = True
-				binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
-			else:
-				lastBin = False
-				binEnd = binStart + (nBins-1) * vari.BINSIZE
-
-			fragEnd = binEnd + vari.FRAGLEN
-			shearEnd = fragEnd + 2
-
-			if shearEnd > chromoEnd:
-				shearEnd = chromoEnd
-				fragEnd = shearEnd - 2
-
+	###### CALCULATE INDEX VARIABLE
+	analysisStart, analysisEnd, fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins, lastBin = calculateBoundaries(chromoEnd, genome, analysisStart, analysisEnd, binStart, binEnd, lastBin)
 
 	###### GENERATE A RESULT MATRIX
 	result = makeMatrixDiscreteFrag(binStart, binEnd, nBins)
@@ -351,35 +317,10 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 
 	##### OPEN BIAS FILES
 	if vari.MAP == 1:
-		mapFile = pyBigWig.open(vari.MAPFILE)
-		mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
-
-		mapValue[np.where(mapValue == 0)] = np.nan
-		mapValue = np.log(mapValue)
-		mapValue[np.where(np.isnan(mapValue))] = float(-6)
-
-		mapValueView = cu.memoryView(mapValue)
-		mapFile.close()
-		del mapFile, mapValue
+		mapValueView = mapValues(chromo, fragStart, fragEnd)
 
 	if vari.GQUAD == 1:
-		gquadFile = [0] * len(vari.GQAUDFILE)
-		gquadValue = [0] * len(vari.GQAUDFILE)
-
-		for i in range(len(vari.GQAUDFILE)):
-			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
-			gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
-			gquadFile[i].close()
-
-		gquadValue = np.array(gquadValue)
-		gquadValue = np.nanmax(gquadValue, axis=0)
-		gquadValue[np.where(gquadValue == 0)] = np.nan
-		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
-
-		gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
-		gquadView = cu.memoryView(gquadValue)
-
-		del gquadFile, gquadValue
+		gquadValueView = gquadValues(chromo, fragStart, fragEnd)
 
 
 	##### STORE COVARI RESULTS
@@ -416,81 +357,16 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 		if vari.PCR == 1:
 			pastStartGibbs = -1
 
-		line = [0.0] * vari.COVARI_NUM
+		line = np.zeros(vari.COVARI_NUM)
 		for binFragIdx in range(thisBinNumFrag):
 			idx = thisBinFirstFragStartIdx + binFragIdx
+			covariates, pastMer1, pastMer2, pastStartGibbs = fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
 
-			covariIdx = [0] * vari.COVARI_NUM
-			covariIdxPtr = 0
-
-			if vari.SHEAR == 1:
-				###  mer1
-				mer1 = sequence[(idx-2):(idx+3)]
-				if 'N' in mer1:
-					pastMer1 = -1
-					mgwIdx = vari.N_MGW
-					protIdx = vari.N_PROT
-				else:
-					if pastMer1 == -1: # there is no information on pastMer1
-						pastMer1, mgwIdx, protIdx = cu.find5merProb(mer1)
-					else:
-						pastMer1, mgwIdx, protIdx = cu.edit5merProb(pastMer1, mer1[0], mer1[4])
-
-				###  mer2
-				fragEndIdx = idx + vari.FRAGLEN
-				mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
-				if 'N' in mer2:
-					pastMer2 = -1
-					mgwIdx = mgwIdx + vari.N_MGW
-					protIdx = protIdx + vari.N_PROT
-				else:
-					if pastMer2 == -1:
-						pastMer2, add1, add2 = cu.findComple5merProb(mer2)
-					else:
-						pastMer2, add1, add2 = cu.editComple5merProb(pastMer2, mer2[0], mer2[4])
-					mgwIdx = mgwIdx + add1
-					protIdx = protIdx + add2
-
-				covariIdx[covariIdxPtr] = mgwIdx
-				covariIdx[covariIdxPtr+1] = protIdx
-				covariIdxPtr = covariIdxPtr + 2
-
-			if vari.PCR == 1:
-				sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
-				if pastStartGibbs == -1:
-					startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, vari.FRAGLEN)
-				else:
-					oldDimer = sequenceIdx[0:2].upper()
-					newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
-					startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs)
-
-				annealIdx, denatureIdx = cu.convertGibbs(gibbs)
-
-				covariIdx[covariIdxPtr] = annealIdx
-				covariIdx[covariIdxPtr+1] = denatureIdx
-				covariIdxPtr = covariIdxPtr + 2
-
-			if vari.MAP == 1:
-				map1 = mapValueView[(idx-2)]
-				map2 = mapValueView[(idx+vari.FRAGLEN-2-vari.KMER)]
-				mapIdx = map1 + map2
-
-				covariIdx[covariIdxPtr] = mapIdx
-				covariIdxPtr = covariIdxPtr + 1
-
-			if vari.GQUAD == 1:
-				gquadIdx = np.nanmax(np.asarray(gquadView[(idx-2):(idx+vari.FRAGLEN-2)]))
-
-				covariIdx[covariIdxPtr] = gquadIdx
-				covariIdxPtr = covariIdxPtr + 1
-
-
-			for covariPos in range(vari.COVARI_NUM):
-				line[covariPos] = line[covariPos] + covariIdx[covariPos]
+			line += covariates
 
 		covariFile[resultIdx] = line
 
-		resultIdx = resultIdx + 1
+		resultIdx += 1
 
 		if resultIdx == nBins:
 			break
@@ -501,8 +377,8 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 
 
 cpdef calculateTaskCovariates(chromo, analysisStart, analysisEnd):
-
 	#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
+	#### TODO: What is the logic here? why do these things determine continuousFrag for discreteFrag?
 	if (analysisStart + vari.BINSIZE) >= analysisEnd:
 		firstBinPos = (analysisStart + analysisEnd) // 2
 		lastBinPos = firstBinPos
