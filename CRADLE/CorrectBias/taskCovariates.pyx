@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import tempfile
 import warnings
 import h5py

@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import tempfile
 import h5py
 import numpy as np
