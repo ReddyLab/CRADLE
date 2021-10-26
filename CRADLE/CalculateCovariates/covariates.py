@@ -1,5 +1,3 @@
-import gc
-import multiprocessing
 import sys
 import time
 
@@ -10,7 +8,6 @@ from CRADLE.CalculateCovariates.taskCovariates import calculateTaskCovariates
 from CRADLE.correctbiasutils import vari as commonVari
 from CRADLE.logging import timer
 
-RC_PERCENTILE = [0, 20, 40, 60, 80, 90, 92, 94, 96, 98, 99, 100]
 
 
 def checkArgs(args):
@@ -33,22 +30,11 @@ def init(args):
 def fitToCorrectionModel():
 	tasks = utils.divideGenome(commonVari.REGIONS)
 
-	if len(tasks) < commonVari.NUMPROCESS:
-		numProcess = len(tasks)
-	else:
-		numProcess = commonVari.NUMPROCESS
+	numProcess = min(len(tasks), commonVari.NUMPROCESS)
 
-	pool = multiprocessing.Pool(numProcess)
+	covariFileNames = utils.process(numProcess, calculateTaskCovariates, tasks, context="fork")
 
-	# `caluculateTaskCovariates` calls `correctReadCounts`. `correctReadCounts` is the function that
-	# fits regions to the correction model.
-	resultMeta = pool.starmap_async(calculateTaskCovariates, tasks).get()
-	pool.close()
-	pool.join()
-	del pool
-	gc.collect()
-
-	return resultMeta
+	return covariFileNames
 
 
 def run(args):
