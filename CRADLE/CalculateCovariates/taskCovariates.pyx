@@ -6,7 +6,7 @@ import numpy as np
 import py2bit
 import pyBigWig
 
-import CRADLE.CorrectBias.covariateUtils as cu
+import CRADLE.CalculateCovariates.covariateUtils as cu
 
 from CRADLE.CalculateCovariates import vari
 from CRADLE.correctbiasutils import vari as commonVari
@@ -103,7 +103,7 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 
 	if vari.SHEAR == 1:
 		###  mer1
-		mer1 = sequence[(idx-2):(idx+3)]
+		mer1 = sequence[(idx-2):(idx+3)].upper()
 		if 'N' in mer1:
 			pastMer1 = -1
 			mgwIdx = vari.N_MGW
@@ -116,7 +116,7 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 
 		###  mer2
 		fragEndIdx = idx + vari.FRAGLEN
-		mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
+		mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)].upper()
 		if 'N' in mer2:
 			pastMer2 = -1
 			mgwIdx = mgwIdx + vari.N_MGW
