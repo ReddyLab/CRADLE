@@ -36,7 +36,7 @@ def calculateCovariates():
 	outputBaseName = os.path.basename(commonVari.OUTPUT_DIR)
 
 	for chromo, tasks in itertools.groupby(tasks, lambda x: x[0]):
-		taskGroups.append((chromo, os.path.join(commonVari.OUTPUT_DIR, f"{outputBaseName}_{chromo}.hdf5"), tasks))
+		taskGroups.append((chromo, os.path.join(commonVari.OUTPUT_DIR, f"{outputBaseName}_{chromo}.hdf5"), list(tasks)))
 
 	numProcess = min(len(taskGroups), commonVari.NUMPROCESS)
 

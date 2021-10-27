@@ -65,8 +65,7 @@ cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEn
 	return fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins
 
 
-cpdef mapValues(chromo, fragStart, fragEnd):
-	mapFile = pyBigWig.open(vari.MAPFILE)
+cpdef mapValues(mapFile, chromo, fragStart, fragEnd):
 	mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
 
 	mapValue[np.where(mapValue == 0)] = np.nan
@@ -74,26 +73,22 @@ cpdef mapValues(chromo, fragStart, fragEnd):
 	mapValue[np.where(np.isnan(mapValue))] = -6.0
 
 	mapValueView = cu.memoryView(mapValue)
-	mapFile.close()
 
 	return mapValueView
 
 
-cpdef gquadValues(chromo, fragStart, fragEnd):
-	gquadFile = [0] * len(vari.GQAUDFILE)
-	gquadValue = [0] * len(vari.GQAUDFILE)
+cpdef gquadValues(gquadFiles, chromo, fragStart, fragEnd):
+	gquadValue = [0] * len(gquadFiles)
 
-	for i in range(len(vari.GQAUDFILE)):
-		gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
-		gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
-		gquadFile[i].close()
+	for i, gquadFile in enumerate(gquadFiles):
+		gquadValue[i] = gquadFile.values(chromo, fragStart, fragEnd)
 
 	gquadValue = np.array(gquadValue)
 	gquadValue = np.nanmax(gquadValue, axis=0)
 	gquadValue[np.where(gquadValue == 0)] = np.nan
-	gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
+	gquadValue = np.log(gquadValue / vari.GQAUD_MAX)
 
-	gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
+	gquadValue[np.where(np.isnan(gquadValue))] = -5.0
 	gquadValueView = cu.memoryView(gquadValue)
 
 	return gquadValueView
@@ -303,8 +298,13 @@ cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, c
 
 
 cpdef calculateTaskCovariates(chromo, outputFilename, regions):
-	with py2bit.open(vari.GENOME) as genome:
-		chromoEnd = int(genome.chroms(chromo))
+	genome = py2bit.open(vari.GENOME)
+	chromoEnd = int(genome.chroms(chromo))
+	mapFile = pyBigWig.open(vari.MAPFILE)
+	gquadFiles = [0] * len(vari.GQAUDFILE)
+	for i, file in enumerate(vari.GQAUDFILE):
+		gquadFiles[i] = pyBigWig.open(file)
+
 
 	##### CREATE COVARIATE FILE
 	f = h5py.File(outputFilename, "w")
@@ -348,10 +348,10 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 
 		##### GET BIASES INFO FROM FILES
 		if vari.MAP == 1:
-			mapValueView = mapValues(chromo, fragStart, fragEnd)
+			mapValueView = mapValues(mapFile, chromo, fragStart, fragEnd)
 
 		if vari.GQUAD == 1:
-			gquadValueView = gquadValues(chromo, fragStart, fragEnd)
+			gquadValueView = gquadValues(gquadFiles, chromo, fragStart, fragEnd)
 
 		if continuousFrag:
 			###### GENERATE A RESULT MATRIX
@@ -361,7 +361,11 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 		else:
 			calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, analysisStart, shearStart, binStart, binEnd, nBins)
 
+	for file in gquadFiles:
+		file.close()
+	mapFile.close()
 	f.close()
+	genome.close()
 
 
 cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
