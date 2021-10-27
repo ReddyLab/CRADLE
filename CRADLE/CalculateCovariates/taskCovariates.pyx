@@ -11,7 +11,9 @@ import CRADLE.CalculateCovariates.covariateUtils as cu
 from CRADLE.CalculateCovariates import vari
 from CRADLE.correctbiasutils import vari as commonVari
 
-cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEnd):
+
+
+cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEnd, nBins):
 	fragStart = binStart + 1 - vari.FRAGLEN
 	fragEnd = binEnd + vari.FRAGLEN  # not included
 	shearStart = fragStart - 2
@@ -27,7 +29,7 @@ cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEn
 		nBins = (analysisEnd - analysisStart) // vari.BINSIZE
 		leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
 		if leftValue != 0:
-			nBins = nBins + 1
+			nBins += 1
 			binEnd = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2
 		else:
 			binEnd = binStart + (nBins-1) * vari.BINSIZE
@@ -48,7 +50,7 @@ cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEn
 			nBins = (analysisEnd - analysisStart) // vari.BINSIZE
 			leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
 			if leftValue != 0:
-				nBins = nBins + 1
+				nBins += 1
 				binEnd = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2
 			else:
 				binEnd = binStart + (nBins-1) * vari.BINSIZE
@@ -328,7 +330,7 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 			else:
 				secondBinPos = (2*analysisStart + 3*vari.BINSIZE) // 2
 				leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
-				nBins = (analysisEnd - analysisStart) // float(vari.BINSIZE)
+				nBins = (analysisEnd - analysisStart) // vari.BINSIZE
 				if leftValue == 0:
 					lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
 				else:
@@ -339,7 +341,7 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 				continuousFrag = True
 
 		###### CALCULATE INDEX VARIABLE
-		fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins = calculateBoundaries(chromoEnd, analysisStart, analysisEnd, firstBinPos, lastBinPos)
+		fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins = calculateBoundaries(chromoEnd, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins)
 
 		###### GET SEQUENCE
 		sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
