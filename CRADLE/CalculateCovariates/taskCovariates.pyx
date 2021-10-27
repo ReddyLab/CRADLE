@@ -13,6 +13,13 @@ from CRADLE.correctbiasutils import vari as commonVari
 
 
 
+# The covariate values stored in the HDF files start at index 0 (0-index, obviously)
+# The lowest start point for an analysis region is 3 (1-indexed), so we need to subtract
+# 3 from the analysis start and end points to match them up with correct covariate values
+# in the HDF files.
+COVARIATE_FILE_INDEX_OFFSET = 3
+
+
 cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEnd, nBins):
 	fragStart = binStart + 1 - vari.FRAGLEN
 	fragEnd = binEnd + vari.FRAGLEN  # not included
@@ -200,7 +207,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 				for covariPos in range(vari.COVARI_NUM):
 					line.extend([ result[resultStartIdx, (covariPos+1)]  ])
 					result[resultStartIdx, (covariPos+1)] = float(0)
-				covariDataSet[analysisStart + numPoppedPos, :] = line
+				covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
 
 				numPoppedPos = numPoppedPos + 1
 				if maxBinPos >= binEnd:
@@ -240,7 +247,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 					line = []
 					for covariPos in range(vari.COVARI_NUM):
 						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[analysisStart + numPoppedPos, :] = line
+					covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
 
 					numPoppedPos = numPoppedPos + 1
 
@@ -248,7 +255,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 					line = []
 					for covariPos in range(vari.COVARI_NUM):
 						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[analysisStart + numPoppedPos, :] = line
+					covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
 
 					numPoppedPos = numPoppedPos + 1
 			else:
@@ -256,7 +263,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 					line = []
 					for covariPos in range(vari.COVARI_NUM):
 						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[analysisStart + numPoppedPos, :] = line
+					covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
 
 					numPoppedPos = numPoppedPos + 1
 
@@ -294,7 +301,7 @@ cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, c
 
 			line += covariates
 
-		covariDataSet[analysisStart + resultIdx, :] = line
+		covariDataSet[analysisStart + resultIdx - COVARIATE_FILE_INDEX_OFFSET, :] = line
 
 
 cpdef calculateTaskCovariates(chromo, outputFilename, regions):
