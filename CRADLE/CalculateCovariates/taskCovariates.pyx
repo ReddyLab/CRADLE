@@ -69,7 +69,7 @@ cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEn
 				shearEnd = chromoEnd
 				fragEnd = shearEnd - 2
 
-	return fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins
+	return analysisStart, analysisEnd, fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins
 
 
 cpdef mapValues(mapFile, chromo, fragStart, fragEnd):
@@ -348,7 +348,7 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 				continuousFrag = True
 
 		###### CALCULATE INDEX VARIABLE
-		fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins = calculateBoundaries(chromoEnd, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins)
+		analysisStart, analysisEnd, fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins = calculateBoundaries(chromoEnd, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins)
 
 		###### GET SEQUENCE
 		sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
