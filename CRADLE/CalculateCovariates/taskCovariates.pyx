@@ -163,6 +163,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 	if vari.SHEAR == 1:
 		pastMer1 = -1
 		pastMer2 = -1
+
 	if vari.PCR == 1:
 		pastStartGibbs = -1
 
@@ -172,6 +173,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 	##### INDEX IN 'sequence'
 	startIdx = 2  # index in the genome sequence file (Included in the range)
 	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the genome sequence file (Not included in the range)
+
 
 	for idx in range(startIdx, endIdx):
 		covariates, pastMer1, pastMer2, pastStartGibbs = fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
@@ -183,81 +185,61 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 		if resultStartIdx == -1:
 			resultStartIdx = 0
 			resultEndIdx = 1 # not included
-			if not np.isnan(result[resultEndIdx, 0]):
-				while result[resultEndIdx, 0] < thisFragEnd:
-					resultEndIdx = resultEndIdx + 1
-					if resultEndIdx > vari.FRAGLEN:
-						resultEndIdx = resultEndIdx - (vari.FRAGLEN+1)
-					if np.isnan(result[resultEndIdx, 0]):
-						break
 			maxBinPos = binStart + vari.FRAGLEN
 			numPoppedPos = 0
+
+			while not np.isnan(result[resultEndIdx, 0]) and result[resultEndIdx, 0] < thisFragEnd:
+				resultEndIdx += 1
+				if resultEndIdx > vari.FRAGLEN:
+					resultEndIdx -= (vari.FRAGLEN + 1)
 		else:
 			while result[resultStartIdx, 0] < thisFragStart:
 				## pop the element
-				line = []
-				for covariPos in range(vari.COVARI_NUM):
-					line.extend([ result[resultStartIdx, (covariPos+1)]  ])
-					result[resultStartIdx, (covariPos+1)] = float(0)
-				covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
+				covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = result[resultStartIdx, 1:]
+				result[resultStartIdx, 1:] = 0.0
 
-				numPoppedPos = numPoppedPos + 1
+				numPoppedPos += 1
 				if maxBinPos >= binEnd:
 					result[resultStartIdx, 0] = np.nan
 				else:
 					result[resultStartIdx, 0] = maxBinPos + 1
-					maxBinPos = maxBinPos + 1
+					maxBinPos += 1
 
-				resultStartIdx = resultStartIdx + 1
+				resultStartIdx += 1
 				if resultStartIdx > vari.FRAGLEN:
-					resultStartIdx = resultStartIdx - (vari.FRAGLEN+1)
+					resultStartIdx -= (vari.FRAGLEN + 1)
 
-			if not np.isnan(result[resultEndIdx, 0]):
-				while result[resultEndIdx, 0] < thisFragEnd:
-					resultEndIdx = resultEndIdx + 1
-					if resultEndIdx > vari.FRAGLEN:
-						resultEndIdx = resultEndIdx - (vari.FRAGLEN+1)
-					if np.isnan(result[resultEndIdx, 0]):
-						break
+			while not np.isnan(result[resultEndIdx, 0]) and result[resultEndIdx, 0] < thisFragEnd:
+				resultEndIdx += 1
+				if resultEndIdx > vari.FRAGLEN:
+					resultEndIdx -= (vari.FRAGLEN + 1)
 
 		if resultEndIdx < resultStartIdx:
-			for pos in range(resultStartIdx, (vari.FRAGLEN+1)):
-				for covariPos in range(vari.COVARI_NUM):
-					result[pos, covariPos+1] = result[pos, covariPos+1] + covariates[covariPos]
-			for pos in range(0, resultEndIdx):
-				for covariPos in range(vari.COVARI_NUM):
-					result[pos, covariPos+1] = result[pos, covariPos+1] + covariates[covariPos]
+			result[resultStartIdx:vari.FRAGLEN+1, 1:] += covariates
+			result[0:resultEndIdx, 1:] += covariates
 		else:
-			for pos in range(resultStartIdx, resultEndIdx):
-				for covariPos in range(vari.COVARI_NUM):
-					result[pos, covariPos+1] = result[pos, covariPos+1] + covariates[covariPos]
+			result[resultStartIdx:resultEndIdx, 1:] += covariates
 
 		if idx == (endIdx-1): # the last fragment
 			### pop the rest of positions that are not np.nan
 			if resultEndIdx < resultStartIdx:
-				for pos in range(resultStartIdx, (vari.FRAGLEN+1)):
-					line = []
-					for covariPos in range(vari.COVARI_NUM):
-						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
+				posLen = (vari.FRAGLEN+1) - resultStartIdx
+				start = analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET
+				end = start + posLen
+				covariDataSet[start:end, :] = result[resultStartIdx: vari.FRAGLEN+1, 1:]
+				numPoppedPos += posLen
 
-					numPoppedPos = numPoppedPos + 1
-
-				for pos in range(0, resultEndIdx):
-					line = []
-					for covariPos in range(vari.COVARI_NUM):
-						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
-
-					numPoppedPos = numPoppedPos + 1
+				posLen = resultEndIdx
+				start = analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET
+				end = start + posLen
+				covariDataSet[start:end, :] = result[0: resultEndIdx, 1:]
+				numPoppedPos += posLen
 			else:
-				for pos in range(resultStartIdx, resultEndIdx):
-					line = []
-					for covariPos in range(vari.COVARI_NUM):
-						line.extend([ result[pos, (covariPos+1)]  ])
-					covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = line
-
-					numPoppedPos = numPoppedPos + 1
+				posLen = resultEndIdx - resultStartIdx
+				start = analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET
+				end = start + posLen
+				covariDataSet[start:end, :] = result[resultStartIdx: resultEndIdx, 1:]
+				numPoppedPos += posLen
 
 
 cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, analysisStart, shearStart, binStart, binEnd, nBins):
@@ -287,9 +269,8 @@ cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, c
 			pastStartGibbs = -1
 
 		line = np.zeros(vari.COVARI_NUM)
-		for binFragIdx in range(thisBinNumFrag):
-			idx = thisBinFirstFragStartIdx + binFragIdx
-			covariates, pastMer1, pastMer2, pastStartGibbs = fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
+		for binFragIdx in range(thisBinFirstFragStartIdx, thisBinFirstFragStartIdx + thisBinNumFrag):
+			covariates, pastMer1, pastMer2, pastStartGibbs = fragCovariates(binFragIdx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
 
 			line += covariates
 
