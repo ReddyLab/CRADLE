@@ -99,7 +99,6 @@ def getArgs():
 	covariate_required.add_argument('-genome', '-faFile', help=".2bit file.", required=True) # faFile is deprecated
 
 	covariate_optional = covariate_parser.add_argument_group("Optional Args")
-	covariate_optional.add_argument('-binSize', type=int, help="The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)", default=1)
 	covariate_optional.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")
 	covariate_optional.add_argument('-kmer', help="The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'")
 	covariate_optional.add_argument('-gquadFile', help="Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")

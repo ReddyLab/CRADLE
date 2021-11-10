@@ -11,7 +11,6 @@ def setGlobalVariables(args):
 	### input bigwig files
 	setBiasFiles(args)
 	FRAGLEN = args.l
-	BINSIZE = args.binSize
 
 
 def setBiasFiles(args):

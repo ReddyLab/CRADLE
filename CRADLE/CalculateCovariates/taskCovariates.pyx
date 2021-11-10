@@ -19,6 +19,8 @@ from CRADLE.correctbiasutils import vari as commonVari
 # in the HDF files.
 COVARIATE_FILE_INDEX_OFFSET = 3
 
+BINSIZE = 1
+
 
 cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEnd, nBins):
 	fragStart = binStart + 1 - vari.FRAGLEN
@@ -33,13 +35,8 @@ cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEn
 		analysisStart = max(analysisStart, fragStart)
 
 		###### EDIT BINSTART/ BINEND
-		nBins = (analysisEnd - analysisStart) // vari.BINSIZE
-		leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
-		if leftValue != 0:
-			nBins += 1
-			binEnd = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2
-		else:
-			binEnd = binStart + (nBins-1) * vari.BINSIZE
+		nBins = analysisEnd - analysisStart
+		binEnd = binStart + (nBins - 1)
 
 		fragEnd = binEnd + vari.FRAGLEN
 		shearEnd = fragEnd + 2
@@ -54,13 +51,8 @@ cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEn
 			analysisEnd = analysisEndModified
 
 			###### EDIT BINSTART/ BINEND
-			nBins = (analysisEnd - analysisStart) // vari.BINSIZE
-			leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
-			if leftValue != 0:
-				nBins += 1
-				binEnd = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2
-			else:
-				binEnd = binStart + (nBins-1) * vari.BINSIZE
+			nBins = analysisEnd - analysisStart
+			binEnd = binStart + (nBins - 1)
 
 			fragEnd = binEnd + vari.FRAGLEN
 			shearEnd = fragEnd + 2
@@ -273,7 +265,7 @@ cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, c
 		if resultIdx == (nBins-1):
 			pos = binEnd
 		else:
-			pos = binStart + resultIdx * vari.BINSIZE
+			pos = binStart + resultIdx
 
 		thisBinFirstFragStart = pos + 1 - vari.FRAGLEN
 		thisBinLastFragStart = pos
@@ -323,26 +315,21 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 
 		#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
 		#### TODO: What is the logic here? why do these things determine continuousFrag for discreteFrag?
-		if (analysisStart + vari.BINSIZE) >= analysisEnd:
+		if (analysisStart + BINSIZE) >= analysisEnd:
 			firstBinPos = (analysisStart + analysisEnd) // 2
 			lastBinPos = firstBinPos
 			nBins = 1
 			continuousFrag = True
 		else:
-			firstBinPos = (2*analysisStart + vari.BINSIZE) // 2
-			if (analysisStart + 2*vari.BINSIZE) > analysisEnd:
-				secondBinPos = (analysisStart + vari.BINSIZE + analysisEnd) // 2
+			firstBinPos = (2 * analysisStart + BINSIZE) // 2
+			if (analysisStart + 2) > analysisEnd:
+				secondBinPos = (analysisStart + BINSIZE + analysisEnd) // 2
 				lastBinPos = secondBinPos
 				nBins = 2
 			else:
-				secondBinPos = (2*analysisStart + 3*vari.BINSIZE) // 2
-				leftValue = (analysisEnd - analysisStart) % vari.BINSIZE
-				nBins = (analysisEnd - analysisStart) // vari.BINSIZE
-				if leftValue == 0:
-					lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
-				else:
-					nBins += 1
-					lastBinPos = (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) // 2  ## should be included in the analysis
+				secondBinPos = (2 * analysisStart + 3) // 2
+				nBins = analysisEnd - analysisStart
+				lastBinPos = firstBinPos + (nBins - 1) ## should be included in the analysis
 
 			if secondBinPos - firstBinPos <= vari.FRAGLEN:
 				continuousFrag = True
@@ -378,7 +365,7 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
 	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
 	for i in range(vari.FRAGLEN+1):
-		pos = binStart + i * vari.BINSIZE
+		pos = binStart + i
 
 		if pos > binEnd:
 			result[i, 0] = np.nan
