@@ -102,7 +102,6 @@ def getArgs():
 	covariate_optional.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")
 	covariate_optional.add_argument('-kmer', help="The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'")
 	covariate_optional.add_argument('-gquadFile', help="Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
-	covariate_optional.add_argument('-gquadMax', type=float, help="The maximum gquad score. This is used to normalize Gquad score. default=78.6", default=78.6)
 	covariate_optional.add_argument('-o', help="""Output directory. All calculated covariate files will be stored here. If the directory doesn't exist, cradle will make the directory. default='CRADLE_covariates'. The output covariate files will be named {output_directory}_{chromosome}.hdf5 (e.g., 'CRADLE_covariates_chrX.hdf5')
 
 Note that, to make the files compatible with the CRADLE correctBias_stored step, the directory should be named {genome}_fragLen{fragment length}_kmer{sequencing read count}. For example, 'hg38_fragLen1000_kmer100'.""", required=False, default="CRADLE_covariates")

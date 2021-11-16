@@ -127,7 +127,7 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 
 		covariates[covariIdxPtr] = mgwIdx
 		covariates[covariIdxPtr+1] = protIdx
-		covariIdxPtr += 2
+	covariIdxPtr += 2
 
 	if vari.PCR == 1:
 		sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
@@ -142,7 +142,7 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 
 		covariates[covariIdxPtr] = annealIdx
 		covariates[covariIdxPtr+1] = denatureIdx
-		covariIdxPtr += 2
+	covariIdxPtr += 2
 
 	if vari.MAP == 1:
 		map1 = mapValues[(idx-2)]
@@ -150,7 +150,7 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 		mapIdx = map1 + map2
 
 		covariates[covariIdxPtr] = mapIdx
-		covariIdxPtr += 1
+	covariIdxPtr += 1
 
 	if vari.GQUAD == 1:
 		covariates[covariIdxPtr] = np.nanmax(np.asarray(gquadValues[(idx-2):(idx+vari.FRAGLEN-2)]))

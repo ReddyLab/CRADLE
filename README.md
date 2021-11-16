@@ -254,8 +254,6 @@ cradle covariates -l 500
       The same as `-genome`. This argument is deprecated and may be removed in a future release. Please use `-genome` instead.<br/> <br/>
 * Optional Arguments <br />
    !! Warning !! Some optional arguments are required depending on what you put in required arguments. <br />
-  -  -binSize <br />
-      The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)
   -  -mapFile <br />
       Mappability file in bigwig format. Required when 'map' is in '-biasType'. See 'Reference' if you want to download human mappability files (36mer, 50mer, 100mer for hg19 and hg38).
   -  -kmer <br />
@@ -263,8 +261,6 @@ cradle covariates -l 500
   -  -gquadFile <br />
       Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'.
       See 'Reference' if you want to download human Gqaudruplex files (hg19 and hg38).
-  -  -gquadMax <br />
-      The maximum gquad score. This is used to normalize Gquad score. default=78.6
   -  -o <br />
       Output directory. All calculated covariate files will be stored here. If the directory doesn't exist, cradle will make the directory. default=`CRADLE_covariates`. The output covariate files will be named {output_directory}_{chromosome}.hdf5 (e.g., `CRADLE_covariates_chrX.hdf5`)
 

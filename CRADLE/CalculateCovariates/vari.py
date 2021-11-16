@@ -2,6 +2,7 @@ import math
 import sys
 
 import numpy as np
+import pyBigWig
 
 
 def setGlobalVariables(args):
@@ -29,7 +30,7 @@ def setBiasFiles(args):
 
 	GENOME = args.genome
 
-	COVARI_NUM = 0
+	COVARI_NUM = 6
 
 	COVARI_ORDER = ['Intercept']
 
@@ -42,7 +43,6 @@ def setBiasFiles(args):
 
 	if 'shear' in biasType:
 		SHEAR = 1
-		COVARI_NUM = COVARI_NUM + 2
 
 		COVARI_ORDER.extend(["MGW_shear", "ProT_shear"])
 
@@ -575,7 +575,6 @@ def setBiasFiles(args):
 
 	if 'pcr' in biasType:
 		PCR = 1
-		COVARI_NUM = COVARI_NUM + 2 # ANNEAL & DENATURE
 
 		COVARI_ORDER.extend(["Anneal_pcr", "Denature_pcr"])
 
@@ -602,7 +601,6 @@ def setBiasFiles(args):
 
 	if 'map' in biasType:
 		MAP = 1
-		COVARI_NUM = COVARI_NUM + 1
 
 		COVARI_ORDER.extend(["Map_map"])
 
@@ -622,20 +620,18 @@ def setBiasFiles(args):
 
 	if 'gquad' in biasType:
 		GQUAD = 1
-		COVARI_NUM = COVARI_NUM + 1
 
 		COVARI_ORDER.extend(["Gquad_gquad"])
 
 		global GQAUDFILE
 		global GQAUD_MAX
 
-		guadFileNum = len(args.gquadFile)
-
-		if guadFileNum == 0:
+		if len(args.gquadFile) == 0:
 			print("ERROR: No g-quadruplex file was specified !")
 			sys.exit()
 
-		GQAUDFILE = [0] * guadFileNum
-		for i in range(guadFileNum):
-			GQAUDFILE[i] = args.gquadFile[i]
-		GQAUD_MAX = args.gquadMax
+		GQAUDFILE = args.gquadFile
+		GQAUD_MAX = -math.inf
+		for gquadFile in GQAUDFILE:
+			with pyBigWig.open(gquadFile) as bw:
+				GQAUD_MAX = max(GQAUD_MAX, bw.header()["maxVal"])
