@@ -46,7 +46,7 @@ These dependencies will be automatically installed when you install CRADLE eithe
 
 ## Commands
 ```
-cradle <correctBias | correctBias_stored | callPeak | normalize> [options]
+cradle <correctBias | correctBias_stored | callPeak | normalize | covariates> [options]
 ```
 
 ### 1) correctBias
@@ -77,7 +77,7 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
   -  -biasType <br />
       Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type map, -mapFile and -kmer are required. If you type gquad, -gquadFile is required
   -  -genome <br />
-       The human genome sequence, in .2bit format. For information on downloading the genome, see [https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/) §§ "Files" and "How to Download"<br/> <br/>
+       A genome sequence, in .2bit format. For information on downloading a genome go to [https://hgdownload.soe.ucsc.edu/downloads.html](https://hgdownload.soe.ucsc.edu/downloads.html) and select the "Genome sequence files and select annotations (2bit, GTF, GC-content, etc)" link for the genome you want. Then see sections "Files" and "How to Download"<br/> <br/>
   -  -faFile <br/>
       The same as `-genome`. This argument is deprecated and may be removed in a future release. Please use `-genome` instead.<br/> <br/>
 * Optional Arguments <br />
@@ -137,7 +137,7 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
   -  -covariDir <br />
       The directory of hdf files that have covariate values. The directory name of covariate files should be 'refGenome_fragLen(fragment length)_kmer(the length of sequenced reads)' ex) hg38_fragLen300_kmer36
   -  -genome <br/>
-      The human genome sequence, in .2bit format. For information on downloading the genome, see [https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/](https://hgdownload.soe.ucsc.edu/goldenPath/hg38/bigZips/) §§ "Files" and "How to Download"<br/> <br/>
+      A genome sequence, in .2bit format. For information on downloading a genome go to [https://hgdownload.soe.ucsc.edu/downloads.html](https://hgdownload.soe.ucsc.edu/downloads.html) and select the "Genome sequence files and select annotations (2bit, GTF, GC-content, etc)" link for the genome you want. Then see sections "Files" and "How to Download"<br/> <br/>
   -  -faFile <br/>
       The same as `-genome`. This argument is deprecated and may be removed in a future release. Please use `-genome` instead.<br/> <br/>
 
@@ -198,7 +198,7 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
      Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test
 
 
-### 3) Normalize
+### 4) Normalize
 This command normalizes samples across different samples (accounting for sequencing depth) and different regions.
 This command should be used for data that has uneven coverage resulting from any other reasons than biases.
 For example, STARR-seq from BACs can have different coverage for each BAC region and overlapping BAC regions. This can cause correctBias or correctBias_stored to not efficiently model biases.
@@ -223,6 +223,52 @@ cradle normalize -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.b
      Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_normalization.
   -  -p <br/>
      The number of cpus. default=(available cpus)/2
+
+
+### 5) covariates
+This command calculates covariate values used when correcting technical biases with the `correctBias_stored` command. You can use it to calculate covariates for only the biases you need and the regions you need. <br/> <br/>
+
+Example of running correctBias:
+```
+cradle covariates -l 500
+                  -r /data/YoungSook/target_region.bed
+                  -bl /data/YoungSook/blacklist_regions.bed
+                  -biasType shear pcr map gquad
+                  -mapFile /data/YoungSook/uniq_hg38_mappability_50mer.bw
+                  -kmer 50
+                  -gquadFile /data/YoungSook/gquad/GSE63874_Na_K_PDS_plus_hits_intersect_hg38_uniq_K.bw /data/YoungSook/gquad/GSE63874_Na_K_PDS_minus_hits_intersect_hg38_uniq_K.bw
+                  -genome /data/YoungSook/hg38.2bit
+                  -o /data/YoungSook/hg38_fragLen1000_kmer100
+```
+
+* Required Arguments
+  -  -l <br />
+      Fragment length
+  -  -r <br />
+      Text file that shows regions of analysis. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t100\t3000
+  -  -biasType <br />
+      Type of biases you want to correct among 'shear', 'pcr', 'map', 'gquad'. If you want to correct 'shear' and 'pcr' bias, you should type -biasType shear pcr. If you type map, -mapFile and -kmer are required. If you type gquad, -gquadFile is required
+  -  -genome <br />
+       A genome sequence, in .2bit format. For information on downloading a genome go to [https://hgdownload.soe.ucsc.edu/downloads.html](https://hgdownload.soe.ucsc.edu/downloads.html) and select the "Genome sequence files and select annotations (2bit, GTF, GC-content, etc)" link for the genome you want. Then see sections "Files" and "How to Download"<br/> <br/>
+  -  -faFile <br/>
+      The same as `-genome`. This argument is deprecated and may be removed in a future release. Please use `-genome` instead.<br/> <br/>
+* Optional Arguments <br />
+   !! Warning !! Some optional arguments are required depending on what you put in required arguments. <br />
+  -  -mapFile <br />
+      Mappability file in bigwig format. Required when 'map' is in '-biasType'. See 'Reference' if you want to download human mappability files (36mer, 50mer, 100mer for hg19 and hg38).
+  -  -kmer <br />
+      The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'
+  -  -gquadFile <br />
+      Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'.
+      See 'Reference' if you want to download human Gqaudruplex files (hg19 and hg38).
+  -  -o <br />
+      Output directory. All calculated covariate files will be stored here. If the directory doesn't exist, cradle will make the directory. default=`CRADLE_covariates`. The output covariate files will be named {output_directory}_{chromosome}.hdf5 (e.g., `CRADLE_covariates_chrX.hdf5`)
+
+      Note that, to make the files compatible with the CRADLE correctBias_stored step, the directory should be named {genome}_fragLen{fragment length}_kmer{sequencing read count}. For example, `hg38_fragLen1000_kmer100`.
+  -  -p <br />
+      The number of cpus. default=(available cpus)/2
+  -  -bl <br />
+      Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100
 
 
 ## Output files

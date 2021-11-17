@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import os
 import tempfile
 import warnings
@@ -56,8 +58,8 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 		bw.close()
 
 		## predicted read counts
-		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFCTRL[rep, 1:], axis=1) + vari.COEFCTRL[rep, 0])
-		prdvals[highReadCountIdx] = np.exp(np.sum(f['X'][0:][highReadCountIdx] * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])
+		prdvals = np.exp(np.sum(f['covari'][0:]* vari.COEFCTRL[rep, 1:], axis=1) + vari.COEFCTRL[rep, 0])
+		prdvals[highReadCountIdx] = np.exp(np.sum(f['covari'][0:][highReadCountIdx] * vari.COEFCTRL_HIGHRC[rep, 1:], axis=1) + vari.COEFCTRL_HIGHRC[rep, 0])
 
 		rcArr = rcArr - prdvals
 		rcArr = rcArr[overallIdx]
@@ -98,8 +100,8 @@ cpdef correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, last
 
 
 		## predicted read counts
-		prdvals = np.exp(np.sum(f['X'][0:]* vari.COEFEXP[rep, 1:], axis=1) + vari.COEFEXP[rep, 0])
-		prdvals[highReadCountIdx] = np.exp(np.sum(f['X'][0:][highReadCountIdx] * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])
+		prdvals = np.exp(np.sum(f['covari'][0:]* vari.COEFEXP[rep, 1:], axis=1) + vari.COEFEXP[rep, 0])
+		prdvals[highReadCountIdx] = np.exp(np.sum(f['covari'][0:][highReadCountIdx] * vari.COEFEXP_HIGHRC[rep, 1:], axis=1) + vari.COEFEXP_HIGHRC[rep, 0])
 
 		rcArr = rcArr - prdvals
 		rcArr = rcArr[overallIdx]
@@ -150,7 +152,7 @@ def selectIdx(chromo, regionStart, regionEnd, ctrlBWNames, experiBWNames, lastBi
 				rc_sum += temp
 
 				replicateIdx = selectReplicateIdx(temp, replicateIdx, meanMinFragFilterValue)
-		
+
 	idx = np.where(rc_sum > minFragFilterValue)[0].tolist()
 	overallIdx = np.intersect1d(idx, replicateIdx)
 

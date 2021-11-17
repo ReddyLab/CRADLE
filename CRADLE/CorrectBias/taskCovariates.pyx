@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import tempfile
 import warnings
 import h5py
@@ -132,7 +134,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	covariFileTemp.close()
 
 	f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	for idx in range(startIdx, endIdx):
 		covariIdx = [0] * vari.COVARI_NUM
@@ -353,9 +355,6 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 				fragEnd = shearEnd - 2
 
 
-	###### GENERATE A RESULT MATRIX
-	result = makeMatrixDiscreteFrag(binStart, binEnd, nBins)
-
 	###### GET SEQUENCE
 	sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
 	genome.close()
@@ -399,7 +398,7 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	covariFileTemp.close()
 
 	f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	resultIdx = 0
 	while resultIdx < nBins: # for each bin
@@ -570,9 +569,3 @@ cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
 		result[vari.FRAGLEN, 0] = binEnd
 
 	return result
-
-
-cpdef makeMatrixDiscreteFrag(binStart, binEnd, nBins):
-	cdef double [:,:] resultView = np.zeros((nBins, vari.COVARI_NUM), dtype=np.float64)
-
-	return resultView

@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import math
 import os
 import tempfile
@@ -107,7 +109,7 @@ cpdef calculateTrainCovariates(region):
 	covariFileTemp.close()
 
 	f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("X", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
 
 	for idx in range(startIdx, endIdx):
 		covariIdx = [0] * vari.COVARI_NUM

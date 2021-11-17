@@ -1,3 +1,5 @@
+# cython: language_level=3
+
 import os
 import h5py
 import numpy as np
@@ -24,8 +26,8 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 		f = h5py.File(subfileName, "r")
 
 		rowIdx = 0
-		while rowIdx < f['X'].shape[0]:
-			temp = f['X'][rowIdx]
+		while rowIdx < f['covari'].shape[0]:
+			temp = f['covari'][rowIdx]
 			colPtr = 0
 			while colPtr < vari.COVARI_NUM:
 				XView[rowIdx + rowPtr, colPtr+1] = float(temp[colPtr])
