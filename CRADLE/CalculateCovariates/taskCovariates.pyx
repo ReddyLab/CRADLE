@@ -1,6 +1,9 @@
 # cython: language_level=3
 
+import os.path
+import pickle
 import tempfile
+
 import h5py
 import numpy as np
 import py2bit
@@ -11,13 +14,6 @@ import CRADLE.CalculateCovariates.covariateUtils as cu
 from CRADLE.CalculateCovariates import vari
 from CRADLE.correctbiasutils import vari as commonVari
 
-
-
-# The covariate values stored in the HDF files start at index 0 (0-index, obviously)
-# The lowest start point for an analysis region is 3 (1-indexed), so we need to subtract
-# 3 from the analysis start and end points to match them up with correct covariate values
-# in the HDF files.
-COVARIATE_FILE_INDEX_OFFSET = 3
 
 BINSIZE = 1
 
@@ -158,7 +154,9 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 	return covariates, pastMer1, pastMer2, pastStartGibbs
 
 
-cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariDataSet, result, analysisStart, shearStart, fragEnd, binStart, binEnd):
+cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, result, shearStart, fragEnd, binStart, binEnd, analysisLength):
+	fraglenPlusOne = vari.FRAGLEN + 1
+
 	##### INITIALIZE VARIABLES
 	if vari.SHEAR == 1:
 		pastMer1 = -1
@@ -170,10 +168,11 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 	resultStartIdx = -1
 	resultEndIdx = -1
 
+	covariDataSet = np.zeros((analysisLength, vari.COVARI_NUM))
+
 	##### INDEX IN 'sequence'
 	startIdx = 2  # index in the genome sequence file (Included in the range)
 	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the genome sequence file (Not included in the range)
-
 
 	for idx in range(startIdx, endIdx):
 		covariates, pastMer1, pastMer2, pastStartGibbs = fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
@@ -187,15 +186,10 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 			resultEndIdx = 1 # not included
 			maxBinPos = binStart + vari.FRAGLEN
 			numPoppedPos = 0
-
-			while not np.isnan(result[resultEndIdx, 0]) and result[resultEndIdx, 0] < thisFragEnd:
-				resultEndIdx += 1
-				if resultEndIdx > vari.FRAGLEN:
-					resultEndIdx -= (vari.FRAGLEN + 1)
 		else:
 			while result[resultStartIdx, 0] < thisFragStart:
 				## pop the element
-				covariDataSet[analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET, :] = result[resultStartIdx, 1:]
+				covariDataSet[numPoppedPos, :] = result[resultStartIdx, 1:]
 				result[resultStartIdx, 1:] = 0.0
 
 				numPoppedPos += 1
@@ -207,15 +201,15 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 
 				resultStartIdx += 1
 				if resultStartIdx > vari.FRAGLEN:
-					resultStartIdx -= (vari.FRAGLEN + 1)
+					resultStartIdx -= fraglenPlusOne
 
-			while not np.isnan(result[resultEndIdx, 0]) and result[resultEndIdx, 0] < thisFragEnd:
-				resultEndIdx += 1
-				if resultEndIdx > vari.FRAGLEN:
-					resultEndIdx -= (vari.FRAGLEN + 1)
+		while not np.isnan(result[resultEndIdx, 0]) and result[resultEndIdx, 0] < thisFragEnd:
+			resultEndIdx += 1
+			if resultEndIdx > vari.FRAGLEN:
+				resultEndIdx -= fraglenPlusOne
 
 		if resultEndIdx < resultStartIdx:
-			result[resultStartIdx:vari.FRAGLEN+1, 1:] += covariates
+			result[resultStartIdx:fraglenPlusOne, 1:] += covariates
 			result[0:resultEndIdx, 1:] += covariates
 		else:
 			result[resultStartIdx:resultEndIdx, 1:] += covariates
@@ -223,26 +217,26 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariData
 		if idx == (endIdx-1): # the last fragment
 			### pop the rest of positions that are not np.nan
 			if resultEndIdx < resultStartIdx:
-				posLen = (vari.FRAGLEN+1) - resultStartIdx
-				start = analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET
-				end = start + posLen
-				covariDataSet[start:end, :] = result[resultStartIdx: vari.FRAGLEN+1, 1:]
-				numPoppedPos += posLen
+				posLen = fraglenPlusOne - resultStartIdx
+				end = numPoppedPos + posLen
+				covariDataSet[numPoppedPos:end, :] = result[resultStartIdx:fraglenPlusOne, 1:]
+				numPoppedPos = end
 
 				posLen = resultEndIdx
-				start = analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET
-				end = start + posLen
-				covariDataSet[start:end, :] = result[0: resultEndIdx, 1:]
-				numPoppedPos += posLen
+				end = numPoppedPos + posLen
+				covariDataSet[numPoppedPos:end, :] = result[0:resultEndIdx, 1:]
+				numPoppedPos = end
 			else:
 				posLen = resultEndIdx - resultStartIdx
-				start = analysisStart + numPoppedPos - COVARIATE_FILE_INDEX_OFFSET
-				end = start + posLen
-				covariDataSet[start:end, :] = result[resultStartIdx: resultEndIdx, 1:]
-				numPoppedPos += posLen
+				end = numPoppedPos + posLen
+				covariDataSet[numPoppedPos:end, :] = result[resultStartIdx:resultEndIdx, 1:]
+				numPoppedPos = end
+
+	return covariDataSet
 
 
-cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, analysisStart, shearStart, binStart, binEnd, nBins):
+cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, shearStart, binStart, binEnd, nBins):
+	covariDataSet = np.zeros((nBins, vari.COVARI_NUM))
 	for resultIdx in range(nBins): # for each bin
 		if resultIdx == (nBins-1):
 			pos = binEnd
@@ -268,30 +262,29 @@ cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, c
 		if vari.PCR == 1:
 			pastStartGibbs = -1
 
-		line = np.zeros(vari.COVARI_NUM)
 		for binFragIdx in range(thisBinFirstFragStartIdx, thisBinFirstFragStartIdx + thisBinNumFrag):
 			covariates, pastMer1, pastMer2, pastStartGibbs = fragCovariates(binFragIdx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValueView, gquadValueView)
 
-			line += covariates
+			covariDataSet[resultIdx, :] += covariates
 
-		covariDataSet[analysisStart + resultIdx - COVARIATE_FILE_INDEX_OFFSET, :] = line
+		return covariDataSet
 
 
-cpdef calculateTaskCovariates(chromo, outputFilename, regions):
+cpdef calculateTaskCovariates(regions, outputDir):
 	genome = py2bit.open(vari.GENOME)
-	chromoEnd = int(genome.chroms(chromo))
 	mapFile = pyBigWig.open(vari.MAPFILE)
 	gquadFiles = [0] * len(vari.GQAUDFILE)
 	for i, file in enumerate(vari.GQAUDFILE):
 		gquadFiles[i] = pyBigWig.open(file)
 
-
-	##### CREATE COVARIATE FILE
-	f = h5py.File(outputFilename, "w")
-	covariDataSet = f.create_dataset("covari", (chromoEnd, vari.COVARI_NUM), dtype='f', compression="gzip")
-
+	outputRegions = []
+	chromoEnds = {}
 	##### CALCULATE COVARIATE VALUES
-	for _chromo, analysisStart, analysisEnd in regions:
+	for chromo, analysisStart, analysisEnd in regions:
+		chromoEnd = chromoEnds.get(chromo, -1)
+		if chromoEnd == -1:
+			chromoEnd = int(genome.chroms(chromo))
+			chromoEnds[chromo] = chromoEnd
 		continuousFrag = False
 
 		#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
@@ -332,15 +325,21 @@ cpdef calculateTaskCovariates(chromo, outputFilename, regions):
 			###### GENERATE A RESULT MATRIX
 			result = makeMatrixContinuousFrag(binStart, binEnd, nBins)
 
-			calculateContinuousFrag(sequence, mapValueView, gquadValueView, covariDataSet, result, analysisStart, shearStart, fragEnd, binStart, binEnd)
+			covariDataSet = calculateContinuousFrag(sequence, mapValueView, gquadValueView, result, shearStart, fragEnd, binStart, binEnd, analysisEnd - analysisStart)
 		else:
-			calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, covariDataSet, analysisStart, shearStart, binStart, binEnd, nBins)
+			covariDataSet = calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, shearStart, binStart, binEnd, nBins)
+
+		with open(os.path.join(outputDir, f"{chromo}_{analysisStart}_{analysisEnd}.pkl"), "wb") as file:
+			pickle.dump(covariDataSet, file)
+
+		outputRegions.append((chromo, analysisStart, analysisEnd))
 
 	for file in gquadFiles:
 		file.close()
 	mapFile.close()
-	f.close()
 	genome.close()
+
+	return outputRegions
 
 
 cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
