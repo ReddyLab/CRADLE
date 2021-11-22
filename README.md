@@ -93,8 +93,6 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
   -  -gquadFile <br />
       Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'.
       See 'Reference' if you want to download human Gqaudruplex files (hg19 and hg38).
-  -  -gquadMax <br />
-      The maximum gquad score. This is used to normalize Gquad score. default=78.6
   -  -o <br />
       Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.
   -  -p <br />

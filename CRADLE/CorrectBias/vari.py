@@ -1,7 +1,9 @@
 import math
-import sys
-import numpy as np
 import os
+import sys
+
+import numpy as np
+import pyBigWig
 
 def setGlobalVariables(args):
 	global COEFCTRL
@@ -647,16 +649,15 @@ def setBiasFiles(args):
 		global GQAUDFILE
 		global GQAUD_MAX
 
-		guadFileNum = len(args.gquadFile)
-
-		if guadFileNum == 0:
+		if len(args.gquadFile) == 0:
 			print("ERROR: No g-quadruplex file was specified !")
 			sys.exit()
 
-		GQAUDFILE = [0] * guadFileNum
-		for i in range(guadFileNum):
-			GQAUDFILE[i] = args.gquadFile[i]
-		GQAUD_MAX = args.gquadMax
+		GQAUDFILE = args.gquadFile
+		GQAUD_MAX = -math.inf
+		for gquadFile in GQAUDFILE:
+			with pyBigWig.open(gquadFile) as bw:
+				GQAUD_MAX = max(GQAUD_MAX, bw.header()["maxVal"])
 
 
 def setFilterCriteria(minFrag, sampleNum):
