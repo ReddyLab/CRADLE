@@ -6,6 +6,7 @@ import pyBigWig
 
 def setGlobalVariables(args):
 	setInputFiles(args.ctrlbw, args.expbw)
+	setNormalizedInputFiles(args.normCtrlbw, args.normExpbw)
 	setOutputDirectory(args.o)
 	setAnlaysisRegion(args.r, args.bl)
 	setFilterCriteria(args.fdr)
@@ -40,6 +41,34 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 		EXPBW_NAMES[i] = expbwFiles[i]
 
 	ALL_ZERO = [0] * SAMPLE_NUM
+
+def setNormalizedInputFiles(normCtrlbw, normExpbw):
+	global I_LOG2FC
+
+	if normCtrlbw != None and normExpbw != None:
+		I_LOG2FC = True
+		
+		global NORM_CTRLBW_NAMES
+		global NORM_EXPBW_NAMES
+	
+		normCtrlbwNum = len(normCtrlbw)
+		normExpbwNum = len(normExpbw)
+
+		if normCtrlbwNum != CTRLBW_NUM or normExpbwNum != EXPBW_NUM:
+			print("Error: The number of normalized observed bigwigs does not match with the number of input bigwigs. The number of bigwigs in -ctrlbw and -expbw should match with the nubmer of biwigs in -normCtrlbw and -normExpbw, respectively.")	
+			sys.exit()
+
+		NORM_CTRLBW_NAMES = [0] * normCtrlbwNum
+		for i in range(normCtrlbwNum):
+			NORM_CTRLBW_NAMES[i] = normCtrlbw[i]
+
+		NORM_EXPBW_NAMES = [0] * normExpbwNum
+		for i in range(normExpbwNum):
+			NORM_EXPBW_NAMES[i] = normExpbw[i]
+	else:
+		I_LOG2FC = False
+
+
 
 
 def setOutputDirectory(outputDir):
