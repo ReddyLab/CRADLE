@@ -73,7 +73,8 @@ def getArgs():
 	callPeak_optional.add_argument('-d', type=int, help="The minimum distance between peaks. Peaks distanced less than this value(bp) are merged. default=10", default=10)
 	callPeak_optional.add_argument('-pl', type=int, help="Minimum peak length. default=wbin")
 	callPeak_optional.add_argument('-stat', help="Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test")
-
+	callPeak_optional.add_argument('-normCtrlbw', help="Normalized observed ctrl bigwig files. The bigwigs normalized from CRADLE (using -generateNormBW in either correctBias or correctBias_stored subcommand) are recommended. If you use this parameter along with -normExpbw, CRADLE  will report pseudo log2 fold change in the output", nargs='+')
+	callPeak_optional.add_argument('-normExpbw', help="Normalized observed experimental bigwig files. The bigwigs normalized from CRADLE (using -generateNormBW in either correctBias or correctBias_stored subcommand) are recommended. If you use this parameter along with -normCtrlbw, CRADLE  will report pseudo log2 fold change in the output", nargs='+')
 
 	########### normalize
 	normalize_parser = subparsers.add_parser("normalize", help="Normalize bigwgis across samples and across different regions of one sample. This is useful for BAC STARR-seq where you can even uneven coverage for each BAC regions or for each overlapping BAC regions")
