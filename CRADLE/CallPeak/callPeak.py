@@ -20,14 +20,8 @@ def mergePeaks(peakResult):
 		expBW[i] = pyBigWig.open(vari.EXPBW_NAMES[i])
 
 	if vari.I_LOG2FC:
-		normCtrlBW = [0] * len(vari.NORM_CTRLBW_NAMES)
-		normExpBW = [0] * len(vari.NORM_EXPBW_NAMES)
-
-		for i in range(len(vari.NORM_CTRLBW_NAMES)):
-			normCtrlBW[i] = pyBigWig.open(vari.NORM_CTRLBW_NAMES[i])
-		
-		for i in range(len(vari.NORM_EXPBW_NAMES)):
-			normExpBW[i] = pyBigWig.open(vari.NORM_EXPBW_NAMES[i])
+		normCtrlBW = [pyBigWig.open(bwName) for bwName in vari.NORM_CTRLBW_NAMES]
+		normExpBW = [pyBigWig.open(bwName) for bwName in vari.NORM_EXPBW_NAMES]
 
 	mergedPeak = []
 
@@ -40,8 +34,8 @@ def mergePeaks(peakResult):
 	mergedPeak.append(peakResult[0])
 	resultIdx = 0
 	if len(peakResult) == 1:
-		mergedPeak[resultIdx][4] = updatePvalue(pvalues)
-		mergedPeak[resultIdx][5] = updateQvalue(qvalues)
+		mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
+		mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
 
 		regionChromo = mergedPeak[resultIdx][0]
 		regionStart = int(mergedPeak[resultIdx][1])
@@ -98,8 +92,8 @@ def mergePeaks(peakResult):
 			qvalues.extend([ currqvalue ])
 		else:
 			## update the continuous regions
-			mergedPeak[resultIdx][4] = updatePvalue(pvalues)
-			mergedPeak[resultIdx][5] = updateQvalue(qvalues)
+			mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
+			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
 
 			regionChromo = mergedPeak[resultIdx][0]
 			regionStart = int(mergedPeak[resultIdx][1])
@@ -133,8 +127,8 @@ def mergePeaks(peakResult):
 			resultIdx = resultIdx + 1
 
 		if i == (len(peakResult) -1):
-			mergedPeak[resultIdx][4] = updatePvalue(pvalues)
-			mergedPeak[resultIdx][5] = updateQvalue(qvalues)	
+			mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
+			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)	
 
 			regionChromo = mergedPeak[resultIdx][0]
 			regionStart = int(mergedPeak[resultIdx][1])
@@ -181,37 +175,15 @@ def mergePeaks(peakResult):
 
 	return mergedPeak
 
-def updatePvalue(pvalues):
-	minPValue = np.min(pvalues)
+def takeMinusLog(values):
+	minValue = np.min(values)
 	
-	if minPValue == 0:
-		pvalue = np.nan
-	else:
-		pvalue = np.round((-1) * np.log10(minPValue), 2)
-
-	return pvalue
-
-def updateQvalue(qvalues):
-	minQValue = np.min(qvalues)
-
-	if minQValue == 0:
-		qvalue = np.nan
-	else:
-		qvalue = np.round((-1) * np.log10(minQValue), 2)
-	
-	return qvalue
+	return minValue == 0 ? np.nan : np.round((-1) * np.log10(minValue), 2)
 
 def getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd):
-	ctrlRC = []
-	for rep in range(len(ctrlBW)):
-		rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
-		ctrlRC.extend([rc])
-
-	expRC = []
-	for rep in range(len(expBW)):
-		rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
-		expRC.extend([rc])
-
+	ctrlRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in ctrlWB]
+	expRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in expBW]
+	
 	return ctrlRC, expRC
 
 def calculateCohenD(ctrlRC, expRC):
@@ -523,13 +495,13 @@ def run(args):
 		neglogPvalue = float(finalResult[i][4])
 		cohens_D = float(finalResult[i][9])
 		peusdoLog2FC = float(finalResult[i][10])
-		if np.isnan(neglogPvalue) == True:
+		if np.isnan(neglogPvalue):
 			if(maxNegLogPValue == 1):
 				neglogPvalue = "-log(0)"
 			else:
 				neglogPvalue = maxNegLogPValue
 		neglogQvalue = float(finalResult[i][5])
-		if np.isnan(neglogQvalue) == True:
+		if np.isnan(neglogQvalue):
 			if(maxNegLogQValue == 1):
 				neglogQvalue = "-log(0)"
 			else:
