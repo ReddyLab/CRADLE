@@ -19,6 +19,10 @@ def mergePeaks(peakResult):
 	for i in range(vari.EXPBW_NUM):
 		expBW[i] = pyBigWig.open(vari.EXPBW_NAMES[i])
 
+	if vari.I_LOG2FC:
+		normCtrlBW = [pyBigWig.open(bwName) for bwName in vari.NORM_CTRLBW_NAMES]
+		normExpBW = [pyBigWig.open(bwName) for bwName in vari.NORM_EXPBW_NAMES]
+
 	mergedPeak = []
 
 	pastChromo = peakResult[0][0]
@@ -30,46 +34,48 @@ def mergePeaks(peakResult):
 	mergedPeak.append(peakResult[0])
 	resultIdx = 0
 	if len(peakResult) == 1:
-		minPValue = np.min(pvalues)
-		if minPValue == 0:
-			mergedPeak[resultIdx][4] = np.nan
-		else:
-			mergedPeak[resultIdx][4] = np.round((-1) * np.log10(minPValue), 2)
-
-		minQValue = np.min(qvalues)
-		if minQValue == 0:
-			mergedPeak[resultIdx][5] = np.nan
-		else:
-			mergedPeak[resultIdx][5] = np.round((-1) * np.log10(minQValue), 2)
+		mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
+		mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
 
 		regionChromo = mergedPeak[resultIdx][0]
 		regionStart = int(mergedPeak[resultIdx][1])
 		regionEnd = int(mergedPeak[resultIdx][2])
 
-		ctrlRC = []
-		for rep in range(vari.CTRLBW_NUM):
-			rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
-			ctrlRC.extend([rc])
+		ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
+
 		ctrlRCPosMean = np.nanmean(ctrlRC)
-
-		expRC = []
-		for rep in range(vari.EXPBW_NUM):
-			rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
-			expRC.extend([rc])
 		expRCPosMean = np.nanmean(expRC)
-
 		diffPos = int(expRCPosMean - ctrlRCPosMean)
-		cohens_D = calculateCohenD(ctrlRC, expRC)
 		mergedPeak[resultIdx][6] = diffPos
+
+		cohens_D = calculateCohenD(ctrlRC, expRC)
 		mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
 
+		if vari.I_LOG2FC:
+			normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
+			normCtrlRCPosMean = np.nanmean(normCtrlRC)
+			normExpRCPosMean = np.nanmean(normExpRC)
+
+			peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
+		else:
+			peusdoLog2FC = np.nan
+
+		mergedPeak[resultIdx].extend([peusdoLog2FC])
+
+		
 		for i in range(vari.CTRLBW_NUM):
 			ctrlBW[i].close()
+
+			if vari.I_LOG2FC:
+				normCtrlBW[i].close()
+
 		for i in range(vari.EXPBW_NUM):
 			expBW[i].close()
 
-		return mergedPeak
+			if vari.I_LOG2FC:
+				normExpBW[i].close()
 
+		return mergedPeak
 
 	i = 1
 	while i < len(peakResult):
@@ -86,40 +92,34 @@ def mergePeaks(peakResult):
 			qvalues.extend([ currqvalue ])
 		else:
 			## update the continuous regions
-			minPValue = np.min(pvalues)
-			if(minPValue == 0):
-				mergedPeak[resultIdx][4] = np.nan
-			else:
-				mergedPeak[resultIdx][4] = np.round((-1) * np.log10(minPValue), 2)
-
-			minQValue = np.min(qvalues)
-			if(minQValue == 0):
-				mergedPeak[resultIdx][5] = np.nan
-			else:
-				mergedPeak[resultIdx][5] = np.round((-1) * np.log10(minQValue), 2)
+			mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
+			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
 
 			regionChromo = mergedPeak[resultIdx][0]
 			regionStart = int(mergedPeak[resultIdx][1])
 			regionEnd = int(mergedPeak[resultIdx][2])
 
-			ctrlRC = []
-			for rep in range(vari.CTRLBW_NUM):
-				rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
-				ctrlRC.extend([rc])
+			ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
+
 			ctrlRCPosMean = np.nanmean(ctrlRC)
-
-			expRC = []
-			for rep in range(vari.EXPBW_NUM):
-				rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
-				expRC.extend([rc])
 			expRCPosMean = np.nanmean(expRC)
-
 			diffPos = int(expRCPosMean - ctrlRCPosMean)
-			cohens_D = calculateCohenD(ctrlRC, expRC)
 			mergedPeak[resultIdx][6] = diffPos
+
+			cohens_D = calculateCohenD(ctrlRC, expRC)
 			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
+			
+			if vari.I_LOG2FC:
+				normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
+				normCtrlRCPosMean = np.nanmean(normCtrlRC)				
+				normExpRCPosMean = np.nanmean(normExpRC)
 
+				peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
+			else:
+				peusdoLog2FC = np.nan
 
+			mergedPeak[resultIdx].extend([peusdoLog2FC])
+			
 			## start a new region
 			mergedPeak.append(peakResult[i])
 			pvalues = [currpvalue]
@@ -127,38 +127,33 @@ def mergePeaks(peakResult):
 			resultIdx = resultIdx + 1
 
 		if i == (len(peakResult) -1):
-			minPValue = np.min(pvalues)
-			if(minPValue == 0):
-				mergedPeak[resultIdx][4] = np.nan
-			else:
-				mergedPeak[resultIdx][4] = np.round((-1) * np.log10(minPValue), 2)
-
-			minQValue = np.min(qvalues)
-			if(minQValue == 0):
-				mergedPeak[resultIdx][5] = np.nan
-			else:
-				mergedPeak[resultIdx][5] = np.round((-1) * np.log10(minQValue), 2)
+			mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
+			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)	
 
 			regionChromo = mergedPeak[resultIdx][0]
 			regionStart = int(mergedPeak[resultIdx][1])
 			regionEnd = int(mergedPeak[resultIdx][2])
+		
+			ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
 
-			ctrlRC = []
-			for rep in range(vari.CTRLBW_NUM):
-				rc = np.nanmean(np.array(ctrlBW[rep].values(regionChromo, regionStart, regionEnd)))
-				ctrlRC.extend([rc])
 			ctrlRCPosMean = np.nanmean(ctrlRC)
-
-			expRC = []
-			for rep in range(vari.EXPBW_NUM):
-				rc = np.nanmean(np.array(expBW[rep].values(regionChromo, regionStart, regionEnd)))
-				expRC.extend([rc])
 			expRCPosMean = np.nanmean(expRC)
-
 			diffPos = int(expRCPosMean - ctrlRCPosMean)
 			mergedPeak[resultIdx][6] = diffPos
+
 			cohens_D = calculateCohenD(ctrlRC, expRC)
 			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
+
+			if vari.I_LOG2FC:
+				normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
+				normCtrlRCPosMean = np.nanmean(normCtrlRC)
+				normExpRCPosMean = np.nanmean(normExpRC)
+
+				peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
+			else:
+				peusdoLog2FC = np.nan
+
+			mergedPeak[resultIdx].extend([peusdoLog2FC])
 
 		pastChromo = currChromo
 		pastEnd = currEnd
@@ -168,11 +163,28 @@ def mergePeaks(peakResult):
 
 	for i in range(vari.CTRLBW_NUM):
 		ctrlBW[i].close()
+
+		if vari.I_LOG2FC:
+			normCtrlBW[i].close()
+
 	for i in range(vari.EXPBW_NUM):
 		expBW[i].close()
 
+		if vari.I_LOG2FC:
+			normExpBW[i].close()
+
 	return mergedPeak
 
+def takeMinusLog(values):
+	minValue = np.min(values)
+	
+	return minValue == 0 ? np.nan : np.round((-1) * np.log10(minValue), 2)
+
+def getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd):
+	ctrlRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in ctrlWB]
+	expRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in expBW]
+	
+	return ctrlRC, expRC
 
 def calculateCohenD(ctrlRC, expRC):
 	dof = vari.CTRLBW_NUM + vari.EXPBW_NUM - 2
@@ -186,6 +198,12 @@ def calculateCohenD(ctrlRC, expRC):
 
 	return cohenD
 
+def calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean):
+	constant = np.max([normExpRCPosMean - expRCPosMean, normCtrlRCPosMean - ctrlRCPosMean])
+	fc = (expRCPosMean + constant) / (ctrlRCPosMean + constant)
+	peusdoLog2FC = np.log2(fc)
+
+	return peusdoLog2FC
 
 def filterSmallPeaks(peakResult):
 
@@ -447,7 +465,7 @@ def run(args):
 
 
 	######## WRITE A RESULT FILE
-	colNames = ["chr", "start", "end", "name", "score", "strand", "effectSize", "inputCount", "outputCount", "-log(pvalue)", "-log(qvalue)", "cohen's_d" ]
+	colNames = ["chr", "start", "end", "name", "score", "strand", "effectSize", "inputCount", "outputCount", "-log(pvalue)", "-log(qvalue)", "cohen's_d", "peusdoLog2FC"]
 	mergedPeaks = mergePeaks(peakResult)
 	finalResult, maxNegLogPValue, maxNegLogQValue = filterSmallPeaks(mergedPeaks)
 
@@ -476,19 +494,20 @@ def run(args):
 		outputCount = int(finalResult[i][8])
 		neglogPvalue = float(finalResult[i][4])
 		cohens_D = float(finalResult[i][9])
-		if(np.isnan(neglogPvalue) == True):
+		peusdoLog2FC = float(finalResult[i][10])
+		if np.isnan(neglogPvalue):
 			if(maxNegLogPValue == 1):
 				neglogPvalue = "-log(0)"
 			else:
 				neglogPvalue = maxNegLogPValue
 		neglogQvalue = float(finalResult[i][5])
-		if(np.isnan(neglogQvalue) == True):
+		if np.isnan(neglogQvalue):
 			if(maxNegLogQValue == 1):
 				neglogQvalue = "-log(0)"
 			else:
 				neglogQvalue = maxNegLogQValue
 
-		peakToAdd = [chromo, start, end, name, score, strand, effectSize, inputCount, outputCount, neglogPvalue, neglogQvalue, cohens_D]
+		peakToAdd = [chromo, start, end, name, score, strand, effectSize, inputCount, outputCount, neglogPvalue, neglogQvalue, cohens_D, peusdoLog2FC]
 
 		outputStream.write('\t'.join([str(x) for x in peakToAdd]) + "\n")
 	outputStream.close()
