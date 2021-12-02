@@ -281,11 +281,11 @@ cradle covariates -l 500
 ### 2) callPeak
 You will get 'CRADLE_peak' as a result file which has the following format:
 ```
-chr start   end Name    score   strand  effectSize  inputCount  outputCount -log(pvalue)    -log(qvalue)  cohen's D
-chr1	70367085	70367210	chr1:70367085-70367210	.	.	133	-8	125	14.57	13.8 3.2
-chr1	116853710	116853835	chr1:116853710-116853835	.	.	255	13	268	14.57	13.8 4.6
-chr1	163672337	163672462	chr1:163672337-163672462	.	.	170	-2	168	14.57	13.8 12.3
-chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8 12.3
+chr	start	end	name	score	strand	effectSize	inputCount	outputCount	-log(pvalue)	-log(qvalue)	cohen's_d	peusdoLog2FC
+chr10	68885501	68885751	chr10:68885501-68885751	.	.	4459	7225	11684	4.88	3.71	4.013389130730448	0.24524608901230838
+chr10	68893301	68893426	chr10:68893301-68893426	.	.	6610	20809	27419	3.99	3.08	3.2087396562360446	0.21340296136659967
+chr10	68893676	68894161	chr10:68893676-68894161	.	.	-4293	6600	2306	5.86	4.71	-4.852417753392507	-0.38532390381884846
+chr10	68898131	68898381	chr10:68898131-68898381	.	.	-7828	21206	13377	5.41	4.51	-4.922941786184907	-0.35940926914056587
 .
 .
 ```
@@ -296,6 +296,7 @@ chr10	80920118	80920243	chr10:80920118-80920243	.	.	93	-32	61	14.57	13.8 12.3
 * The 8th colum (outputCount):  the mean of experimental read counts.
 * The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of p value and q value. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values.
 * The 11th column: Cohen's D, standarized effect size. This column will have 'nan' values in the case where there is only one replicate in either -ctrlbw or -expbw.
+* The 12th column: peusdo log2 fold change. This value is calculated by adding an constant to `inputCount` and `outputCount` to make the resulting values positive. The constant is determined by taking the max(normalizedInputCount-inputCount, normalizedOutputCount-outputCount). Here, normalizedInputCount and normalizedOutputCount are calculated by using normalized observed control bigwigs and experimental bigwigs—those bigwigs are from optional arguments called -normCtrlbw and -normExpbw, respectively.
 
 ### 3) Normalize
    Normalized bigwigs files of which file name has '_normalized' in the suffix. The number of generated corrected bigwigs files will be the same as the total number of  bigwigs files used as input (this includes both control and experimental bigwigs).
