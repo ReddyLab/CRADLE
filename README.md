@@ -194,7 +194,10 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
      Minimum peak length. Peaks with smaller size than this value are filtered out. default=wbin
   -  -stat <br/>
      Choose a statistical testing: 't-test' for t-test and  'welch' for welch's t-test  default=t-test
-
+  -  -normCtrlbw <br/>
+     Normalized observed ctrl bigwig files. The bigwigs normalized from CRADLE (using -generateNormBW in either correctBias or correctBias_stored subcommand) are recommended. If you use this parameter along with -normExpbw, CRADLE  will report pseudo log2 fold change in the output
+  -  -normExpbw <br/>
+     Normalized observed experimental bigwig files. The bigwigs normalized from CRADLE (using -generateNormBW in either correctBias or correctBias_stored subcommand) are recommended. If you use this parameter along with -normCtrlbw, CRADLE  will report pseudo log2 fold change in the output
 
 ### 4) Normalize
 This command normalizes samples across different samples (accounting for sequencing depth) and different regions.
