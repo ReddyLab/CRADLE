@@ -62,7 +62,7 @@ def mergePeaks(peakResult):
 
 		mergedPeak[resultIdx].extend([peusdoLog2FC])
 
-		
+
 		for i in range(vari.CTRLBW_NUM):
 			ctrlBW[i].close()
 
@@ -108,10 +108,10 @@ def mergePeaks(peakResult):
 
 			cohens_D = calculateCohenD(ctrlRC, expRC)
 			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
-			
+
 			if vari.I_LOG2FC:
 				normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
-				normCtrlRCPosMean = np.nanmean(normCtrlRC)				
+				normCtrlRCPosMean = np.nanmean(normCtrlRC)
 				normExpRCPosMean = np.nanmean(normExpRC)
 
 				peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
@@ -119,7 +119,7 @@ def mergePeaks(peakResult):
 				peusdoLog2FC = np.nan
 
 			mergedPeak[resultIdx].extend([peusdoLog2FC])
-			
+
 			## start a new region
 			mergedPeak.append(peakResult[i])
 			pvalues = [currpvalue]
@@ -128,12 +128,12 @@ def mergePeaks(peakResult):
 
 		if i == (len(peakResult) -1):
 			mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
-			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)	
+			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
 
 			regionChromo = mergedPeak[resultIdx][0]
 			regionStart = int(mergedPeak[resultIdx][1])
 			regionEnd = int(mergedPeak[resultIdx][2])
-		
+
 			ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
 
 			ctrlRCPosMean = np.nanmean(ctrlRC)
@@ -177,13 +177,13 @@ def mergePeaks(peakResult):
 
 def takeMinusLog(values):
 	minValue = np.min(values)
-	
-	return minValue == 0 ? np.nan : np.round((-1) * np.log10(minValue), 2)
+
+	return np.nan if minValue == 0 else np.round((-1) * np.log10(minValue), 2)
 
 def getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd):
-	ctrlRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in ctrlWB]
+	ctrlRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in ctrlBW]
 	expRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in expBW]
-	
+
 	return ctrlRC, expRC
 
 def calculateCohenD(ctrlRC, expRC):
