@@ -45,7 +45,7 @@ def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, n
 	else:
 		peusdoLog2FC = np.nan
 
-	mergedResult.extend([peusdoLog2FC])
+	mergedResult.append(peusdoLog2FC)
 
 
 def mergePeaks(peakResult):
@@ -100,8 +100,8 @@ def mergePeaks(peakResult):
 
 		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) <= vari.DISTANCE):
 			mergedPeak[resultIdx][2] = currEnd
-			pvalues.extend([ currpvalue ])
-			qvalues.extend([ currqvalue ])
+			pvalues.append(currpvalue)
+			qvalues.append(currqvalue)
 		else:
 			setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW)
 
@@ -346,7 +346,7 @@ def run(args):
 				continue
 
 			if regionTheta >= vari.THETA:
-				PValueSimes.extend([ regionPvalue ])
+				PValueSimes.append(regionPvalue)
 
 	PValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(PValueSimes, alpha=vari.FDR, method='fdr_bh')[0]
 
@@ -377,7 +377,7 @@ def run(args):
 			if np.isnan(regionPvalue):
 				continue
 			if PValueGroupBh[groupPvalueIdx + selectedIdx]:
-				selectRegionIdx.extend([ regionIdx ])
+				selectRegionIdx.append(regionIdx)
 			selectedIdx = selectedIdx + 1
 
 		groupPvalueIdx = groupPvalueIdx + selectedIdx
