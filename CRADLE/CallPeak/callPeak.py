@@ -9,6 +9,45 @@ from CRADLE.CallPeak import vari
 from CRADLE.CallPeak import calculateRC
 
 
+def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW):
+	regionChromo = mergedResult[0]
+	regionStart = int(mergedResult[1])
+	regionEnd = int(mergedResult[2])
+
+	mergedResult[4] = takeMinusLog(pvalues)
+	mergedResult[5] = takeMinusLog(qvalues)
+
+	ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
+
+	ctrlRCPosMean = np.nanmean(ctrlRC)
+	expRCPosMean = np.nanmean(expRC)
+	diffPos = int(expRCPosMean - ctrlRCPosMean)
+	mergedResult[6] = diffPos
+
+	cohens_D = calculateCohenD(ctrlRC, expRC)
+	if cohens_D == np.nan:
+		print(f"""
+		Warning: Pooled Std Dev of Cohen's D is 0.
+		  This could mean that all your read counts are the same or that you
+		  aren't using enough BigWig files (You need at least 3).
+
+		  Location {regionChromo}:{regionStart}-{regionEnd}
+		""")
+
+	mergedResult.extend([ctrlRCPosMean, expRCPosMean, cohens_D])
+
+	if vari.I_LOG2FC:
+		normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
+		normCtrlRCPosMean = np.nanmean(normCtrlRC)
+		normExpRCPosMean = np.nanmean(normExpRC)
+
+		peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
+	else:
+		peusdoLog2FC = np.nan
+
+	mergedResult.append(peusdoLog2FC)
+
+
 def mergePeaks(peakResult):
 	## open bigwig files to calculate effect size
 	ctrlBW = [0] * vari.CTRLBW_NUM
@@ -34,34 +73,7 @@ def mergePeaks(peakResult):
 	mergedPeak.append(peakResult[0])
 	resultIdx = 0
 	if len(peakResult) == 1:
-		mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
-		mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
-
-		regionChromo = mergedPeak[resultIdx][0]
-		regionStart = int(mergedPeak[resultIdx][1])
-		regionEnd = int(mergedPeak[resultIdx][2])
-
-		ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
-
-		ctrlRCPosMean = np.nanmean(ctrlRC)
-		expRCPosMean = np.nanmean(expRC)
-		diffPos = int(expRCPosMean - ctrlRCPosMean)
-		mergedPeak[resultIdx][6] = diffPos
-
-		cohens_D = calculateCohenD(ctrlRC, expRC)
-		mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
-
-		if vari.I_LOG2FC:
-			normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
-			normCtrlRCPosMean = np.nanmean(normCtrlRC)
-			normExpRCPosMean = np.nanmean(normExpRC)
-
-			peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
-		else:
-			peusdoLog2FC = np.nan
-
-		mergedPeak[resultIdx].extend([peusdoLog2FC])
-
+		setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW)
 
 		for i in range(vari.CTRLBW_NUM):
 			ctrlBW[i].close()
@@ -88,37 +100,10 @@ def mergePeaks(peakResult):
 
 		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) <= vari.DISTANCE):
 			mergedPeak[resultIdx][2] = currEnd
-			pvalues.extend([ currpvalue ])
-			qvalues.extend([ currqvalue ])
+			pvalues.append(currpvalue)
+			qvalues.append(currqvalue)
 		else:
-			## update the continuous regions
-			mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
-			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
-
-			regionChromo = mergedPeak[resultIdx][0]
-			regionStart = int(mergedPeak[resultIdx][1])
-			regionEnd = int(mergedPeak[resultIdx][2])
-
-			ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
-
-			ctrlRCPosMean = np.nanmean(ctrlRC)
-			expRCPosMean = np.nanmean(expRC)
-			diffPos = int(expRCPosMean - ctrlRCPosMean)
-			mergedPeak[resultIdx][6] = diffPos
-
-			cohens_D = calculateCohenD(ctrlRC, expRC)
-			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
-
-			if vari.I_LOG2FC:
-				normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
-				normCtrlRCPosMean = np.nanmean(normCtrlRC)
-				normExpRCPosMean = np.nanmean(normExpRC)
-
-				peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
-			else:
-				peusdoLog2FC = np.nan
-
-			mergedPeak[resultIdx].extend([peusdoLog2FC])
+			setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW)
 
 			## start a new region
 			mergedPeak.append(peakResult[i])
@@ -126,34 +111,8 @@ def mergePeaks(peakResult):
 			qvalues = [currqvalue]
 			resultIdx = resultIdx + 1
 
-		if i == (len(peakResult) -1):
-			mergedPeak[resultIdx][4] = takeMinusLog(pvalues)
-			mergedPeak[resultIdx][5] = takeMinusLog(qvalues)
-
-			regionChromo = mergedPeak[resultIdx][0]
-			regionStart = int(mergedPeak[resultIdx][1])
-			regionEnd = int(mergedPeak[resultIdx][2])
-
-			ctrlRC, expRC = getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd)
-
-			ctrlRCPosMean = np.nanmean(ctrlRC)
-			expRCPosMean = np.nanmean(expRC)
-			diffPos = int(expRCPosMean - ctrlRCPosMean)
-			mergedPeak[resultIdx][6] = diffPos
-
-			cohens_D = calculateCohenD(ctrlRC, expRC)
-			mergedPeak[resultIdx].extend([ctrlRCPosMean, expRCPosMean, cohens_D])
-
-			if vari.I_LOG2FC:
-				normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
-				normCtrlRCPosMean = np.nanmean(normCtrlRC)
-				normExpRCPosMean = np.nanmean(normExpRC)
-
-				peusdoLog2FC = calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean)
-			else:
-				peusdoLog2FC = np.nan
-
-			mergedPeak[resultIdx].extend([peusdoLog2FC])
+		if i == (len(peakResult) - 1):
+			setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW)
 
 		pastChromo = currChromo
 		pastEnd = currEnd
@@ -194,6 +153,9 @@ def calculateCohenD(ctrlRC, expRC):
 
 	s = np.sqrt( (  (vari.CTRLBW_NUM-1)*np.power(np.std(ctrlRC, ddof=1), 2) + (vari.EXPBW_NUM-1)*np.power(np.std(expRC, ddof=1), 2)  ) / dof )
 
+	if s == 0:
+		return np.nan
+
 	cohenD = (expRC_mean - ctrlRC_mean) / s
 
 	return cohenD
@@ -206,8 +168,6 @@ def calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normEx
 	return peusdoLog2FC
 
 def filterSmallPeaks(peakResult):
-
-
 	maxNegLogPValue = 1
 	maxNegLogQValue = 1
 
@@ -222,12 +182,12 @@ def filterSmallPeaks(peakResult):
 			neglogPvalue = float(peakResult[i][4])
 			neglogQvalue = float(peakResult[i][5])
 
-			if(np.isnan(neglogPvalue) == False):
-				if(neglogPvalue > maxNegLogPValue):
+			if not np.isnan(neglogPvalue):
+				if neglogPvalue > maxNegLogPValue:
 					maxNegLogPValue = neglogPvalue
 
-			if(np.isnan(neglogQvalue) == False):
-				if(neglogQvalue > maxNegLogQValue):
+			if not np.isnan(neglogQvalue):
+				if neglogQvalue > maxNegLogQValue:
 					maxNegLogQValue = neglogQvalue
 
 	return finalResult, maxNegLogPValue, maxNegLogQValue
@@ -386,7 +346,7 @@ def run(args):
 				continue
 
 			if regionTheta >= vari.THETA:
-				PValueSimes.extend([ regionPvalue ])
+				PValueSimes.append(regionPvalue)
 
 	PValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(PValueSimes, alpha=vari.FDR, method='fdr_bh')[0]
 
@@ -417,7 +377,7 @@ def run(args):
 			if np.isnan(regionPvalue):
 				continue
 			if PValueGroupBh[groupPvalueIdx + selectedIdx]:
-				selectRegionIdx.extend([ regionIdx ])
+				selectRegionIdx.append(regionIdx)
 			selectedIdx = selectedIdx + 1
 
 		groupPvalueIdx = groupPvalueIdx + selectedIdx
@@ -496,13 +456,13 @@ def run(args):
 		cohens_D = float(finalResult[i][9])
 		peusdoLog2FC = float(finalResult[i][10])
 		if np.isnan(neglogPvalue):
-			if(maxNegLogPValue == 1):
+			if maxNegLogPValue == 1:
 				neglogPvalue = "-log(0)"
 			else:
 				neglogPvalue = maxNegLogPValue
 		neglogQvalue = float(finalResult[i][5])
 		if np.isnan(neglogQvalue):
-			if(maxNegLogQValue == 1):
+			if maxNegLogQValue == 1:
 				neglogQvalue = "-log(0)"
 			else:
 				neglogQvalue = maxNegLogQValue
