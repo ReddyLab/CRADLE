@@ -1,6 +1,8 @@
 # CRADLE
 CRADLE (Correcting Read counts and Analysis of DifferentiaLly Expressed regions) is a package that was developed to analyze STARR-seq data. CRADLE removes technical biases from sonication, PCR, mappability and G-quadruplex sturcture, and generates bigwig files with corrected read counts. CRADLE then uses those corrected read counts and detects both activated and repressed enhancers. CRADLE will help find enhancers with better accuracy and credibility.
 
+Please see [CHANGELOG.md] to see what has changed in CRADLE.
+
 ## DISCLAIMER
 CRADLE callPeak subcommand is designed to call peaks using the read counts 'CORRECTED' by either correctBias or correctBias_stored subcommand in CRADLE. CRADLE callPeak subcommand assumes read counts follow a gaussian distribution, so it might not be ideal to use for uncorrected read counts.
 
