@@ -85,7 +85,7 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
   -  -binSize <br />
       The size of bin (bp) for correction. If you put '1', it means you want to correct read counts in single-bp resolution. (default=1)
   -  -mi <br />
-      The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples
+      The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=5 * the number of samples
   -  -mapFile <br />
       Mappability file in bigwig format. Required when 'map' is in '-biasType'. See 'Reference' if you want to download human mappability files (36mer, 50mer, 100mer for hg19 and hg38).
   -  -kmer <br />
@@ -141,7 +141,7 @@ cradle correctBias_stored -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
 
 * Optional Arguments
   -  -mi <br />
-     The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples
+     The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=5 * the number of samples
   -  -o <br/>
      Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.
   -  -p <br/>
