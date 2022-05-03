@@ -118,7 +118,7 @@ def setCovariDir(biasType, covariDir, genome):
 
 def setFilterCriteria(minFrag, sampleNum):
 	if minFrag is None:
-		return sampleNum
+		return sampleNum * 5
 	else:
 		return minFrag
 
