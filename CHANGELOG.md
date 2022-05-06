@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.27.0]
+
 ### Changed
 
 - Default value for `correctBias` and `correctBias_stored` `-mi` argument is `5 * (number of samples)`. Previously is was just `number of samples`.
