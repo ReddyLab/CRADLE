@@ -1,12 +1,11 @@
 import multiprocessing
 import random
 import time
+from copy import deepcopy
 
 import numpy as np
 import pyBigWig
 import statsmodels.api as sm
-
-from copy import deepcopy
 
 from CRADLE.correctbiasutils import vari as commonVari
 
@@ -67,7 +66,7 @@ def mergeRegions(region):
 		pastChromo = region[pos][0]
 		pastStart = int(region[pos][1])
 		pastEnd = int(region[pos][2])
-		regionMerged.append([ pastChromo, pastStart, pastEnd])
+		regionMerged.append([pastChromo, pastStart, pastEnd])
 		resultIdx = 0
 
 		pos = 1
@@ -77,20 +76,21 @@ def mergeRegions(region):
 			currEnd = int(region[pos][2])
 
 			if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
-				region_overlapped.append([currChromo, currStart, pastEnd])
-				maxEnd = np.max([currEnd, pastEnd])
-				regionMerged[resultIdx][2] = maxEnd
-				pos = pos + 1
-				pastChromo = currChromo
+				if currStart != pastEnd:
+					region_overlapped.append([currChromo, currStart, min(currEnd, pastEnd)])
+				# else: the overlapping position is 0-length
+
+				newEnd = np.max([currEnd, pastEnd])
+				regionMerged[resultIdx][2] = newEnd
 				pastStart = currStart
-				pastEnd = maxEnd
+				pastEnd = newEnd
 			else:
 				regionMerged.append([currChromo, currStart, currEnd])
-				resultIdx = resultIdx + 1
-				pos = pos + 1
+				resultIdx += 1
 				pastChromo = currChromo
 				pastStart = currStart
 				pastEnd = currEnd
+			pos += 1
 		return np.array(regionMerged), np.array(region_overlapped)
 	else:
 		return np.array(region), np.array(region_overlapped)
@@ -103,7 +103,7 @@ def excludeOverlapRegion():
 		regionEnd = int(region[2])
 
 		overlapThis = []
-		## overlap Case 1 : A blacklist region completely covers the region.
+		## overlap Case 1 : Overlap regions that completely cover the region.
 		idx = np.where(
 			(overlapREGION[:,0] == regionChromo) &
 			(overlapREGION[:,1].astype(int) <= regionStart) &
@@ -112,20 +112,31 @@ def excludeOverlapRegion():
 		if len(idx) > 0:
 			continue
 
-		## overlap Case 2
+		## overlap Case 2: Overlap regions that only end inside the region
 		idx = np.where(
 			(overlapREGION[:,0] == regionChromo) &
+			(overlapREGION[:,1].astype(int) < regionStart) &
 			(overlapREGION[:,2].astype(int) > regionStart) &
-			(overlapREGION[:,2].astype(int) <= regionEnd)
+			(overlapREGION[:,2].astype(int) < regionEnd)
 			)[0]
 		if len(idx) > 0:
 			overlapThis.extend( overlapREGION[idx].tolist() )
 
-		## overlap Case 3
+		## overlap Case 3: Overlap regions that only start inside the region
 		idx = np.where(
 			(overlapREGION[:,0] == regionChromo) &
 			(overlapREGION[:,1].astype(int) >= regionStart) &
-			(overlapREGION[:,1].astype(int) < regionEnd)
+			(overlapREGION[:,1].astype(int) < regionEnd) &
+			(overlapREGION[:,2].astype(int) > regionEnd)
+			)[0]
+		if len(idx) > 0:
+			overlapThis.extend( overlapREGION[idx].tolist() )
+
+		## overlap Case 4: Overlap regions that start and end inside the region
+		idx = np.where(
+			(overlapREGION[:,0] == regionChromo) &
+			(overlapREGION[:,1].astype(int) > regionStart) &
+			(overlapREGION[:,2].astype(int) < regionEnd)
 			)[0]
 		if len(idx) > 0:
 			overlapThis.extend( overlapREGION[idx].tolist() )
@@ -136,27 +147,26 @@ def excludeOverlapRegion():
 
 		overlapThis = np.array(overlapThis)
 		overlapThis = overlapThis[overlapThis[:,1].astype(int).argsort()]
-		overlapThis = np.unique(overlapThis, axis=0)
-		overlapThis = overlapThis[overlapThis[:,1].astype(int).argsort()]
 
 		currStart = regionStart
-		for pos in range(len(overlapThis)):
-			overlapStart = int(overlapThis[pos][1])
-			overlapEnd = int(overlapThis[pos][2])
+		for pos, overlap in enumerate(overlapThis):
+			overlapStart = int(overlap[1])
+			overlapEnd = int(overlap[2])
 
-			if overlapStart <= regionStart:
-				currStart = overlapEnd
+			if overlapStart < currStart:
+				# Overlap case 2
+				currStart = max(overlapEnd, currStart)
 			else:
-				if currStart == overlapStart:
+				regionWoOverlap.append([regionChromo, currStart, overlapStart])
+				if overlapEnd < regionEnd:
+					# Overlap case 4
 					currStart = overlapEnd
-					continue
+				else:
+					# Overlap case 3
+					break  # the rest of the region is covered by overlaps
 
-				regionWoOverlap.append([ regionChromo, currStart, overlapStart ])
-				currStart = overlapEnd
-
+			# Last overlap, handle remaining target region
 			if (pos == (len(overlapThis)-1)) and (overlapEnd < regionEnd):
-				if overlapEnd == regionEnd:
-					break
 				regionWoOverlap.append([ regionChromo, overlapEnd, regionEnd ])
 
 	return np.array(regionWoOverlap)
