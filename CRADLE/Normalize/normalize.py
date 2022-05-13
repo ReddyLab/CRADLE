@@ -1,163 +1,138 @@
 import multiprocessing
-import random
+import os.path
 import time
-from copy import deepcopy
+from functools import reduce
+from random import sample
 
 import numpy as np
 import pyBigWig
 import statsmodels.api as sm
 
 from CRADLE.correctbiasutils import vari as commonVari
+from CRADLE.correctbiasutils.cython import coalesceSections  # type: ignore
 
 TRAINBIN_SIZE = 1000
 
-def setVariables(args):
-	setRegions(args.r)
 
-def setRegions(region):
-	global REGION
-	global overlapREGION
-	global nonOverlapRegion
-	global REGION_combined
+def getRegions(region):
+	mergedRegions, regionOverlaps = mergeRegions(region)
 
-	REGION, overlapREGION = mergeRegions(region)
-
-	if len(overlapREGION) == 0:
-		nonOverlapRegion = REGION
+	if len(regionOverlaps) == 0:
+		nonOverlappingRegions = mergedRegions
 	else:
-		nonOverlapRegion = excludeOverlapRegion()
+		nonOverlappingRegions = getNonOverlappingRegions(mergedRegions, regionOverlaps)
 
-	REGION_combined = []
-	for i in range(len(overlapREGION)):
-		temp = list(deepcopy(overlapREGION[i]))
-		temp.extend([True])
-		REGION_combined.append(temp)
+	combinedRegions = [[*region, True] for region in regionOverlaps]
 
-	for i in range(len(nonOverlapRegion)):
-		temp = list(deepcopy(nonOverlapRegion[i]))
-		temp.extend([False])
-		REGION_combined.append(temp)
-	REGION_combined = np.array(REGION_combined)
-	REGION_combined = REGION_combined[np.lexsort(( REGION_combined[:,1].astype(int), REGION_combined[:,0])  ) ]
+	for region in nonOverlappingRegions:
+		combinedRegions.append([*region, False])
 
-def mergeRegions(region):
-	inputFilename = region
-	inputStream = open(inputFilename)
-	inputFileContents = inputStream.readlines()
+	combinedRegions.sort(key=lambda x: x[1])
+	combinedRegions.sort(key=lambda x: x[0])
 
-	region = []
-	for i in range(len(inputFileContents)):
-		temp = inputFileContents[i].split()
+	return combinedRegions, nonOverlappingRegions
+
+
+def mergeRegions(regionBed):
+	with open(regionBed, encoding="utf-8") as inputStream:
+		inputFileContents = inputStream.readlines()
+
+	regions = []
+	for line in inputFileContents:
+		temp = line.split()  # chr start end
 		temp[1] = int(temp[1])
 		temp[2] = int(temp[2])
-		region.append(temp)
-	inputStream.close()
+		regions.append(temp)
+
+	if len(regions) <= 1:
+		return regions, []
+
+	regions.sort(key=lambda x: x[1])
+	regions.sort(key=lambda x: x[0])
+
+	regionOverlaps = []
+
+	pastChromo = regions[0][0]
+	pastStart = regions[0][1]
+	pastEnd = regions[0][2]
+
+	mergedRegions = [[pastChromo, pastStart, pastEnd]]
+
+	for region in regions[1:]:
+		currChromo, currStart, currEnd = region
+
+		if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
+			if currStart != pastEnd:
+				regionOverlaps.append([currChromo, currStart, min(currEnd, pastEnd)])
+			# else: the overlapping position is 0-length
+
+			newEnd = max(currEnd, pastEnd)
+			mergedRegions[-1][2] = newEnd
+			pastEnd = newEnd
+		else:
+			mergedRegions.append([currChromo, currStart, currEnd])
+			pastEnd = currEnd
+
+		pastChromo = currChromo
+		pastStart = currStart
+
+	return mergedRegions, regionOverlaps
 
 
-	region_overlapped = []
-	if len(region) > 1:
-		region = np.array(region)
-		region = region[np.lexsort(( region[:,1].astype(int), region[:,0])  ) ]
-		region = region.tolist()
-
-		regionMerged = []
-
-		pos = 0
-		pastChromo = region[pos][0]
-		pastStart = int(region[pos][1])
-		pastEnd = int(region[pos][2])
-		regionMerged.append([pastChromo, pastStart, pastEnd])
-		resultIdx = 0
-
-		pos = 1
-		while pos < len(region):
-			currChromo = region[pos][0]
-			currStart = int(region[pos][1])
-			currEnd = int(region[pos][2])
-
-			if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
-				if currStart != pastEnd:
-					region_overlapped.append([currChromo, currStart, min(currEnd, pastEnd)])
-				# else: the overlapping position is 0-length
-
-				newEnd = np.max([currEnd, pastEnd])
-				regionMerged[resultIdx][2] = newEnd
-				pastStart = currStart
-				pastEnd = newEnd
-			else:
-				regionMerged.append([currChromo, currStart, currEnd])
-				resultIdx += 1
-				pastChromo = currChromo
-				pastStart = currStart
-				pastEnd = currEnd
-			pos += 1
-		return np.array(regionMerged), np.array(region_overlapped)
-	else:
-		return np.array(region), np.array(region_overlapped)
-
-def excludeOverlapRegion():
-	regionWoOverlap = []
-	for region in REGION:
-		regionChromo = region[0]
-		regionStart = int(region[1])
-		regionEnd = int(region[2])
+def getNonOverlappingRegions(mergedRegions, regionOverlaps):
+	nonOverlappingRegions = []
+	for region in mergedRegions:
+		regionChromo, regionStart, regionEnd = region
+		chromoRegionOverlaps = list(filter(lambda region: region[0] == regionChromo, regionOverlaps))  # pylint: disable=W0640
 
 		overlapThis = []
 		## overlap Case 1 : Overlap regions that completely cover the region.
-		idx = np.where(
-			(overlapREGION[:,0] == regionChromo) &
-			(overlapREGION[:,1].astype(int) <= regionStart) &
-			(overlapREGION[:,2].astype(int) >= regionEnd)
-			)[0]
-		if len(idx) > 0:
+		overlapThis = list(filter(
+			lambda region: region[1] <= regionStart and region[2] >= regionEnd,  # pylint: disable=W0640
+			chromoRegionOverlaps
+		))
+		if len(overlapThis) > 0:
 			continue
 
 		## overlap Case 2: Overlap regions that only end inside the region
-		idx = np.where(
-			(overlapREGION[:,0] == regionChromo) &
-			(overlapREGION[:,1].astype(int) < regionStart) &
-			(overlapREGION[:,2].astype(int) > regionStart) &
-			(overlapREGION[:,2].astype(int) < regionEnd)
-			)[0]
-		if len(idx) > 0:
-			overlapThis.extend( overlapREGION[idx].tolist() )
+		overlapThis.extend(
+			filter(
+				lambda region: region[1] < regionStart and region[2] > regionStart and region[2] <= regionEnd,  # pylint: disable=W0640
+				chromoRegionOverlaps
+			)
+		)
 
 		## overlap Case 3: Overlap regions that only start inside the region
-		idx = np.where(
-			(overlapREGION[:,0] == regionChromo) &
-			(overlapREGION[:,1].astype(int) >= regionStart) &
-			(overlapREGION[:,1].astype(int) < regionEnd) &
-			(overlapREGION[:,2].astype(int) > regionEnd)
-			)[0]
-		if len(idx) > 0:
-			overlapThis.extend( overlapREGION[idx].tolist() )
+		overlapThis.extend(
+			filter(
+				lambda region: region[1] >= regionStart and region[1] < regionEnd and region[2] > regionEnd,  # pylint: disable=W0640
+				chromoRegionOverlaps
+			)
+		)
 
 		## overlap Case 4: Overlap regions that start and end inside the region
-		idx = np.where(
-			(overlapREGION[:,0] == regionChromo) &
-			(overlapREGION[:,1].astype(int) > regionStart) &
-			(overlapREGION[:,2].astype(int) < regionEnd)
-			)[0]
-		if len(idx) > 0:
-			overlapThis.extend( overlapREGION[idx].tolist() )
+		overlapThis.extend(
+			filter(
+				lambda region: region[1] > regionStart and region[2] < regionEnd,  # pylint: disable=W0640
+				chromoRegionOverlaps
+			)
+		)
 
 		if len(overlapThis) == 0:
-			regionWoOverlap.append(region)
+			nonOverlappingRegions.append(region)
 			continue
 
-		overlapThis = np.array(overlapThis)
-		overlapThis = overlapThis[overlapThis[:,1].astype(int).argsort()]
+		overlapThis.sort(key=lambda x: x[1])
 
 		currStart = regionStart
 		for pos, overlap in enumerate(overlapThis):
-			overlapStart = int(overlap[1])
-			overlapEnd = int(overlap[2])
+			_chr, overlapStart, overlapEnd = overlap
 
 			if overlapStart < currStart:
 				# Overlap case 2
 				currStart = max(overlapEnd, currStart)
 			else:
-				regionWoOverlap.append([regionChromo, currStart, overlapStart])
+				nonOverlappingRegions.append([regionChromo, currStart, overlapStart])
 				if overlapEnd < regionEnd:
 					# Overlap case 4
 					currStart = overlapEnd
@@ -167,107 +142,94 @@ def excludeOverlapRegion():
 
 			# Last overlap, handle remaining target region
 			if (pos == (len(overlapThis)-1)) and (overlapEnd < regionEnd):
-				regionWoOverlap.append([ regionChromo, overlapEnd, regionEnd ])
+				nonOverlappingRegions.append([regionChromo, overlapEnd, regionEnd])
 
-	return np.array(regionWoOverlap)
+	return nonOverlappingRegions
 
-def selectTrainSet():
-	trainRegionNum = np.power(10, 6)
-	totalRegionLen = np.sum(nonOverlapRegion[:,2].astype(int) - nonOverlapRegion[:,1].astype(int))
-	if(totalRegionLen < trainRegionNum):
-		return nonOverlapRegion
 
-	trainRegionNum = trainRegionNum / float(TRAINBIN_SIZE)
+def selectTrainSet(nonOverlapRegions):
+	trainRegionNum = 1_000_000
+	totalRegionLen = reduce(lambda acc, region: acc + (region[2] - region[1]), nonOverlapRegions, 0)
 
-	totalRegionLen = np.sum(nonOverlapRegion[:,2].astype(int) - nonOverlapRegion[:,1].astype(int))
-	trainSeteMeta = []
-	for regionIdx in range(len(nonOverlapRegion)):
-		chromo = nonOverlapRegion[regionIdx][0]
-		start = int(nonOverlapRegion[regionIdx][1])
-		end = int(nonOverlapRegion[regionIdx][2])
+	if totalRegionLen < trainRegionNum:
+		return nonOverlapRegions
 
-		trainNumToSelect = int(trainRegionNum * ((end - start) / totalRegionLen) )
-		trainSeteMeta.append([chromo, start, end, trainNumToSelect])
+	trainRegionNum = trainRegionNum / TRAINBIN_SIZE
 
-	numProcess = len(trainSeteMeta)
-	if( numProcess > commonVari.NUMPROCESS):
-		numProcess = commonVari.NUMPROCESS
-	task = np.array_split(trainSeteMeta, numProcess)
+	trainSetMeta = []
+	for region in nonOverlapRegions:
+		chromo, start, end = region
+
+		trainNumToSelect = int(trainRegionNum * ((end - start) / totalRegionLen))
+		trainSetMeta.append([chromo, start, end, trainNumToSelect])
+
+	numProcess = min(len(trainSetMeta), commonVari.NUMPROCESS)
+	task = np.array_split(trainSetMeta, numProcess)
 	pool = multiprocessing.Pool(numProcess)
-	result = pool.map_async(getTrainSet, task).get()
+	trainSetResults = pool.map_async(getTrainSet, task).get()
 	pool.close()
 	pool.join()
 
 	trainSet = []
-	for i in range(len(result)):
-		trainSet.extend(result[i])
+	for result in trainSetResults:
+		trainSet.extend(result)
 
 	return trainSet
+
 
 def getTrainSet(subregions):
 	subTrainSet = []
 
-	for regionIdx in range(len(subregions)):
-		chromo = subregions[regionIdx][0]
-		start = int(subregions[regionIdx][1])
-		end = int(subregions[regionIdx][2])
-		trainNumToSelect = int(subregions[regionIdx][3])
+	for region in subregions:
+		chromo, start, end, trainNumToSelect = region
 
-		if(trainNumToSelect == 0):
+		if trainNumToSelect == 0:
 			continue
 
-		selectedStarts = random.sample(list(np.arange(start, end, TRAINBIN_SIZE)), trainNumToSelect)
-		for i in selectedStarts:
-			subTrainSet.append([chromo, i])
+		selectedStarts = sample(
+			list(np.arange(start, end, TRAINBIN_SIZE)), trainNumToSelect
+		)
+		for startIdx in selectedStarts:
+			subTrainSet.append([chromo, startIdx])
 
 	return subTrainSet
 
-def getScaler(trainSet):
-	global ob1Values
-	ob1 = pyBigWig.open(commonVari.CTRLBW_NAMES[0])
 
-	ob1Values = []
-	for i in range(len(trainSet)):
-		regionChromo = trainSet[i][0]
-		regionStart = int(trainSet[i][1])
-		regionEnd = regionStart + TRAINBIN_SIZE
+def getScaler(trainSets):
+	with pyBigWig.open(commonVari.CTRLBW_NAMES[0]) as ob1:
+		ob1Values = []
+		for trainSet in trainSets:
+			regionChromo = trainSet[0]
+			regionStart = trainSet[1]
+			regionEnd = regionStart + TRAINBIN_SIZE
 
-		temp = np.array(ob1.values(regionChromo, regionStart, regionEnd))
-		temp[np.isnan(temp) == True] = 0
-		ob1Values.extend(list(temp))
-	ob1.close()
+			temp = np.array(ob1.values(regionChromo, regionStart, regionEnd))
+			temp[np.isnan(temp) == True] = 0
+			ob1Values.extend(list(temp))
 
-	task = []
-	sampleNum = len(commonVari.CTRLBW_NAMES) + len(commonVari.EXPBW_NAMES)
-	for i in range(1, sampleNum):
-		task.append([i, trainSet])
+	sampleNum = commonVari.CTRLBW_NUM + commonVari.EXPBW_NUM
+	task = [(i, trainSets, ob1Values) for i in range(1, sampleNum)]
 
 	###### OBTAIN A SCALER FOR EACH SAMPLE
-	numProcess = len(task)
-	if(numProcess > commonVari.NUMPROCESS):
-		numProcess = commonVari.NUMPROCESS
+	numProcess = min(len(task), commonVari.NUMPROCESS)
 	pool = multiprocessing.Pool(numProcess)
-	scalerResult = pool.map_async(getScalerForEachSample, task).get()
+	scalerResult = pool.starmap_async(getScalerForEachSample, task).get()
 	pool.close()
 	pool.join()
 
-	del ob1Values
-
 	return scalerResult
 
-def getScalerForEachSample(args):
-	taskNum = int(args[0])
-	trainSet = args[1]
 
+def getScalerForEachSample(taskNum, trainSets, ob1Values):
 	if taskNum < commonVari.CTRLBW_NUM:
 		ob2 = pyBigWig.open(commonVari.CTRLBW_NAMES[taskNum])
 	else:
 		ob2 = pyBigWig.open(commonVari.EXPBW_NAMES[taskNum - commonVari.CTRLBW_NUM])
 
 	ob2Values = []
-	for i in range(len(trainSet)):
-		regionChromo = trainSet[i][0]
-		regionStart = int(trainSet[i][1])
+	for trainSet in trainSets:
+		regionChromo = trainSet[0]
+		regionStart = trainSet[1]
 		regionEnd = regionStart + TRAINBIN_SIZE
 
 		temp = np.array(ob2.values(regionChromo, regionStart, regionEnd))
@@ -280,162 +242,122 @@ def getScalerForEachSample(args):
 
 	return scaler
 
-def getScalerRegion():
+
+def getRegionScalers(combinedRegions, scalerSample):
 	ctrlBW = [0] * commonVari.CTRLBW_NUM
 	for repIdx in range(commonVari.CTRLBW_NUM):
 		ctrlBW[repIdx] = pyBigWig.open(commonVari.CTRLBW_NAMES[repIdx])
 
-
-	rcPerOnebp = [0] * len(REGION_combined)
+	rcPerOnebp = [0] * len(combinedRegions)
 	maxRCPerOnebp = 0
-	for regionIdx in range(len(REGION_combined)):
-		chromo = REGION_combined[regionIdx][0]
-		start = int(REGION_combined[regionIdx][1])
-		end = int(REGION_combined[regionIdx][2])
-		I_overlap = REGION_combined[regionIdx][3]
+	for regionIdx, region in enumerate(combinedRegions):
+		chromo, start, end, isOverlap = region
 
-		rcArr = []
-		for repIdx in range(commonVari.CTRLBW_NUM):
-			temp = np.array(ctrlBW[repIdx].values(chromo, start, end)) / SCALER_SAMPLE[repIdx]
-			rcArr.append(list(temp))
+		rcArr = [list(
+					np.array(ctrlBW[repIdx].values(chromo, start, end)) / scalerSample[repIdx]
+				) for repIdx in range(commonVari.CTRLBW_NUM)]
 
 		sumRC = np.sum(np.nanmean(rcArr, axis=0))
-		rcPerOnebp[regionIdx] = sumRC / (end-start)
+		rcPerOnebp[regionIdx] = sumRC / (end - start)
 
-		if( (I_overlap == 'False') and (rcPerOnebp[regionIdx] > maxRCPerOnebp)):
+		if not isOverlap and (rcPerOnebp[regionIdx] > maxRCPerOnebp):
 			maxRCPerOnebp = rcPerOnebp[regionIdx]
 
 	rcPerOnebp = np.array(rcPerOnebp)
-	scaler_diffBacs = maxRCPerOnebp / rcPerOnebp
+	regionScalers = maxRCPerOnebp / rcPerOnebp
 
-	return scaler_diffBacs
+	return regionScalers
 
-def getResultBWHeader():
-	chromoInData = np.array(REGION_combined)[:,0]
 
-	chromoInDataUnique = []
-	bw = pyBigWig.open(commonVari.CTRLBW_NAMES[0])
+def getResultBWHeader(combinedRegions, ctrlBWName):
+	chromoInData = np.array(combinedRegions)[:,0]
 
+	chromoInDataUnique = set()
 	resultBWHeader = []
-	for i in range(len(chromoInData)):
-		chromo = chromoInData[i]
-		if chromo in chromoInDataUnique:
-			continue
-		chromoInDataUnique.extend([chromo])
-		chromoSize = bw.chroms(chromo)
-		resultBWHeader.append( (chromo, chromoSize) )
+	with pyBigWig.open(ctrlBWName) as bw:
+		for chromo in chromoInData:
+			if chromo in chromoInDataUnique:
+				continue
+			chromoInDataUnique.add(chromo)
+			chromoSize = bw.chroms(chromo)
+			resultBWHeader.append((chromo, chromoSize))
 
 	return resultBWHeader
 
-def generateNormalizedBWs(args):
-	bwHeader = args[0]
-	scaler = float(args[1])
-	observedBWName = args[2]
 
-	normObBWName = '.'.join( observedBWName.rsplit('/', 1)[-1].split(".")[:-1])
-	normObBWName = commonVari.OUTPUT_DIR + "/" + normObBWName + "_normalized.bw"
+def generateNormalizedBWs(outputDir, bwHeader, combinedRegions, scaler, scalerRegions, observedBWName):
+	normObBWName = ".".join(observedBWName.rsplit("/", 1)[-1].split(".")[:-1])
+	normObBWName = os.path.join(outputDir, normObBWName + "_normalized.bw")
+
 	normObBW = pyBigWig.open(normObBWName, "w")
 	normObBW.addHeader(bwHeader)
 
 	obBW = pyBigWig.open(observedBWName)
-	for regionIdx in range(len(REGION_combined)):
-		chromo = REGION_combined[regionIdx][0]
-		start = int(REGION_combined[regionIdx][1])
-		end = int(REGION_combined[regionIdx][2])
-		I_overlap = REGION_combined[regionIdx][3]
-		scaler_diffBacs = SCALER_REGION[regionIdx]
+	for regionIdx, region in enumerate(combinedRegions):
+		chromo, start, end, _overlap = region
+		regionScalers = scalerRegions[regionIdx]
 
-
-		starts = np.array(range(start, end))
+		starts = np.arange(start, end, dtype=np.long)
 		values = np.array(obBW.values(chromo, start, end))
 
-		idx = np.where( (np.isnan(values) == False) & (values > 0))[0]
+		idx = np.where((np.isnan(values) == False) & (values > 0))[0]
 		starts = starts[idx]
 		values = values[idx]
-		values = (values / scaler) * scaler_diffBacs
+		values = (values / scaler) * regionScalers
 
 		if len(starts) == 0:
 			continue
 
-		## merge positions with the same values
-		values = values.astype(int)
-		numIdx = len(values)
+		coalescedSectionCount, startEntries, endEntries, valueEntries = coalesceSections(starts, values)
 
-		idx = 0
-		prevStart = starts[idx]
-		prevRC = values[idx]
-		line = [prevStart, (prevStart+1), prevRC]
-
-		if numIdx == 1:
-			normObBW.addEntries([chromo], [int(prevStart)], ends=[int(prevStart+1)], values=[float(prevRC)])
-		else:
-			idx = 1
-			while idx < numIdx:
-				currStart = starts[idx]
-				currRC = values[idx]
-
-				if (currStart == (prevStart + 1)) and (currRC == prevRC):
-					line[1] = currStart + 1
-					prevStart = currStart
-					prevRC = currRC
-					idx = idx + 1
-				else:
-					### End a current line
-					normObBW.addEntries([chromo], [int(line[0])], ends=[int(line[1])], values=[float(line[2])])
-
-					### Start a new line
-					line = [currStart, (currStart+1), currRC]
-					prevStart = currStart
-					prevRC = currRC
-					idx = idx + 1
-
-				if idx == numIdx:
-					normObBW.addEntries([chromo], [int(line[0])], ends=[int(line[1])], values=[float(line[2])])
-					break
+		normObBW.addEntries([chromo] * coalescedSectionCount, startEntries, ends=endEntries, values=valueEntries)
 
 	normObBW.close()
 	obBW.close()
 
 	return normObBWName
 
+
 def run(args):
-	startTime = time.time()
+	startTime = time.perf_counter()
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
 	commonVari.setGlobalVariables(args)
-	setVariables(args)
+	combinedRegions, nonOverlapRegions = getRegions(args.r)
 
 	## 1) Get training set
-	trainSet = selectTrainSet()
+	trainSet = selectTrainSet(nonOverlapRegions)
 
 	## 2) Normlize samples relative to the first sample of ctrlbw.
-	global SCALER_SAMPLE
-	SCALER_SAMPLE = [1]
-	SCALER_SAMPLE.extend(getScaler(trainSet))
+	scalerSample = [1]
+	scalerSample.extend(getScaler(trainSet))
 
 	print("### Scalers in samples:")
-	print("   - ctrlbw: %s" % SCALER_SAMPLE[:commonVari.CTRLBW_NUM] )
-	print("   - expbw: %s" % SCALER_SAMPLE[commonVari.EXPBW_NUM:] )
-
+	print(f"   - ctrlbw: {scalerSample[:commonVari.CTRLBW_NUM]}")
+	print(f"   - expbw: {scalerSample[commonVari.EXPBW_NUM:]}")
 
 	## 3) Esimate scalers to normalize regions in a sample
-	global SCALER_REGION
-	SCALER_REGION = getScalerRegion()
+	regionScalers = getRegionScalers(combinedRegions, scalerSample)
 
 	## 4) Normalize a sample for different regions
-	resultBWHeader = getResultBWHeader()
-	jobList = []
-	for repIdx in range(commonVari.CTRLBW_NUM):
-		jobList.append([resultBWHeader, SCALER_SAMPLE[repIdx], commonVari.CTRLBW_NAMES[repIdx]])
+	resultBWHeader = getResultBWHeader(combinedRegions, commonVari.CTRLBW_NAMES[0])
+	jobList = [[commonVari.OUTPUT_DIR, resultBWHeader, combinedRegions, scalerSample[repIdx], regionScalers, commonVari.CTRLBW_NAMES[repIdx]]
+				for repIdx in range(commonVari.CTRLBW_NUM)]
+
 	for repIdx in range(commonVari.EXPBW_NUM):
-		jobList.append([resultBWHeader, SCALER_SAMPLE[commonVari.CTRLBW_NUM + repIdx], commonVari.EXPBW_NAMES[repIdx]])
+		jobList.append(
+			[
+				commonVari.OUTPUT_DIR,
+				resultBWHeader,
+				combinedRegions,
+				scalerSample[commonVari.CTRLBW_NUM + repIdx],
+				regionScalers,
+				commonVari.EXPBW_NAMES[repIdx],
+			]
+		)
 
-	if(commonVari.NUMPROCESS < len(jobList)):
-		pool = multiprocessing.Pool(commonVari.NUMPROCESS)
-	else:
-		pool = multiprocessing.Pool(len(jobList))
-
-	normFileNames = pool.map_async(generateNormalizedBWs, jobList).get()
+	pool = multiprocessing.Pool(min(len(jobList), commonVari.NUMPROCESS))
+	normFileNames = pool.starmap_async(generateNormalizedBWs, jobList).get()
 	pool.close()
 	pool.join()
 
@@ -444,6 +366,4 @@ def run(args):
 	print("Nomralized observed bigwig file names: ")
 	print(normFileNames)
 	print("\n")
-	print("-- RUNNING TIME: %s hour(s)" % ((time.time()-startTime)/3600) )
-
-
+	print(f"-- RUNNING TIME: {((time.perf_counter() - startTime) / 3600)} hour(s)")
