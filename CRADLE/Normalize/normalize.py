@@ -13,6 +13,7 @@ from CRADLE.correctbiasutils.cython import coalesceSections  # type: ignore
 
 TRAINBIN_SIZE = 1000
 
+RegionDtype = np.dtype([("chromo", "U7"), ("start", "i4"), ("end", "i4"), ("overlap", bool)])
 
 def getRegions(region):
 	mergedRegions, regionOverlaps = mergeRegions(region)
@@ -22,13 +23,8 @@ def getRegions(region):
 	else:
 		nonOverlappingRegions = getNonOverlappingRegions(mergedRegions, regionOverlaps)
 
-	combinedRegions = [[*region, True] for region in regionOverlaps]
-
-	for region in nonOverlappingRegions:
-		combinedRegions.append([*region, False])
-
-	combinedRegions.sort(key=lambda x: x[1])
-	combinedRegions.sort(key=lambda x: x[0])
+	combinedRegions = np.concatenate((regionOverlaps, nonOverlappingRegions))
+	combinedRegions = combinedRegions[np.lexsort((combinedRegions[:]["start"], combinedRegions[:]["chromo"]))]
 
 	return combinedRegions, nonOverlappingRegions
 
@@ -40,99 +36,102 @@ def mergeRegions(regionBed):
 	regions = []
 	for line in inputFileContents:
 		temp = line.split()  # chr start end
-		temp[1] = int(temp[1])
-		temp[2] = int(temp[2])
-		regions.append(temp)
+		regions.append((temp[0], int(temp[1]), int(temp[2]), False))
 
+	regions = np.array(regions, dtype=RegionDtype)
 	if len(regions) <= 1:
-		return regions, []
+		return regions, np.array([], dtype=RegionDtype)
 
-	regions.sort(key=lambda x: x[1])
-	regions.sort(key=lambda x: x[0])
+	regions = regions[np.lexsort((regions[:]["start"], regions[:]["chromo"]))]
 
 	regionOverlaps = []
 
-	pastChromo = regions[0][0]
-	pastStart = regions[0][1]
-	pastEnd = regions[0][2]
+	pastChromo, pastStart, pastEnd, _overlap = regions[0]
 
-	mergedRegions = [[pastChromo, pastStart, pastEnd]]
+	mergedRegions = [[pastChromo, pastStart, pastEnd, False]]
 
 	for region in regions[1:]:
-		currChromo, currStart, currEnd = region
+		currChromo, currStart, currEnd, _overlap = region
 
 		if (currChromo == pastChromo) and (currStart >= pastStart) and (currStart <= pastEnd):
 			if currStart != pastEnd:
-				regionOverlaps.append([currChromo, currStart, min(currEnd, pastEnd)])
+				regionOverlaps.append([currChromo, currStart, min(currEnd, pastEnd), True])
 			# else: the overlapping position is 0-length
 
 			newEnd = max(currEnd, pastEnd)
 			mergedRegions[-1][2] = newEnd
 			pastEnd = newEnd
 		else:
-			mergedRegions.append([currChromo, currStart, currEnd])
+			mergedRegions.append([currChromo, currStart, currEnd, False])
 			pastEnd = currEnd
 
 		pastChromo = currChromo
 		pastStart = currStart
 
+	mergedRegions = np.array([tuple(region) for region in mergedRegions], dtype=RegionDtype)
+	regionOverlaps = np.array([tuple(region) for region in regionOverlaps], dtype=RegionDtype)
 	return mergedRegions, regionOverlaps
 
 
 def getNonOverlappingRegions(mergedRegions, regionOverlaps):
 	nonOverlappingRegions = []
 	for region in mergedRegions:
-		regionChromo, regionStart, regionEnd = region
-		chromoRegionOverlaps = list(filter(lambda region: region[0] == regionChromo, regionOverlaps))  # pylint: disable=W0640
+		regionChromo, regionStart, regionEnd, _overlap = region
+		chromoRegionOverlaps = np.extract(regionOverlaps[:]["chromo"] == regionChromo, regionOverlaps)  # pylint: disable=W0640
 
-		overlapThis = []
 		## overlap Case 1 : Overlap regions that completely cover the region.
-		overlapThis = list(filter(
-			lambda region: region[1] <= regionStart and region[2] >= regionEnd,  # pylint: disable=W0640
+		overlapThis = np.extract(
+			(chromoRegionOverlaps[:]["start"] <= regionStart) &
+			(chromoRegionOverlaps[:]["end"] >= regionEnd),
 			chromoRegionOverlaps
-		))
+		)
 		if len(overlapThis) > 0:
 			continue
 
 		## overlap Case 2: Overlap regions that only end inside the region
-		overlapThis.extend(
-			filter(
-				lambda region: region[1] < regionStart and region[2] > regionStart and region[2] <= regionEnd,  # pylint: disable=W0640
+		overlapThis = np.concatenate(
+			(overlapThis, np.extract(
+				(chromoRegionOverlaps[:]["start"] < regionStart) &
+				(chromoRegionOverlaps[:]["end"] > regionStart) &
+				(chromoRegionOverlaps[:]["end"] <= regionEnd),
 				chromoRegionOverlaps
-			)
+			))
 		)
 
 		## overlap Case 3: Overlap regions that only start inside the region
-		overlapThis.extend(
-			filter(
-				lambda region: region[1] >= regionStart and region[1] < regionEnd and region[2] > regionEnd,  # pylint: disable=W0640
+		overlapThis = np.concatenate(
+			(overlapThis, np.extract(
+				(chromoRegionOverlaps[:]["start"] >= regionStart) &
+				(chromoRegionOverlaps[:]["start"] < regionEnd) &
+				(chromoRegionOverlaps[:]["end"] > regionEnd),
 				chromoRegionOverlaps
-			)
+			))
 		)
 
 		## overlap Case 4: Overlap regions that start and end inside the region
-		overlapThis.extend(
-			filter(
-				lambda region: region[1] > regionStart and region[2] < regionEnd,  # pylint: disable=W0640
+		overlapThis = np.concatenate(
+			(overlapThis, np.extract(
+				(chromoRegionOverlaps[:]["start"] > regionStart) &
+				(chromoRegionOverlaps[:]["end"] < regionEnd),
 				chromoRegionOverlaps
-			)
+			))
 		)
 
 		if len(overlapThis) == 0:
 			nonOverlappingRegions.append(region)
 			continue
 
-		overlapThis.sort(key=lambda x: x[1])
+		overlapThis = overlapThis[overlapThis[:]["start"].argsort()]
 
 		currStart = regionStart
 		for pos, overlap in enumerate(overlapThis):
-			_chr, overlapStart, overlapEnd = overlap
+			_chr, overlapStart, overlapEnd, _overlap = overlap
 
 			if overlapStart < currStart:
 				# Overlap case 2
 				currStart = max(overlapEnd, currStart)
 			else:
-				nonOverlappingRegions.append([regionChromo, currStart, overlapStart])
+				nonOverlappingRegions.append((regionChromo, currStart, overlapStart, False))
 				if overlapEnd < regionEnd:
 					# Overlap case 4
 					currStart = overlapEnd
@@ -142,14 +141,14 @@ def getNonOverlappingRegions(mergedRegions, regionOverlaps):
 
 			# Last overlap, handle remaining target region
 			if (pos == (len(overlapThis)-1)) and (overlapEnd < regionEnd):
-				nonOverlappingRegions.append([regionChromo, overlapEnd, regionEnd])
+				nonOverlappingRegions.append((regionChromo, overlapEnd, regionEnd, False))
 
-	return nonOverlappingRegions
+	return np.array(nonOverlappingRegions, dtype=RegionDtype)
 
 
 def selectTrainSet(nonOverlapRegions):
 	trainRegionNum = 1_000_000
-	totalRegionLen = reduce(lambda acc, region: acc + (region[2] - region[1]), nonOverlapRegions, 0)
+	totalRegionLen = np.sum(nonOverlapRegions[:]["end"] - nonOverlapRegions[:]["start"])
 
 	if totalRegionLen < trainRegionNum:
 		return nonOverlapRegions
@@ -158,10 +157,10 @@ def selectTrainSet(nonOverlapRegions):
 
 	trainSetMeta = []
 	for region in nonOverlapRegions:
-		chromo, start, end = region
+		chromo, start, end, _overlap = region
 
 		trainNumToSelect = int(trainRegionNum * ((end - start) / totalRegionLen))
-		trainSetMeta.append([chromo, start, end, trainNumToSelect])
+		trainSetMeta.append((chromo, start, end, trainNumToSelect))
 
 	numProcess = min(len(trainSetMeta), commonVari.NUMPROCESS)
 	task = np.array_split(trainSetMeta, numProcess)
@@ -180,17 +179,14 @@ def selectTrainSet(nonOverlapRegions):
 def getTrainSet(subregions):
 	subTrainSet = []
 
-	for region in subregions:
+	for region in filter(lambda r: r[3] != 0, subregions):
 		chromo, start, end, trainNumToSelect = region
-
-		if trainNumToSelect == 0:
-			continue
 
 		selectedStarts = sample(
 			list(np.arange(start, end, TRAINBIN_SIZE)), trainNumToSelect
 		)
 		for startIdx in selectedStarts:
-			subTrainSet.append([chromo, startIdx])
+			subTrainSet.append((chromo, startIdx))
 
 	return subTrainSet
 
@@ -199,8 +195,7 @@ def getScaler(trainSets):
 	with pyBigWig.open(commonVari.CTRLBW_NAMES[0]) as ob1:
 		ob1Values = []
 		for trainSet in trainSets:
-			regionChromo = trainSet[0]
-			regionStart = trainSet[1]
+			regionChromo, regionStart, _regionEnd, _overlap = trainSet
 			regionEnd = regionStart + TRAINBIN_SIZE
 
 			temp = np.array(ob1.values(regionChromo, regionStart, regionEnd))
@@ -228,8 +223,7 @@ def getScalerForEachSample(taskNum, trainSets, ob1Values):
 
 	ob2Values = []
 	for trainSet in trainSets:
-		regionChromo = trainSet[0]
-		regionStart = trainSet[1]
+		regionChromo, regionStart, _regionEnd, _overlap = trainSet
 		regionEnd = regionStart + TRAINBIN_SIZE
 
 		temp = np.array(ob2.values(regionChromo, regionStart, regionEnd))
@@ -248,14 +242,15 @@ def getRegionScalers(combinedRegions, scalerSample):
 	for repIdx in range(commonVari.CTRLBW_NUM):
 		ctrlBW[repIdx] = pyBigWig.open(commonVari.CTRLBW_NAMES[repIdx])
 
-	rcPerOnebp = [0] * len(combinedRegions)
+	rcPerOnebp = np.zeros(len(combinedRegions))
 	maxRCPerOnebp = 0
 	for regionIdx, region in enumerate(combinedRegions):
 		chromo, start, end, isOverlap = region
 
-		rcArr = [list(
-					np.array(ctrlBW[repIdx].values(chromo, start, end)) / scalerSample[repIdx]
-				) for repIdx in range(commonVari.CTRLBW_NUM)]
+		rcArr = [
+			np.array(ctrlBW[repIdx].values(chromo, start, end)) / scalerSample[repIdx]
+			for repIdx in range(commonVari.CTRLBW_NUM)
+		]
 
 		sumRC = np.sum(np.nanmean(rcArr, axis=0))
 		rcPerOnebp[regionIdx] = sumRC / (end - start)
@@ -263,14 +258,13 @@ def getRegionScalers(combinedRegions, scalerSample):
 		if not isOverlap and (rcPerOnebp[regionIdx] > maxRCPerOnebp):
 			maxRCPerOnebp = rcPerOnebp[regionIdx]
 
-	rcPerOnebp = np.array(rcPerOnebp)
 	regionScalers = maxRCPerOnebp / rcPerOnebp
 
 	return regionScalers
 
 
 def getResultBWHeader(combinedRegions, ctrlBWName):
-	chromoInData = np.array(combinedRegions)[:,0]
+	chromoInData = combinedRegions[:]["chromo"]
 
 	chromoInDataUnique = set()
 	resultBWHeader = []
