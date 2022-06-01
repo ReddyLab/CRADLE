@@ -1,7 +1,6 @@
 import multiprocessing
 import os.path
 import time
-from functools import reduce
 from random import sample
 
 import numpy as np
@@ -14,6 +13,7 @@ from CRADLE.correctbiasutils.cython import coalesceSections  # type: ignore
 TRAINBIN_SIZE = 1000
 
 RegionDtype = np.dtype([("chromo", "U7"), ("start", "i4"), ("end", "i4"), ("overlap", bool)])
+
 
 def getRegions(region):
 	mergedRegions, regionOverlaps = mergeRegions(region)
@@ -192,6 +192,10 @@ def getTrainSet(subregions):
 
 
 def getScaler(trainSets):
+	# Passing ob1Values in to getScalerForEachSample via starmap_async is
+	# surprisingly slow and ~quadruples the running time of the whole utility,
+	# so its stays a global
+	global ob1Values
 	with pyBigWig.open(commonVari.CTRLBW_NAMES[0]) as ob1:
 		ob1Values = []
 		for trainSet in trainSets:
@@ -203,8 +207,7 @@ def getScaler(trainSets):
 			ob1Values.extend(list(temp))
 
 	sampleNum = commonVari.CTRLBW_NUM + commonVari.EXPBW_NUM
-	task = [(i, trainSets, ob1Values) for i in range(1, sampleNum)]
-
+	task = [(i, trainSets) for i in range(1, sampleNum)]
 	###### OBTAIN A SCALER FOR EACH SAMPLE
 	numProcess = min(len(task), commonVari.NUMPROCESS)
 	pool = multiprocessing.Pool(numProcess)
@@ -215,7 +218,7 @@ def getScaler(trainSets):
 	return scalerResult
 
 
-def getScalerForEachSample(taskNum, trainSets, ob1Values):
+def getScalerForEachSample(taskNum, trainSets):
 	if taskNum < commonVari.CTRLBW_NUM:
 		ob2 = pyBigWig.open(commonVari.CTRLBW_NAMES[taskNum])
 	else:
