@@ -61,6 +61,9 @@ def mergePeaks(peakResult):
 	if vari.I_LOG2FC:
 		normCtrlBW = [pyBigWig.open(bwName) for bwName in vari.NORM_CTRLBW_NAMES]
 		normExpBW = [pyBigWig.open(bwName) for bwName in vari.NORM_EXPBW_NAMES]
+	else:
+		normCtrlBW = None
+		normExpBW = None
 
 	mergedPeak = []
 

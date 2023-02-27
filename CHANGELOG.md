@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Fixed callPeak issue where mergePeak function would fail if no normalized bigwigs were
+  included on the command line (they are optional).
+
 ## [0.28.0]
 
 ### Changed
