@@ -8,7 +8,7 @@ import pyBigWig
 import statsmodels.api as sm
 
 from CRADLE.correctbiasutils import vari as commonVari
-from CRADLE.correctbiasutils.cython import coalesceSections  # type: ignore
+from CRADLE.correctbiasutils.cython import arraySplit, coalesceSections  # type: ignore
 
 TRAINBIN_SIZE = 1000
 
@@ -163,7 +163,7 @@ def selectTrainSet(nonOverlapRegions):
 		trainSetMeta.append((chromo, start, end, trainNumToSelect))
 
 	numProcess = min(len(trainSetMeta), commonVari.NUMPROCESS)
-	task = np.array_split(trainSetMeta, numProcess)
+	task = arraySplit(trainSetMeta, numProcess)
 	pool = multiprocessing.Pool(numProcess)
 	trainSetResults = pool.map_async(getTrainSet, task).get()
 	pool.close()

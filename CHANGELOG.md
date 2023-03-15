@@ -4,6 +4,10 @@
 
 - Fixed callPeak issue where mergePeak function would fail if no normalized bigwigs were
   included on the command line (they are optional).
+- Fixed issue in normalize code that broke getTrainSet. np.array_split not only splits an
+  array, but also secretly changes the types in the array if it's heterogenous. Some ints
+  were being converted to strings, and this made np.arange (and the author) very sad. Fortunately,
+  our custom arraySplit code does no such nonsense.
 
 ## [0.28.0]
 
