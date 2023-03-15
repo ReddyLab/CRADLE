@@ -294,7 +294,7 @@ def generateNormalizedBWs(outputDir, bwHeader, combinedRegions, scaler, scalerRe
 		chromo, start, end, _overlap = region
 		regionScalers = scalerRegions[regionIdx]
 
-		starts = np.arange(start, end, dtype=np.long)
+		starts = np.arange(start, end, dtype=np.uint32)
 		values = np.array(obBW.values(chromo, start, end))
 
 		idx = np.where((np.isnan(values) == False) & (values > 0))[0]
