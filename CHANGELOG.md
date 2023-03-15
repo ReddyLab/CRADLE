@@ -10,8 +10,8 @@
   our custom arraySplit code does no such nonsense.
 - Fixed issue in normalize code with getScaler. It expected the input to be a nx4 array, but it was being
   passed (correctly) an nx2 array.
-- Use np.uint32 instead of np.long. np.long has been removed and the values should be nowhere near the
-  max value of an uint32.
+- Use np.int_ instead of np.long. np.long has been removed and the values should be nowhere near the
+  max value of an int_ (an int64).
 
 ## [0.28.0]
 
