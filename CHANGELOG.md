@@ -8,6 +8,8 @@
   array, but also secretly changes the types in the array if it's heterogenous. Some ints
   were being converted to strings, and this made np.arange (and the author) very sad. Fortunately,
   our custom arraySplit code does no such nonsense.
+- Fixed issue in normalize code with getScaler. It expected the input to be a nx4 array, but it was being
+  passed (correctly) an nx2 array.
 
 ## [0.28.0]
 

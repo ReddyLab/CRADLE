@@ -199,7 +199,7 @@ def getScaler(trainSets):
 	with pyBigWig.open(commonVari.CTRLBW_NAMES[0]) as ob1:
 		ob1Values = []
 		for trainSet in trainSets:
-			regionChromo, regionStart, _regionEnd, _overlap = trainSet
+			regionChromo, regionStart = trainSet
 			regionEnd = regionStart + TRAINBIN_SIZE
 
 			temp = np.array(ob1.values(regionChromo, regionStart, regionEnd))
@@ -226,7 +226,7 @@ def getScalerForEachSample(taskNum, trainSets):
 
 	ob2Values = []
 	for trainSet in trainSets:
-		regionChromo, regionStart, _regionEnd, _overlap = trainSet
+		regionChromo, regionStart = trainSet
 		regionEnd = regionStart + TRAINBIN_SIZE
 
 		temp = np.array(ob2.values(regionChromo, regionStart, regionEnd))
