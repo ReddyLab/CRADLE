@@ -31,6 +31,10 @@ ext_modules = [
 		['CRADLE/CalculateCovariates/taskCovariates.pyx'],
 		extra_compile_args=["-fno-strict-aliasing"]),
 	Extension(
+		'CRADLE.CalculateCovariates.covariateUtils',
+		['CRADLE/CalculateCovariates/covariateUtils.pyx'],
+		extra_compile_args=["-fno-strict-aliasing"]),
+	Extension(
 		'CRADLE.CallPeak.calculateRC',
 		['CRADLE/CallPeak/calculateRC.pyx'],
 		extra_compile_args=["-fno-strict-aliasing"]),

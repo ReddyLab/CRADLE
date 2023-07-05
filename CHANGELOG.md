@@ -2,14 +2,20 @@
 
 ## [Unreleased]
 
-- Fixed callPeak issue where mergePeak function would fail if no normalized bigwigs were
+### Fixed
+
+- CallPeak issue where mergePeak function would fail if no normalized bigwigs were
   included on the command line (they are optional).
-- Fixed issue in normalize code that broke getTrainSet. np.array_split not only splits an
+- Issue in normalize code that broke getTrainSet. np.array_split not only splits an
   array, but also secretly changes the types in the array if it's heterogenous. Some ints
   were being converted to strings, and this made np.arange (and the author) very sad. Fortunately,
   our custom arraySplit code does no such nonsense.
-- Fixed issue in normalize code with getScaler. It expected the input to be a nx4 array, but it was being
+- Issue in normalize code with getScaler. It expected the input to be a nx4 array, but it was being
   passed (correctly) an nx2 array.
+- Adds `CRADLE/CalculateCovariates/covariateUtils.pyx` to setup.py list of ext_modules
+
+## Changed
+
 - Use np.int_ instead of np.long. np.long has been removed and the values should be nowhere near the
   max value of an int_ (an int64).
 
