@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.29.0]
 
 ### Fixed
 
@@ -14,7 +14,7 @@
   passed (correctly) an nx2 array.
 - Adds `CRADLE/CalculateCovariates/covariateUtils.pyx` to setup.py list of ext_modules
 
-## Changed
+### Changed
 
 - Use np.int_ instead of np.long. np.long has been removed and the values should be nowhere near the
   max value of an int_ (an int64).
