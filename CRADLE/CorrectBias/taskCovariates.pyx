@@ -95,18 +95,18 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 		del mapFile, mapValue
 
 	if vari.GQUAD == 1:
-		gquadFile = [0] * len(vari.GQAUDFILE)
-		gquadValue = [0] * len(vari.GQAUDFILE)
+		gquadFile = [0] * len(vari.GQUADFILE)
+		gquadValue = [0] * len(vari.GQUADFILE)
 
-		for i in range(len(vari.GQAUDFILE)):
-			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
+		for i in range(len(vari.GQUADFILE)):
+			gquadFile[i] = pyBigWig.open(vari.GQUADFILE[i])
 			gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
 			gquadFile[i].close()
 
 		gquadValue = np.array(gquadValue)
 		gquadValue = np.nanmax(gquadValue, axis=0)
 		gquadValue[np.where(gquadValue == 0)] = np.nan
-		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
+		gquadValue = np.log(gquadValue / float(vari.GQUAD_MAX))
 
 		gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
 		gquadView = cu.memoryView(gquadValue)
@@ -373,18 +373,18 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 		del mapFile, mapValue
 
 	if vari.GQUAD == 1:
-		gquadFile = [0] * len(vari.GQAUDFILE)
-		gquadValue = [0] * len(vari.GQAUDFILE)
+		gquadFile = [0] * len(vari.GQUADFILE)
+		gquadValue = [0] * len(vari.GQUADFILE)
 
-		for i in range(len(vari.GQAUDFILE)):
-			gquadFile[i] = pyBigWig.open(vari.GQAUDFILE[i])
+		for i in range(len(vari.GQUADFILE)):
+			gquadFile[i] = pyBigWig.open(vari.GQUADFILE[i])
 			gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
 			gquadFile[i].close()
 
 		gquadValue = np.array(gquadValue)
 		gquadValue = np.nanmax(gquadValue, axis=0)
 		gquadValue[np.where(gquadValue == 0)] = np.nan
-		gquadValue = np.log(gquadValue / float(vari.GQAUD_MAX))
+		gquadValue = np.log(gquadValue / float(vari.GQUAD_MAX))
 
 		gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
 		gquadView = cu.memoryView(gquadValue)
