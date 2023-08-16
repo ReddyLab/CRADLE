@@ -30,16 +30,15 @@ def outputHDF5File(outputDir, baseName, chromo):
 	return os.path.join(outputDir, f"{baseName}_{chromo}.hdf5")
 
 
-def mergeTempFilesToHDF5(chromo, regionGroup, outputFile):
-	with py2bit.open(vari.GENOME) as genome:
+def mergeTempFilesToHDF5(chromo, regionGroup, outputFile, globalVars):
+	with py2bit.open(globalVars["genome"]) as genome:
 		chromoEnd = int(genome.chroms(chromo))
 
 	f = h5py.File(outputFile, "w")
-	covariDataSet = f.create_dataset("covari", (chromoEnd, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariDataSet = f.create_dataset("covari", (chromoEnd, globalVars["covariNum"]), dtype='f', compression="gzip")
 
 	for chromo, analysisStart, analysisEnd in regionGroup:
-		print(f"{chromo}:{analysisStart}-{analysisEnd}")
-		tempFileName = os.path.join(commonVari.OUTPUT_DIR, f"{chromo}_{analysisStart}_{analysisEnd}.pkl")
+		tempFileName = os.path.join(globalVars["outputDir"], f"{chromo}_{analysisStart}_{analysisEnd}.pkl")
 		with open(tempFileName, "rb") as file:
 			covariates = pickle.load(file)
 		start = analysisStart - COVARIATE_FILE_INDEX_OFFSET
@@ -103,12 +102,14 @@ def checkArgs(args):
 @timer("INITIALIZING PARAMETERS")
 def init(args):
 	checkArgs(args)
-	commonVari.setGlobalVariables(args)
-	vari.setGlobalVariables(args)
+	commonGlobalVars = commonVari.setGlobalVariables(args)
+	globalVars = vari.setGlobalVariables(args)
+
+	return commonGlobalVars | globalVars
 
 
 @timer("Merging Temp Files", 1)
-def mergeTempFiles(outputRegions):
+def mergeTempFiles(outputRegions, globalVars):
 	flattenedOuputRegions = []
 	for region in outputRegions:
 		flattenedOuputRegions.extend(region)
@@ -119,8 +120,8 @@ def mergeTempFiles(outputRegions):
 	# group by chromosome
 	mergeGroups = []
 	for chromo, regionGroup in itertools.groupby(flattenedOuputRegions, lambda x: x[0]):
-		outputFile = outputHDF5File(commonVari.OUTPUT_DIR, os.path.basename(commonVari.OUTPUT_DIR), chromo)
-		mergeGroups.append((chromo, list(regionGroup), outputFile))
+		outputFile = outputHDF5File(globalVars["outputDir"], os.path.basename(globalVars["outputDir"]), chromo)
+		mergeGroups.append((chromo, list(regionGroup), outputFile, globalVars))
 
 	correctedFileNames = utils.process(len(mergeGroups), mergeTempFilesToHDF5, mergeGroups, context="fork")
 
@@ -129,27 +130,27 @@ def mergeTempFiles(outputRegions):
 
 
 @timer("Calculating Covariates", 1)
-def calculateCovariates():
-	binnedRegions = utils.divideGenome(commonVari.REGIONS)
-	jobGroups = divideWork(binnedRegions, commonVari.REGIONS.cumulativeRegionSize, commonVari.NUMPROCESS)
+def calculateCovariates(globalVars):
+	binnedRegions = utils.divideGenome(globalVars["regions"])
+	jobGroups = divideWork(binnedRegions, globalVars["regions"].cumulativeRegionSize, globalVars["numprocess"])
 
 	coefArgs = [(
 		jobGroup,
-		commonVari.OUTPUT_DIR,
+		globalVars,
 	) for jobGroup in jobGroups]
 
-	outputRegions = utils.process(min(len(coefArgs), commonVari.NUMPROCESS), calculateTaskCovariates, coefArgs, context="fork")
+	outputRegions = utils.process(min(len(coefArgs), globalVars["numprocess"]), calculateTaskCovariates, coefArgs, context="fork")
 	return outputRegions
 
 
 def run(args):
 	startTime = time.perf_counter()
 
-	init(args)
+	globalVars = init(args)
 
-	outputRegions = calculateCovariates()
+	outputRegions = calculateCovariates(globalVars)
 
-	mergeTempFiles(outputRegions)
+	mergeTempFiles(outputRegions, globalVars)
 
 
 	print(f"-- RUNNING TIME: {((time.perf_counter() - startTime)/3600)} hour(s)")

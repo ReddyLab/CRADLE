@@ -13,6 +13,8 @@ def setGlobalVariables(args):
 
 	### input bigwig files
 
+	globalDict = {}
+
 	regionSet = ChromoRegionSet.loadBed(args.r)
 	blacklistRegionSet = ChromoRegionSet.loadBed(args.bl) if "bl" in dir(args) and args.bl else None
 
@@ -22,6 +24,8 @@ def setGlobalVariables(args):
 
 		CTRLBW_NAMES = args.ctrlbw
 		CTRLBW_NUM = len(CTRLBW_NAMES)
+		globalDict["ctrlbwNames"] = CTRLBW_NAMES
+		globalDict["ctrlbwNum"] = CTRLBW_NUM
 
 		with pyBigWig.open(CTRLBW_NAMES[0]) as ctrlBW:
 			REGIONS = setAnlaysisRegion(regionSet, blacklistRegionSet, ctrlBW)
@@ -35,13 +39,24 @@ def setGlobalVariables(args):
 		EXPBW_NAMES = args.expbw
 		EXPBW_NUM = len(EXPBW_NAMES)
 
+		globalDict["expbwNames"] = EXPBW_NAMES
+		globalDict["expbwNum"] = EXPBW_NUM
+
 	if hasattr(args, "ctrlbw") and hasattr(args, "expbw"):
 		global SAMPLE_NUM
 
 		SAMPLE_NUM = CTRLBW_NUM + EXPBW_NUM
 
+		globalDict["sampleNum"] = SAMPLE_NUM
+
 	NUMPROCESS = setNumProcess(args.p)
 	OUTPUT_DIR = setOutputDirectory(args.o)
+
+	globalDict["numprocess"] = NUMPROCESS
+	globalDict["outputDir"] = OUTPUT_DIR
+	globalDict["regions"] = REGIONS
+
+	return globalDict
 
 
 def setOutputDirectory(outputDir):
