@@ -93,8 +93,8 @@ cradle correctBias -ctrlbw ctrl1.bw ctrl2.bw ctrl3.bw
   -  -kmer <br />
       The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'
   -  -gquadFile <br />
-      Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'.
-      See 'Reference' if you want to download human Gqaudruplex files (hg19 and hg38).
+      Gquadruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'.
+      See 'Reference' if you want to download human Gquadruplex files (hg19 and hg38).
   -  -o <br />
       Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.
   -  -p <br />
@@ -262,8 +262,8 @@ cradle covariates -l 500
   -  -kmer <br />
       The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'
   -  -gquadFile <br />
-      Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'.
-      See 'Reference' if you want to download human Gqaudruplex files (hg19 and hg38).
+      Gquadruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'.
+      See 'Reference' if you want to download human Gquadruplex files (hg19 and hg38).
   -  -o <br />
       Output directory. All calculated covariate files will be stored here. If the directory doesn't exist, cradle will make the directory. default=`CRADLE_covariates`. The output covariate files will be named {output_directory}_{chromosome}.hdf5 (e.g., `CRADLE_covariates_chrX.hdf5`)
 
