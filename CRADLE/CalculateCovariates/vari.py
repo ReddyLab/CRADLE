@@ -12,6 +12,32 @@ def setGlobalVariables(args):
 	### input bigwig files
 	setBiasFiles(args)
 	FRAGLEN = args.l
+	return {
+		"fragLen": FRAGLEN,
+		"binSize": 1,
+		"shear": SHEAR,
+		"pcr": PCR,
+		"kmer": KMER,
+		"map": MAP,
+		"mapFile": MAPFILE,
+		"gquad": GQUAD,
+		"gquadFile": GQUADFILE,
+		"gquadMax": GQUAD_MAX,
+		"covariNum": COVARI_NUM,
+		"genome": GENOME,
+		"covariOrder": COVARI_ORDER,
+		"mgw": MGW,
+		"prot": PROT,
+		"n_mgw": N_MGW,
+		"n_prot": N_PROT,
+		"gibbs": GIBBS,
+		"entropy": ENTROPY,
+		"min_tm": MIN_TM,
+		"max_tm": MAX_TM,
+		"para1": PARA1,
+		"para2": PARA2,
+		"n_gibbs": N_GIBBS
+	}
 
 
 def setBiasFiles(args):
@@ -579,6 +605,7 @@ def setBiasFiles(args):
 		COVARI_ORDER.extend(["Anneal_pcr", "Denature_pcr"])
 
 		global GIBBS
+		global GIBBS_DICT
 		global ENTROPY
 		global MIN_TM
 		global MAX_TM
