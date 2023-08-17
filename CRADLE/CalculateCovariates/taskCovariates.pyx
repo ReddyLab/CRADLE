@@ -1,5 +1,6 @@
 # cython: language_level=3
 
+import array
 import os.path
 import pickle
 import tempfile
@@ -8,6 +9,9 @@ import h5py
 import numpy as np
 import py2bit
 import pyBigWig
+
+cimport cython
+from cpython cimport array
 
 import CRADLE.CalculateCovariates.covariateUtils as cu
 
@@ -89,7 +93,9 @@ cpdef gquadValues(gquadFiles, chromo, fragStart, fragEnd, gquadMax):
 	return gquadValueView
 
 
-cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValues, gquadValues, fragLen, globalVars):
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cpdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, mapValues, gquadValues, int fragLen, globalVars):
 	cdef int shear = globalVars["shear"]
 	cdef int pcr = globalVars["pcr"]
 	cdef int map = globalVars["map"]
@@ -98,13 +104,22 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 	cdef double n_mgw = globalVars["n_mgw"]
 	cdef double n_prot = globalVars["n_prot"]
 	cdef int kmer = globalVars["kmer"]
+
+	cdef int n_gibbs = globalVars["n_gibbs"]
+	cdef double gibbs = 0
+	cdef double subtract = -1
+	cdef double startGibbs = 0
+	cdef int i
+	cdef char d1, d2
+	cdef char[:] seq = array.array("b", sequence)
+
 	covariates = np.zeros(covariNum)
 	covariIdxPtr = 0
 
 	if shear == 1:
 		###  mer1
-		mer1 = sequence[(idx-2):(idx+3)].upper()
-		if 'N' in mer1:
+		mer1 = sequence[(idx-2):(idx+3)]
+		if b'N' in mer1:
 			pastMer1 = -1
 			mgwIdx = n_mgw
 			protIdx = n_prot
@@ -116,8 +131,8 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 
 		###  mer2
 		fragEndIdx = idx + fragLen
-		mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)].upper()
-		if 'N' in mer2:
+		mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
+		if b'N' in mer2:
 			pastMer2 = -1
 			mgwIdx = mgwIdx + n_mgw
 			protIdx = protIdx + n_prot
@@ -134,12 +149,107 @@ cpdef fragCovariates(idx, pastMer1, pastMer2, pastStartGibbs, sequence, mapValue
 	covariIdxPtr += 2
 
 	if pcr == 1:
-		sequenceIdx = sequence[idx:(idx+fragLen)]
 		if pastStartGibbs == -1:
-			startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, fragLen, globalVars["n_gibbs"])
+			# This huge unweildy nonsense replaces a call to cu.findStartGibbs.
+			# findStartGibbs was a huge bottleneck to speed so this code inlines
+			# and unravels it a bit. Additionally, sequence has been changed elsewhere
+			# to an array of bytes (instead of unicode characters). This allows us to
+			# treat it like an array of chars for fast tests and access.
+			#
+			# On the benchmark I'm using it brings the time to calculate covariates
+			# down from 12 seconds to 2 seconds. No other change comes close to being as important.
+			if seq[idx] == 78 or seq[idx + 1] == 78:
+				gibbs += n_gibbs
+			else:
+				d1 = seq[idx]
+				d2 = seq[idx + 1]
+				if d1 == 65: # A
+					if d2 == 65:
+						gibbs += -1.04
+					elif d2 == 67:
+						gibbs += -2.04
+					elif d2 == 71:
+						gibbs += -1.29
+					elif d2 == 84:
+						gibbs += -1.27
+				elif d1 == 67: # C
+					if d2 == 65:
+						gibbs += -0.78
+					elif d2 == 67:
+						gibbs += -1.97
+					elif d2 == 71:
+						gibbs += -1.44
+					elif d2 == 84:
+						gibbs += -1.29
+				elif d1 == 71: # G
+					if d2 == 65:
+						gibbs += -1.66
+					elif d2 == 67:
+						gibbs += -2.7
+					elif d2 == 71:
+						gibbs += -1.97
+					elif d2 == 84:
+						gibbs += -2.04
+				elif d1 == 84: # T
+					if d2 == 65:
+						gibbs += -0.12
+					elif d2 == 67:
+						gibbs += -1.66
+					elif d2 == 71:
+						gibbs += -0.78
+					elif d2 == 84:
+						gibbs += -1.04
+
+			subtract = gibbs
+
+			for i in range(1, fragLen - 1):
+				if seq[idx + i] == 78 or seq[idx + i + 1] == 78:
+					gibbs += n_gibbs
+				else:
+					d1 = seq[idx]
+					d2 = seq[idx + 1]
+					if d1 == 65: # A
+						if d2 == 65:
+							gibbs += -1.04
+						elif d2 == 67:
+							gibbs += -2.04
+						elif d2 == 71:
+							gibbs += -1.29
+						elif d2 == 84:
+							gibbs += -1.27
+					elif d1 == 67: # C
+						if d2 == 65:
+							gibbs += -0.78
+						elif d2 == 67:
+							gibbs += -1.97
+						elif d2 == 71:
+							gibbs += -1.44
+						elif d2 == 84:
+							gibbs += -1.29
+					elif d1 == 71: # G
+						if d2 == 65:
+							gibbs += -1.66
+						elif d2 == 67:
+							gibbs += -2.7
+						elif d2 == 71:
+							gibbs += -1.97
+						elif d2 == 84:
+							gibbs += -2.04
+					elif d1 == 84: # T
+						if d2 == 65:
+							gibbs += -0.12
+						elif d2 == 67:
+							gibbs += -1.66
+						elif d2 == 71:
+							gibbs += -0.78
+						elif d2 == 84:
+							gibbs += -1.04
+
+			startGibbs = gibbs - subtract
 		else:
-			oldDimer = sequenceIdx[0:2].upper()
-			newDimer = sequenceIdx[(fragLen-2):fragLen].upper()
+			sequenceIdx = sequence[idx:idx + fragLen]
+			oldDimer = sequenceIdx[0:2]
+			newDimer = sequenceIdx[(fragLen-2):fragLen]
 			startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs, globalVars["n_gibbs"])
 
 		annealIdx, denatureIdx = cu.convertGibbs(gibbs, globalVars["entropy"], globalVars["fragLen"], globalVars["min_tm"], globalVars["max_tm"], globalVars["para1"], globalVars["para2"])
@@ -330,7 +440,7 @@ cpdef calculateTaskCovariates(regions, globalVars):
 		analysisStart, analysisEnd, fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins = calculateBoundaries(chromoEnd, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, fragLen)
 
 		###### GET SEQUENCE
-		sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
+		sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1)).upper().encode("utf-8")
 
 		##### GET BIASES INFO FROM FILES
 		if map == 1:
