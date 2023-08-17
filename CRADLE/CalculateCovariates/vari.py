@@ -623,15 +623,15 @@ def setBiasFiles(args):
 
 		COVARI_ORDER.extend(["Gquad_gquad"])
 
-		global GQAUDFILE
-		global GQAUD_MAX
+		global GQUADFILE
+		global GQUAD_MAX
 
 		if len(args.gquadFile) == 0:
 			print("ERROR: No g-quadruplex file was specified !")
 			sys.exit()
 
-		GQAUDFILE = args.gquadFile
-		GQAUD_MAX = -math.inf
-		for gquadFile in GQAUDFILE:
+		GQUADFILE = args.gquadFile
+		GQUAD_MAX = -math.inf
+		for gquadFile in GQUADFILE:
 			with pyBigWig.open(gquadFile) as bw:
-				GQAUD_MAX = max(GQAUD_MAX, bw.header()["maxVal"])
+				GQUAD_MAX = max(GQUAD_MAX, bw.header()["maxVal"])

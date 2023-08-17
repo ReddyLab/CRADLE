@@ -25,7 +25,7 @@ def getArgs():
 	correctBias_optional.add_argument('-mi', type=int, help="The minimum number of fragments. Positions that have less fragments than this value are filtered out. default=the number of samples")
 	correctBias_optional.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")
 	correctBias_optional.add_argument('-kmer', help="The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'")
-	correctBias_optional.add_argument('-gquadFile', help="Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
+	correctBias_optional.add_argument('-gquadFile', help="Gquadruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
 	correctBias_optional.add_argument('-o', help="Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_correctionResult.", required=False, default="CRADLE_correctionResult")
 	correctBias_optional.add_argument('-p', type=int, help="The number of cpus. default=(available cpus)/2")
 	correctBias_optional.add_argument('-bl', help="Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100")
@@ -101,7 +101,7 @@ def getArgs():
 	covariate_optional = covariate_parser.add_argument_group("Optional Args")
 	covariate_optional.add_argument('-mapFile', help="Mappability file in bigwig format. Required when 'map' is in '-biasType'")
 	covariate_optional.add_argument('-kmer', help="The length of sequencing reads. If you have paired-end sequencing with 50mer from each end, type '50'. Required when 'map' is in '-biasType'")
-	covariate_optional.add_argument('-gquadFile', help="Gqaudruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
+	covariate_optional.add_argument('-gquadFile', help="Gquadruplex files in bigwig format. Multiple files are allowed. Required when 'gquad' is in '-biasType'", nargs="+")
 	covariate_optional.add_argument('-o', help="""Output directory. All calculated covariate files will be stored here. If the directory doesn't exist, cradle will make the directory. default='CRADLE_covariates'. The output covariate files will be named {output_directory}_{chromosome}.hdf5 (e.g., 'CRADLE_covariates_chrX.hdf5')
 
 Note that, to make the files compatible with the CRADLE correctBias_stored step, the directory should be named {genome}_fragLen{fragment length}_kmer{sequencing read count}. For example, 'hg38_fragLen1000_kmer100'.""", required=False, default="CRADLE_covariates")
