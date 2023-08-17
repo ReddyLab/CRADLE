@@ -26,8 +26,6 @@ def setGlobalVariables(args):
 		"covariNum": COVARI_NUM,
 		"genome": GENOME,
 		"covariOrder": COVARI_ORDER,
-		"mgw": MGW,
-		"prot": PROT,
 		"n_mgw": N_MGW,
 		"n_prot": N_PROT,
 		"gibbs": GIBBS,
