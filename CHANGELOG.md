@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Major speed improvements (80% reduction) to covariate calculation when pcr is one of the bias types
+
 ## [0.29.0]
 
 ### Fixed
