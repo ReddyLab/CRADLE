@@ -67,7 +67,7 @@ cpdef mapValues(mapFile, chromo, fragStart, fragEnd):
 	mapValue = np.log(mapValue)
 	mapValue[np.where(np.isnan(mapValue))] = -6.0
 
-	mapValueView = cu.memoryView(mapValue)
+	cdef double [:] mapValueView = mapValue
 
 	return mapValueView
 
@@ -84,7 +84,7 @@ cpdef gquadValues(gquadFiles, chromo, fragStart, fragEnd, gquadMax):
 	gquadValue = np.log(gquadValue / gquadMax)
 
 	gquadValue[np.where(np.isnan(gquadValue))] = -5.0
-	gquadValueView = cu.memoryView(gquadValue)
+	cdef double[:] gquadValueView = gquadValue
 
 	return gquadValueView
 
