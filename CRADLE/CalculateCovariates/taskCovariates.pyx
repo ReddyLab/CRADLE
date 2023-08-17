@@ -22,7 +22,7 @@ from CRADLE.correctbiasutils import vari as commonVari
 cdef int BINSIZE = 1
 
 
-cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEnd, nBins, fragLen):
+cdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEnd, nBins, fragLen):
 	fragStart = binStart + 1 - fragLen
 	fragEnd = binEnd + fragLen  # not included
 	shearStart = fragStart - 2
@@ -64,7 +64,7 @@ cpdef calculateBoundaries(chromoEnd, analysisStart, analysisEnd, binStart, binEn
 	return analysisStart, analysisEnd, fragStart, fragEnd, shearStart, shearEnd, binStart, binEnd, nBins
 
 
-cpdef mapValues(mapFile, chromo, fragStart, fragEnd):
+cdef mapValues(mapFile, chromo, fragStart, fragEnd):
 	mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
 
 	mapValue[np.where(mapValue == 0)] = np.nan
@@ -76,7 +76,7 @@ cpdef mapValues(mapFile, chromo, fragStart, fragEnd):
 	return mapValueView
 
 
-cpdef gquadValues(gquadFiles, chromo, fragStart, fragEnd, gquadMax):
+cdef gquadValues(gquadFiles, chromo, fragStart, fragEnd, gquadMax):
 	gquadValue = [0] * len(gquadFiles)
 
 	for i, gquadFile in enumerate(gquadFiles):
@@ -95,7 +95,7 @@ cpdef gquadValues(gquadFiles, chromo, fragStart, fragEnd, gquadMax):
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-cpdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, mapValues, gquadValues, int fragLen, globalVars):
+cdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, mapValues, gquadValues, int fragLen, globalVars):
 	cdef int shear = globalVars["shear"]
 	cdef int pcr = globalVars["pcr"]
 	cdef int map = globalVars["map"]
@@ -272,8 +272,12 @@ cpdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, 
 	return covariates, pastMer1, pastMer2, pastStartGibbs
 
 
-cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, result, shearStart, fragEnd, binStart, binEnd, analysisLength, shear, pcr, covariNum, fragLen, globalVars):
-	fraglenPlusOne = fragLen + 1
+@cython.boundscheck(False)
+@cython.wraparound(False)
+cdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, result, int shearStart, int fragEnd, int binStart, int binEnd, int analysisLength, int shear, int pcr, int covariNum, int fragLen, globalVars):
+	cdef int fraglenPlusOne = fragLen + 1
+	cdef int end, endIdx, idx, maxBinPos, numPoppedPos, pastMer1, pastMer2, pastStartGibbs, posLen, resultStartIdx, resultEndIdx, startIdx, thisFragStart, thisFragEnd
+	cdef double[:, :] resultView = result
 
 	##### INITIALIZE VARIABLES
 	if shear == 1:
@@ -305,9 +309,9 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, result, sh
 			maxBinPos = binStart + fragLen
 			numPoppedPos = 0
 		else:
-			while result[resultStartIdx, 0] < thisFragStart:
+			while resultView[resultStartIdx, 0] < thisFragStart:
 				## pop the element
-				covariDataSet[numPoppedPos, :] = result[resultStartIdx, 1:]
+				covariDataSet[numPoppedPos, :] = resultView[resultStartIdx, 1:]
 				result[resultStartIdx, 1:] = 0.0
 
 				numPoppedPos += 1
@@ -321,7 +325,7 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, result, sh
 				if resultStartIdx > fragLen:
 					resultStartIdx -= fraglenPlusOne
 
-		while not np.isnan(result[resultEndIdx, 0]) and result[resultEndIdx, 0] < thisFragEnd:
+		while not np.isnan(result[resultEndIdx, 0]) and resultView[resultEndIdx, 0] < thisFragEnd:
 			resultEndIdx += 1
 			if resultEndIdx > fragLen:
 				resultEndIdx -= fraglenPlusOne
@@ -337,23 +341,23 @@ cpdef calculateContinuousFrag(sequence, mapValueView, gquadValueView, result, sh
 			if resultEndIdx < resultStartIdx:
 				posLen = fraglenPlusOne - resultStartIdx
 				end = numPoppedPos + posLen
-				covariDataSet[numPoppedPos:end, :] = result[resultStartIdx:fraglenPlusOne, 1:]
+				covariDataSet[numPoppedPos:end, :] = resultView[resultStartIdx:fraglenPlusOne, 1:]
 				numPoppedPos = end
 
 				posLen = resultEndIdx
 				end = numPoppedPos + posLen
-				covariDataSet[numPoppedPos:end, :] = result[0:resultEndIdx, 1:]
+				covariDataSet[numPoppedPos:end, :] = resultView[0:resultEndIdx, 1:]
 				numPoppedPos = end
 			else:
 				posLen = resultEndIdx - resultStartIdx
 				end = numPoppedPos + posLen
-				covariDataSet[numPoppedPos:end, :] = result[resultStartIdx:resultEndIdx, 1:]
+				covariDataSet[numPoppedPos:end, :] = resultView[resultStartIdx:resultEndIdx, 1:]
 				numPoppedPos = end
 
 	return covariDataSet
 
 
-cpdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, shearStart, binStart, binEnd, nBins, shear, pcr, covariNum, fragLen, globalVars):
+cdef calculateDiscreteFrag(chromoEnd, sequence, mapValueView, gquadValueView, shearStart, binStart, binEnd, nBins, shear, pcr, covariNum, fragLen, globalVars):
 	covariDataSet = np.zeros((nBins, covariNum))
 	for resultIdx in range(nBins): # for each bin
 		if resultIdx == (nBins-1):
@@ -470,7 +474,7 @@ cpdef calculateTaskCovariates(regions, globalVars):
 	return outputRegions
 
 
-cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins, fragLen, covariNum):
+cdef makeMatrixContinuousFrag(binStart, binEnd, nBins, fragLen, covariNum):
 	result = np.zeros(((fragLen+1), (covariNum+1)), dtype=np.float64)
 	for i in range(fragLen+1):
 		pos = binStart + i
