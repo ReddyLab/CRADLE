@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import io
 import linecache
-import marshal
 import math
 import multiprocessing
 import os

@@ -5,15 +5,13 @@ import h5py
 import numpy as np
 import statsmodels.api as sm
 
-from CRADLE.CorrectBias import vari
-from CRADLE.correctbiasutils import vari as commonVari
 
-cpdef performRegression(covariFiles, scatterplotSamples):
+cpdef performRegression(covariFiles, scatterplotSamples, globalVars):
 	### Read covariates values (X)
 	xNumRows = 0
 	for i in range(len(covariFiles)):
 		xNumRows = xNumRows + int(covariFiles[i][1])
-	xNumCols = vari.COVARI_NUM + 1
+	xNumCols = globalVars["covariNum"] + 1
 
 	cdef double [:,:] XView = np.ones((xNumRows, xNumCols), dtype=np.float64)
 
@@ -29,7 +27,7 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 		while rowIdx < f['covari'].shape[0]:
 			temp = f['covari'][rowIdx]
 			colPtr = 0
-			while colPtr < vari.COVARI_NUM:
+			while colPtr < globalVars["covariNum"]:
 				XView[rowIdx + rowPtr, colPtr+1] = float(temp[colPtr])
 				colPtr = colPtr + 1
 			rowIdx = rowIdx + 1
@@ -40,8 +38,8 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 
 
 	### COEFFICIENTS
-	COEFCTRL = np.zeros((commonVari.CTRLBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
-	COEFEXP = np.zeros((commonVari.EXPBW_NUM, (vari.COVARI_NUM+1)), dtype=np.float64)
+	COEFCTRL = np.zeros((globalVars["ctrlbwNum"], (globalVars["covariNum"]+1)), dtype=np.float64)
+	COEFEXP = np.zeros((globalVars["expbwNum"], (globalVars["covariNum"]+1)), dtype=np.float64)
 
 	readCounts = np.zeros(xNumRows, dtype=np.float64)
 	cdef double [:] readCountsView = readCounts
@@ -52,7 +50,7 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 	ctrlPlotValues = {}
 	experiPlotValues = {}
 
-	for rep in range(commonVari.CTRLBW_NUM):
+	for rep in range(globalVars["ctrlbwNum"]):
 		ptr = 0
 
 		for fileIdx in range(len(covariFiles)):
@@ -85,12 +83,12 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 		coef = model.params
 		COEFCTRL[rep, ] = coef
 
-		ctrlPlotValues[commonVari.CTRLBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
+		ctrlPlotValues[globalVars["ctrlbwNames"][rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
-	for rep in range(commonVari.EXPBW_NUM):
+	for rep in range(globalVars["expbwNum"]):
 		ptr = 0
 		for fileIdx in range(len(covariFiles)):
-			subfileName = covariFiles[fileIdx][rep + 2 + commonVari.CTRLBW_NUM]
+			subfileName = covariFiles[fileIdx][rep + 2 + globalVars["ctrlbwNum"]]
 			f = h5py.File(subfileName, "r")
 
 			rcIdx = 0
@@ -122,6 +120,6 @@ cpdef performRegression(covariFiles, scatterplotSamples):
 		coef = model.params
 		COEFEXP[rep, ] = coef
 
-		experiPlotValues[commonVari.EXPBW_NAMES[rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
+		experiPlotValues[globalVars["expbwNames"][rep]] = (readCounts[scatterplotSamples], model.fittedvalues[scatterplotSamples])
 
 	return COEFCTRL, COEFEXP, ctrlPlotValues, experiPlotValues

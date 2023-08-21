@@ -32,47 +32,49 @@ def checkArgs(args):
 @timer("INITIALIZING PARAMETERS")
 def init(args):
 	checkArgs(args)
-	commonVari.setGlobalVariables(args)
-	vari.setGlobalVariables(args)
+	commonGlobals = commonVari.setGlobalVariables(args)
+	cbGlobals = vari.setGlobalVariables(args)
+
+	return commonGlobals | cbGlobals
 
 
 @timer("Filling Training Sets", 1)
-def fillTrainingSets(trainingSetMeta):
-	return utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta, context="fork")
+def fillTrainingSets(trainingSetMeta, globalVars):
+	return utils.process(min(11, globalVars["numprocess"]), utils.fillTrainingSetMeta, trainingSetMeta, context="fork")
 
 
 @timer("SELECTING TRAINING SETS")
-def selectTrainingSets():
+def selectTrainingSets(globalVars):
 	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
 		RC_PERCENTILE,
-		commonVari.REGIONS,
-		commonVari.CTRLBW_NAMES[0],
-		commonVari.OUTPUT_DIR
+		globalVars["regions"],
+		globalVars["ctrlbwNames"][0],
+		globalVars["outputDir"]
 	)
-	vari.HIGHRC = rc90Percentile
+	globalVars["highrc"] = rc90Percentile
 
-	trainingSetMeta = fillTrainingSets(trainingSetMeta)
+	trainingSetMeta = fillTrainingSets(trainingSetMeta, globalVars)
 
 	trainSet90Percentile, trainSet90To99Percentile = utils.selectTrainingSetFromMeta(trainingSetMeta, rc99Percentile)
 	return trainSet90Percentile, trainSet90To99Percentile
 
 
-def getScaler(trainingSet):
+def getScaler(trainingSet, globalVars):
 
 	###### OBTAIN READ COUNTS OF THE FIRST REPLICATE OF CTRLBW.
-	ob1 = pyBigWig.open(commonVari.CTRLBW_NAMES[0])
+	ob1 = pyBigWig.open(globalVars["ctrlbwNames"][0])
 
 	ob1Values = []
 	for region in trainingSet:
 		binIdx = 0
-		while binIdx < vari.BINSIZE:
+		while binIdx < globalVars["binSize"]:
 			subregionStart = region.start + binIdx
-			subregionEnd = subregionStart + ( int( (region.end - subregionStart) / vari.BINSIZE ) * vari.BINSIZE )
+			subregionEnd = subregionStart + ( int( (region.end - subregionStart) / globalVars["binSize"] ) * globalVars["binSize"] )
 
 			if subregionEnd <= subregionStart:
 				break
 
-			numBin = int((subregionEnd - subregionStart) / vari.BINSIZE)
+			numBin = int((subregionEnd - subregionStart) / globalVars["binSize"])
 
 			temp = np.array(ob1.stats(region.chromo, subregionStart, subregionEnd, nBins=numBin, type="mean"))
 			idx = np.where(temp == None)
@@ -84,7 +86,7 @@ def getScaler(trainingSet):
 	ob1.close()
 
 	tasks = []
-	for i in range(1, commonVari.SAMPLE_NUM):
+	for i in range(1, globalVars["sampleNum"]):
 		tasks.append([i, trainingSet, ob1Values])
 
 	###### OBTAIN A SCALER FOR EACH SAMPLE
@@ -98,24 +100,24 @@ def getScaler(trainingSet):
 	return scalerResult
 
 
-def getScalerForEachSample(taskNum, trainingSet, ob1Values):
+def getScalerForEachSample(taskNum, trainingSet, ob1Values, globalVars):
 
-	if taskNum < commonVari.CTRLBW_NUM:
-		ob2 = pyBigWig.open(commonVari.CTRLBW_NAMES[taskNum])
+	if taskNum < globalVars["ctrlbwNum"]:
+		ob2 = pyBigWig.open(globalVars["ctrlbwNames"][taskNum])
 	else:
-		ob2 = pyBigWig.open(commonVari.EXPBW_NAMES[taskNum - commonVari.CTRLBW_NUM])
+		ob2 = pyBigWig.open(globalVars["expbwNames"][taskNum - globalVars["ctrlbwNum"]])
 
 	ob2Values = []
 	for region in trainingSet:
 		binIdx = 0
-		while binIdx < vari.BINSIZE:
+		while binIdx < globalVars["binSize"]:
 			subregionStart = region.start + binIdx
-			subregionEnd = subregionStart + ( int( (region.end - subregionStart) / vari.BINSIZE ) * vari.BINSIZE )
+			subregionEnd = subregionStart + ( int( (region.end - subregionStart) / globalVars["binSize"] ) * globalVars["binSize"] )
 
 			if subregionEnd <= subregionStart:
 				break
 
-			numBin = int((subregionEnd - subregionStart) / vari.BINSIZE)
+			numBin = int((subregionEnd - subregionStart) / globalVars["binSize"])
 
 			temp = np.array(ob2.stats(region.chromo, subregionStart, subregionEnd, nBins=numBin, type="mean"))
 			idx = np.where(temp == None)
@@ -134,38 +136,43 @@ def getScalerForEachSample(taskNum, trainingSet, ob1Values):
 
 
 @timer("Calculating Scalers", 1)
-def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
-	if vari.I_NORM:
+def calculateScalers(trainSet90Percentile, trainSet90To99Percentile, globalVars):
+	if globalVars["i_norm"]:
 		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
-			scalerResult = getScaler(commonVari.REGIONS)
+			scalerResult = getScaler(globalVars["regions"], globalVars)
 		else:
-			scalerResult = getScaler(trainSet90Percentile + trainSet90To99Percentile)
+			scalerResult = getScaler(trainSet90Percentile + trainSet90To99Percentile, globalVars)
 	else:
-		scalerResult = [1] * commonVari.SAMPLE_NUM
+		scalerResult = [1] * globalVars["sampleNum"]
 
-	# Sets vari.CTRLSCALER and vari.EXPSCALER
-	commonVari.setScaler(scalerResult)
+	globalVars["ctrlScaler"] = [0] * globalVars["ctrlbwNum"]
+	globalVars["expScaler"] = [0] * globalVars["expbwNum"]
+	globalVars["ctrlScaler"][0] = 1
 
-	if vari.I_NORM:
+	for i in range(1, globalVars["ctrlbwNum"]):
+		globalVars["ctrlScaler"][i] = scalerResult[i-1]
+
+	for i in range(globalVars["expbwNum"]):
+		globalVars["expScaler"][i] = scalerResult[i+globalVars["ctrlbwNum"]-1]
+
+	if globalVars["i_norm"]:
 		print("NORMALIZING CONSTANT: ")
 		print("CTRLBW: ")
-		print(commonVari.CTRLSCALER)
+		print(globalVars["ctrlScaler"])
 		print("EXPBW: ")
-		print(commonVari.EXPSCALER)
+		print(globalVars["expScaler"])
 
 
 @timer("Calculating Covariates", 1)
-def calculateTrainingCovariates(trainingSet):
+def calculateTrainingCovariates(trainingSet, globalVars):
 	if len(trainingSet) == 0:
-		trainingSet = commonVari.REGIONS
+		trainingSet = globalVars["regions"]
 
-	if len(trainingSet) < commonVari.NUMPROCESS:
-		numProcess = len(trainingSet)
-	else:
-		numProcess = commonVari.NUMPROCESS
+	tasks = [(region, globalVars) for region in trainingSet]
 
+	numProcess = min(len(trainingSet), globalVars["numprocess"])
 	pool = multiprocessing.Pool(numProcess)
-	covariates = pool.map_async(calculateTrainCovariates, trainingSet).get()
+	covariates = pool.starmap_async(calculateTrainCovariates, tasks).get()
 	pool.close()
 	pool.join()
 	del pool
@@ -174,7 +181,7 @@ def calculateTrainingCovariates(trainingSet):
 
 
 @timer("PERFORMING REGRESSION")
-def performRegression(trainSetResult1, trainSetResult2):
+def performRegression(trainSetResult1, trainSetResult2, globalVars):
 	scatterplotSamples90Percentile = getScatterplotSamples(trainSetResult1)
 	scatterplotSamples90to99Percentile = getScatterplotSamples(trainSetResult2)
 
@@ -182,15 +189,15 @@ def performRegression(trainSetResult1, trainSetResult2):
 	coefResult = pool.starmap_async(
 		reg.performRegression,
 		[
-			(trainSetResult1, scatterplotSamples90Percentile),
-			(trainSetResult2, scatterplotSamples90to99Percentile)
+			(trainSetResult1, scatterplotSamples90Percentile, globalVars),
+			(trainSetResult2, scatterplotSamples90to99Percentile, globalVars)
 		]
 	).get()
 	pool.close()
 	pool.join()
 
-	for name in commonVari.CTRLBW_NAMES:
-		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
+	for name in globalVars["ctrlbwNames"]:
+		fileName = utils.figureFileName(globalVars["output_dir"], name)
 		regRCReadCounts, regRCFittedValues = coefResult[0][2][name]
 		highRCReadCounts, highRCFittedValues = coefResult[1][2][name]
 		utils.plot(
@@ -199,8 +206,8 @@ def performRegression(trainSetResult1, trainSetResult2):
 			fileName
 		)
 
-	for name in commonVari.EXPBW_NAMES:
-		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
+	for name in globalVars["expbwNames"]:
+		fileName = utils.figureFileName(globalVars["output_dir"], name)
 		regRCReadCounts, regRCFittedValues = coefResult[0][3][name]
 		highRCReadCounts, highRCFittedValues = coefResult[1][3][name]
 		utils.plot(
@@ -211,38 +218,35 @@ def performRegression(trainSetResult1, trainSetResult2):
 
 	gc.collect()
 
-	vari.COEFCTRL = coefResult[0][0]
-	vari.COEFEXP = coefResult[0][1]
-	vari.COEFCTRL_HIGHRC = coefResult[1][0]
-	vari.COEFEXP_HIGHRC = coefResult[1][1]
+	globalVars["coefctrl"] = coefResult[0][0]
+	globalVars["coefexp"] = coefResult[0][1]
+	globalVars["coefctrlHighrc"] = coefResult[1][0]
+	globalVars["coefexpHighrc"] = coefResult[1][1]
 
 	print("The order of coefficients:")
-	print(vari.COVARI_ORDER)
+	print(globalVars["covari_order"])
 
 	print("COEF_CTRL: ")
-	print(vari.COEFCTRL)
+	print(globalVars["coefctrl"])
 	print("COEF_EXP: ")
-	print(vari.COEFEXP)
+	print(globalVars["coefexp"])
 	print("COEF_CTRL_HIGHRC: ")
-	print(vari.COEFCTRL_HIGHRC)
+	print(globalVars["coefctrlHighrc"])
 	print("COEF_EXP_HIGHRC: ")
-	print(vari.COEFEXP_HIGHRC)
+	print(globalVars["coefexpHighrc"])
 
 
 @timer("Fitting All Analysis Regions to the Correction Model", 1)
-def fitToCorrectionModel():
-	tasks = utils.divideGenome(commonVari.REGIONS)
+def fitToCorrectionModel(globalVars):
+	regions = utils.divideGenome(globalVars["regions"])
 
-	if len(tasks) < commonVari.NUMPROCESS:
-		numProcess = len(tasks)
-	else:
-		numProcess = commonVari.NUMPROCESS
+	tasks = [(region, globalVars) for region in regions]
 
+	numProcess = min(len(tasks), globalVars["numprocess"])
 	pool = multiprocessing.Pool(numProcess)
-
 	# `caluculateTaskCovariates` calls `correctReadCounts`. `correctReadCounts` is the function that
 	# fits regions to the correction model.
-	resultMeta = pool.map_async(calculateTaskCovariates, tasks).get()
+	resultMeta = pool.starmap_async(calculateTaskCovariates, tasks).get()
 	pool.close()
 	pool.join()
 	del pool
@@ -257,9 +261,10 @@ def mergeCorrectedBedfilesTobw(args):
 	dataInfo = args[2]
 	repInfo = args[3]
 	observedBWName = args[4]
+	globalVars = args[5]
 
 	signalBWName = '.'.join( observedBWName.rsplit('/', 1)[-1].split(".")[:-1])
-	signalBWName = commonVari.OUTPUT_DIR + "/"+ signalBWName + "_corrected.bw"
+	signalBWName = globalVars["output_dir"] + "/"+ signalBWName + "_corrected.bw"
 	signalBW = pyBigWig.open(signalBWName, "w")
 	signalBW.addHeader(bwHeader)
 
@@ -287,14 +292,14 @@ def mergeCorrectedBedfilesTobw(args):
 
 
 @timer("Merging Temp Files", 1)
-def mergeTempFiles(resultBWHeader, resultMeta):
+def mergeTempFiles(resultBWHeader, resultMeta, globalVars):
 	jobList = []
-	for i in range(commonVari.CTRLBW_NUM):
-		jobList.append([resultMeta, resultBWHeader, 0, (i+1), commonVari.CTRLBW_NAMES[i]]) # resultMeta, ctrl, rep
-	for i in range(commonVari.EXPBW_NUM):
-		jobList.append([resultMeta, resultBWHeader, 1, (i+1), commonVari.EXPBW_NAMES[i]]) # resultMeta, ctrl, rep
+	for i in range(globalVars["ctrlbwNum"]):
+		jobList.append([resultMeta, resultBWHeader, 0, (i+1), globalVars["ctrlbwNames"][i], globalVars]) # resultMeta, ctrl, rep
+	for i in range(globalVars["expbwNum"]):
+		jobList.append([resultMeta, resultBWHeader, 1, (i+1), globalVars["expbwNames"][i], globalVars]) # resultMeta, ctrl, rep
 
-	pool = multiprocessing.Pool(commonVari.SAMPLE_NUM)
+	pool = multiprocessing.Pool(globalVars["sampleNum"])
 	correctedFileNames = pool.map_async(mergeCorrectedBedfilesTobw, jobList).get()
 	pool.close()
 	pool.join()
@@ -304,9 +309,9 @@ def mergeTempFiles(resultBWHeader, resultMeta):
 
 
 @timer("CORRECTING READ COUNTS")
-def correctReadCounts(resultBWHeader):
-	resultMeta = fitToCorrectionModel()
-	mergeTempFiles(resultBWHeader, resultMeta)
+def correctReadCounts(resultBWHeader, globalVars):
+	resultMeta = fitToCorrectionModel(globalVars)
+	mergeTempFiles(resultBWHeader, resultMeta, globalVars)
 
 def getScatterplotSamples(covariFiles):
 	xNumRows = 0
@@ -320,15 +325,15 @@ def getScatterplotSamples(covariFiles):
 
 
 @timer("GENERATING NORMALIZED OBSERVED BIGWIGS")
-def normalizeBigWigs(resultBWHeader):
+def normalizeBigWigs(resultBWHeader, globalVars):
 	normObFileNames = utils.genNormalizedObBWs(
-		commonVari.OUTPUT_DIR,
+		globalVars["output_dir"],
 		resultBWHeader,
-		commonVari.REGIONS,
-		commonVari.CTRLBW_NAMES,
-		commonVari.CTRLSCALER,
-		commonVari.EXPBW_NAMES,
-		commonVari.EXPSCALER
+		globalVars["regions"],
+		globalVars["ctrlbwNames"],
+		globalVars["ctrlScaler"],
+		globalVars["expbwNames"],
+		globalVars["expScaler"]
 	)
 
 	print("Nomralized observed bigwig file names: ")
@@ -338,26 +343,26 @@ def normalizeBigWigs(resultBWHeader):
 def run(args):
 	startTime = time.perf_counter()
 
-	init(args)
+	globalVars = init(args)
 
-	trainSet90Percentile, trainSet90To99Percentile = selectTrainingSets()
+	trainSet90Percentile, trainSet90To99Percentile = selectTrainingSets(globalVars)
 
-	calculateScalers(trainSet90Percentile, trainSet90To99Percentile)
+	calculateScalers(trainSet90Percentile, trainSet90To99Percentile, globalVars)
 
-	trainSetResult1 = calculateTrainingCovariates(trainSet90Percentile)
-	trainSetResult2 = calculateTrainingCovariates(trainSet90To99Percentile)
+	trainSetResult1 = calculateTrainingCovariates(trainSet90Percentile, globalVars)
+	trainSetResult2 = calculateTrainingCovariates(trainSet90To99Percentile, globalVars)
 	del trainSet90Percentile, trainSet90To99Percentile
 	gc.collect()
 
-	performRegression(trainSetResult1, trainSetResult2)
+	performRegression(trainSetResult1, trainSetResult2, globalVars)
 	del trainSetResult1, trainSetResult2
 
-	resultBWHeader = utils.getResultBWHeader(commonVari.REGIONS, commonVari.CTRLBW_NAMES[0])
+	resultBWHeader = utils.getResultBWHeader(globalVars["regions"], globalVars["ctrlbwNames"][0])
 
-	correctReadCounts(resultBWHeader)
+	correctReadCounts(resultBWHeader, globalVars)
 
-	if vari.I_GENERATE_NORM_BW:
-		normalizeBigWigs(resultBWHeader)
+	if globalVars["i_generate_norm_bw"]:
+		normalizeBigWigs(resultBWHeader, globalVars)
 
 
 	print(f"-- RUNNING TIME: {((time.perf_counter() - startTime)/3600)} hour(s)")

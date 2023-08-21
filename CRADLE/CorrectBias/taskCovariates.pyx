@@ -9,22 +9,20 @@ import pyBigWig
 
 import CRADLE.CorrectBias.covariateUtils as cu
 
-from CRADLE.CorrectBias import vari
 from CRADLE.CorrectBias.readCounts import correctReadCounts
-from CRADLE.correctbiasutils import vari as commonVari
 
-cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
+cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin, globalVars):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
 
 	###### CALCULATE INDEX VARIABLE
-	fragStart = binStart + 1 - vari.FRAGLEN
-	fragEnd = binEnd + vari.FRAGLEN  # not included
+	fragStart = binStart + 1 - globalVars["fragLen"]
+	fragEnd = binEnd + globalVars["fragLen"]  # not included
 	shearStart = fragStart - 2
 	shearEnd = fragEnd + 2 # not included
 
-	genome = py2bit.open(vari.GENOME)
+	genome = py2bit.open(globalVars["genome"])
 	chromoEnd = int(genome.chroms(chromo))
 
 	if shearStart < 1:
@@ -34,17 +32,17 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 		analysisStart = max(analysisStart, fragStart)
 
 		###### EDIT BINSTART/ BINEND
-		nBins = int( (analysisEnd - analysisStart) / float(vari.BINSIZE) )
-		leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
+		nBins = int( (analysisEnd - analysisStart) / float(globalVars["binSize"]) )
+		leftValue = (analysisEnd - analysisStart) % int(globalVars["binSize"])
 		if leftValue != 0:
 			nBins = nBins + 1
 			lastBin = True
-			binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
+			binEnd = int( (analysisStart + (nBins-1) * globalVars["binSize"] + analysisEnd) / float(2) )
 		else:
 			lastBin = False
-			binEnd = binStart + (nBins-1) * vari.BINSIZE
+			binEnd = binStart + (nBins-1) * globalVars["binSize"]
 
-		fragEnd = binEnd + vari.FRAGLEN
+		fragEnd = binEnd + globalVars["fragLen"]
 		shearEnd = fragEnd + 2
 
 	if shearEnd > chromoEnd:
@@ -57,17 +55,17 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 			analysisEnd = analysisEndModified
 
 			###### EDIT BINSTART/ BINEND
-			nBins = int( (analysisEnd - analysisStart) / float(vari.BINSIZE) )
-			leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
+			nBins = int( (analysisEnd - analysisStart) / float(globalVars["binSize"]) )
+			leftValue = (analysisEnd - analysisStart) % int(globalVars["binSize"])
 			if leftValue != 0:
 				nBins = nBins + 1
 				lastBin = True
-				binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
+				binEnd = int( (analysisStart + (nBins-1) * globalVars["binSize"] + analysisEnd) / float(2) )
 			else:
 				lastBin = False
-				binEnd = binStart + (nBins-1) * vari.BINSIZE
+				binEnd = binStart + (nBins-1) * globalVars["binSize"]
 
-			fragEnd = binEnd + vari.FRAGLEN
+			fragEnd = binEnd + globalVars["fragLen"]
 			shearEnd = fragEnd + 2
 
 			if shearEnd > chromoEnd:
@@ -75,15 +73,15 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 				fragEnd = shearEnd - 2
 
 	###### GENERATE A RESULT MATRIX
-	result = makeMatrixContinuousFrag(binStart, binEnd, nBins)
+	result = makeMatrixContinuousFrag(binStart, binEnd, nBins, globalVars)
 
 	###### GET SEQUENCE
 	sequence = genome.sequence(chromo, (shearStart-1), (shearEnd-1))
 	genome.close()
 
 	##### OPEN BIAS FILES
-	if vari.MAP == 1:
-		mapFile = pyBigWig.open(vari.MAPFILE)
+	if globalVars["map"] == 1:
+		mapFile = pyBigWig.open(globalVars["mapFile"])
 		mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
 
 		mapValue[np.where(mapValue == 0)] = np.nan
@@ -94,19 +92,19 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 		mapFile.close()
 		del mapFile, mapValue
 
-	if vari.GQUAD == 1:
-		gquadFile = [0] * len(vari.GQUADFILE)
-		gquadValue = [0] * len(vari.GQUADFILE)
+	if globalVars["gquad"] == 1:
+		gquadFile = [0] * len(globalVars["gquadFile"])
+		gquadValue = [0] * len(globalVars["gquadFile"])
 
-		for i in range(len(vari.GQUADFILE)):
-			gquadFile[i] = pyBigWig.open(vari.GQUADFILE[i])
+		for i in range(len(globalVars["gquadFile"])):
+			gquadFile[i] = pyBigWig.open(globalVars["gquadFile"][i])
 			gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
 			gquadFile[i].close()
 
 		gquadValue = np.array(gquadValue)
 		gquadValue = np.nanmax(gquadValue, axis=0)
 		gquadValue[np.where(gquadValue == 0)] = np.nan
-		gquadValue = np.log(gquadValue / float(vari.GQUAD_MAX))
+		gquadValue = np.log(gquadValue / float(globalVars["gquadMax"]))
 
 		gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
 		gquadView = cu.memoryView(gquadValue)
@@ -116,55 +114,55 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 
 	##### INDEX IN 'sequence'
 	startIdx = 2  # index in the genome sequence file (Included in the range)
-	endIdx = (fragEnd - vari.FRAGLEN) - shearStart + 1   # index in the genome sequence file (Not included in the range)
+	endIdx = (fragEnd - globalVars["fragLen"]) - shearStart + 1   # index in the genome sequence file (Not included in the range)
 
 	##### INITIALIZE VARIABLES
-	if vari.SHEAR == 1:
+	if globalVars["shear"] == 1:
 		pastMer1 = -1
 		pastMer2 = -1
-	if vari.PCR == 1:
+	if globalVars["pcr"] == 1:
 		pastStartGibbs = -1
 
 	resultStartIdx = -1
 	resultEndIdx = -1
 
 	##### STORE COVARI RESULTS
-	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=commonVari.OUTPUT_DIR, delete=True)
+	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=globalVars["outputDir"], delete=True)
 	covariFileName = covariFileTemp.name
 	covariFileTemp.close()
 
 	f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariFile = f.create_dataset("covari", (nBins, globalVars["covariNum"]), dtype='f', compression="gzip")
 
 	for idx in range(startIdx, endIdx):
-		covariIdx = [0] * vari.COVARI_NUM
+		covariIdx = [0] * globalVars["covariNum"]
 		covariIdxPtr = 0
 
-		if vari.SHEAR == 1:
+		if globalVars["shear"] == 1:
 			###  mer1
 			mer1 = sequence[(idx-2):(idx+3)]
 			if 'N' in mer1:
 				pastMer1 = -1
-				mgwIdx = vari.N_MGW
-				protIdx = vari.N_PROT
+				mgwIdx = globalVars["n_mgw"]
+				protIdx = globalVars["n_prot"]
 			else:
 				if pastMer1 == -1: # there is no information on pastMer1
-					pastMer1, mgwIdx, protIdx = cu.find5merProb(mer1)
+					pastMer1, mgwIdx, protIdx = cu.find5merProb(mer1, globalVars)
 				else:
-					pastMer1, mgwIdx, protIdx = cu.edit5merProb(pastMer1, mer1[0], mer1[4])
+					pastMer1, mgwIdx, protIdx = cu.edit5merProb(pastMer1, mer1[0], mer1[4], globalVars)
 
 			###  mer2
-			fragEndIdx = idx + vari.FRAGLEN
+			fragEndIdx = idx + globalVars["fragLen"]
 			mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
 			if 'N' in mer2:
 				pastMer2 = -1
-				mgwIdx = mgwIdx + vari.N_MGW
-				protIdx = protIdx + vari.N_PROT
+				mgwIdx = mgwIdx + globalVars["n_mgw"]
+				protIdx = protIdx + globalVars["n_prot"]
 			else:
 				if pastMer2 == -1:
-					pastMer2, add1, add2 = cu.findComple5merProb(mer2)
+					pastMer2, add1, add2 = cu.findComple5merProb(mer2, globalVars)
 				else:
-					pastMer2, add1, add2 = cu.editComple5merProb(pastMer2, mer2[0], mer2[4])
+					pastMer2, add1, add2 = cu.editComple5merProb(pastMer2, mer2[0], mer2[4], globalVars)
 				mgwIdx = mgwIdx + add1
 				protIdx = protIdx + add2
 
@@ -173,38 +171,38 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 			covariIdxPtr = covariIdxPtr + 2
 
 
-		if vari.PCR == 1:
-			sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
+		if globalVars["pcr"] == 1:
+			sequenceIdx = sequence[idx:(idx+globalVars["fragLen"])]
 			if pastStartGibbs == -1:
-				startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, vari.FRAGLEN)
+				startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, globalVars["fragLen"], globalVars)
 			else:
 				oldDimer = sequenceIdx[0:2].upper()
-				newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
-				startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs)
+				newDimer = sequenceIdx[(globalVars["fragLen"]-2):globalVars["fragLen"]].upper()
+				startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs, globalVars)
 
-			annealIdx, denatureIdx = cu.convertGibbs(gibbs)
+			annealIdx, denatureIdx = cu.convertGibbs(gibbs, globalVars)
 
 			covariIdx[covariIdxPtr] = annealIdx
 			covariIdx[covariIdxPtr+1] = denatureIdx
 			covariIdxPtr = covariIdxPtr + 2
 
-		if vari.MAP == 1:
+		if globalVars["map"] == 1:
 			map1 = mapValueView[(idx-2)]
-			map2 = mapValueView[(idx+vari.FRAGLEN-2-vari.KMER)]
+			map2 = mapValueView[(idx+globalVars["fragLen"]-2-globalVars["kmer"])]
 			mapIdx = map1 + map2
 
 			covariIdx[covariIdxPtr] = mapIdx
 			covariIdxPtr = covariIdxPtr + 1
 
-		if vari.GQUAD == 1:
-			gquadIdx = np.nanmax(np.asarray(gquadView[(idx-2):(idx+vari.FRAGLEN-2)]))
+		if globalVars["gquad"] == 1:
+			gquadIdx = np.nanmax(np.asarray(gquadView[(idx-2):(idx+globalVars["fragLen"]-2)]))
 
 			covariIdx[covariIdxPtr] = gquadIdx
 			covariIdxPtr = covariIdxPtr + 1
 
 		### DETERMINE WHICH ROWS TO EDIT IN RESULT MATRIX
 		thisFragStart = idx + shearStart
-		thisFragEnd = thisFragStart + vari.FRAGLEN
+		thisFragEnd = thisFragStart + globalVars["fragLen"]
 
 		if resultStartIdx == -1:
 			resultStartIdx = 0
@@ -212,18 +210,18 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 			if not np.isnan(result[resultEndIdx, 0]):
 				while result[resultEndIdx, 0] < thisFragEnd:
 					resultEndIdx = resultEndIdx + 1
-					if resultEndIdx > vari.FRAGLEN:
-						resultEndIdx = resultEndIdx - (vari.FRAGLEN+1)
+					if resultEndIdx > globalVars["fragLen"]:
+						resultEndIdx = resultEndIdx - (globalVars["fragLen"]+1)
 					if np.isnan(result[resultEndIdx, 0]):
 						break
-			maxBinPos = binStart + vari.FRAGLEN
+			maxBinPos = binStart + globalVars["fragLen"]
 			numPoppedPos = 0
 		else:
 
 			while result[resultStartIdx, 0] < thisFragStart:
 				## pop the element
 				line = []
-				for covariPos in range(vari.COVARI_NUM):
+				for covariPos in range(globalVars["covariNum"]):
 					line.extend([ result[resultStartIdx, (covariPos+1)]  ])
 					result[resultStartIdx, (covariPos+1)] = float(0)
 				covariFile[numPoppedPos] = line
@@ -237,35 +235,35 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 					maxBinPos = maxBinPos + 1
 
 				resultStartIdx = resultStartIdx + 1
-				if resultStartIdx > vari.FRAGLEN:
-					resultStartIdx = resultStartIdx - (vari.FRAGLEN+1)
+				if resultStartIdx > globalVars["fragLen"]:
+					resultStartIdx = resultStartIdx - (globalVars["fragLen"]+1)
 
 			if not np.isnan(result[resultEndIdx, 0]):
 				while result[resultEndIdx, 0] < thisFragEnd:
 					resultEndIdx = resultEndIdx + 1
-					if resultEndIdx > vari.FRAGLEN:
-						resultEndIdx = resultEndIdx - (vari.FRAGLEN+1)
+					if resultEndIdx > globalVars["fragLen"]:
+						resultEndIdx = resultEndIdx - (globalVars["fragLen"]+1)
 					if np.isnan(result[resultEndIdx, 0]):
 						break
 
 		if resultEndIdx < resultStartIdx:
-			for pos in range(resultStartIdx, (vari.FRAGLEN+1)):
-				for covariPos in range(vari.COVARI_NUM):
+			for pos in range(resultStartIdx, (globalVars["fragLen"]+1)):
+				for covariPos in range(globalVars["covariNum"]):
 					result[pos, covariPos+1] = result[pos, covariPos+1] + covariIdx[covariPos]
 			for pos in range(0, resultEndIdx):
-				for covariPos in range(vari.COVARI_NUM):
+				for covariPos in range(globalVars["covariNum"]):
 					result[pos, covariPos+1] = result[pos, covariPos+1] + covariIdx[covariPos]
 		else:
 			for pos in range(resultStartIdx, resultEndIdx):
-				for covariPos in range(vari.COVARI_NUM):
+				for covariPos in range(globalVars["covariNum"]):
 					result[pos, covariPos+1] = result[pos, covariPos+1] + covariIdx[covariPos]
 
 		if idx == (endIdx-1): # the last fragment
 			### pop the rest of positions that are not np.nan
 			if resultEndIdx < resultStartIdx:
-				for pos in range(resultStartIdx, (vari.FRAGLEN+1)):
+				for pos in range(resultStartIdx, (globalVars["fragLen"]+1)):
 					line = []
-					for covariPos in range(vari.COVARI_NUM):
+					for covariPos in range(globalVars["covariNum"]):
 						line.extend([ result[pos, (covariPos+1)]  ])
 					covariFile[numPoppedPos] = line
 
@@ -273,7 +271,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 
 				for pos in range(0, resultEndIdx):
 					line = []
-					for covariPos in range(vari.COVARI_NUM):
+					for covariPos in range(globalVars["covariNum"]):
 						line.extend([ result[pos, (covariPos+1)]  ])
 					covariFile[numPoppedPos] = line
 
@@ -281,7 +279,7 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 			else:
 				for pos in range(resultStartIdx, resultEndIdx):
 					line = []
-					for covariPos in range(vari.COVARI_NUM):
+					for covariPos in range(globalVars["covariNum"]):
 						line.extend([ result[pos, (covariPos+1)]  ])
 					covariFile[numPoppedPos] = line
 
@@ -290,21 +288,21 @@ cpdef calculateContinuousFrag(chromo, analysisStart, analysisEnd, binStart, binE
 	f.close()
 
 
-	return correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, lastBin, nBins)
+	return correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, lastBin, nBins, globalVars)
 
 
-cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin):
+cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd, nBins, lastBin, globalVars):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
 
 	###### CALCULATE INDEX VARIABLE
-	fragStart = binStart + 1 - vari.FRAGLEN
-	fragEnd = binEnd + vari.FRAGLEN  # not included
+	fragStart = binStart + 1 - globalVars["fragLen"]
+	fragEnd = binEnd + globalVars["fragLen"]  # not included
 	shearStart = fragStart - 2
 	shearEnd = fragEnd + 2 # not included
 
-	genome = py2bit.open(vari.GENOME)
+	genome = py2bit.open(globalVars["genome"])
 	chromoEnd = int(genome.chroms(chromo))
 
 	if shearStart < 1:
@@ -314,17 +312,17 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 		analysisStart = max(analysisStart, fragStart)
 
 		###### EDIT BINSTART/ BINEND
-		nBins = int( (analysisEnd-analysisStart) / float(vari.BINSIZE) )
-		leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
+		nBins = int( (analysisEnd-analysisStart) / float(globalVars["binSize"]) )
+		leftValue = (analysisEnd - analysisStart) % int(globalVars["binSize"])
 		if leftValue != 0:
 			nBins = nBins + 1
 			lastBin = True
-			binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
+			binEnd = int( (analysisStart + (nBins-1) * globalVars["binSize"] + analysisEnd) / float(2) )
 		else:
 			lastBin = False
-			binEnd = binStart + (nBins-1) * vari.BINSIZE
+			binEnd = binStart + (nBins-1) * globalVars["binSize"]
 
-		fragEnd = binEnd + vari.FRAGLEN
+		fragEnd = binEnd + globalVars["fragLen"]
 		shearEnd = fragEnd + 2
 
 	if shearEnd > chromoEnd:
@@ -337,17 +335,17 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 			analysisEnd = analysisEndModified
 
 			###### EDIT BINSTART/ BINEND
-			nBins = int( (analysisEnd-analysisStart) / float(vari.BINSIZE) )
-			leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
+			nBins = int( (analysisEnd-analysisStart) / float(globalVars["binSize"]) )
+			leftValue = (analysisEnd - analysisStart) % int(globalVars["binSize"])
 			if leftValue != 0:
 				nBins = nBins + 1
 				lastBin = True
-				binEnd = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )
+				binEnd = int( (analysisStart + (nBins-1) * globalVars["binSize"] + analysisEnd) / float(2) )
 			else:
 				lastBin = False
-				binEnd = binStart + (nBins-1) * vari.BINSIZE
+				binEnd = binStart + (nBins-1) * globalVars["binSize"]
 
-			fragEnd = binEnd + vari.FRAGLEN
+			fragEnd = binEnd + globalVars["fragLen"]
 			shearEnd = fragEnd + 2
 
 			if shearEnd > chromoEnd:
@@ -360,8 +358,8 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 	genome.close()
 
 	##### OPEN BIAS FILES
-	if vari.MAP == 1:
-		mapFile = pyBigWig.open(vari.MAPFILE)
+	if globalVars["map"] == 1:
+		mapFile = pyBigWig.open(globalVars["mapFile"])
 		mapValue = np.array(mapFile.values(chromo, fragStart, fragEnd))
 
 		mapValue[np.where(mapValue == 0)] = np.nan
@@ -372,19 +370,19 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 		mapFile.close()
 		del mapFile, mapValue
 
-	if vari.GQUAD == 1:
-		gquadFile = [0] * len(vari.GQUADFILE)
-		gquadValue = [0] * len(vari.GQUADFILE)
+	if globalVars["gquad"] == 1:
+		gquadFile = [0] * len(globalVars["gquadFile"])
+		gquadValue = [0] * len(globalVars["gquadFile"])
 
-		for i in range(len(vari.GQUADFILE)):
-			gquadFile[i] = pyBigWig.open(vari.GQUADFILE[i])
+		for i in range(len(globalVars["gquadFile"])):
+			gquadFile[i] = pyBigWig.open(globalVars["gquadFile"][i])
 			gquadValue[i] = gquadFile[i].values(chromo, fragStart, fragEnd)
 			gquadFile[i].close()
 
 		gquadValue = np.array(gquadValue)
 		gquadValue = np.nanmax(gquadValue, axis=0)
 		gquadValue[np.where(gquadValue == 0)] = np.nan
-		gquadValue = np.log(gquadValue / float(vari.GQUAD_MAX))
+		gquadValue = np.log(gquadValue / float(globalVars["gquadMax"]))
 
 		gquadValue[np.where(np.isnan(gquadValue))] = float(-5)
 		gquadView = cu.memoryView(gquadValue)
@@ -393,71 +391,71 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 
 
 	##### STORE COVARI RESULTS
-	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=commonVari.OUTPUT_DIR, delete=True)
+	covariFileTemp = tempfile.NamedTemporaryFile(suffix=".hdf5", dir=globalVars["outputDir"], delete=True)
 	covariFileName = covariFileTemp.name
 	covariFileTemp.close()
 
 	f = h5py.File(covariFileName, "w")
-	covariFile = f.create_dataset("covari", (nBins, vari.COVARI_NUM), dtype='f', compression="gzip")
+	covariFile = f.create_dataset("covari", (nBins, globalVars["covariNum"]), dtype='f', compression="gzip")
 
 	resultIdx = 0
 	while resultIdx < nBins: # for each bin
 		if resultIdx == (nBins-1):
 			pos = binEnd
 		else:
-			pos = binStart + resultIdx * vari.BINSIZE
+			pos = binStart + resultIdx * globalVars["binSize"]
 
-		thisBinFirstFragStart = pos + 1 - vari.FRAGLEN
+		thisBinFirstFragStart = pos + 1 - globalVars["fragLen"]
 		thisBinLastFragStart = pos
 
 		if thisBinFirstFragStart < 3:
 			thisBinFirstFragStart = 3
-		if (thisBinLastFragStart + vari.FRAGLEN) > (chromoEnd - 2):
-			thisBinLastFragStart = chromoEnd - 2 - vari.FRAGLEN
+		if (thisBinLastFragStart + globalVars["fragLen"]) > (chromoEnd - 2):
+			thisBinLastFragStart = chromoEnd - 2 - globalVars["fragLen"]
 
 		thisBinNumFrag = thisBinLastFragStart - thisBinFirstFragStart + 1
 
 		thisBinFirstFragStartIdx = thisBinFirstFragStart - shearStart
 
 		##### INITIALIZE VARIABLES
-		if vari.SHEAR == 1:
+		if globalVars["shear"] == 1:
 			pastMer1 = -1
 			pastMer2 = -1
-		if vari.PCR == 1:
+		if globalVars["pcr"] == 1:
 			pastStartGibbs = -1
 
-		line = [0.0] * vari.COVARI_NUM
+		line = [0.0] * globalVars["covariNum"]
 		for binFragIdx in range(thisBinNumFrag):
 			idx = thisBinFirstFragStartIdx + binFragIdx
 
-			covariIdx = [0] * vari.COVARI_NUM
+			covariIdx = [0] * globalVars["covariNum"]
 			covariIdxPtr = 0
 
-			if vari.SHEAR == 1:
+			if globalVars["shear"] == 1:
 				###  mer1
 				mer1 = sequence[(idx-2):(idx+3)]
 				if 'N' in mer1:
 					pastMer1 = -1
-					mgwIdx = vari.N_MGW
-					protIdx = vari.N_PROT
+					mgwIdx = globalVars["n_mgw"]
+					protIdx = globalVars["n_prot"]
 				else:
 					if pastMer1 == -1: # there is no information on pastMer1
-						pastMer1, mgwIdx, protIdx = cu.find5merProb(mer1)
+						pastMer1, mgwIdx, protIdx = cu.find5merProb(mer1, globalVars)
 					else:
-						pastMer1, mgwIdx, protIdx = cu.edit5merProb(pastMer1, mer1[0], mer1[4])
+						pastMer1, mgwIdx, protIdx = cu.edit5merProb(pastMer1, mer1[0], mer1[4], globalVars)
 
 				###  mer2
-				fragEndIdx = idx + vari.FRAGLEN
+				fragEndIdx = idx + globalVars["fragLen"]
 				mer2 = sequence[(fragEndIdx-3):(fragEndIdx+2)]
 				if 'N' in mer2:
 					pastMer2 = -1
-					mgwIdx = mgwIdx + vari.N_MGW
-					protIdx = protIdx + vari.N_PROT
+					mgwIdx = mgwIdx + globalVars["n_mgw"]
+					protIdx = protIdx + globalVars["n_prot"]
 				else:
 					if pastMer2 == -1:
-						pastMer2, add1, add2 = cu.findComple5merProb(mer2)
+						pastMer2, add1, add2 = cu.findComple5merProb(mer2, globalVars)
 					else:
-						pastMer2, add1, add2 = cu.editComple5merProb(pastMer2, mer2[0], mer2[4])
+						pastMer2, add1, add2 = cu.editComple5merProb(pastMer2, mer2[0], mer2[4], globalVars)
 					mgwIdx = mgwIdx + add1
 					protIdx = protIdx + add2
 
@@ -465,37 +463,37 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 				covariIdx[covariIdxPtr+1] = protIdx
 				covariIdxPtr = covariIdxPtr + 2
 
-			if vari.PCR == 1:
-				sequenceIdx = sequence[idx:(idx+vari.FRAGLEN)]
+			if globalVars["pcr"] == 1:
+				sequenceIdx = sequence[idx:(idx+globalVars["fragLen"])]
 				if pastStartGibbs == -1:
-					startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, vari.FRAGLEN)
+					startGibbs, gibbs = cu.findStartGibbs(sequenceIdx, globalVars["fragLen"], globalVars)
 				else:
 					oldDimer = sequenceIdx[0:2].upper()
-					newDimer = sequenceIdx[(vari.FRAGLEN-2):vari.FRAGLEN].upper()
-					startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs)
+					newDimer = sequenceIdx[(globalVars["fragLen"]-2):globalVars["fragLen"]].upper()
+					startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs, globalVars)
 
-				annealIdx, denatureIdx = cu.convertGibbs(gibbs)
+				annealIdx, denatureIdx = cu.convertGibbs(gibbs, globalVars)
 
 				covariIdx[covariIdxPtr] = annealIdx
 				covariIdx[covariIdxPtr+1] = denatureIdx
 				covariIdxPtr = covariIdxPtr + 2
 
-			if vari.MAP == 1:
+			if globalVars["map"] == 1:
 				map1 = mapValueView[(idx-2)]
-				map2 = mapValueView[(idx+vari.FRAGLEN-2-vari.KMER)]
+				map2 = mapValueView[(idx+globalVars["fragLen"]-2-globalVars["kmer"])]
 				mapIdx = map1 + map2
 
 				covariIdx[covariIdxPtr] = mapIdx
 				covariIdxPtr = covariIdxPtr + 1
 
-			if vari.GQUAD == 1:
-				gquadIdx = np.nanmax(np.asarray(gquadView[(idx-2):(idx+vari.FRAGLEN-2)]))
+			if globalVars["gquad"] == 1:
+				gquadIdx = np.nanmax(np.asarray(gquadView[(idx-2):(idx+globalVars["fragLen"]-2)]))
 
 				covariIdx[covariIdxPtr] = gquadIdx
 				covariIdxPtr = covariIdxPtr + 1
 
 
-			for covariPos in range(vari.COVARI_NUM):
+			for covariPos in range(globalVars["covariNum"]):
 				line[covariPos] = line[covariPos] + covariIdx[covariPos]
 
 		covariFile[resultIdx] = line
@@ -507,65 +505,61 @@ cpdef calculateDiscreteFrag(chromo, analysisStart, analysisEnd, binStart, binEnd
 
 	f.close()
 
-	return correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, lastBin, nBins)
+	return correctReadCounts(covariFileName, chromo, analysisStart, analysisEnd, lastBin, nBins, globalVars)
 
 
-cpdef calculateTaskCovariates(args):
+cpdef calculateTaskCovariates(chromo, analysisStart, analysisEnd, globalVars):
 	### supress numpy nan-error message
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
-	chromo = args[0]
-	analysisStart = int(args[1])  # Genomic coordinates(starts from 1)
-	analysisEnd = int(args[2])
-
 	#### DECIDE IF 'calculateContinuousFrag' or 'calculateDiscreteFrag'
-	if (analysisStart + vari.BINSIZE) >= analysisEnd:
+	if (analysisStart + globalVars["binSize"]) >= analysisEnd:
 		firstBinPos = int((analysisStart + analysisEnd) / float(2))
 		lastBinPos = firstBinPos
 		nBins = 1
 		lastBin = False
-		result = calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
+		result = calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin, globalVars)
 		return result
 
-	firstBinPos = int((2*analysisStart + vari.BINSIZE) / float(2))
-	if (analysisStart + 2*vari.BINSIZE) > analysisEnd:
-		secondBinPos = int((analysisStart + vari.BINSIZE + analysisEnd) / float(2))
+	firstBinPos = int((2*analysisStart + globalVars["binSize"]) / float(2))
+	if (analysisStart + 2*globalVars["binSize"]) > analysisEnd:
+		secondBinPos = int((analysisStart + globalVars["binSize"] + analysisEnd) / float(2))
 		lastBinPos = secondBinPos
 		nBins = 2
 		lastBin = True
 	else:
-		secondBinPos = int((2*analysisStart + 3 * vari.BINSIZE) / float(2))
-		leftValue = (analysisEnd - analysisStart) % int(vari.BINSIZE)
-		nBins = int((analysisEnd - analysisStart) / float(vari.BINSIZE))
+		secondBinPos = int((2*analysisStart + 3 * globalVars["binSize"]) / float(2))
+		leftValue = (analysisEnd - analysisStart) % int(globalVars["binSize"])
+		nBins = int((analysisEnd - analysisStart) / float(globalVars["binSize"]))
 		if leftValue != 0:
 			nBins = nBins + 1
 			lastBin = True
-			lastBinPos = int( (analysisStart + (nBins-1) * vari.BINSIZE + analysisEnd) / float(2) )  ## should be included in the analysis
+			lastBinPos = int( (analysisStart + (nBins-1) * globalVars["binSize"] + analysisEnd) / float(2) )  ## should be included in the analysis
 		else:
 			lastBin = False
-			lastBinPos = firstBinPos + (nBins-1) * vari.BINSIZE ## should be included in the analysis
+			lastBinPos = firstBinPos + (nBins-1) * globalVars["binSize"] ## should be included in the analysis
 
-	if (secondBinPos-firstBinPos) <= vari.FRAGLEN:
-		result = calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
+	if (secondBinPos-firstBinPos) <= globalVars["fragLen"]:
+		result = calculateContinuousFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin, globalVars)
 		return result
 	else:
-		result = calculateDiscreteFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin)
+		result = calculateDiscreteFrag(chromo, analysisStart, analysisEnd, firstBinPos, lastBinPos, nBins, lastBin, globalVars)
 		return result
 
 
-cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins):
+cpdef makeMatrixContinuousFrag(binStart, binEnd, nBins, globalVars):
 
-	result = np.zeros(((vari.FRAGLEN+1), (vari.COVARI_NUM+1)), dtype=np.float64)
-	for i in range(vari.FRAGLEN+1):
-		pos = binStart + i * vari.BINSIZE
+	result = np.zeros(((globalVars["fragLen"]+1), (globalVars["covariNum"]+1)), dtype=np.float64)
+	for i in range(globalVars["fragLen"]+1):
+		pos = binStart + i * globalVars["binSize"]
 
 		if pos > binEnd:
 			result[i, 0] = np.nan
 		else:
 			result[i, 0] = pos
 
-	if nBins == (vari.FRAGLEN+1):
-		result[vari.FRAGLEN, 0] = binEnd
+	if nBins == (globalVars["fragLen"]+1):
+		result[globalVars["fragLen"], 0] = binEnd
 
 	return result

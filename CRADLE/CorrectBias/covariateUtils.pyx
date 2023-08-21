@@ -4,10 +4,8 @@ import math
 
 import numpy as np
 
-from CRADLE.CorrectBias import vari
 
-
-cpdef find5merProb(mer5):
+cpdef find5merProb(mer5, globalVars):
 	baseInfo = 0
 	subtract = -1
 
@@ -24,15 +22,15 @@ cpdef find5merProb(mer5):
 		if i==0:
 			subtract = baseInfo
 
-	mgw = vari.MGW[baseInfo][1]
-	prot = vari.PROT[baseInfo][1]
+	mgw = globalVars["mgw"][baseInfo][1]
+	prot = globalVars["prot"][baseInfo][1]
 
 	nextBaseInfo = baseInfo - subtract
 
 	return nextBaseInfo, mgw, prot
 
 
-cpdef findComple5merProb(mer5):
+cpdef findComple5merProb(mer5, globalVars):
 	baseInfo = 0
 	subtract = -1
 
@@ -49,15 +47,15 @@ cpdef findComple5merProb(mer5):
 		if i==0:
 			subtract = baseInfo
 
-	mgw = vari.MGW[baseInfo][1]
-	prot = vari.PROT[baseInfo][1]
+	mgw = globalVars["mgw"][baseInfo][1]
+	prot = globalVars["prot"][baseInfo][1]
 
 	nextBaseInfo = baseInfo - subtract
 
 	return nextBaseInfo, mgw, prot
 
 
-cpdef edit5merProb(pastMer, oldBase, newBase):
+cpdef edit5merProb(pastMer, oldBase, newBase, globalVars):
 	baseInfo = pastMer
 	baseInfo = baseInfo * 4
 	subtract = -1
@@ -73,8 +71,8 @@ cpdef edit5merProb(pastMer, oldBase, newBase):
 		baseInfo = baseInfo + 3
 
 	baseInfo = int(baseInfo)
-	mgw = vari.MGW[baseInfo][1]
-	prot = vari.PROT[baseInfo][1]
+	mgw = globalVars["mgw"][baseInfo][1]
+	prot = globalVars["prot"][baseInfo][1]
 
 	## subtract oldBase
 	if oldBase=='A' or oldBase=='a':
@@ -91,7 +89,7 @@ cpdef edit5merProb(pastMer, oldBase, newBase):
 	return nextBaseInfo, mgw, prot
 
 
-cpdef editComple5merProb(pastMer, oldBase, newBase):
+cpdef editComple5merProb(pastMer, oldBase, newBase, globalVars):
 	baseInfo = pastMer
 	baseInfo = int(baseInfo / 4)
 	subtract = -1
@@ -107,8 +105,8 @@ cpdef editComple5merProb(pastMer, oldBase, newBase):
 		baseInfo = baseInfo + np.power(4, 4) * 0
 
 	baseInfo = int(baseInfo)
-	mgw = vari.MGW[baseInfo][1]
-	prot = vari.PROT[baseInfo][1]
+	mgw = globalVars["mgw"][baseInfo][1]
+	prot = globalVars["prot"][baseInfo][1]
 
 	## subtract oldBase
 	if oldBase=='A' or oldBase=='a':
@@ -125,14 +123,14 @@ cpdef editComple5merProb(pastMer, oldBase, newBase):
 	return nextBaseInfo, mgw, prot
 
 
-cpdef findStartGibbs(seq, seqLen):
+cpdef findStartGibbs(seq, seqLen, globalVars):
 	gibbs = 0
 	subtract = -1
 
 	for i in range(seqLen-1):
 		dimer = seq[i:(i+2)].upper()
 		if 'N' in dimer:
-			gibbs = gibbs + vari.N_GIBBS
+			gibbs = gibbs + globalVars["n_gibbs"]
 		else:
 			dimerIdx = 0
 			for j in range(2):
@@ -144,7 +142,7 @@ cpdef findStartGibbs(seq, seqLen):
 					dimerIdx = dimerIdx + np.power(4, 1-j) * 2
 				elif dimer[j]=='T':
 					dimerIdx = dimerIdx + np.power(4, 1-j) * 3
-			gibbs = gibbs + vari.GIBBS[dimerIdx][1]
+			gibbs = gibbs + globalVars["gibbs"][dimerIdx][1]
 
 		if i==0:
 			subtract = gibbs
@@ -154,13 +152,13 @@ cpdef findStartGibbs(seq, seqLen):
 	return startGibbs, gibbs
 
 
-cpdef editStartGibbs(oldDimer, newDimer, pastStartGibbs):
+cpdef editStartGibbs(oldDimer, newDimer, pastStartGibbs, globalVars):
 	gibbs = pastStartGibbs
 	subtract = -1
 
 	# newDimer
 	if 'N' in newDimer:
-		gibbs = gibbs + vari.N_GIBBS
+		gibbs = gibbs + globalVars["n_gibbs"]
 	else:
 		dimerIdx = 0
 		for j in range(2):
@@ -172,11 +170,11 @@ cpdef editStartGibbs(oldDimer, newDimer, pastStartGibbs):
 				dimerIdx = dimerIdx + np.power(4, 1-j) * 2
 			elif newDimer[j]=='T':
 				dimerIdx = dimerIdx + np.power(4, 1-j) * 3
-		gibbs = gibbs + vari.GIBBS[dimerIdx][1]
+		gibbs = gibbs + globalVars["gibbs"][dimerIdx][1]
 
 	## remove the old dimer for the next iteration
 	if 'N' in oldDimer:
-		subtract = vari.N_GIBBS
+		subtract = globalVars["n_gibbs"]
 	else:
 		dimerIdx = 0
 		for j in range(2):
@@ -188,24 +186,24 @@ cpdef editStartGibbs(oldDimer, newDimer, pastStartGibbs):
 				dimerIdx = dimerIdx + np.power(4, 1-j) * 2
 			elif oldDimer[j]=='T':
 				dimerIdx = dimerIdx + np.power(4, 1-j) * 3
-		subtract = vari.GIBBS[dimerIdx][1]
+		subtract = globalVars["gibbs"][dimerIdx][1]
 
 	startGibbs = gibbs - subtract
 
 	return startGibbs, gibbs
 
 
-cpdef convertGibbs(gibbs):
-	tm = gibbs / (vari.ENTROPY*(vari.FRAGLEN-1))
-	tm = (tm - vari.MIN_TM) / (vari.MAX_TM - vari.MIN_TM)
+cpdef convertGibbs(gibbs, globalVars):
+	tm = gibbs / (globalVars["entropy"]*(globalVars["fragLen"]-1))
+	tm = (tm - globalVars["min_tm"]) / (globalVars["max_tm"] - globalVars["min_tm"])
 
 	## anneal
-	anneal = ( math.exp(tm) - vari.PARA1 ) * vari.PARA2
+	anneal = ( math.exp(tm) - globalVars["para1"] ) * globalVars["para2"]
 	anneal = np.log(anneal)
 
 	## denature
 	tm = tm - 1
-	denature = ( math.exp( tm*(-1) ) - vari.PARA1 ) * vari.PARA2
+	denature = ( math.exp( tm*(-1) ) - globalVars["para1"] ) * globalVars["para2"]
 	denature = math.log(denature)
 
 	return anneal, denature

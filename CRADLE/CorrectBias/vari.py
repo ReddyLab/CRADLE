@@ -32,6 +32,36 @@ def setGlobalVariables(args):
 	seed = setRngSeed(args.rngSeed)
 	writeRngSeed(seed, args.o)
 
+	return {
+		"i_generate_norm_bw": I_GENERATE_NORM_BW,
+		"i_norm": I_NORM,
+		"min_frag_filter_value": MIN_FRAG_FILTER_VALUE,
+		"fraglen": FRAGLEN,
+		"binsize": BINSIZE,
+		"fragLen": FRAGLEN,
+		"binSize": BINSIZE,
+		"shear": SHEAR,
+		"pcr": PCR,
+		"kmer": KMER,
+		"map": MAP,
+		"mapFile": MAPFILE,
+		"gquad": GQUAD,
+		"gquadFile": GQUADFILE,
+		"gquadMax": GQUAD_MAX,
+		"covariNum": COVARI_NUM,
+		"genome": GENOME,
+		"covariOrder": COVARI_ORDER,
+		"n_mgw": N_MGW,
+		"n_prot": N_PROT,
+		"gibbs": GIBBS,
+		"entropy": ENTROPY,
+		"min_tm": MIN_TM,
+		"max_tm": MAX_TM,
+		"para1": PARA1,
+		"para2": PARA2,
+		"n_gibbs": N_GIBBS
+	}
+
 
 def setBiasFiles(args):
 	global SHEAR   # indicator variable whether each type of bias will be corrected.
