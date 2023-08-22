@@ -114,34 +114,34 @@ def divideWorkByChrom(workRegionSets: List[List[Tuple[str, int, int]]]) -> List[
 
 @timer("INITIALIZING PARAMETERS")
 def init(args):
-	commonVari.setGlobalVariables(args)
-	vari.setGlobalVariables(args)
+	commonGlobals = commonVari.setGlobalVariables(args)
+	cbGlobals = vari.setGlobalVariables(args)
 	covariates = vari.getStoredCovariates(args.biasType, args.covariDir)
 
-	with py2bit.open(vari.GENOME) as genome:
-		chromoEnds = {chromo: int(genome.chroms(chromo)) for chromo in commonVari.REGIONS.chromos}
+	with py2bit.open(cbGlobals["genome"]) as genome:
+		chromoEnds = {chromo: int(genome.chroms(chromo)) for chromo in commonGlobals["regions"].chromos}
 
-	resultBWHeader = utils.getResultBWHeader(commonVari.REGIONS, commonVari.CTRLBW_NAMES[0])
+	resultBWHeader = utils.getResultBWHeader(commonGlobals["regions"], commonGlobals["ctrlbwNames"][0])
 
-	return covariates, chromoEnds, resultBWHeader
+	return covariates, chromoEnds, resultBWHeader, commonGlobals | cbGlobals
 
 
 @timer("Filling Training Sets", 1)
-def fillTrainingSets(trainingSetMeta):
-	return utils.process(min(11, commonVari.NUMPROCESS), utils.fillTrainingSetMeta, trainingSetMeta)
+def fillTrainingSets(trainingSetMeta, globalVars):
+	return utils.process(min(11, globalVars["numprocess"]), utils.fillTrainingSetMeta, trainingSetMeta)
 
 
 @timer("SELECTING TRAINING SETS")
-def selectTrainingSets():
+def selectTrainingSets(globalVars):
 	trainingSetMeta, rc90Percentile, rc99Percentile = utils.getCandidateTrainingSet(
 		RC_PERCENTILE,
-		commonVari.REGIONS,
-		commonVari.CTRLBW_NAMES[0],
-		commonVari.OUTPUT_DIR
+		globalVars["regions"],
+		globalVars["ctrlbwNames"][0],
+		globalVars["outputDir"]
 	)
 	highRC = rc90Percentile
 
-	trainingSetMeta = fillTrainingSets(trainingSetMeta)
+	trainingSetMeta = fillTrainingSets(trainingSetMeta, globalVars)
 
 	trainSet90Percentile, trainSet90To99Percentile = utils.selectTrainingSetFromMeta(trainingSetMeta, rc99Percentile)
 	del trainingSetMeta
@@ -150,41 +150,41 @@ def selectTrainingSets():
 
 
 @timer("Calculating Scalers", 1)
-def calculateScalers(trainSet90Percentile, trainSet90To99Percentile):
-	if vari.I_NORM:
+def calculateScalers(trainSet90Percentile, trainSet90To99Percentile, globalVars):
+	if globalVars["i_norm"]:
 		if (len(trainSet90Percentile) == 0) or (len(trainSet90To99Percentile) == 0):
-			trainingSet = commonVari.REGIONS
+			trainingSet = globalVars["regions"]
 		else:
 			trainingSet = trainSet90Percentile + trainSet90To99Percentile
 
 		###### OBTAIN READ COUNTS OF THE FIRST REPLICATE OF CTRLBW.
-		observedReadCounts1Values = utils.getReadCounts(trainingSet, commonVari.CTRLBW_NAMES[0])
+		observedReadCounts1Values = utils.getReadCounts(trainingSet, globalVars["ctrlbwNames"][0])
 
-		scalerTasks = utils.getScalerTasks(trainingSet, observedReadCounts1Values, commonVari.CTRLBW_NAMES, commonVari.EXPBW_NAMES)
+		scalerTasks = utils.getScalerTasks(trainingSet, observedReadCounts1Values, globalVars["ctrlbwNames"], globalVars["expbwNames"])
 		scalerResult = utils.process(len(scalerTasks), utils.getScalerForEachSample, scalerTasks)
 
 	else:
-		sampleSetCount = len(commonVari.CTRLBW_NAMES) + len(commonVari.EXPBW_NAMES)
+		sampleSetCount = len(globalVars["ctrlbwNames"]) + len(globalVars["expbwNames"])
 		scalerResult = [1] * sampleSetCount
 
-	# Sets vari.CTRLSCALER and vari.EXPSCALER
-	commonVari.setScaler(scalerResult)
+	# Sets globalVars["ctrlScaler"] and globalVars["expScaler"]
+	globalVars["setScaler"](scalerResult)
 
-	if vari.I_NORM:
+	if globalVars["i_norm"]:
 		print("NORMALIZING CONSTANTS: ")
-		print(f"* CTRLBW: {commonVari.CTRLSCALER}")
-		print(f"* EXPBW: {commonVari.EXPSCALER}")
+		print(f"* CTRLBW: {globalVars['ctrlScaler']}")
+		print(f"* EXPBW: {globalVars['expScaler']}")
 		print("")
 
 
 @timer("Performing Regression", 1)
-def performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile ):
+def performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile, globalVars):
 	pool = multiprocessing.Pool(2)
 
 	if len(trainSet90Percentile) == 0:
-		trainSet90Percentile = commonVari.REGIONS
+		trainSet90Percentile = globalVars["regions"]
 	if len(trainSet90To99Percentile) == 0:
-		trainSet90To99Percentile = commonVari.REGIONS
+		trainSet90To99Percentile = globalVars["regions"]
 
 	trainSet90Percentile = utils.alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainSet90Percentile, covariates.fragLen)
 	trainSet90To99Percentile = utils.alignCoordinatesToCovariateFileBoundaries(chromoEnds, trainSet90To99Percentile, covariates.fragLen)
@@ -196,18 +196,18 @@ def performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To
 		reg.performRegression,
 		[
 			[
-				trainSet90Percentile, covariates, commonVari.CTRLBW_NAMES, commonVari.CTRLSCALER, commonVari.EXPBW_NAMES, commonVari.EXPSCALER, scatterplotSamples90Percentile
+				trainSet90Percentile, covariates, globalVars["ctrlbwNames"], globalVars["ctrlScaler"], globalVars["expbwNames"], globalVars["expScaler"], scatterplotSamples90Percentile
 			],
 			[
-				trainSet90To99Percentile, covariates, commonVari.CTRLBW_NAMES, commonVari.CTRLSCALER, commonVari.EXPBW_NAMES, commonVari.EXPSCALER, scatterplotSamples90to99Percentile
+				trainSet90To99Percentile, covariates, globalVars["ctrlbwNames"], globalVars["ctrlScaler"], globalVars["expbwNames"], globalVars["expScaler"], scatterplotSamples90to99Percentile
 			]
 		]
 	).get()
 	pool.close()
 	pool.join()
 
-	for name in commonVari.CTRLBW_NAMES:
-		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
+	for name in globalVars["ctrlbwNames"]:
+		fileName = utils.figureFileName(globalVars["outputDir"], name)
 		regRCReadCounts, regRCFittedValues = coefResult[0][2][name]
 		highRCReadCounts, highRCFittedValues = coefResult[1][2][name]
 		utils.plot(
@@ -216,8 +216,8 @@ def performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To
 			fileName
 		)
 
-	for name in commonVari.EXPBW_NAMES:
-		fileName = utils.figureFileName(commonVari.OUTPUT_DIR, name)
+	for name in globalVars["expbwNames"]:
+		fileName = utils.figureFileName(globalVars["outputDir"], name)
 		regRCReadCounts, regRCFittedValues = coefResult[0][3][name]
 		highRCReadCounts, highRCFittedValues = coefResult[1][3][name]
 		utils.plot(
@@ -256,46 +256,46 @@ def performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To
 
 
 @timer("NORMALIZING READ COUNTS")
-def normalizeReadCounts(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile):
-	calculateScalers(trainSet90Percentile, trainSet90To99Percentile)
+def normalizeReadCounts(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile, globalVars):
+	calculateScalers(trainSet90Percentile, trainSet90To99Percentile, globalVars)
 
-	return performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile)
+	return performRegression(covariates, chromoEnds, trainSet90Percentile, trainSet90To99Percentile, globalVars)
 
 
 @timer("Correcting Read Counts", 1)
-def correctReads(crcArgs):
-	utils.process(min(len(crcArgs), commonVari.NUMPROCESS), crc.correctReadCount, crcArgs)
+def correctReads(crcArgs, globalVars):
+	utils.process(min(len(crcArgs), globalVars["numprocess"]), crc.correctReadCount, crcArgs)
 
 
 @timer("Merging Temp Files", 1)
-def mergeTempFiles(resultBWHeader, jobGroups):
+def mergeTempFiles(resultBWHeader, jobGroups, globalVars):
 	fileChromoInfo = []
 	for jobGroup in jobGroups:
 		fileChromoInfo.extend([(chromo, chromoId) for chromo, chromoId, _ in jobGroup])
 
 	correctedFileNames = utils.mergeBWFiles(
-		commonVari.OUTPUT_DIR,
+		globalVars["outputDir"],
 		resultBWHeader,
 		fileChromoInfo,
-		commonVari.CTRLBW_NAMES,
-		commonVari.EXPBW_NAMES
+		globalVars["ctrlbwNames"],
+		globalVars["expbwNames"]
 	)
 
 	print("* Output file names: ")
 	print(f"{correctedFileNames}\n")
 
 
-@timer("FITTING ALL THE ANALYSIS REGIONS TO THE CORRECTION MODEL")
-def correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc, highRC):
-	binnedRegions = utils.divideGenome(commonVari.REGIONS)
+@timer("FITTING ALL THE ANALYSIS regions TO THE CORRECTION MODEL")
+def correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc, highRC, globalVars):
+	binnedRegions = utils.divideGenome(globalVars["regions"])
 
-	jobGroups = divideWork(binnedRegions, commonVari.REGIONS.cumulativeRegionSize, commonVari.NUMPROCESS)
+	jobGroups = divideWork(binnedRegions, globalVars["regions"].cumulativeRegionSize, globalVars["numprocess"])
 	jobGroups = divideWorkByChrom(jobGroups)
 	print(f"* {len(binnedRegions)} regions")
 
-	trainingBWName = commonVari.CTRLBW_NAMES[0]
-	bwNames = commonVari.CTRLBW_NAMES + commonVari.EXPBW_NAMES
-	scalers = commonVari.CTRLSCALER  + commonVari.EXPSCALER
+	trainingBWName = globalVars["ctrlbwNames"][0]
+	bwNames = globalVars["ctrlbwNames"] + globalVars["expbwNames"]
+	scalers = globalVars["ctrlScaler"]  + globalVars["expScaler"]
 	coefs = np.concatenate((coefCtrl, coefExp), axis=0)
 	coefHighrcs =  np.concatenate((coefCtrlHighrc, coefExpHighrc), axis=0)
 
@@ -309,26 +309,26 @@ def correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc,
 		coefs,
 		coefHighrcs,
 		highRC,
-		vari.MIN_FRAG_FILTER_VALUE,
-		vari.BINSIZE,
-		commonVari.OUTPUT_DIR
+		globalVars["MIN_FRAG_FILTER_VALUE"],
+		globalVars["BINSIZE"],
+		globalVars["outputDir"]
 	) for jobGroup in jobGroups]
 
-	correctReads(crcArgs)
+	correctReads(crcArgs, globalVars)
 
 	return jobGroups
 
 
 @timer("GENERATING NORMALIZED OBSERVED BIGWIGS")
-def normalizeBigWigs(resultBWHeader):
+def normalizeBigWigs(resultBWHeader, globalVars):
 	normObFileNames = utils.genNormalizedObBWs(
-		commonVari.OUTPUT_DIR,
+		globalVars["outputDir"],
 		resultBWHeader,
-		commonVari.REGIONS,
-		commonVari.CTRLBW_NAMES,
-		commonVari.CTRLSCALER,
-		commonVari.EXPBW_NAMES,
-		commonVari.EXPSCALER
+		globalVars["regions"],
+		globalVars["ctrlbwNames"],
+		globalVars["ctrlScaler"],
+		globalVars["expbwNames"],
+		globalVars["expScaler"]
 	)
 
 	print("* Nomralized observed bigwig file names: ")
@@ -338,22 +338,23 @@ def normalizeBigWigs(resultBWHeader):
 def run(args):
 	startTime = time.perf_counter()
 
-	covariates, chromoEnds, resultBWHeader = init(args)
+	covariates, chromoEnds, resultBWHeader, globalVars = init(args)
 
-	trainSet90Percentile, trainSet90To99Percentile, highRC = selectTrainingSets()
+	trainSet90Percentile, trainSet90To99Percentile, highRC = selectTrainingSets(globalVars)
 
 	coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc = normalizeReadCounts(
 		covariates,
 		chromoEnds,
 		trainSet90Percentile,
-		trainSet90To99Percentile
+		trainSet90To99Percentile,
+		globalVars
 	)
 
-	jobGroups = correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc, highRC)
+	jobGroups = correctReadCounts(covariates, chromoEnds, coefCtrl, coefExp, coefCtrlHighrc, coefExpHighrc, highRC, globalVars)
 
-	mergeTempFiles(resultBWHeader, jobGroups)
+	mergeTempFiles(resultBWHeader, jobGroups, globalVars)
 
-	if vari.I_GENERATE_NORM_BW:
-		normalizeBigWigs(resultBWHeader)
+	if globalVars["I_GENERATE_NORM_BW"]:
+		normalizeBigWigs(resultBWHeader, globalVars)
 
 	print(f"-- TOTAL RUNNING TIME: {((time.perf_counter() - startTime) / 3600)} hour(s)")

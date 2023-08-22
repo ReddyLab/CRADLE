@@ -16,6 +16,12 @@ def setGlobalVariables(args):
 	seed = setRngSeed(args.rngSeed)
 	writeRngSeed(seed, args.o)
 
+	return {
+		"i_generate_norm_bw": I_GENERATE_NORM_BW,
+		"i_norm": I_NORM,
+		"min_frag_filter_value": MIN_FRAG_FILTER_VALUE
+	}
+
 class StoredCovariates:
 	__slots__ = ["directory", "name", "fragLen", "order", "selected", "num"]
 
