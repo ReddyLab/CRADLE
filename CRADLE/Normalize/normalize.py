@@ -146,7 +146,7 @@ def getNonOverlappingRegions(mergedRegions, regionOverlaps):
 	return np.array(nonOverlappingRegions, dtype=RegionDtype)
 
 
-def selectTrainSet(nonOverlapRegions):
+def selectTrainSet(nonOverlapRegions, globalVars):
 	trainRegionNum = 1_000_000
 	totalRegionLen = np.sum(nonOverlapRegions[:]["end"] - nonOverlapRegions[:]["start"])
 
@@ -162,7 +162,7 @@ def selectTrainSet(nonOverlapRegions):
 		trainNumToSelect = int(trainRegionNum * ((end - start) / totalRegionLen))
 		trainSetMeta.append((chromo, start, end, trainNumToSelect))
 
-	numProcess = min(len(trainSetMeta), commonVari.NUMPROCESS)
+	numProcess = min(len(trainSetMeta), globalVars["numprocess"])
 	task = arraySplit(trainSetMeta, numProcess)
 	pool = multiprocessing.Pool(numProcess)
 	trainSetResults = pool.map_async(getTrainSet, task).get()
@@ -191,12 +191,12 @@ def getTrainSet(subregions):
 	return subTrainSet
 
 
-def getScaler(trainSets):
+def getScaler(trainSets, globalVars):
 	# Passing ob1Values in to getScalerForEachSample via starmap_async is
 	# surprisingly slow and ~quadruples the running time of the whole utility,
 	# so its stays a global
 	global ob1Values
-	with pyBigWig.open(commonVari.CTRLBW_NAMES[0]) as ob1:
+	with pyBigWig.open(globalVars["ctrlbwNames"][0]) as ob1:
 		ob1Values = []
 		for trainSet in trainSets:
 			regionChromo, regionStart = trainSet
@@ -206,10 +206,10 @@ def getScaler(trainSets):
 			temp[np.isnan(temp) == True] = 0
 			ob1Values.extend(list(temp))
 
-	sampleNum = commonVari.CTRLBW_NUM + commonVari.EXPBW_NUM
-	task = [(i, trainSets) for i in range(1, sampleNum)]
+	sampleNum = globalVars["ctrlbwNum"] + globalVars["expbwNum"]
+	task = [(i, trainSets, globalVars) for i in range(1, sampleNum)]
 	###### OBTAIN A SCALER FOR EACH SAMPLE
-	numProcess = min(len(task), commonVari.NUMPROCESS)
+	numProcess = min(len(task), globalVars["numprocess"])
 	pool = multiprocessing.Pool(numProcess)
 	scalerResult = pool.starmap_async(getScalerForEachSample, task).get()
 	pool.close()
@@ -218,11 +218,11 @@ def getScaler(trainSets):
 	return scalerResult
 
 
-def getScalerForEachSample(taskNum, trainSets):
-	if taskNum < commonVari.CTRLBW_NUM:
-		ob2 = pyBigWig.open(commonVari.CTRLBW_NAMES[taskNum])
+def getScalerForEachSample(taskNum, trainSets, globalVars):
+	if taskNum < globalVars["ctrlbwNum"]:
+		ob2 = pyBigWig.open(globalVars["ctrlbwNames"][taskNum])
 	else:
-		ob2 = pyBigWig.open(commonVari.EXPBW_NAMES[taskNum - commonVari.CTRLBW_NUM])
+		ob2 = pyBigWig.open(globalVars["expbwNames"][taskNum - globalVars["ctrlbwNum"]])
 
 	ob2Values = []
 	for trainSet in trainSets:
@@ -240,10 +240,10 @@ def getScalerForEachSample(taskNum, trainSets):
 	return scaler
 
 
-def getRegionScalers(combinedRegions, scalerSample):
-	ctrlBW = [0] * commonVari.CTRLBW_NUM
-	for repIdx in range(commonVari.CTRLBW_NUM):
-		ctrlBW[repIdx] = pyBigWig.open(commonVari.CTRLBW_NAMES[repIdx])
+def getRegionScalers(combinedRegions, scalerSample, globalVars):
+	ctrlBW = [0] * globalVars["ctrlbwNum"]
+	for repIdx in range(globalVars["ctrlbwNum"]):
+		ctrlBW[repIdx] = pyBigWig.open(globalVars["ctrlbwNames"][repIdx])
 
 	rcPerOnebp = np.zeros(len(combinedRegions))
 	maxRCPerOnebp = 0
@@ -252,7 +252,7 @@ def getRegionScalers(combinedRegions, scalerSample):
 
 		rcArr = [
 			np.array(ctrlBW[repIdx].values(chromo, start, end)) / scalerSample[repIdx]
-			for repIdx in range(commonVari.CTRLBW_NUM)
+			for repIdx in range(globalVars["ctrlbwNum"])
 		]
 
 		sumRC = np.sum(np.nanmean(rcArr, axis=0))
@@ -319,41 +319,41 @@ def run(args):
 	startTime = time.perf_counter()
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS .... \n")
-	commonVari.setGlobalVariables(args)
+	globalVars = commonVari.setGlobalVariables(args)
 	combinedRegions, nonOverlapRegions = getRegions(args.r)
 
 	## 1) Get training set
-	trainSet = selectTrainSet(nonOverlapRegions)
+	trainSet = selectTrainSet(nonOverlapRegions, globalVars)
 
 	## 2) Normlize samples relative to the first sample of ctrlbw.
 	scalerSample = [1]
-	scalerSample.extend(getScaler(trainSet))
+	scalerSample.extend(getScaler(trainSet, globalVars))
 
 	print("### Scalers in samples:")
-	print(f"   - ctrlbw: {scalerSample[:commonVari.CTRLBW_NUM]}")
-	print(f"   - expbw: {scalerSample[commonVari.EXPBW_NUM:]}")
+	print(f"   - ctrlbw: {scalerSample[:globalVars['ctrlbwNum']]}")
+	print(f"   - expbw: {scalerSample[globalVars['expbwNum']:]}")
 
 	## 3) Esimate scalers to normalize regions in a sample
-	regionScalers = getRegionScalers(combinedRegions, scalerSample)
+	regionScalers = getRegionScalers(combinedRegions, scalerSample, globalVars)
 
 	## 4) Normalize a sample for different regions
-	resultBWHeader = getResultBWHeader(combinedRegions, commonVari.CTRLBW_NAMES[0])
-	jobList = [[commonVari.OUTPUT_DIR, resultBWHeader, combinedRegions, scalerSample[repIdx], regionScalers, commonVari.CTRLBW_NAMES[repIdx]]
-				for repIdx in range(commonVari.CTRLBW_NUM)]
+	resultBWHeader = getResultBWHeader(combinedRegions, globalVars["ctrlbwNames"][0])
+	jobList = [[globalVars["outputDir"], resultBWHeader, combinedRegions, scalerSample[repIdx], regionScalers, globalVars["ctrlbwNames"][repIdx]]
+				for repIdx in range(globalVars["ctrlbwNum"])]
 
-	for repIdx in range(commonVari.EXPBW_NUM):
+	for repIdx in range(globalVars["expbwNum"]):
 		jobList.append(
 			[
-				commonVari.OUTPUT_DIR,
+				globalVars["outputDir"],
 				resultBWHeader,
 				combinedRegions,
-				scalerSample[commonVari.CTRLBW_NUM + repIdx],
+				scalerSample[globalVars["ctrlbwNum"] + repIdx],
 				regionScalers,
-				commonVari.EXPBW_NAMES[repIdx],
+				globalVars["expbwNames"][repIdx],
 			]
 		)
 
-	pool = multiprocessing.Pool(min(len(jobList), commonVari.NUMPROCESS))
+	pool = multiprocessing.Pool(min(len(jobList), globalVars["numprocess"]))
 	normFileNames = pool.starmap_async(generateNormalizedBWs, jobList).get()
 	pool.close()
 	pool.join()
