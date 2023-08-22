@@ -16,6 +16,34 @@ def setGlobalVariables(args):
 	setDistance(args.d)
 	setStatTesting(args.stat)
 
+	return {
+		"ctrlbwNames": CTRLBW_NAMES,
+		"expbwNames": EXPBW_NAMES,
+		"ctrlbwNum": CTRLBW_NUM,
+		"expbwNum": EXPBW_NUM,
+		"sampleNum": SAMPLE_NUM,
+		"allZero": ALL_ZERO,
+		"nullStd": None,
+		"i_log2fc": I_LOG2FC,
+		"normCtrlbwNames": NORM_CTRLBW_NAMES,
+		"normExpbwNames": NORM_EXPBW_NAMES,
+		"outputDir": OUTPUT_DIR,
+		"region": REGION,
+		"fdr": FDR,
+		"theta": None,
+		"filterCutoffs": FILTER_CUTOFFS,
+		"filterCutoffsThetas": FILTER_CUTOFFS_THETAS,
+		"regionCutoff": None,
+		"adjFDR": None,
+		"binSize1": BINSIZE1,
+		"binSize2": BINSIZE2,
+		"shiftSize2": SHIFTSIZE2,
+		"numprocess": NUMPROCESS,
+		"distance": DISTANCE,
+		"peakLen": PEAKLEN,
+		"equalVar": EQUALVAR,
+	}
+
 def setInputFiles(ctrlbwFiles, expbwFiles):
 	global CTRLBW_NAMES
 	global EXPBW_NAMES
@@ -42,25 +70,24 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 
 	ALL_ZERO = [0] * SAMPLE_NUM
 
+
 def setNormalizedInputFiles(normCtrlbw, normExpbw):
 	global I_LOG2FC
 
 	if normCtrlbw is None or normExpbw is None:
 		I_LOG2FC = False
 		return
-	
+
 	I_LOG2FC = True
 	global NORM_CTRLBW_NAMES
 	global NORM_EXPBW_NAMES
-	
+
 	if  len(normCtrlbw) != CTRLBW_NUM or len(normExpbw) != EXPBW_NUM:
-		print("Error: The number of normalized observed bigwigs does not match with the number of input bigwigs. The number of bigwigs in -ctrlbw and -expbw should match with the nubmer of biwigs in -normCtrlbw and -normExpbw, respectively.")	
+		print("Error: The number of normalized observed bigwigs does not match with the number of input bigwigs. The number of bigwigs in -ctrlbw and -expbw should match with the nubmer of biwigs in -normCtrlbw and -normExpbw, respectively.")
 		sys.exit()
 
 	NORM_CTRLBW_NAMES = normCtrlbw
 	NORM_EXPBW_NAMES = normExpbw
-
-
 
 
 def setOutputDirectory(outputDir):
@@ -311,8 +338,6 @@ def setBinSize(binSize1, binSize2):
 		BINSIZE1 = int(binSize1)
 		BINSIZE2 = int(float(BINSIZE1) / 6)
 		SHIFTSIZE2 = BINSIZE2
-
-
 
 
 def setNumProcess(numProcess):

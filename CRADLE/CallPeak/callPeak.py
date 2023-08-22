@@ -9,7 +9,7 @@ from CRADLE.CallPeak import vari
 from CRADLE.CallPeak import calculateRC
 
 
-def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW):
+def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW, globalVars):
 	regionChromo = mergedResult[0]
 	regionStart = int(mergedResult[1])
 	regionEnd = int(mergedResult[2])
@@ -24,7 +24,7 @@ def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, n
 	diffPos = int(expRCPosMean - ctrlRCPosMean)
 	mergedResult[6] = diffPos
 
-	cohens_D = calculateCohenD(ctrlRC, expRC)
+	cohens_D = calculateCohenD(ctrlRC, expRC, globalVars)
 	if cohens_D == np.nan:
 		print(f"""
 		Warning: Pooled Std Dev of Cohen's D is 0.
@@ -36,7 +36,7 @@ def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, n
 
 	mergedResult.extend([ctrlRCPosMean, expRCPosMean, cohens_D])
 
-	if vari.I_LOG2FC:
+	if globalVars["i_log2fc"]:
 		normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
 		normCtrlRCPosMean = np.nanmean(normCtrlRC)
 		normExpRCPosMean = np.nanmean(normExpRC)
@@ -48,19 +48,19 @@ def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, n
 	mergedResult.append(peusdoLog2FC)
 
 
-def mergePeaks(peakResult):
+def mergePeaks(peakResult, globalVars):
 	## open bigwig files to calculate effect size
-	ctrlBW = [0] * vari.CTRLBW_NUM
-	expBW = [0] * vari.EXPBW_NUM
+	ctrlBW = [0] * globalVars["ctrlbwNum"]
+	expBW = [0] * globalVars["expbwNum"]
 
-	for i in range(vari.CTRLBW_NUM):
-		ctrlBW[i] = pyBigWig.open(vari.CTRLBW_NAMES[i])
-	for i in range(vari.EXPBW_NUM):
-		expBW[i] = pyBigWig.open(vari.EXPBW_NAMES[i])
+	for i in range(globalVars["ctrlbwNum"]):
+		ctrlBW[i] = pyBigWig.open(globalVars["ctrlbwNames"][i])
+	for i in range(globalVars["expbwNum"]):
+		expBW[i] = pyBigWig.open(globalVars["expbwNames"][i])
 
-	if vari.I_LOG2FC:
-		normCtrlBW = [pyBigWig.open(bwName) for bwName in vari.NORM_CTRLBW_NAMES]
-		normExpBW = [pyBigWig.open(bwName) for bwName in vari.NORM_EXPBW_NAMES]
+	if globalVars["I_LOG2FC"]:
+		normCtrlBW = [pyBigWig.open(bwName) for bwName in globalVars["normCtrlbwNames"]]
+		normExpBW = [pyBigWig.open(bwName) for bwName in globalVars["normExpbwNames"]]
 	else:
 		normCtrlBW = None
 		normExpBW = None
@@ -76,18 +76,18 @@ def mergePeaks(peakResult):
 	mergedPeak.append(peakResult[0])
 	resultIdx = 0
 	if len(peakResult) == 1:
-		setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW)
+		setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW, globalVars)
 
-		for i in range(vari.CTRLBW_NUM):
+		for i in range(globalVars["ctrlbwNum"]):
 			ctrlBW[i].close()
 
-			if vari.I_LOG2FC:
+			if globalVars["i_log2fc"]:
 				normCtrlBW[i].close()
 
-		for i in range(vari.EXPBW_NUM):
+		for i in range(globalVars["expbwNum"]):
 			expBW[i].close()
 
-			if vari.I_LOG2FC:
+			if globalVars["i_log2fc"]:
 				normExpBW[i].close()
 
 		return mergedPeak
@@ -101,12 +101,12 @@ def mergePeaks(peakResult):
 		currpvalue = float(peakResult[i][4])
 		currqvalue = float(peakResult[i][5])
 
-		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) <= vari.DISTANCE):
+		if (currChromo == pastChromo) and (currEnrich == pastEnrich) and ( (currStart-pastEnd) <= globalVars["distance"]):
 			mergedPeak[resultIdx][2] = currEnd
 			pvalues.append(currpvalue)
 			qvalues.append(currqvalue)
 		else:
-			setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW)
+			setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW, globalVars)
 
 			## start a new region
 			mergedPeak.append(peakResult[i])
@@ -115,7 +115,7 @@ def mergePeaks(peakResult):
 			resultIdx = resultIdx + 1
 
 		if i == (len(peakResult) - 1):
-			setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW)
+			setResultValues(mergedPeak[resultIdx], pvalues, qvalues, ctrlBW, normCtrlBW, expBW, normExpBW, globalVars)
 
 		pastChromo = currChromo
 		pastEnd = currEnd
@@ -123,24 +123,26 @@ def mergePeaks(peakResult):
 
 		i = i + 1
 
-	for i in range(vari.CTRLBW_NUM):
+	for i in range(globalVars["ctrlbwNum"]):
 		ctrlBW[i].close()
 
-		if vari.I_LOG2FC:
+		if globalVars["i_log2fc"]:
 			normCtrlBW[i].close()
 
-	for i in range(vari.EXPBW_NUM):
+	for i in range(globalVars["expbwNum"]):
 		expBW[i].close()
 
-		if vari.I_LOG2FC:
+		if globalVars["i_log2fc"]:
 			normExpBW[i].close()
 
 	return mergedPeak
+
 
 def takeMinusLog(values):
 	minValue = np.min(values)
 
 	return np.nan if minValue == 0 else np.round((-1) * np.log10(minValue), 2)
+
 
 def getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd):
 	ctrlRC = [np.nanmean(np.array(bw.values(regionChromo, regionStart, regionEnd))) for bw in ctrlBW]
@@ -148,13 +150,14 @@ def getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd):
 
 	return ctrlRC, expRC
 
-def calculateCohenD(ctrlRC, expRC):
-	dof = vari.CTRLBW_NUM + vari.EXPBW_NUM - 2
+
+def calculateCohenD(ctrlRC, expRC, globalVars):
+	dof = globalVars["ctrlbwNum"] + globalVars["expbwNum"] - 2
 
 	ctrlRC_mean = np.mean(ctrlRC)
 	expRC_mean = np.mean(expRC)
 
-	s = np.sqrt( (  (vari.CTRLBW_NUM-1)*np.power(np.std(ctrlRC, ddof=1), 2) + (vari.EXPBW_NUM-1)*np.power(np.std(expRC, ddof=1), 2)  ) / dof )
+	s = np.sqrt( (  (globalVars["ctrlbwNum"]-1)*np.power(np.std(ctrlRC, ddof=1), 2) + (globalVars["expbwNum"]-1)*np.power(np.std(expRC, ddof=1), 2)  ) / dof )
 
 	if s == 0:
 		return np.nan
@@ -163,6 +166,7 @@ def calculateCohenD(ctrlRC, expRC):
 
 	return cohenD
 
+
 def calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean):
 	constant = np.max([normExpRCPosMean - expRCPosMean, normCtrlRCPosMean - ctrlRCPosMean])
 	fc = (expRCPosMean + constant) / (ctrlRCPosMean + constant)
@@ -170,7 +174,8 @@ def calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normEx
 
 	return peusdoLog2FC
 
-def filterSmallPeaks(peakResult):
+
+def filterSmallPeaks(peakResult, globalVars):
 	maxNegLogPValue = 1
 	maxNegLogQValue = 1
 
@@ -179,7 +184,7 @@ def filterSmallPeaks(peakResult):
 		start = int(peakResult[i][1])
 		end = int(peakResult[i][2])
 
-		if (end - start) >= vari.PEAKLEN:
+		if (end - start) >= globalVars["peakLen"]:
 			finalResult.append(peakResult[i])
 
 			neglogPvalue = float(peakResult[i][4])
@@ -199,26 +204,26 @@ def filterSmallPeaks(peakResult):
 def run(args):
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS ...\n")
-	vari.setGlobalVariables(args)
+	globalVars = vari.setGlobalVariables(args)
 
-	##### CALCULATE vari.FILTER_CUTOFF
+	##### CALCULATE globalVars["FILTER_CUTOFF"]
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
 	regionTotal = 0
 	taskVari = []
-	for region in vari.REGION:
+	for region in globalVars["region"]:
 		regionSize = int(region[2]) - int(region[1])
 		regionTotal = regionTotal + regionSize
-		taskVari.append(region)
+		taskVari.append((region, globalVars))
 
 		if regionTotal > 3* np.power(10, 8):
 			break
 
-	if len(taskVari) < vari.NUMPROCESS:
+	if len(taskVari) < globalVars["numprocess"]:
 		pool = multiprocessing.Pool(len(taskVari))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
+		pool = multiprocessing.Pool(globalVars["numprocess"])
 
-	resultFilter = pool.map_async(calculateRC.getVariance, taskVari).get()
+	resultFilter = pool.starmap_async(calculateRC.getVariance, taskVari).get()
 	pool.close()
 	pool.join()
 
@@ -227,34 +232,34 @@ def run(args):
 		if resultFilter[i] is not None:
 			var.extend(resultFilter[i])
 
-	vari.FILTER_CUTOFFS[0] = -1
-	for i in range(1, len(vari.FILTER_CUTOFFS_THETAS)):
-		vari.FILTER_CUTOFFS[i] = np.percentile(var, vari.FILTER_CUTOFFS_THETAS[i])
-	vari.FILTER_CUTOFFS = np.array(vari.FILTER_CUTOFFS)
+	globalVars["filterCutoffs"][0] = -1
+	for i in range(1, len(globalVars["filterCutoffsThetas"])):
+		globalVars["filterCutoffs"][i] = np.percentile(var, globalVars["filterCutoffsThetas"][i])
+	globalVars["filterCutoffs"] = np.array(globalVars["filterCutoffs"])
 
-	print("Variance Cutoff: %s" % np.round(vari.FILTER_CUTOFFS))
+	print("Variance Cutoff: %s" % np.round(globalVars["filterCutoffs"]))
 	del pool, var, resultFilter
 	gc.collect()
 
 
-	##### DEFINING REGIONS
+	##### DEFINING regionS
 	print("======  DEFINING REGIONS ...")
-	# 1)  CALCULATE REGION_CUFOFF
+	# 1)  CALCULATE region_CUFOFF
 	regionTotal = 0
 	taskDiff = []
-	for region in vari.REGION:
+	for region in globalVars["region"]:
 		regionSize = int(region[2]) - int(region[1])
 		regionTotal = regionTotal + regionSize
-		taskDiff.append(region)
+		taskDiff.append((region, globalVars))
 
 		if regionTotal > 3* np.power(10, 8):
 			break
 
-	if len(taskDiff) < vari.NUMPROCESS:
+	if len(taskDiff) < globalVars["numprocess"]:
 		pool = multiprocessing.Pool(len(taskDiff))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
-	resultDiff = pool.map_async(calculateRC.getRegionCutoff, taskDiff).get()
+		pool = multiprocessing.Pool(globalVars["numprocess"])
+	resultDiff = pool.starmap_async(calculateRC.getRegionCutoff, taskDiff).get()
 	pool.close()
 	pool.join()
 
@@ -263,42 +268,42 @@ def run(args):
 		if resultDiff[i] is not None:
 			diff.extend(resultDiff[i])
 
-	vari.NULL_STD = np.sqrt(np.nanvar(diff))
-	print("Null_std: %s" % vari.NULL_STD)
-	vari.REGION_CUTOFF = np.percentile(np.array(diff), 99)
-	print("Region cutoff: %s " % vari.REGION_CUTOFF)
+	globalVars["nullStd"] = np.sqrt(np.nanvar(diff))
+	print("Null_std: %s" % globalVars["nullStd"])
+	globalVars["regionCutoff"] = np.percentile(np.array(diff), 99)
+	print("Region cutoff: %s " % globalVars["regionCutoff"])
 	del pool, resultDiff, diff, taskDiff
 	gc.collect()
 
 
-	# 2)  DEINING REGIONS WITH 'vari.REGION_CUTOFF'
-	if len(vari.REGION) < vari.NUMPROCESS:
-		pool = multiprocessing.Pool(len(vari.REGION))
+	# 2)  DEINING REGIONS WITH 'globalVars["regionCutoff"]'
+	if len(globalVars["region"]) < globalVars["numprocess"]:
+		pool = multiprocessing.Pool(len(globalVars["region"]))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
-	resultRegion = pool.map_async(calculateRC.defineRegion, vari.REGION).get()
+		pool = multiprocessing.Pool(globalVars["numprocess"])
+	resultRegion = pool.starmap_async(calculateRC.defineRegion, (globalVars["region"], globalVars)).get()
 	pool.close()
 	pool.join()
 	gc.collect()
 
 
-	##### STATISTICAL TESTING FOR EACH REGION
-	print("======  PERFORMING STAITSTICAL TESTING FOR EACH REGION ...")
+	##### STATISTICAL TESTING FOR EACH region
+	print("======  PERFORMING STAITSTICAL TESTING FOR EACH region ...")
 	taskWindow = []
 	for i in range(len(resultRegion)):
 		if resultRegion[i] is not None:
-			taskWindow.append(resultRegion[i])
+			taskWindow.append((resultRegion[i], globalVars))
 	del resultRegion
 
-	if len(taskWindow) < vari.NUMPROCESS:
+	if len(taskWindow) < globalVars["numprocess"]:
 		pool = multiprocessing.Pool(len(taskWindow))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
-	resultTTest = pool.map_async(calculateRC.doWindowApproach, taskWindow).get()
+		pool = multiprocessing.Pool(globalVars["numprocess"])
+	resultTTest = pool.starmap_async(calculateRC.doWindowApproach, taskWindow).get()
 	pool.close()
 	pool.join()
 
-	metaFilename = vari.OUTPUT_DIR + "/metaData_pvalues"
+	metaFilename = globalVars["outputDir"] + "/metaData_pvalues"
 	metaStream = open(metaFilename, "w")
 	for i in range(len(resultTTest)):
 		if resultTTest[i] is not None:
@@ -307,24 +312,24 @@ def run(args):
 	del taskWindow, pool, resultTTest
 
 	##### CHOOSING THETA
-	taskTheta = [metaFilename]
+	taskTheta = (metaFilename, globalVars)
 	pool = multiprocessing.Pool(1)
-	resultTheta = pool.map_async(calculateRC.selectTheta, taskTheta).get()
+	resultTheta = pool.starmap_async(calculateRC.selectTheta, taskTheta).get()
 	pool.close()
 	pool.join()
 
-	vari.THETA = resultTheta[0][0]
+	globalVars["THETA"] = resultTheta[0][0]
 	selectRegionNum = resultTheta[0][1]
 	totalRegionNum = resultTheta[0][2]
 
 
 	##### FDR control
 	print("======  CALLING PEAKS ...")
-	vari.ADJ_FDR = ( vari.FDR * selectRegionNum ) / float(totalRegionNum)
-	print("Selected Variance Theta: %s" % vari.THETA)
+	globalVars["adjFDR"] = ( globalVars["fdr"] * selectRegionNum ) / float(totalRegionNum)
+	print("Selected Variance Theta: %s" % globalVars["theta"])
 	print("Total number of regions: %s" % totalRegionNum)
 	print("The number of selected regions: %s" % selectRegionNum)
-	print("Newly adjusted cutoff: %s" % vari.ADJ_FDR)
+	print("Newly adjusted cutoff: %s" % globalVars["adjFDR"])
 
 
 	##### Applying the selected theta
@@ -348,10 +353,10 @@ def run(args):
 			if np.isnan(regionPvalue):
 				continue
 
-			if regionTheta >= vari.THETA:
+			if regionTheta >= globalVars["theta"]:
 				PValueSimes.append(regionPvalue)
 
-	PValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(PValueSimes, alpha=vari.FDR, method='fdr_bh')[0]
+	PValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(PValueSimes, alpha=globalVars["fdr"], method='fdr_bh')[0]
 
 
 	##### Selecting windows
@@ -375,7 +380,7 @@ def run(args):
 			regionTheta = int(line[3])
 			regionPvalue = float(line[4])
 
-			if regionTheta < vari.THETA:
+			if regionTheta < globalVars["theta"]:
 				continue
 			if np.isnan(regionPvalue):
 				continue
@@ -386,7 +391,7 @@ def run(args):
 		groupPvalueIdx = groupPvalueIdx + selectedIdx
 
 		if len(selectRegionIdx) != 0:
-			taskCallPeak.append([subfileName, selectRegionIdx])
+			taskCallPeak.append((subfileName, selectRegionIdx, globalVars))
 		else:
 			os.remove(subfileName)
 
@@ -395,14 +400,14 @@ def run(args):
 
 	if len(taskCallPeak) == 0:
 		print("======= COMPLETED! ===========")
-		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
+		print("There is no peak detected in %s." % globalVars["outputDir"])
 		return
 
-	if len(taskCallPeak) < vari.NUMPROCESS:
+	if len(taskCallPeak) < globalVars["numprocess"]:
 		pool = multiprocessing.Pool(len(taskCallPeak))
 	else:
-		pool = multiprocessing.Pool(vari.NUMPROCESS)
-	resultCallPeak = pool.map_async(calculateRC.doFDRprocedure, taskCallPeak).get()
+		pool = multiprocessing.Pool(globalVars["numprocess"])
+	resultCallPeak = pool.starmap_async(calculateRC.doFDRprocedure, taskCallPeak).get()
 	pool.close()
 	pool.join()
 
@@ -423,19 +428,19 @@ def run(args):
 
 	if len(peakResult) == 0:
 		print("======= COMPLETED! ===========")
-		print("There is no peak detected in %s." % vari.OUTPUT_DIR)
+		print("There is no peak detected in %s." % globalVars["outputDir"])
 		return
 
 
 	######## WRITE A RESULT FILE
 	colNames = ["chr", "start", "end", "name", "score", "strand", "effectSize", "inputCount", "outputCount", "-log(pvalue)", "-log(qvalue)", "cohen's_d", "peusdoLog2FC"]
-	mergedPeaks = mergePeaks(peakResult)
-	finalResult, maxNegLogPValue, maxNegLogQValue = filterSmallPeaks(mergedPeaks)
+	mergedPeaks = mergePeaks(peakResult, globalVars)
+	finalResult, maxNegLogPValue, maxNegLogQValue = filterSmallPeaks(mergedPeaks, globalVars)
 
 	numActi = 0
 	numRepress = 0
 
-	outputFilename = vari.OUTPUT_DIR + "/CRADLE_peaks"
+	outputFilename = globalVars["outputDir"] + "/CRADLE_peaks"
 	outputStream = open(outputFilename, "w")
 	outputStream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
@@ -476,7 +481,7 @@ def run(args):
 	outputStream.close()
 
 	print("======= COMPLETED! ===========")
-	print("The peak result was saved in %s" % vari.OUTPUT_DIR)
+	print("The peak result was saved in %s" % globalVars["outputDir"])
 	print("Total number of peaks: %s" % len(finalResult))
 	print("Activated peaks: %s" % numActi)
 	print("Repressed peaks: %s" % numRepress)
