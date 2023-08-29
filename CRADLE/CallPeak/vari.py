@@ -83,7 +83,9 @@ def setNormalizedInputFiles(normCtrlbw, normExpbw):
 	global NORM_EXPBW_NAMES
 
 	if  len(normCtrlbw) != CTRLBW_NUM or len(normExpbw) != EXPBW_NUM:
-		print("Error: The number of normalized observed bigwigs does not match with the number of input bigwigs. The number of bigwigs in -ctrlbw and -expbw should match with the nubmer of biwigs in -normCtrlbw and -normExpbw, respectively.")
+		print("""Error: The number of normalized observed bigwigs does not match with the
+	number of input bigwigs. The number of bigwigs in -ctrlbw and -expbw should match
+	with the nubmer of biwigs in -normCtrlbw and -normExpbw, respectively.""")
 		sys.exit()
 
 	NORM_CTRLBW_NAMES = normCtrlbw
@@ -94,7 +96,7 @@ def setOutputDirectory(outputDir):
 	global OUTPUT_DIR
 
 	if outputDir is None:
-		outputDir = os.getcwd() + "/" + "CRADLE_peak_result"
+		outputDir = os.getcwd() + "/CRADLE_peak_result"
 
 	if outputDir[-1] == "/":
 		outputDir = outputDir[:-1]
@@ -112,10 +114,10 @@ def setAnlaysisRegion(region, bl):
 	REGION = []
 	inputFilename = region
 	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
+	inputFiles = inputStream.readlines()
 
-	for i in range(len(inputFile)):
-		temp = inputFile[i].split()
+	for inputFile in inputFiles:
+		temp = inputFile.split()
 		temp[1] = int(temp[1])
 		temp[2] = int(temp[2])
 		REGION.append(temp)
@@ -161,9 +163,9 @@ def setAnlaysisRegion(region, bl):
 	if bl is not None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
 		blRegionTemp = []
 		inputStream = open(bl)
-		inputFile = inputStream.readlines()
-		for i in range(len(inputFile)):
-			temp = inputFile[i].split()
+		inputFiles = inputStream.readlines()
+		for inputFile in inputFiles:
+			temp = inputFile.split()
 			temp[1] = int(temp[1])
 			temp[2] = int(temp[2])
 			blRegionTemp.append(temp)
@@ -251,9 +253,9 @@ def setAnlaysisRegion(region, bl):
 			overlappedBL = overlappedBL[overlappedBL[:,1].astype(int).argsort()]
 
 			currStart = regionStart
-			for pos in range(len(overlappedBL)):
-				blStart = int(overlappedBL[pos][1])
-				blEnd = int(overlappedBL[pos][2])
+			for pos in overlappedBL:
+				blStart = int(pos[1])
+				blEnd = int(pos[2])
 
 				if blStart <= regionStart:
 					currStart = blEnd
@@ -273,22 +275,22 @@ def setAnlaysisRegion(region, bl):
 		REGION = regionWoBL
 
 	# check if all chromosomes in the REGION in bigwig files
-	bw = pyBigWig.open(CTRLBW_NAMES[0])
+	bigWig = pyBigWig.open(CTRLBW_NAMES[0])
 	regionFinal = []
-	for regionIdx in range(len(REGION)):
-		chromo = REGION[regionIdx][0]
-		start = int(REGION[regionIdx][1])
-		end = int(REGION[regionIdx][2])
+	for regionTuple in REGION:
+		chromo = regionTuple[0]
+		start = int(regionTuple[1])
+		end = int(regionTuple[2])
 
-		chromoLen = bw.chroms(chromo)
+		chromoLen = bigWig.chroms(chromo)
 		if chromoLen is None:
 			continue
 		if end > chromoLen:
-			REGION[regionIdx][2] = chromoLen
+			regionTuple[2] = chromoLen
 			if chromoLen <= start:
 				continue
 		regionFinal.append([chromo, start, end])
-	bw.close()
+	bigWig.close()
 
 	REGION = regionFinal
 
@@ -328,7 +330,7 @@ def setBinSize(binSize1, binSize2):
 	elif (binSize1 is None)  and (binSize2 is not None):
 		BINSIZE1 = 300
 		if int(binSize2) > BINSIZE1:
-			print("Error: wbin cannot be larger than rbin (%sbp)" % BINSIZE1)
+			print(f"Error: wbin cannot be larger than rbin ({BINSIZE1}bp)")
 			sys.exit()
 		else:
 			BINSIZE2 = int(binSize2)

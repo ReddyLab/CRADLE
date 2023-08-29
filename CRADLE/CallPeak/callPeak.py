@@ -24,8 +24,8 @@ def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, n
 	diffPos = int(expRCPosMean - ctrlRCPosMean)
 	mergedResult[6] = diffPos
 
-	cohens_D = calculateCohenD(ctrlRC, expRC, globalVars)
-	if cohens_D == np.nan:
+	cohensD = calculateCohenD(ctrlRC, expRC, globalVars)
+	if cohensD == np.nan:
 		print(f"""
 		Warning: Pooled Std Dev of Cohen's D is 0.
 		  This could mean that all your read counts are the same or that you
@@ -34,7 +34,7 @@ def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, n
 		  Location {regionChromo}:{regionStart}-{regionEnd}
 		""")
 
-	mergedResult.extend([ctrlRCPosMean, expRCPosMean, cohens_D])
+	mergedResult.extend([ctrlRCPosMean, expRCPosMean, cohensD])
 
 	if globalVars["i_log2fc"]:
 		normCtrlRC, normExpRC = getRCFromBWs(normCtrlBW, normExpBW, regionChromo, regionStart, regionEnd)
@@ -154,23 +154,27 @@ def getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd):
 def calculateCohenD(ctrlRC, expRC, globalVars):
 	dof = globalVars["ctrlbwNum"] + globalVars["expbwNum"] - 2
 
-	ctrlRC_mean = np.mean(ctrlRC)
-	expRC_mean = np.mean(expRC)
+	ctrlRCMean = np.mean(ctrlRC)
+	expRCMean = np.mean(expRC)
 
-	s = np.sqrt( (  (globalVars["ctrlbwNum"]-1)*np.power(np.std(ctrlRC, ddof=1), 2) + (globalVars["expbwNum"]-1)*np.power(np.std(expRC, ddof=1), 2)  ) / dof )
+	stdDev = np.sqrt(
+			((globalVars["ctrlbwNum"]-1) * np.power(np.std(ctrlRC, ddof=1), 2) +
+			    (globalVars["expbwNum"]-1) * np.power(np.std(expRC, ddof=1), 2)) /
+			dof
+		)
 
-	if s == 0:
+	if stdDev == 0:
 		return np.nan
 
-	cohenD = (expRC_mean - ctrlRC_mean) / s
+	cohenD = (expRCMean - ctrlRCMean) / stdDev
 
 	return cohenD
 
 
 def calculatePeusdoLog2FC(ctrlRCPosMean, expRCPosMean, normCtrlRCPosMean, normExpRCPosMean):
 	constant = np.max([normExpRCPosMean - expRCPosMean, normCtrlRCPosMean - ctrlRCPosMean])
-	fc = (expRCPosMean + constant) / (ctrlRCPosMean + constant)
-	peusdoLog2FC = np.log2(fc)
+	foldChange = (expRCPosMean + constant) / (ctrlRCPosMean + constant)
+	peusdoLog2FC = np.log2(foldChange)
 
 	return peusdoLog2FC
 
@@ -180,15 +184,15 @@ def filterSmallPeaks(peakResult, globalVars):
 	maxNegLogQValue = 1
 
 	finalResult = []
-	for i in range(len(peakResult)):
-		start = int(peakResult[i][1])
-		end = int(peakResult[i][2])
+	for result in peakResult:
+		start = int(result[1])
+		end = int(result[2])
 
 		if (end - start) >= globalVars["peakLen"]:
-			finalResult.append(peakResult[i])
+			finalResult.append(result)
 
-			neglogPvalue = float(peakResult[i][4])
-			neglogQvalue = float(peakResult[i][5])
+			neglogPvalue = float(result[4])
+			neglogQvalue = float(result[5])
 
 			if not np.isnan(neglogPvalue):
 				if neglogPvalue > maxNegLogPValue:
@@ -228,16 +232,16 @@ def run(args):
 	pool.join()
 
 	var = []
-	for i in range(len(resultFilter)):
-		if resultFilter[i] is not None:
-			var.extend(resultFilter[i])
+	for rFilter in resultFilter:
+		if rFilter is not None:
+			var.extend(rFilter)
 
 	globalVars["filterCutoffs"][0] = -1
 	for i in range(1, len(globalVars["filterCutoffsThetas"])):
 		globalVars["filterCutoffs"][i] = np.percentile(var, globalVars["filterCutoffsThetas"][i])
 	globalVars["filterCutoffs"] = np.array(globalVars["filterCutoffs"])
 
-	print("Variance Cutoff: %s" % np.round(globalVars["filterCutoffs"]))
+	print(f"Variance Cutoff: {np.round(globalVars['filterCutoffs'])}")
 	del pool, var, resultFilter
 	gc.collect()
 
@@ -264,14 +268,14 @@ def run(args):
 	pool.join()
 
 	diff = []
-	for i in range(len(resultDiff)):
-		if resultDiff[i] is not None:
-			diff.extend(resultDiff[i])
+	for rDiff in resultDiff:
+		if rDiff is not None:
+			diff.extend(rDiff)
 
 	globalVars["nullStd"] = np.sqrt(np.nanvar(diff))
-	print("Null_std: %s" % globalVars["nullStd"])
+	print(f"Null_std: {globalVars['nullStd']}")
 	globalVars["regionCutoff"] = np.percentile(np.array(diff), 99)
-	print("Region cutoff: %s " % globalVars["regionCutoff"])
+	print(f"Region cutoff: {globalVars['regionCutoff']}")
 	del pool, resultDiff, diff, taskDiff
 	gc.collect()
 
@@ -290,9 +294,9 @@ def run(args):
 	##### STATISTICAL TESTING FOR EACH region
 	print("======  PERFORMING STAITSTICAL TESTING FOR EACH region ...")
 	taskWindow = []
-	for i in range(len(resultRegion)):
-		if resultRegion[i] is not None:
-			taskWindow.append((resultRegion[i], globalVars))
+	for rRegion in resultRegion:
+		if rRegion is not None:
+			taskWindow.append((rRegion, globalVars))
 	del resultRegion
 
 	if len(taskWindow) < globalVars["numprocess"]:
@@ -305,9 +309,9 @@ def run(args):
 
 	metaFilename = globalVars["outputDir"] + "/metaData_pvalues"
 	metaStream = open(metaFilename, "w")
-	for i in range(len(resultTTest)):
-		if resultTTest[i] is not None:
-			metaStream.write(resultTTest[i] + "\n")
+	for rTTest in resultTTest:
+		if rTTest is not None:
+			metaStream.write(rTTest + "\n")
 	metaStream.close()
 	del taskWindow, pool, resultTTest
 
@@ -326,27 +330,27 @@ def run(args):
 	##### FDR control
 	print("======  CALLING PEAKS ...")
 	globalVars["adjFDR"] = ( globalVars["fdr"] * selectRegionNum ) / float(totalRegionNum)
-	print("Selected Variance Theta: %s" % globalVars["theta"])
-	print("Total number of regions: %s" % totalRegionNum)
-	print("The number of selected regions: %s" % selectRegionNum)
-	print("Newly adjusted cutoff: %s" % globalVars["adjFDR"])
+	print(f"Selected Variance Theta: {globalVars['theta']}")
+	print(f"Total number of regions: {totalRegionNum}")
+	print(f"The number of selected regions: {selectRegionNum}")
+	print(f"Newly adjusted cutoff: {globalVars['adjFDR']}")
 
 
 	##### Applying the selected theta
 	inputFilename = metaFilename
 	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
+	inputFiles = inputStream.readlines()
 
-	PValueSimes = []
+	pValueSimes = []
 
 	### Apply the selected thata to the data
-	for subFileIdx in range(len(inputFile)):
-		subfileName = inputFile[subFileIdx].split()[0]
+	for inputFile in inputFiles:
+		subfileName = inputFile.split()[0]
 		subfileStream = open(subfileName)
 		subfileFile = subfileStream.readlines()
 
-		for regionIdx in range(len(subfileFile)):
-			line = subfileFile[regionIdx].split()
+		for region in subfileFile:
+			line = region.split()
 			regionTheta = int(line[3])
 			regionPvalue = float(line[4])
 
@@ -354,9 +358,9 @@ def run(args):
 				continue
 
 			if regionTheta >= globalVars["theta"]:
-				PValueSimes.append(regionPvalue)
+				pValueSimes.append(regionPvalue)
 
-	PValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(PValueSimes, alpha=globalVars["fdr"], method='fdr_bh')[0]
+	pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=globalVars["fdr"], method='fdr_bh')[0]
 
 
 	##### Selecting windows
@@ -364,19 +368,19 @@ def run(args):
 
 	inputFilename = metaFilename
 	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
+	inputFiles = inputStream.readlines()
 
 	groupPvalueIdx = 0
-	for subFileIdx in range(len(inputFile)):
-		subfileName = inputFile[subFileIdx].split()[0]
+	for inputFile in inputFiles:
+		subfileName = inputFile.split()[0]
 		subfileStream = open(subfileName)
 		subfileFile = subfileStream.readlines()
 
 		selectRegionIdx = []
 		selectedIdx = 0
 
-		for regionIdx in range(len(subfileFile)):
-			line = subfileFile[regionIdx].split()
+		for region in subfileFile:
+			line = region.split()
 			regionTheta = int(line[3])
 			regionPvalue = float(line[4])
 
@@ -384,11 +388,11 @@ def run(args):
 				continue
 			if np.isnan(regionPvalue):
 				continue
-			if PValueGroupBh[groupPvalueIdx + selectedIdx]:
+			if pValueGroupBh[groupPvalueIdx + selectedIdx]:
 				selectRegionIdx.append(regionIdx)
-			selectedIdx = selectedIdx + 1
+			selectedIdx += 1
 
-		groupPvalueIdx = groupPvalueIdx + selectedIdx
+		groupPvalueIdx += selectedIdx
 
 		if len(selectRegionIdx) != 0:
 			taskCallPeak.append((subfileName, selectRegionIdx, globalVars))
@@ -415,20 +419,18 @@ def run(args):
 	gc.collect()
 
 	peakResult = []
-	for i in range(len(resultCallPeak)):
-		inputFilename = resultCallPeak[i]
-		inputStream = open(inputFilename)
-		inputFile = inputStream.readlines()
+	for inputFilename in resultCallPeak:
+		with open(inputFilename) as inputStream:
+			inputFile = inputStream.readlines()
 
-		for j in range(len(inputFile)):
-			temp = inputFile[j].split()
-			peakResult.append(temp)
-		inputStream.close()
+			for line in inputFile:
+				peakResult.append(line.split())
+
 		os.remove(inputFilename)
 
 	if len(peakResult) == 0:
 		print("======= COMPLETED! ===========")
-		print("There is no peak detected in %s." % globalVars["outputDir"])
+		print(f"There is no peak detected in {globalVars['outputDir']}.")
 		return
 
 
@@ -444,44 +446,44 @@ def run(args):
 	outputStream = open(outputFilename, "w")
 	outputStream.write('\t'.join([str(x) for x in colNames]) + "\n")
 
-	for i in range(len(finalResult)):
-		if int(finalResult[i][3]) == 1:
+	for result in finalResult:
+		if int(result[3]) == 1:
 			numActi = numActi + 1
 		else:
 			numRepress = numRepress + 1
 
 		## order in a common file ormat
-		chromo = finalResult[i][0]
-		start = finalResult[i][1]
-		end = finalResult[i][2]
+		chromo = result[0]
+		start = result[1]
+		end = result[2]
 		name = chromo + ":" + str(start) + "-" + str(end)
 		score = "."
 		strand = "."
-		effectSize = finalResult[i][6]
-		inputCount = int(finalResult[i][7])
-		outputCount = int(finalResult[i][8])
-		neglogPvalue = float(finalResult[i][4])
-		cohens_D = float(finalResult[i][9])
-		peusdoLog2FC = float(finalResult[i][10])
+		effectSize = result[6]
+		inputCount = int(result[7])
+		outputCount = int(result[8])
+		neglogPvalue = float(result[4])
+		cohensD = float(result[9])
+		peusdoLog2FC = float(result[10])
 		if np.isnan(neglogPvalue):
 			if maxNegLogPValue == 1:
 				neglogPvalue = "-log(0)"
 			else:
 				neglogPvalue = maxNegLogPValue
-		neglogQvalue = float(finalResult[i][5])
+		neglogQvalue = float(result[5])
 		if np.isnan(neglogQvalue):
 			if maxNegLogQValue == 1:
 				neglogQvalue = "-log(0)"
 			else:
 				neglogQvalue = maxNegLogQValue
 
-		peakToAdd = [chromo, start, end, name, score, strand, effectSize, inputCount, outputCount, neglogPvalue, neglogQvalue, cohens_D, peusdoLog2FC]
+		peakToAdd = [chromo, start, end, name, score, strand, effectSize, inputCount, outputCount, neglogPvalue, neglogQvalue, cohensD, peusdoLog2FC]
 
 		outputStream.write('\t'.join([str(x) for x in peakToAdd]) + "\n")
 	outputStream.close()
 
 	print("======= COMPLETED! ===========")
-	print("The peak result was saved in %s" % globalVars["outputDir"])
-	print("Total number of peaks: %s" % len(finalResult))
-	print("Activated peaks: %s" % numActi)
-	print("Repressed peaks: %s" % numRepress)
+	print(f"The peak result was saved in {globalVars['outputDir']}")
+	print(f"Total number of peaks: {len(finalResult)}")
+	print(f"Activated peaks: {numActi}")
+	print(f"Repressed peaks: {numRepress}")
