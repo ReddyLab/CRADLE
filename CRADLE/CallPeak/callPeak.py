@@ -219,14 +219,10 @@ def run(args):
 		regionTotal = regionTotal + regionSize
 		taskVari.append((region, globalVars))
 
-		if regionTotal > 3* np.power(10, 8):
+		if regionTotal > 300_000_000:
 			break
 
-	if len(taskVari) < globalVars["numprocess"]:
-		pool = multiprocessing.Pool(len(taskVari))
-	else:
-		pool = multiprocessing.Pool(globalVars["numprocess"])
-
+	pool = multiprocessing.Pool(min(len(taskVari), globalVars["numprocess"]))
 	resultFilter = pool.starmap_async(calculateRC.getVariance, taskVari).get()
 	pool.close()
 	pool.join()
@@ -246,7 +242,7 @@ def run(args):
 	gc.collect()
 
 
-	##### DEFINING regionS
+	##### DEFINING REGIONS
 	print("======  DEFINING REGIONS ...")
 	# 1)  CALCULATE region_CUFOFF
 	regionTotal = 0
@@ -259,10 +255,7 @@ def run(args):
 		if regionTotal > 3* np.power(10, 8):
 			break
 
-	if len(taskDiff) < globalVars["numprocess"]:
-		pool = multiprocessing.Pool(len(taskDiff))
-	else:
-		pool = multiprocessing.Pool(globalVars["numprocess"])
+	pool = multiprocessing.Pool(min(len(taskDiff), globalVars["numprocess"]))
 	resultDiff = pool.starmap_async(calculateRC.getRegionCutoff, taskDiff).get()
 	pool.close()
 	pool.join()
@@ -281,10 +274,7 @@ def run(args):
 
 
 	# 2)  DEINING REGIONS WITH 'globalVars["regionCutoff"]'
-	if len(globalVars["region"]) < globalVars["numprocess"]:
-		pool = multiprocessing.Pool(len(globalVars["region"]))
-	else:
-		pool = multiprocessing.Pool(globalVars["numprocess"])
+	pool = multiprocessing.Pool(min(len(globalVars["region"]), globalVars["numprocess"]))
 	tasks = [(region, globalVars) for region in globalVars["region"]]
 	resultRegion = pool.starmap_async(calculateRC.defineRegion, tasks).get()
 	pool.close()
@@ -300,10 +290,7 @@ def run(args):
 			taskWindow.append((rRegion, globalVars))
 	del resultRegion
 
-	if len(taskWindow) < globalVars["numprocess"]:
-		pool = multiprocessing.Pool(len(taskWindow))
-	else:
-		pool = multiprocessing.Pool(globalVars["numprocess"])
+	pool = multiprocessing.Pool(min(len(taskWindow), globalVars["numprocess"]))
 	resultTTest = pool.starmap_async(calculateRC.doWindowApproach, taskWindow).get()
 	pool.close()
 	pool.join()
@@ -317,15 +304,11 @@ def run(args):
 	del taskWindow, pool, resultTTest
 
 	##### CHOOSING THETA
-	taskTheta = [(metaFilename, globalVars)]
-	pool = multiprocessing.Pool(1)
-	resultTheta = pool.starmap_async(calculateRC.selectTheta, taskTheta).get()
-	pool.close()
-	pool.join()
+	resultTheta = calculateRC.selectTheta(metaFilename, globalVars)
 
-	globalVars["theta"] = resultTheta[0][0]
-	selectRegionNum = resultTheta[0][1]
-	totalRegionNum = resultTheta[0][2]
+	globalVars["theta"] = resultTheta[0]
+	selectRegionNum = resultTheta[1]
+	totalRegionNum = resultTheta[2]
 
 
 	##### FDR control
@@ -408,10 +391,7 @@ def run(args):
 		print("There is no peak detected in %s." % globalVars["outputDir"])
 		return
 
-	if len(taskCallPeak) < globalVars["numprocess"]:
-		pool = multiprocessing.Pool(len(taskCallPeak))
-	else:
-		pool = multiprocessing.Pool(globalVars["numprocess"])
+	pool = multiprocessing.Pool(min(len(taskCallPeak), globalVars["numprocess"]))
 	resultCallPeak = pool.starmap_async(calculateRC.doFDRprocedure, taskCallPeak).get()
 	pool.close()
 	pool.join()
