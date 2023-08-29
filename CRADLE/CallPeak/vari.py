@@ -73,14 +73,16 @@ def setInputFiles(ctrlbwFiles, expbwFiles):
 
 def setNormalizedInputFiles(normCtrlbw, normExpbw):
 	global I_LOG2FC
+	global NORM_CTRLBW_NAMES
+	global NORM_EXPBW_NAMES
 
 	if normCtrlbw is None or normExpbw is None:
 		I_LOG2FC = False
+		NORM_CTRLBW_NAMES = None
+		NORM_EXPBW_NAMES = None
 		return
 
 	I_LOG2FC = True
-	global NORM_CTRLBW_NAMES
-	global NORM_EXPBW_NAMES
 
 	if  len(normCtrlbw) != CTRLBW_NUM or len(normExpbw) != EXPBW_NUM:
 		print("""Error: The number of normalized observed bigwigs does not match with the

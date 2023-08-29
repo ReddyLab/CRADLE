@@ -58,7 +58,7 @@ def mergePeaks(peakResult, globalVars):
 	for i in range(globalVars["expbwNum"]):
 		expBW[i] = pyBigWig.open(globalVars["expbwNames"][i])
 
-	if globalVars["I_LOG2FC"]:
+	if globalVars["i_log2fc"]:
 		normCtrlBW = [pyBigWig.open(bwName) for bwName in globalVars["normCtrlbwNames"]]
 		normExpBW = [pyBigWig.open(bwName) for bwName in globalVars["normExpbwNames"]]
 	else:
@@ -285,14 +285,15 @@ def run(args):
 		pool = multiprocessing.Pool(len(globalVars["region"]))
 	else:
 		pool = multiprocessing.Pool(globalVars["numprocess"])
-	resultRegion = pool.starmap_async(calculateRC.defineRegion, (globalVars["region"], globalVars)).get()
+	tasks = [(region, globalVars) for region in globalVars["region"]]
+	resultRegion = pool.starmap_async(calculateRC.defineRegion, tasks).get()
 	pool.close()
 	pool.join()
 	gc.collect()
 
 
 	##### STATISTICAL TESTING FOR EACH region
-	print("======  PERFORMING STAITSTICAL TESTING FOR EACH region ...")
+	print("======  PERFORMING STATSTICAL TESTING FOR EACH region ...")
 	taskWindow = []
 	for rRegion in resultRegion:
 		if rRegion is not None:
@@ -316,13 +317,13 @@ def run(args):
 	del taskWindow, pool, resultTTest
 
 	##### CHOOSING THETA
-	taskTheta = (metaFilename, globalVars)
+	taskTheta = [(metaFilename, globalVars)]
 	pool = multiprocessing.Pool(1)
 	resultTheta = pool.starmap_async(calculateRC.selectTheta, taskTheta).get()
 	pool.close()
 	pool.join()
 
-	globalVars["THETA"] = resultTheta[0][0]
+	globalVars["theta"] = resultTheta[0][0]
 	selectRegionNum = resultTheta[0][1]
 	totalRegionNum = resultTheta[0][2]
 
@@ -379,7 +380,7 @@ def run(args):
 		selectRegionIdx = []
 		selectedIdx = 0
 
-		for region in subfileFile:
+		for regionIdx, region in enumerate(subfileFile):
 			line = region.split()
 			regionTheta = int(line[3])
 			regionPvalue = float(line[4])
