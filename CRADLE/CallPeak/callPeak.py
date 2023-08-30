@@ -24,7 +24,7 @@ def setResultValues(mergedResult, pvalues, qvalues, ctrlBW, normCtrlBW, expBW, n
 	diffPos = int(expRCPosMean - ctrlRCPosMean)
 	mergedResult[6] = diffPos
 
-	cohensD = calculateCohenD(ctrlRC, expRC, globalVars)
+	cohensD = calculateCohenD(ctrlRC, expRC, globalVars["ctrlbwNum"], globalVars["expbwNum"])
 	if cohensD == np.nan:
 		print(f"""
 		Warning: Pooled Std Dev of Cohen's D is 0.
@@ -151,15 +151,15 @@ def getRCFromBWs(ctrlBW, expBW, regionChromo, regionStart, regionEnd):
 	return ctrlRC, expRC
 
 
-def calculateCohenD(ctrlRC, expRC, globalVars):
-	dof = globalVars["ctrlbwNum"] + globalVars["expbwNum"] - 2
+def calculateCohenD(ctrlRC, expRC, ctrlbwNum, expbwNum):
+	dof = ctrlbwNum + expbwNum - 2
 
 	ctrlRCMean = np.mean(ctrlRC)
 	expRCMean = np.mean(expRC)
 
 	stdDev = np.sqrt(
-			((globalVars["ctrlbwNum"]-1) * np.power(np.std(ctrlRC, ddof=1), 2) +
-			    (globalVars["expbwNum"]-1) * np.power(np.std(expRC, ddof=1), 2)) /
+			((ctrlbwNum - 1) * np.power(np.std(ctrlRC, ddof=1), 2) +
+			    (expbwNum - 1) * np.power(np.std(expRC, ddof=1), 2)) /
 			dof
 		)
 
@@ -222,10 +222,8 @@ def run(args):
 		if regionTotal > 300_000_000:
 			break
 
-	pool = multiprocessing.Pool(min(len(taskVari), globalVars["numprocess"]))
-	resultFilter = pool.starmap_async(calculateRC.getVariance, taskVari).get()
-	pool.close()
-	pool.join()
+	with multiprocessing.Pool(min(len(taskVari), globalVars["numprocess"])) as pool:
+		resultFilter = pool.starmap(calculateRC.getVariance, taskVari)
 
 	var = []
 	for rFilter in resultFilter:
@@ -249,13 +247,11 @@ def run(args):
 		regionTotal = regionTotal + regionSize
 		taskDiff.append((region, globalVars))
 
-		if regionTotal > 3* np.power(10, 8):
+		if regionTotal > 300_000_000:
 			break
 
-	pool = multiprocessing.Pool(min(len(taskDiff), globalVars["numprocess"]))
-	resultDiff = pool.starmap_async(calculateRC.getRegionCutoff, taskDiff).get()
-	pool.close()
-	pool.join()
+	with multiprocessing.Pool(min(len(taskDiff), globalVars["numprocess"])) as pool:
+		resultDiff = pool.starmap(calculateRC.getRegionCutoff, taskDiff)
 
 	diff = []
 	for rDiff in resultDiff:
@@ -268,11 +264,9 @@ def run(args):
 	print(f"Region cutoff: {globalVars['regionCutoff']}")
 
 	# 2)  DEINING REGIONS WITH 'globalVars["regionCutoff"]'
-	pool = multiprocessing.Pool(min(len(globalVars["region"]), globalVars["numprocess"]))
 	tasks = [(region, globalVars) for region in globalVars["region"]]
-	resultRegion = pool.starmap_async(calculateRC.defineRegion, tasks).get()
-	pool.close()
-	pool.join()
+	with multiprocessing.Pool(min(len(globalVars["region"]), globalVars["numprocess"])) as pool:
+		resultRegion = pool.starmap(calculateRC.defineRegion, tasks)
 
 
 	##### STATISTICAL TESTING FOR EACH region
@@ -282,10 +276,8 @@ def run(args):
 		if rRegion is not None:
 			taskWindow.append((rRegion, globalVars))
 
-	pool = multiprocessing.Pool(min(len(taskWindow), globalVars["numprocess"]))
-	resultTTest = pool.starmap_async(calculateRC.doWindowApproach, taskWindow).get()
-	pool.close()
-	pool.join()
+	with multiprocessing.Pool(min(len(taskWindow), globalVars["numprocess"])) as pool:
+		resultTTest = pool.starmap(calculateRC.doWindowApproach, taskWindow)
 
 	metaFilename = globalVars["outputDir"] + "/metaData_pvalues"
 	metaStream = open(metaFilename, "w")
@@ -379,13 +371,11 @@ def run(args):
 
 	if len(taskCallPeak) == 0:
 		print("======= COMPLETED! ===========")
-		print("There is no peak detected in %s." % globalVars["outputDir"])
+		print(f"There is no peak detected in {globalVars['outputDir']}.")
 		return
 
-	pool = multiprocessing.Pool(min(len(taskCallPeak), globalVars["numprocess"]))
-	resultCallPeak = pool.starmap_async(calculateRC.doFDRprocedure, taskCallPeak).get()
-	pool.close()
-	pool.join()
+	with multiprocessing.Pool(min(len(taskCallPeak), globalVars["numprocess"])) as pool:
+		resultCallPeak = pool.starmap(calculateRC.doFDRprocedure, taskCallPeak)
 
 	peakResult = []
 	for inputFilename in resultCallPeak:
