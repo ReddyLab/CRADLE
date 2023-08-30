@@ -138,44 +138,6 @@ def mergePeaks(peakResult, globalVars):
 	return mergedPeak
 
 
-def selectTheta(resultTTestFiles, globalVars):
-	alpha = globalVars["fdr"]
-
-	totalRegionNumArray = []
-	selectRegionNumArray = []
-
-	for theta in globalVars["filterCutoffsThetas"]:
-		pValueSimes = []
-
-		for ttestFile in resultTTestFiles:
-			with open(ttestFile) as ttestResults:
-				for region in ttestResults:
-					regionLine = region.split()
-					regionTheta = int(regionLine[3])
-					regionPvalue = float(regionLine[4])
-
-					if np.isnan(regionPvalue):
-						continue
-
-					if regionTheta >= theta:
-						pValueSimes.append(regionPvalue)
-
-		totalRegionNum = len(pValueSimes)
-		pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=alpha, method='fdr_bh')
-		selectRegionNum = len(np.where(pValueGroupBh[0])[0])
-
-		totalRegionNumArray.append(totalRegionNum)
-		selectRegionNumArray.append(selectRegionNum)
-
-	selectRegionNumArray = np.array(selectRegionNumArray)
-	maxNum = np.max(selectRegionNumArray)
-	idx = np.where(selectRegionNumArray == maxNum)
-	idx = idx[0][0]
-
-	adjFDR = ( globalVars["fdr"] * selectRegionNumArray[idx] ) / totalRegionNumArray[idx]
-
-	return globalVars["filterCutoffsThetas"][idx], adjFDR, selectRegionNumArray[idx], totalRegionNumArray[idx]
-
 def takeMinusLog(values):
 	minValue = np.min(values)
 
@@ -294,7 +256,7 @@ def run(args):
 	resultTTestFiles = [file for file in resultTTestFiles if file is not None]
 
 	##### CHOOSING THETA
-	resultTheta = selectTheta(resultTTestFiles, globalVars)
+	resultTheta = calculateRC.selectTheta(resultTTestFiles, globalVars)
 
 	globalVars["theta"] = resultTheta[0]
 	globalVars["adjFDR"] = resultTheta[1]

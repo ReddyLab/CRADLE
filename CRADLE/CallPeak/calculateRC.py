@@ -330,9 +330,9 @@ def doWindowApproach(regions, globalVars):
 					subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
 					subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
 					subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
-					writtenRegionNum = writtenRegionNum + 1
+					writtenRegionNum += 1
 
-				binStartIdx = binStartIdx + globalVars["shiftSize2"]
+				binStartIdx += globalVars["shiftSize2"]
 				continue
 
 			readCounts = readCounts.tolist()
@@ -355,9 +355,9 @@ def doWindowApproach(regions, globalVars):
 					subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
 					subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
 					subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
-					writtenRegionNum = writtenRegionNum + 1
+					writtenRegionNum += 1
 
-				binStartIdx = binStartIdx + globalVars["shiftSize2"]
+				binStartIdx += globalVars["shiftSize2"]
 				continue
 
 			windowInfo = doStatTesting(readCounts, globalVars)
@@ -381,17 +381,17 @@ def doWindowApproach(regions, globalVars):
 				subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
 				subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
 				subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
-				writtenRegionNum = writtenRegionNum + 1
+				writtenRegionNum += 1
 
-			binStartIdx = binStartIdx + globalVars["shiftSize2"]
+			binStartIdx += globalVars["shiftSize2"]
 
 	subfile.close()
 
 	if writtenRegionNum == 0:
 		os.remove(subfile.name)
 		return None
-	else:
-		return subfile.name
+
+	return subfile.name
 
 
 def doStatTesting(rc, globalVars):
@@ -448,6 +448,45 @@ def doStatTesting(rc, globalVars):
 	windowInfo = [enrich, pvalue]
 
 	return windowInfo
+
+
+def selectTheta(resultTTestFiles, globalVars):
+	alpha = globalVars["fdr"]
+
+	totalRegionNumArray = []
+	selectRegionNumArray = []
+
+	for theta in globalVars["filterCutoffsThetas"]:
+		pValueSimes = []
+
+		for ttestFile in resultTTestFiles:
+			with open(ttestFile) as ttestResults:
+				for region in ttestResults:
+					regionLine = region.split()
+					regionTheta = int(regionLine[3])
+					regionPvalue = float(regionLine[4])
+
+					if np.isnan(regionPvalue):
+						continue
+
+					if regionTheta >= theta:
+						pValueSimes.append(regionPvalue)
+
+		totalRegionNum = len(pValueSimes)
+		pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=alpha, method='fdr_bh')
+		selectRegionNum = len(np.where(pValueGroupBh[0])[0])
+
+		totalRegionNumArray.append(totalRegionNum)
+		selectRegionNumArray.append(selectRegionNum)
+
+	selectRegionNumArray = np.array(selectRegionNumArray)
+	maxNum = np.max(selectRegionNumArray)
+	idx = np.where(selectRegionNumArray == maxNum)
+	idx = idx[0][0]
+
+	adjFDR = ( globalVars["fdr"] * selectRegionNumArray[idx] ) / totalRegionNumArray[idx]
+
+	return globalVars["filterCutoffsThetas"][idx], adjFDR, selectRegionNumArray[idx], totalRegionNumArray[idx]
 
 
 def doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
