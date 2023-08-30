@@ -260,8 +260,8 @@ def run(args):
 	regionTotal = 0
 	taskVari = []
 	for region in globalVars["region"]:
-		regionSize = int(region[2]) - int(region[1])
-		regionTotal = regionTotal + regionSize
+		regionSize = region[2] - region[1]
+		regionTotal += regionSize
 		taskVari.append((region, globalVars))
 
 		if regionTotal > 300_000_000:
@@ -284,19 +284,9 @@ def run(args):
 
 	##### DEFINING REGIONS
 	print("======  DEFINING REGIONS ...")
-	# 1)  CALCULATE region_CUFOFF
-	regionTotal = 0
-	taskDiff = []
-	for region in globalVars["region"]:
-		regionSize = int(region[2]) - int(region[1])
-		regionTotal = regionTotal + regionSize
-		taskDiff.append((region, globalVars))
-
-		if regionTotal > 300_000_000:
-			break
-
-	with multiprocessing.Pool(min(len(taskDiff), globalVars["numprocess"])) as pool:
-		resultDiff = pool.starmap(calculateRC.getRegionCutoff, taskDiff)
+	# 1)  CALCULATE REGION_CUTOFF
+	with multiprocessing.Pool(min(len(taskVari), globalVars["numprocess"])) as pool:
+		resultDiff = pool.starmap(calculateRC.getRegionCutoff, taskVari)
 
 	diff = []
 	for rDiff in resultDiff:
@@ -315,10 +305,7 @@ def run(args):
 
 
 	print("======  PERFORMING STATSTICAL TESTING FOR EACH REGION ...")
-	taskWindow = []
-	for rRegion in resultRegion:
-		if rRegion is not None:
-			taskWindow.append((rRegion, globalVars))
+	taskWindow = [(rRegion, globalVars) for rRegion in resultRegion if rRegion is not None]
 
 	with multiprocessing.Pool(min(len(taskWindow), globalVars["numprocess"])) as pool:
 		resultTTest = pool.starmap(calculateRC.doWindowApproach, taskWindow)
