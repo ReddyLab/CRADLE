@@ -71,12 +71,13 @@ cpdef defineRegion(region, globalVars):
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
 	analysisChromo = region[0]
-	analysisStart = int(region[1])
-	analysisEnd = int(region[2])
+	analysisStart = region[1]
+	analysisEnd = region[2]
 
-	#### Number of bin
-	binNum = int( (analysisEnd - analysisStart) / globalVars["binSize1"] )
+	#### Number of bins
+	binNum = (analysisEnd - analysisStart) // globalVars["binSize1"]
 	regionStart = analysisStart
+
 	if binNum == 0:
 		regionEnd = analysisEnd
 		lastBinExist = False
@@ -103,7 +104,7 @@ cpdef defineRegion(region, globalVars):
 			lastValue = bw.stats(analysisChromo, lastBinStart, lastBinEnd, type="mean", nBins=1)[0]
 			if lastValue is None:
 				lastValue = np.nan
-			temp.extend([lastValue])
+			temp.append(lastValue)
 
 		sampleRC1.append(temp)
 		bw.close()
@@ -123,7 +124,7 @@ cpdef defineRegion(region, globalVars):
 			lastValue = bw.stats(analysisChromo, lastBinStart, lastBinEnd, type="mean", nBins=1)[0]
 			if lastValue is None:
 				lastValue = np.nan
-			temp.extend([lastValue])
+			temp.append(lastValue)
 
 		sampleRC2.append(temp)
 		bw.close()
@@ -221,42 +222,34 @@ cpdef defineRegion(region, globalVars):
 
 	definedRegion = restrictRegionLen(definedRegion, globalVars)
 
-	deleteIdx = []
-	for regionIdx in range(len(definedRegion)):
-		chromo = definedRegion[regionIdx][0]
-		start = int(definedRegion[regionIdx][1])
-		end = int(definedRegion[regionIdx][2])
-
+	regions = []
+	for chromo, start, end, groupType in definedRegion:
 		rc = []
 		for rep in range(globalVars["ctrlbwNum"]):
 			rcTemp = np.nanmean(CTRLBW[rep].values(chromo, start, end))
-			rc.extend([rcTemp])
+			rc.append(rcTemp)
 
 		for rep in range(globalVars["expbwNum"]):
 			rcTemp = np.nanmean(EXPBW[rep].values(chromo, start, end))
-			rc.extend([rcTemp])
+			rc.append(rcTemp)
 
 		regionVar = np.nanvar(rc)
 
-		if np.isnan(regionVar) == True:
-			deleteIdx.extend([regionIdx])
+		if np.isnan(regionVar):
 			continue
 
 		thetaIdx = np.max(np.where(globalVars["filterCutoffs"] < regionVar))
 		theta = globalVars["filterCutoffsThetas"][thetaIdx]
 
-		definedRegion[regionIdx].extend([ theta ])
-
-	definedRegion = np.delete(np.array(definedRegion), deleteIdx, axis=0)
-	definedRegion = definedRegion.tolist()
+		regions.append((chromo, str(start), str(end), str(groupType), str(theta)))
 
 
-	if len(definedRegion) == 0:
+	if len(regions) == 0:
 		return None
 
 	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=globalVars["outputDir"], delete=False)
-	for line in definedRegion:
-		subfile.write('\t'.join([str(x) for x in line]) + "\n")
+	for line in regions:
+		subfile.write('\t'.join(line) + "\n")
 	subfile.close()
 
 	for rep in range(globalVars["ctrlbwNum"]):
@@ -268,31 +261,30 @@ cpdef defineRegion(region, globalVars):
 
 
 cpdef restrictRegionLen(definedRegion, globalVars):
-	definedRegion_new = []
+	definedRegionNew = []
 
 	maxRegionLen = globalVars["binSize1"] * 3
 
-	for regionIdx in range(len(definedRegion)):
-		start = int(definedRegion[regionIdx][1])
-		end = int(definedRegion[regionIdx][2])
-		groupType = int(definedRegion[regionIdx][3])
+	for region in definedRegion:
+		start = region[1]
+		end = region[2]
+		groupType = region[3]
 		regionLen = end - start
 
 		if( regionLen > maxRegionLen ):
 			newNumBin = int(np.ceil(regionLen / maxRegionLen))
 			newRegionSize = int(regionLen / newNumBin)
-			chromo = definedRegion[regionIdx][0]
 
 			for newBinIdx in range(newNumBin):
 				newStart = start + newBinIdx * newRegionSize
 				newEnd = newStart + newRegionSize
 				if(newBinIdx == ((newNumBin)-1)):
 					newEnd = end
-				definedRegion_new.append([chromo, newStart, newEnd, groupType])
+				definedRegionNew.append((region[0], newStart, newEnd, groupType))
 		else:
-			definedRegion_new.append(definedRegion[regionIdx])
+			definedRegionNew.append(region)
 
-	return definedRegion_new
+	return definedRegionNew
 
 
 cpdef doWindowApproach(inputFilename, globalVars):
@@ -341,8 +333,8 @@ cpdef doWindowApproach(inputFilename, globalVars):
 			rc = np.nanmean(totalRC[:,binStartIdx:binEndIdx], axis=1)
 
 			if len(np.where(np.isnan(rc))[0]) > 0:
-				windowPvalue.extend([np.nan])
-				windowEnrich.extend([np.nan])
+				windowPvalue.append(np.nan)
+				windowEnrich.append(np.nan)
 				if (binEndIdx == analysisEndIdx) and (len(windowPvalue) != 0):
 					#### calculate a Simes' p value for the reigon
 					windowPvalue = np.array(windowPvalue)
@@ -352,7 +344,7 @@ cpdef doWindowApproach(inputFilename, globalVars):
 					rankPvalue = scipy.stats.rankdata(windowPvalueWoNan)
 					numWindow = len(windowPvalueWoNan)
 					pMerged = np.min((windowPvalueWoNan * numWindow) / rankPvalue)
-					simesP.extend([pMerged])
+					simesP.append(pMerged)
 
 					regionInfo = [regionChromo, regionStart, regionEnd, regionTheta, pMerged]
 					subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
@@ -365,8 +357,8 @@ cpdef doWindowApproach(inputFilename, globalVars):
 
 			rc = rc.tolist()
 			if rc == globalVars["allZero"]:
-				windowPvalue.extend([np.nan])
-				windowEnrich.extend([np.nan])
+				windowPvalue.append(np.nan)
+				windowEnrich.append(np.nan)
 
 				if (binEndIdx == analysisEndIdx) and (len(windowPvalue) != 0):
 					#### calculate a Simes' p value for the reigon
@@ -377,7 +369,7 @@ cpdef doWindowApproach(inputFilename, globalVars):
 					rankPvalue = scipy.stats.rankdata(windowPvalueWoNan)
 					numWindow = len(windowPvalueWoNan)
 					pMerged = np.min((windowPvalueWoNan * numWindow) / rankPvalue)
-					simesP.extend([pMerged])
+					simesP.append(pMerged)
 
 					regionInfo = [regionChromo, regionStart, regionEnd, regionTheta, pMerged]
 					subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
@@ -391,8 +383,8 @@ cpdef doWindowApproach(inputFilename, globalVars):
 			windowInfo = doStatTesting(rc, globalVars)
 			pvalue = float(windowInfo[1])
 			enrich = int(windowInfo[0])
-			windowPvalue.extend([pvalue])
-			windowEnrich.extend([enrich])
+			windowPvalue.append(pvalue)
+			windowEnrich.append(enrich)
 
 			if (binEndIdx == analysisEndIdx) and (len(windowPvalue) != 0):
 				#### calculate a Simes' p value for the reigon
@@ -403,7 +395,7 @@ cpdef doWindowApproach(inputFilename, globalVars):
 				rankPvalue = scipy.stats.rankdata(windowPvalueWoNan)
 				numWindow = len(windowPvalueWoNan)
 				pMerged = np.min((windowPvalueWoNan * numWindow) / rankPvalue)
-				simesP.extend([pMerged])
+				simesP.append(pMerged)
 
 				regionInfo = [regionChromo, regionStart, regionEnd, regionTheta, pMerged]
 				subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
@@ -430,11 +422,11 @@ cpdef doStatTesting(rc, globalVars):
 
 	for rep in range(globalVars["ctrlbwNum"]):
 		rc[rep] = float(rc[rep])
-		ctrlRC.extend([rc[rep]])
+		ctrlRC.append(rc[rep])
 
 	for rep in range(globalVars["expbwNum"]):
 		rc[rep + globalVars["ctrlbwNum"]] = float(rc[rep+globalVars["ctrlbwNum"]])
-		expRC.extend([rc[rep + globalVars["ctrlbwNum"]] ])
+		expRC.append(rc[rep + globalVars["ctrlbwNum"]])
 
 	ctrlVar = np.nanvar(ctrlRC)
 	expVar = np.nanvar(expRC)
@@ -553,8 +545,8 @@ cpdef doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 		lastIdx = selectWindowIdx[len(selectWindowIdx)-1]
 
 		if lastIdx == selectWindowIdx[0]:
-			selectWindowVector.extend([ pastPvalue ])
-			selectWindowVector.extend([ pastQvalue ])
+			selectWindowVector.append(pastPvalue)
+			selectWindowVector.append(pastQvalue)
 
 			if lastIdx == (windowNum-1):
 				pastEnd = regionEnd
@@ -593,14 +585,14 @@ cpdef doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 
 			if (currStart >= pastStart) and (currStart <= pastEnd) and (pastEnrich == currEnrich):
 				selectWindowVector[2] = currEnd
-				pastPvalueSets.extend([currPvalue])
-				pastQvalueSets.extend([currQvalue])
+				pastPvalueSets.append(currPvalue)
+				pastQvalueSets.append(currQvalue)
 
 			else:
 				### End a previous region
 				selectWindowVector[2] = pastEnd
-				selectWindowVector.extend([ np.min(pastPvalueSets) ])
-				selectWindowVector.extend([ np.min(pastQvalueSets) ])
+				selectWindowVector.append(np.min(pastPvalueSets))
+				selectWindowVector.append(np.min(pastQvalueSets))
 
 				ctrlRC = []
 				for rep in range(globalVars["ctrlbwNum"]):
@@ -641,8 +633,8 @@ cpdef doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 					pastEnd = regionEnd
 					selectWindowVector[2] = pastEnd
 
-				selectWindowVector.extend([ np.min(pastPvalueSets) ])
-				selectWindowVector.extend([ np.min(pastQvalueSets) ])
+				selectWindowVector.append(np.min(pastPvalueSets))
+				selectWindowVector.append(np.min(pastQvalueSets))
 
 				ctrlRC = []
 				for rep in range(globalVars["ctrlbwNum"]):
@@ -736,7 +728,7 @@ cpdef truncateNan(peakStart, peakEnd, diffPos):
 					filteredIdx.extend(list(range(nanPosStartIdx, (prevPosIdx+1))))
 
 				if (i == (len(nanIdx)-1)) and (currPosIdx == (len(diffPos)-1)):
-					filteredIdx.extend([currPosIdx])
+					filteredIdx.append(currPosIdx)
 					break
 
 				prevPosIdx = currPosIdx
@@ -762,9 +754,9 @@ cpdef truncateNan(peakStart, peakEnd, diffPos):
 					subPeakEndIdx = currPosIdx + 1
 					subPeakDiff = int(np.round(np.nanmean(diffPos[subPeakStartIdx:subPeakEndIdx])))
 
-					subPeakStarts.extend([ subPeakStartIdx + peakStart ])
-					subPeakEnds.extend([ subPeakEndIdx + peakStart ])
-					subPeakDiffs.extend([ subPeakDiff  ])
+					subPeakStarts.append(subPeakStartIdx + peakStart)
+					subPeakEnds.append(subPeakEndIdx + peakStart)
+					subPeakDiffs.append(subPeakDiff )
 					break
 
 				if currPosIdx == (prevPosIdx+1):
@@ -774,9 +766,9 @@ cpdef truncateNan(peakStart, peakEnd, diffPos):
 					#### End a region
 					subPeakEndIdx = prevPosIdx + 1
 					subPeakDiff = int(np.round(np.nanmean(diffPos[subPeakStartIdx:subPeakEndIdx])))
-					subPeakStarts.extend([ subPeakStartIdx + peakStart ])
-					subPeakEnds.extend([ subPeakEndIdx + peakStart ])
-					subPeakDiffs.extend([ subPeakDiff  ])
+					subPeakStarts.append(subPeakStartIdx + peakStart)
+					subPeakEnds.append(subPeakEndIdx + peakStart)
+					subPeakDiffs.append(subPeakDiff)
 
 					### Start a new region
 					subPeakStartIdx = currPosIdx
@@ -799,5 +791,5 @@ cpdef writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, su
 			temp[1] = subPeakStarts[subPeakNum]
 			temp[2] = subPeakEnds[subPeakNum]
 			temp[3] = int(temp[3])
-			temp.extend([ subPeakDiffs[subPeakNum]  ])
+			temp.append(subPeakDiffs[subPeakNum])
 			subfile.write('\t'.join([str(x) for x in temp]) + "\n")
