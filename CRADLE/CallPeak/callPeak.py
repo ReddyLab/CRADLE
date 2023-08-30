@@ -121,7 +121,7 @@ def mergePeaks(peakResult, globalVars):
 		pastEnd = currEnd
 		pastEnrich = currEnrich
 
-		i = i + 1
+		i += 1
 
 	for i in range(globalVars["ctrlbwNum"]):
 		ctrlBW[i].close()
@@ -238,9 +238,6 @@ def run(args):
 	globalVars["filterCutoffs"] = np.array(globalVars["filterCutoffs"])
 
 	print(f"Variance Cutoff: {np.round(globalVars['filterCutoffs'])}")
-	del pool, var, resultFilter
-	gc.collect()
-
 
 	##### DEFINING REGIONS
 	print("======  DEFINING REGIONS ...")
@@ -269,9 +266,6 @@ def run(args):
 	print(f"Null_std: {globalVars['nullStd']}")
 	globalVars["regionCutoff"] = np.percentile(np.array(diff), 99)
 	print(f"Region cutoff: {globalVars['regionCutoff']}")
-	del pool, resultDiff, diff, taskDiff
-	gc.collect()
-
 
 	# 2)  DEINING REGIONS WITH 'globalVars["regionCutoff"]'
 	pool = multiprocessing.Pool(min(len(globalVars["region"]), globalVars["numprocess"]))
@@ -279,7 +273,6 @@ def run(args):
 	resultRegion = pool.starmap_async(calculateRC.defineRegion, tasks).get()
 	pool.close()
 	pool.join()
-	gc.collect()
 
 
 	##### STATISTICAL TESTING FOR EACH region
@@ -288,7 +281,6 @@ def run(args):
 	for rRegion in resultRegion:
 		if rRegion is not None:
 			taskWindow.append((rRegion, globalVars))
-	del resultRegion
 
 	pool = multiprocessing.Pool(min(len(taskWindow), globalVars["numprocess"]))
 	resultTTest = pool.starmap_async(calculateRC.doWindowApproach, taskWindow).get()
@@ -301,7 +293,6 @@ def run(args):
 		if rTTest is not None:
 			metaStream.write(rTTest + "\n")
 	metaStream.close()
-	del taskWindow, pool, resultTTest
 
 	##### CHOOSING THETA
 	resultTheta = calculateRC.selectTheta(metaFilename, globalVars)
@@ -395,9 +386,6 @@ def run(args):
 	resultCallPeak = pool.starmap_async(calculateRC.doFDRprocedure, taskCallPeak).get()
 	pool.close()
 	pool.join()
-
-	del pool, taskCallPeak
-	gc.collect()
 
 	peakResult = []
 	for inputFilename in resultCallPeak:
