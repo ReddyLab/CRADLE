@@ -813,50 +813,6 @@ cpdef truncateNan(peakStart, peakEnd, diffPos):
 			return [peakStart], [peakEnd], [peakDiff]
 
 
-cpdef selectTheta(metaDataName, globalVars):
-	inputFilename = metaDataName
-	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
-
-	totalRegionNumArray = []
-	selectRegionNumArray = []
-
-	for thetaIdx in range(len(globalVars["filterCutoffsThetas"])):
-		theta = int(globalVars["filterCutoffsThetas"][thetaIdx])
-
-		PValueSimes = []
-
-		for subFileIdx in range(len(inputFile)):
-			subfileName = inputFile[subFileIdx].split()[0]
-			subfileStream = open(subfileName)
-			subfileContents = subfileStream.readlines()
-
-			for regionIdx in range(len(subfileContents)):
-				line = subfileContents[regionIdx].split()
-				regionTheta = int(line[3])
-				regionPvalue = float(line[4])
-
-				if np.isnan(regionPvalue):
-					continue
-
-				if regionTheta >= theta:
-					PValueSimes.extend([ regionPvalue ])
-
-		totalRegionNum =  len(PValueSimes)
-		PValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(PValueSimes, alpha=globalVars["fdr"], method='fdr_bh')
-		selectRegionNum = len(np.where(PValueGroupBh[0])[0])
-
-		totalRegionNumArray.extend([totalRegionNum])
-		selectRegionNumArray.extend([selectRegionNum])
-
-	selectRegionNumArray = np.array(selectRegionNumArray)
-	maxNum = np.max(selectRegionNumArray)
-	idx = np.where(selectRegionNumArray == maxNum)
-	idx = idx[0][0]
-
-	return [globalVars["filterCutoffsThetas"][idx], selectRegionNumArray[idx], totalRegionNumArray[idx]]
-
-
 cpdef writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile):
 	for subPeakNum in range(len(subPeakStarts)):
 		testResult = testSubPeak(subPeakDiffs[subPeakNum], selectWindowVector[3])

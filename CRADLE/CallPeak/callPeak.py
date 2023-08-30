@@ -138,6 +138,51 @@ def mergePeaks(peakResult, globalVars):
 	return mergedPeak
 
 
+def selectTheta(metaDataName, globalVars):
+	alpha = globalVars["fdr"]
+
+	inputFilename = metaDataName
+	inputStream = open(inputFilename)
+	inputFile = inputStream.readlines()
+
+	totalRegionNumArray = []
+	selectRegionNumArray = []
+
+	for theta in globalVars["filterCutoffsThetas"]:
+		pValueSimes = []
+
+		for line in inputFile:
+			subfileName = line.split()[0]
+			subfileStream = open(subfileName)
+			subfileContents = subfileStream.readlines()
+
+			for region in subfileContents:
+				regionLine = region.split()
+				regionTheta = int(regionLine[3])
+				regionPvalue = float(regionLine[4])
+
+				if np.isnan(regionPvalue):
+					continue
+
+				if regionTheta >= theta:
+					pValueSimes.append(regionPvalue)
+
+		totalRegionNum = len(pValueSimes)
+		pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=alpha, method='fdr_bh')
+		selectRegionNum = len(np.where(pValueGroupBh[0])[0])
+
+		totalRegionNumArray.append(totalRegionNum)
+		selectRegionNumArray.append(selectRegionNum)
+
+	selectRegionNumArray = np.array(selectRegionNumArray)
+	maxNum = np.max(selectRegionNumArray)
+	idx = np.where(selectRegionNumArray == maxNum)
+	idx = idx[0][0]
+
+	adjFDR = ( globalVars["fdr"] * selectRegionNumArray[idx] ) / totalRegionNumArray[idx]
+
+	return globalVars["filterCutoffsThetas"][idx], adjFDR, selectRegionNumArray[idx], totalRegionNumArray[idx]
+
 def takeMinusLog(values):
 	minValue = np.min(values)
 
@@ -269,8 +314,7 @@ def run(args):
 		resultRegion = pool.starmap(calculateRC.defineRegion, tasks)
 
 
-	##### STATISTICAL TESTING FOR EACH region
-	print("======  PERFORMING STATSTICAL TESTING FOR EACH region ...")
+	print("======  PERFORMING STATSTICAL TESTING FOR EACH REGION ...")
 	taskWindow = []
 	for rRegion in resultRegion:
 		if rRegion is not None:
@@ -287,16 +331,16 @@ def run(args):
 	metaStream.close()
 
 	##### CHOOSING THETA
-	resultTheta = calculateRC.selectTheta(metaFilename, globalVars)
+	resultTheta = selectTheta(metaFilename, globalVars)
 
 	globalVars["theta"] = resultTheta[0]
-	selectRegionNum = resultTheta[1]
-	totalRegionNum = resultTheta[2]
+	globalVars["adjFDR"] = resultTheta[1]
+	selectRegionNum = resultTheta[2]
+	totalRegionNum = resultTheta[3]
 
 
 	##### FDR control
 	print("======  CALLING PEAKS ...")
-	globalVars["adjFDR"] = ( globalVars["fdr"] * selectRegionNum ) / float(totalRegionNum)
 	print(f"Selected Variance Theta: {globalVars['theta']}")
 	print(f"Total number of regions: {totalRegionNum}")
 	print(f"The number of selected regions: {selectRegionNum}")
