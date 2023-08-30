@@ -255,7 +255,7 @@ def run(args):
 	print("======  INITIALIZING PARAMETERS ...\n")
 	globalVars = vari.setGlobalVariables(args)
 
-	##### CALCULATE globalVars["FILTER_CUTOFF"]
+	##### CALCULATE FILTER_CUTOFF
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
 	regionTotal = 0
 	taskVari = []
@@ -268,30 +268,25 @@ def run(args):
 			break
 
 	with multiprocessing.Pool(min(len(taskVari), globalVars["numprocess"])) as pool:
-		resultFilter = pool.starmap(calculateRC.getVariance, taskVari)
+		variancesAndCutoffs = pool.starmap(calculateRC.getVarianceAndRegionCutoff, taskVari)
 
-	var = []
-	for rFilter in resultFilter:
-		if rFilter is not None:
-			var.extend(rFilter)
+	variances = []
+	diff = []
+	for variance, cutoff in variancesAndCutoffs:
+		if variance is not None:
+			variances.extend(variance)
+		if cutoff is not None:
+			diff.extend(cutoff)
 
 	globalVars["filterCutoffs"][0] = -1
 	for i in range(1, len(globalVars["filterCutoffsThetas"])):
-		globalVars["filterCutoffs"][i] = np.percentile(var, globalVars["filterCutoffsThetas"][i])
+		globalVars["filterCutoffs"][i] = np.percentile(variances, globalVars["filterCutoffsThetas"][i])
 	globalVars["filterCutoffs"] = np.array(globalVars["filterCutoffs"])
 
 	print(f"Variance Cutoff: {np.round(globalVars['filterCutoffs'])}")
 
 	##### DEFINING REGIONS
 	print("======  DEFINING REGIONS ...")
-	# 1)  CALCULATE REGION_CUTOFF
-	with multiprocessing.Pool(min(len(taskVari), globalVars["numprocess"])) as pool:
-		resultDiff = pool.starmap(calculateRC.getRegionCutoff, taskVari)
-
-	diff = []
-	for rDiff in resultDiff:
-		if rDiff is not None:
-			diff.extend(rDiff)
 
 	globalVars["nullStd"] = np.sqrt(np.nanvar(diff))
 	print(f"Null_std: {globalVars['nullStd']}")

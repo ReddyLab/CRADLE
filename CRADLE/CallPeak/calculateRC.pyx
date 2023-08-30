@@ -8,62 +8,26 @@ import pyBigWig
 import scipy.stats
 import statsmodels.sandbox.stats.multicomp
 
-cpdef getVariance(region, globalVars):
+cpdef getVarianceAndRegionCutoff(region, globalVars):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 	warnings.filterwarnings('ignore', r'Degrees of freedom <= 0 for slice')
 
 	regionChromo = region[0]
-	regionStart = int(region[1])
-	regionEnd = int(region[2])
+	regionStart = region[1]
+	regionEnd = region[2]
 
-	numBin = int((regionEnd - regionStart) / globalVars["binSize1"])
-	if numBin == 0:
-		numBin = 1
+	numBin = max(1, int((regionEnd - regionStart) / globalVars["binSize1"]))
 
 	totalRC = []
-	for rep in range(globalVars["ctrlbwNum"]):
-		bw = pyBigWig.open(globalVars["ctrlbwNames"][rep])
-		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
-		temp[np.where(temp == None)] = np.nan
-		totalRC.append(temp.tolist())
-		bw.close()
-
-	for rep in range(globalVars["expbwNum"]):
-		bw = pyBigWig.open(globalVars["expbwNames"][rep])
-		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
-		temp[np.where(temp == None)] = np.nan
-		totalRC.append(temp.tolist())
-		bw.close()
-
-	var = np.nanvar(np.array(totalRC), axis=0)
-	var = np.array(var)
-	idx = np.where(np.isnan(var) == True)
-	var = np.delete(var, idx)
-
-	if len(var) > 0:
-		return var.tolist()
-	else:
-		return None
-
-
-cpdef getRegionCutoff(region, globalVars):
-	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
-	warnings.filterwarnings('ignore', r'Mean of empty slice')
-
-	regionChromo = region[0]
-	regionStart = int(region[1])
-	regionEnd = int(region[2])
-	numBin = int((regionEnd - regionStart) / globalVars["binSize1"])
-	if numBin == 0:
-		numBin = 1
-
 	sampleRC = []
 	for rep in range(globalVars["ctrlbwNum"]):
 		bw = pyBigWig.open(globalVars["ctrlbwNames"][rep])
 		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
 		temp[np.where(temp == None)] = np.nan
-		sampleRC.append(temp.tolist())
+		tempList = temp.tolist()
+		totalRC.append(tempList)
+		sampleRC.append(tempList)
 		bw.close()
 
 	ctrlMean = np.nanmean(np.array(sampleRC), axis=0)
@@ -73,20 +37,33 @@ cpdef getRegionCutoff(region, globalVars):
 		bw = pyBigWig.open(globalVars["expbwNames"][rep])
 		temp = np.array(bw.stats(regionChromo, regionStart, regionEnd,  type="mean", nBins=numBin))
 		temp[np.where(temp == None)] = np.nan
-		sampleRC.append(temp.tolist())
+		tempList = temp.tolist()
+		totalRC.append(tempList)
+		sampleRC.append(tempList)
 		bw.close()
 
 	expMean = np.nanmean(np.array(sampleRC), axis=0)
-	del sampleRC
+
+	var = np.nanvar(np.array(totalRC), axis=0)
+	var = np.array(var)
+	idx = np.where(np.isnan(var) == True)
+	var = np.delete(var, idx)
 
 	diff = np.array(np.absolute(expMean - ctrlMean))
 	idx = np.where(np.isnan(diff) == True)
 	diff = np.delete(diff, idx)
 
-	if len(diff) > 0:
-		return diff.tolist()
+	if len(var) == 0:
+		var = None
 	else:
-		return None
+		var = var.tolist()
+
+	if len(diff) == 0:
+		diff = None
+	else:
+		diff = diff.tolist()
+
+	return var, diff
 
 
 cpdef defineRegion(region, globalVars):
