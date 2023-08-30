@@ -1,6 +1,6 @@
-import gc
 import multiprocessing
 import os
+import os.path
 import numpy as np
 import pyBigWig
 import statsmodels.sandbox.stats.multicomp
@@ -138,12 +138,8 @@ def mergePeaks(peakResult, globalVars):
 	return mergedPeak
 
 
-def selectTheta(metaDataName, globalVars):
+def selectTheta(resultTTestFiles, globalVars):
 	alpha = globalVars["fdr"]
-
-	inputFilename = metaDataName
-	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
 
 	totalRegionNumArray = []
 	selectRegionNumArray = []
@@ -151,21 +147,18 @@ def selectTheta(metaDataName, globalVars):
 	for theta in globalVars["filterCutoffsThetas"]:
 		pValueSimes = []
 
-		for line in inputFile:
-			subfileName = line.split()[0]
-			subfileStream = open(subfileName)
-			subfileContents = subfileStream.readlines()
+		for ttestFile in resultTTestFiles:
+			with open(ttestFile) as ttestResults:
+				for region in ttestResults:
+					regionLine = region.split()
+					regionTheta = int(regionLine[3])
+					regionPvalue = float(regionLine[4])
 
-			for region in subfileContents:
-				regionLine = region.split()
-				regionTheta = int(regionLine[3])
-				regionPvalue = float(regionLine[4])
+					if np.isnan(regionPvalue):
+						continue
 
-				if np.isnan(regionPvalue):
-					continue
-
-				if regionTheta >= theta:
-					pValueSimes.append(regionPvalue)
+					if regionTheta >= theta:
+						pValueSimes.append(regionPvalue)
 
 		totalRegionNum = len(pValueSimes)
 		pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=alpha, method='fdr_bh')
@@ -285,7 +278,6 @@ def run(args):
 
 	print(f"Variance Cutoff: {np.round(globalVars['filterCutoffs'])}")
 
-	##### DEFINING REGIONS
 	print("======  DEFINING REGIONS ...")
 
 	globalVars["nullStd"] = np.sqrt(np.nanvar(diff))
@@ -293,27 +285,16 @@ def run(args):
 	globalVars["regionCutoff"] = np.percentile(np.array(diff), 99)
 	print(f"Region cutoff: {globalVars['regionCutoff']}")
 
-	# 2)  DEINING REGIONS WITH 'globalVars["regionCutoff"]'
-	tasks = [(region, globalVars) for region in globalVars["region"]]
-	with multiprocessing.Pool(min(len(globalVars["region"]), globalVars["numprocess"])) as pool:
-		resultRegion = pool.starmap(calculateRC.defineRegion, tasks)
-
-
 	print("======  PERFORMING STATSTICAL TESTING FOR EACH REGION ...")
-	taskWindow = [(rRegion, globalVars) for rRegion in resultRegion if rRegion is not None]
+	tasks = [(region, globalVars) for region in globalVars["region"]]
 
-	with multiprocessing.Pool(min(len(taskWindow), globalVars["numprocess"])) as pool:
-		resultTTest = pool.starmap(calculateRC.doWindowApproach, taskWindow)
+	with multiprocessing.Pool(min(len(tasks), globalVars["numprocess"])) as pool:
+		resultTTestFiles = pool.starmap(calculateRC.statTest, tasks)
 
-	metaFilename = globalVars["outputDir"] + "/metaData_pvalues"
-	metaStream = open(metaFilename, "w")
-	for rTTest in resultTTest:
-		if rTTest is not None:
-			metaStream.write(rTTest + "\n")
-	metaStream.close()
+	resultTTestFiles = [file for file in resultTTestFiles if file is not None]
 
 	##### CHOOSING THETA
-	resultTheta = selectTheta(metaFilename, globalVars)
+	resultTheta = selectTheta(resultTTestFiles, globalVars)
 
 	globalVars["theta"] = resultTheta[0]
 	globalVars["adjFDR"] = resultTheta[1]
@@ -330,28 +311,21 @@ def run(args):
 
 
 	##### Applying the selected theta
-	inputFilename = metaFilename
-	inputStream = open(inputFilename)
-	inputFiles = inputStream.readlines()
-
 	pValueSimes = []
 
 	### Apply the selected thata to the data
-	for inputFile in inputFiles:
-		subfileName = inputFile.split()[0]
-		subfileStream = open(subfileName)
-		subfileFile = subfileStream.readlines()
+	for inputFile in resultTTestFiles:
+		with open(inputFile) as statStream:
+			for region in statStream:
+				line = region.split()
+				regionTheta = int(line[3])
+				regionPvalue = float(line[4])
 
-		for region in subfileFile:
-			line = region.split()
-			regionTheta = int(line[3])
-			regionPvalue = float(line[4])
+				if np.isnan(regionPvalue):
+					continue
 
-			if np.isnan(regionPvalue):
-				continue
-
-			if regionTheta >= globalVars["theta"]:
-				pValueSimes.append(regionPvalue)
+				if regionTheta >= globalVars["theta"]:
+					pValueSimes.append(regionPvalue)
 
 	pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=globalVars["fdr"], method='fdr_bh')[0]
 
@@ -359,41 +333,31 @@ def run(args):
 	##### Selecting windows
 	taskCallPeak = []
 
-	inputFilename = metaFilename
-	inputStream = open(inputFilename)
-	inputFiles = inputStream.readlines()
-
 	groupPvalueIdx = 0
-	for inputFile in inputFiles:
-		subfileName = inputFile.split()[0]
-		subfileStream = open(subfileName)
-		subfileFile = subfileStream.readlines()
+	for inputFile in resultTTestFiles:
+		with open(inputFile) as statStream:
+			selectRegionIdx = []
+			selectedIdx = 0
 
-		selectRegionIdx = []
-		selectedIdx = 0
+			for regionIdx, region in enumerate(statStream):
+				line = region.split()
+				regionTheta = int(line[3])
+				regionPvalue = float(line[4])
 
-		for regionIdx, region in enumerate(subfileFile):
-			line = region.split()
-			regionTheta = int(line[3])
-			regionPvalue = float(line[4])
+				if regionTheta < globalVars["theta"]:
+					continue
+				if np.isnan(regionPvalue):
+					continue
+				if pValueGroupBh[groupPvalueIdx + selectedIdx]:
+					selectRegionIdx.append(regionIdx)
+				selectedIdx += 1
 
-			if regionTheta < globalVars["theta"]:
-				continue
-			if np.isnan(regionPvalue):
-				continue
-			if pValueGroupBh[groupPvalueIdx + selectedIdx]:
-				selectRegionIdx.append(regionIdx)
-			selectedIdx += 1
+			groupPvalueIdx += selectedIdx
 
-		groupPvalueIdx += selectedIdx
-
-		if len(selectRegionIdx) != 0:
-			taskCallPeak.append((subfileName, selectRegionIdx, globalVars))
-		else:
-			os.remove(subfileName)
-
-	inputStream.close()
-	os.remove(metaFilename)
+			if len(selectRegionIdx) != 0:
+				taskCallPeak.append((inputFile, selectRegionIdx, globalVars))
+			else:
+				os.remove(inputFile)
 
 	if len(taskCallPeak) == 0:
 		print("======= COMPLETED! ===========")
@@ -427,7 +391,7 @@ def run(args):
 	numActi = 0
 	numRepress = 0
 
-	outputFilename = globalVars["outputDir"] + "/CRADLE_peaks"
+	outputFilename = os.path.join(globalVars["outputDir"], "CRADLE_peaks")
 	outputStream = open(outputFilename, "w")
 	outputStream.write('\t'.join([str(x) for x in colNames]) + "\n")
 

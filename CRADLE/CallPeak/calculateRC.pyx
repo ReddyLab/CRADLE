@@ -66,7 +66,16 @@ cpdef getVarianceAndRegionCutoff(region, globalVars):
 	return var, diff
 
 
-cpdef defineRegion(region, globalVars):
+cpdef statTest(definedRegion, globalVars):
+	region = defineRegion(definedRegion, globalVars)
+
+	if region is not None:
+		return doWindowApproach(region, globalVars)
+
+	return None
+
+
+cdef defineRegion(region, globalVars):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
@@ -241,26 +250,20 @@ cpdef defineRegion(region, globalVars):
 		thetaIdx = np.max(np.where(globalVars["filterCutoffs"] < regionVar))
 		theta = globalVars["filterCutoffsThetas"][thetaIdx]
 
-		regions.append((chromo, str(start), str(end), str(groupType), str(theta)))
-
+		regions.append((chromo, start, end, groupType, theta))
 
 	if len(regions) == 0:
 		return None
-
-	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=globalVars["outputDir"], delete=False)
-	for line in regions:
-		subfile.write('\t'.join(line) + "\n")
-	subfile.close()
 
 	for rep in range(globalVars["ctrlbwNum"]):
 		CTRLBW[rep].close()
 	for rep in range(globalVars["expbwNum"]):
 		EXPBW[rep].close()
 
-	return subfile.name
+	return regions
 
 
-cpdef restrictRegionLen(definedRegion, globalVars):
+cdef restrictRegionLen(definedRegion, globalVars):
 	definedRegionNew = []
 
 	maxRegionLen = globalVars["binSize1"] * 3
@@ -287,23 +290,14 @@ cpdef restrictRegionLen(definedRegion, globalVars):
 	return definedRegionNew
 
 
-cpdef doWindowApproach(inputFilename, globalVars):
+cdef doWindowApproach(regions, globalVars):
 	warnings.simplefilter("ignore", category=RuntimeWarning)
-
-	inputStream = open(inputFilename)
-	inputFile = inputStream.readlines()
 
 	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=globalVars["outputDir"], delete=False)
 	simesP = []
 	writtenRegionNum = 0
 
-	for regionNum in range(len(inputFile)):
-		temp = inputFile[regionNum].split()
-		regionChromo = temp[0]
-		regionStart = int(temp[1])
-		regionEnd = int(temp[2])
-		regionTheta = int(temp[4])
-
+	for regionChromo, regionStart, regionEnd, _regionGroupType, regionTheta in regions:
 		totalRC = []
 		for rep in range(globalVars["ctrlbwNum"]):
 			bw = pyBigWig.open(globalVars["ctrlbwNames"][rep])
@@ -407,8 +401,6 @@ cpdef doWindowApproach(inputFilename, globalVars):
 
 	subfile.close()
 
-	os.remove(inputFilename)
-
 	if writtenRegionNum == 0:
 		os.remove(subfile.name)
 		return None
@@ -416,7 +408,7 @@ cpdef doWindowApproach(inputFilename, globalVars):
 		return subfile.name
 
 
-cpdef doStatTesting(rc, globalVars):
+cdef doStatTesting(rc, globalVars):
 	ctrlRC = []
 	expRC = []
 
@@ -675,7 +667,7 @@ cpdef doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 	return subfile.name
 
 
-cpdef testSubPeak(subpeakDiff, binEnrichType):
+cdef testSubPeak(subpeakDiff, binEnrichType):
 	diff = int(subpeakDiff)
 
 	if diff == 0:
@@ -688,7 +680,7 @@ cpdef testSubPeak(subpeakDiff, binEnrichType):
 	return True
 
 
-cpdef truncateNan(peakStart, peakEnd, diffPos):
+cdef truncateNan(peakStart, peakEnd, diffPos):
 	idx = np.where(np.isnan(diffPos) == False)[0]
 	if len(idx) == len(diffPos):
 		peakDiff = int(np.round(np.mean(diffPos)))
@@ -782,7 +774,7 @@ cpdef truncateNan(peakStart, peakEnd, diffPos):
 			return [peakStart], [peakEnd], [peakDiff]
 
 
-cpdef writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile):
+cdef writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile):
 	for subPeakNum in range(len(subPeakStarts)):
 		testResult = testSubPeak(subPeakDiffs[subPeakNum], selectWindowVector[3])
 
