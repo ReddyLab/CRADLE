@@ -1,5 +1,3 @@
-# cython: language_level=3
-
 import os
 import tempfile
 import warnings
@@ -8,7 +6,7 @@ import pyBigWig
 import scipy.stats
 import statsmodels.sandbox.stats.multicomp
 
-cpdef getVarianceAndRegionCutoff(region, globalVars):
+def getVarianceAndRegionCutoff(region, globalVars):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 	warnings.filterwarnings('ignore', r'Degrees of freedom <= 0 for slice')
@@ -66,7 +64,7 @@ cpdef getVarianceAndRegionCutoff(region, globalVars):
 	return var, diff
 
 
-cpdef statTest(definedRegion, globalVars):
+def statTest(definedRegion, globalVars):
 	region = defineRegion(definedRegion, globalVars)
 
 	if region is not None:
@@ -75,7 +73,7 @@ cpdef statTest(definedRegion, globalVars):
 	return None
 
 
-cdef defineRegion(region, globalVars):
+def defineRegion(region, globalVars):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 
@@ -143,10 +141,8 @@ cdef defineRegion(region, globalVars):
 
 	#### diff
 	diff = np.array(expMean - ctrlMean, dtype=np.float64)
-	cdef double [:] diffView = diff
-	del diff
 
-	cdef int idx = 0
+	idx = 0
 	pastGroupType = -2
 	numRegion = 0
 	definedRegion = []
@@ -155,7 +151,7 @@ cdef defineRegion(region, globalVars):
 		binNum = binNum + 1
 
 	while idx < binNum:
-		if np.isnan(diffView[idx]):
+		if np.isnan(diff[idx]):
 			if pastGroupType == -2:
 				idx = idx + 1
 				continue
@@ -166,8 +162,8 @@ cdef defineRegion(region, globalVars):
 				pastGroupType = -2
 				continue
 
-		if np.absolute(diffView[idx]) > globalVars["regionCutoff"]:
-			if diffView[idx] > 0:
+		if np.absolute(diff[idx]) > globalVars["regionCutoff"]:
+			if diff[idx] > 0:
 				currGroupType = 1   # enriched
 			else:
 				currGroupType = -1   # repressed
@@ -263,7 +259,7 @@ cdef defineRegion(region, globalVars):
 	return regions
 
 
-cdef restrictRegionLen(definedRegion, globalVars):
+def restrictRegionLen(definedRegion, globalVars):
 	definedRegionNew = []
 
 	maxRegionLen = globalVars["binSize1"] * 3
@@ -290,7 +286,7 @@ cdef restrictRegionLen(definedRegion, globalVars):
 	return definedRegionNew
 
 
-cdef doWindowApproach(regions, globalVars):
+def doWindowApproach(regions, globalVars):
 	warnings.simplefilter("ignore", category=RuntimeWarning)
 
 	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=globalVars["outputDir"], delete=False)
@@ -408,21 +404,13 @@ cdef doWindowApproach(regions, globalVars):
 		return subfile.name
 
 
-cdef doStatTesting(rc, globalVars):
-	ctrlRC = []
-	expRC = []
-
-	for rep in range(globalVars["ctrlbwNum"]):
-		rc[rep] = float(rc[rep])
-		ctrlRC.append(rc[rep])
-
-	for rep in range(globalVars["expbwNum"]):
-		rc[rep + globalVars["ctrlbwNum"]] = float(rc[rep+globalVars["ctrlbwNum"]])
-		expRC.append(rc[rep + globalVars["ctrlbwNum"]])
+def doStatTesting(rc, globalVars):
+	ctrlbwNum = globalVars["ctrlbwNum"]
+	ctrlRC = [rc[rep] for rep in range(ctrlbwNum)]
+	expRC = [rc[rep + ctrlbwNum] for rep in range(globalVars["expbwNum"])]
 
 	ctrlVar = np.nanvar(ctrlRC)
 	expVar = np.nanvar(expRC)
-
 
 	if (ctrlVar == 0) and (expVar == 0):
 		statistics = float(np.nanmean(expRC) - np.nanmean(ctrlRC))
@@ -467,13 +455,12 @@ cdef doStatTesting(rc, globalVars):
 
 		pvalue = welchResult.pvalue
 
-
 	windowInfo = [enrich, pvalue]
 
 	return windowInfo
 
 
-cpdef doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
+def doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 	inputStream = open(inputFilename)
 	inputFile = inputStream.readlines()
 
@@ -667,21 +654,20 @@ cpdef doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 	return subfile.name
 
 
-cdef testSubPeak(subpeakDiff, binEnrichType):
-	diff = int(subpeakDiff)
-
-	if diff == 0:
+def testSubPeak(subpeakDiff, binEnrichType):
+	if (subpeakDiff == 0):
 		return False
-	if (binEnrichType == 1) and (diff < 0):
+	if (binEnrichType == 1) and (subpeakDiff < 0):
 		return False
-	if (binEnrichType == -1) and (diff > 0):
+	if (binEnrichType == -1) and (subpeakDiff > 0):
 		return False
 
 	return True
 
 
-cdef truncateNan(peakStart, peakEnd, diffPos):
+def truncateNan(peakStart, peakEnd, diffPos):
 	idx = np.where(np.isnan(diffPos) == False)[0]
+
 	if len(idx) == len(diffPos):
 		peakDiff = int(np.round(np.mean(diffPos)))
 		return [peakStart], [peakEnd], [peakDiff]
@@ -710,7 +696,6 @@ cdef truncateNan(peakStart, peakEnd, diffPos):
 						break
 
 				prevPosIdx = currPosIdx
-				i = i + 1
 			else:
 				#### End a subfiltered
 				strechLen = prevPosIdx - nanPosStartIdx
@@ -725,7 +710,8 @@ cdef truncateNan(peakStart, peakEnd, diffPos):
 
 				prevPosIdx = currPosIdx
 				nanPosStartIdx = currPosIdx
-				i = i + 1
+
+			i += 1
 
 		##### Get subpeak regions
 		if len(filteredIdx) > 0:
@@ -774,14 +760,15 @@ cdef truncateNan(peakStart, peakEnd, diffPos):
 			return [peakStart], [peakEnd], [peakDiff]
 
 
-cdef writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile):
-	for subPeakNum in range(len(subPeakStarts)):
-		testResult = testSubPeak(subPeakDiffs[subPeakNum], selectWindowVector[3])
+def writePeak(selectWindowVector, subPeakStarts, subPeakEnds, subPeakDiffs, subfile):
+	windowVector = list(selectWindowVector)
+	windowVector[3] = int(windowVector[3])
+	for start, end, diff in zip(subPeakStarts, subPeakEnds, subPeakDiffs):
+		testResult = testSubPeak(diff, selectWindowVector[3])
 
 		if testResult:
-			temp = list(selectWindowVector)
-			temp[1] = subPeakStarts[subPeakNum]
-			temp[2] = subPeakEnds[subPeakNum]
-			temp[3] = int(temp[3])
-			temp.append(subPeakDiffs[subPeakNum])
+			temp = windowVector.copy()
+			temp[1] = start
+			temp[2] = end
+			temp.append(diff)
 			subfile.write('\t'.join([str(x) for x in temp]) + "\n")
