@@ -318,8 +318,7 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 	warnings.simplefilter("ignore", category=RuntimeWarning)
 
 	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=globalVars["outputDir"], delete=False)
-	simesP = []
-	writtenRegionNum = 0
+	writtenRegion = False
 	binSize2 = globalVars["binSize2"]
 	shiftSize2 = globalVars["shiftSize2"]
 	sbSize = binSize2 + shiftSize2
@@ -327,6 +326,9 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 
 	for regionChromo, regionStart, regionEnd, _regionGroupType, regionTheta in regions:
 		totalRC = []
+		strRegionStart = str(regionStart)
+		strRegionEnd = str(regionEnd)
+		strRegionTheta = str(regionTheta)
 		if pyBigWig.numpy == 1:
 			for bwFile in ctrlBW:
 				temp = bwFile.values(regionChromo, regionStart, regionEnd, numpy=True)
@@ -361,34 +363,33 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 
 			if len(np.where(np.isnan(readCounts))[0]) > 0 or readCounts == allZeros:
 				windowPvalue.append(np.nan)
-				windowEnrich.append(np.nan)
+				windowEnrich.append(str(np.nan))
 			else:
 				enrich, pvalue = doStatTesting(readCounts, globalVars)
 				windowPvalue.append(pvalue)
-				windowEnrich.append(enrich)
+				windowEnrich.append(str(enrich))
 
 			if (binEndIdx == analysisEndIdx) and (len(windowPvalue) != 0):
 				#### calculate a Simes' p value for the reigon
-				windowPvalue = np.array(windowPvalue)
-				windowPvalueWoNan = windowPvalue[np.isnan(windowPvalue) == False]
+				npWindowPvalue = np.array(windowPvalue)
+				windowPvalueWoNan = npWindowPvalue[np.isnan(npWindowPvalue) == False]
 				if len(windowPvalueWoNan) == 0:
 					break
 				rankPvalue = scipy.stats.rankdata(windowPvalueWoNan)
 				numWindow = len(windowPvalueWoNan)
 				pMerged = np.min((windowPvalueWoNan * numWindow) / rankPvalue)
-				simesP.append(pMerged)
 
-				regionInfo = [regionChromo, regionStart, regionEnd, regionTheta, pMerged]
-				subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
+				regionInfo = f"{regionChromo}\t{strRegionStart}\t{strRegionEnd}\t{strRegionTheta}\t{pMerged}\t"
+				subfile.write(regionInfo)
 				subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
-				subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
-				writtenRegionNum += 1
+				subfile.write(','.join(windowEnrich) + "\n")
+				writtenRegion = True
 
 			binStartIdx += shiftSize2
 
 	subfile.close()
 
-	if writtenRegionNum == 0:
+	if not writtenRegion:
 		os.remove(subfile.name)
 		return None
 
