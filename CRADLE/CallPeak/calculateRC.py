@@ -63,24 +63,34 @@ def getVarianceAndRegionCutoff(region, globalVars):
 
 
 def statTest(definedRegion, globalVars):
-	region = defineRegion(definedRegion, globalVars)
+	ctrlBW = [pyBigWig.open(filename) for filename in globalVars["ctrlbwNames"]]
+	expBW = [pyBigWig.open(filename) for filename in globalVars["expbwNames"]]
 
-	if region is not None:
-		return doWindowApproach(region, globalVars)
+	result = defineRegion(definedRegion, globalVars, ctrlBW, expBW)
 
-	return None
+	if result is not None:
+		result = doWindowApproach(result, globalVars, ctrlBW, expBW)
+
+	for file in ctrlBW:
+		file.close()
+	for file in expBW:
+		file.close()
+
+	return result
 
 
-def defineRegion(region, globalVars):
+def defineRegion(region, globalVars, ctrlBW, expBW):
 	warnings.filterwarnings('ignore', r'All-NaN slice encountered')
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
+
+	binSize = globalVars["binSize1"]
 
 	analysisChromo = region[0]
 	analysisStart = region[1]
 	analysisEnd = region[2]
 
 	#### Number of bins
-	binNum = (analysisEnd - analysisStart) // globalVars["binSize1"]
+	binNum = (analysisEnd - analysisStart) // binSize
 	regionStart = analysisStart
 
 	if binNum == 0:
@@ -88,9 +98,9 @@ def defineRegion(region, globalVars):
 		lastBinExist = False
 		binNum = 1
 	else:
-		if (analysisStart + binNum * globalVars["binSize1"]) < analysisEnd:
+		if (analysisStart + binNum * binSize) < analysisEnd:
 			lastBinExist = True   # exist!
-			regionEnd = regionStart + binNum * globalVars["binSize1"]
+			regionEnd = regionStart + binNum * binSize
 			lastBinStart = regionEnd
 			lastBinEnd = analysisEnd
 		else:
@@ -100,9 +110,22 @@ def defineRegion(region, globalVars):
 	#### ctrlMean
 	sampleRC1 = []
 
-	for filename in globalVars["ctrlbwNames"]:
-		with pyBigWig.open(filename) as bwFile:
-			temp = np.array(bwFile.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum))
+	if pyBigWig.numpy == 1:
+		for bwFile in ctrlBW:
+			temp = bwFile.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum, numpy=True)
+			temp[np.where(temp == None)] = np.nan
+			temp = temp.tolist()
+
+			if lastBinExist:
+				lastValue = bwFile.stats(analysisChromo, lastBinStart, lastBinEnd, type="mean", nBins=1, numpy=True)[0]
+				if lastValue is None:
+					lastValue = np.nan
+				temp.append(lastValue)
+
+			sampleRC1.append(temp)
+	else:
+		for bwFile in ctrlBW:
+			temp = bwFile.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum)
 			temp[np.where(temp == None)] = np.nan
 			temp = temp.tolist()
 
@@ -113,15 +136,27 @@ def defineRegion(region, globalVars):
 				temp.append(lastValue)
 
 			sampleRC1.append(temp)
-
 	ctrlMean = np.nanmean( np.array(sampleRC1), axis=0)
 	del sampleRC1
 
 	#### expMean
 	sampleRC2 = []
-	for filename in globalVars["expbwNames"]:
-		with pyBigWig.open(filename) as bwFile:
-			temp = np.array(bwFile.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum))
+	if pyBigWig.numpy == 1:
+		for bwFile in expBW:
+			temp = bwFile.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum, numpy=True)
+			temp[np.where(temp == None)] = np.nan
+			temp = temp.tolist()
+
+			if lastBinExist:
+				lastValue = bwFile.stats(analysisChromo, lastBinStart, lastBinEnd, type="mean", nBins=1, numpy=True)[0]
+				if lastValue is None:
+					lastValue = np.nan
+				temp.append(lastValue)
+
+			sampleRC2.append(temp)
+	else:
+		for bwFile in expBW:
+			temp = bwFile.stats(analysisChromo, regionStart, regionEnd,  type="mean", nBins=binNum)
 			temp[np.where(temp == None)] = np.nan
 			temp = temp.tolist()
 
@@ -170,8 +205,8 @@ def defineRegion(region, globalVars):
 		if pastGroupType == -2: # the first region
 			regionVector = [
 				analysisChromo,
-				(analysisStart + globalVars["binSize1"] * idx),
-				(analysisStart + globalVars["binSize1"] * idx + globalVars["binSize1"]),
+				(analysisStart + binSize * idx),
+				(analysisStart + binSize * idx + binSize),
 				currGroupType
 			]
 			if idx == (binNum - 1):
@@ -186,19 +221,19 @@ def defineRegion(region, globalVars):
 
 		if currGroupType != pastGroupType:
 			## End a previous region
-			regionVector[2] = analysisStart + globalVars["binSize1"] * idx + globalVars["binSize1"] - globalVars["binSize1"]
+			regionVector[2] = analysisStart + binSize * idx + binSize - binSize
 			definedRegion.append(regionVector)
 			numRegion += 1
 
 			## Start a new reigon
 			regionVector = [
 				analysisChromo,
-				(analysisStart + globalVars["binSize1"] * idx),
-				(analysisStart + globalVars["binSize1"] * idx + globalVars["binSize1"]),
+				(analysisStart + binSize * idx),
+				(analysisStart + binSize * idx + binSize),
 				currGroupType
 			]
 		else:
-			regionVector[2] = analysisStart + globalVars["binSize1"] * idx + globalVars["binSize1"]
+			regionVector[2] = analysisStart + binSize * idx + binSize
 
 		if idx == (binNum-1):
 			regionVector[2] = analysisEnd
@@ -211,9 +246,6 @@ def defineRegion(region, globalVars):
 
 
 	### variance check
-	ctrlBW = [pyBigWig.open(filename) for filename in globalVars["ctrlbwNames"]]
-	expBW = [pyBigWig.open(filename) for filename in globalVars["expbwNames"]]
-
 	if len(definedRegion) == 0:
 		return None
 
@@ -222,13 +254,22 @@ def defineRegion(region, globalVars):
 	regions = []
 	for chromo, start, end, groupType in definedRegion:
 		readCounts = []
-		for ctrlBWFile in ctrlBW:
-			rcTemp = np.nanmean(ctrlBWFile.values(chromo, start, end))
-			readCounts.append(rcTemp)
+		if pyBigWig.numpy == 1:
+			for ctrlBWFile in ctrlBW:
+				rcTemp = np.nanmean(ctrlBWFile.values(chromo, start, end, numpy=True))
+				readCounts.append(rcTemp)
 
-		for expBWFile in expBW:
-			rcTemp = np.nanmean(expBWFile.values(chromo, start, end))
-			readCounts.append(rcTemp)
+			for expBWFile in expBW:
+				rcTemp = np.nanmean(expBWFile.values(chromo, start, end, numpy=True))
+				readCounts.append(rcTemp)
+		else:
+			for ctrlBWFile in ctrlBW:
+				rcTemp = np.nanmean(ctrlBWFile.values(chromo, start, end))
+				readCounts.append(rcTemp)
+
+			for expBWFile in expBW:
+				rcTemp = np.nanmean(expBWFile.values(chromo, start, end))
+				readCounts.append(rcTemp)
 
 		regionVar = np.nanvar(readCounts)
 
@@ -242,11 +283,6 @@ def defineRegion(region, globalVars):
 
 	if len(regions) == 0:
 		return None
-
-	for file in ctrlBW:
-		file.close()
-	for file in expBW:
-		file.close()
 
 	return regions
 
@@ -278,7 +314,7 @@ def restrictRegionLen(definedRegion, globalVars):
 	return definedRegionNew
 
 
-def doWindowApproach(regions, globalVars):
+def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 	warnings.simplefilter("ignore", category=RuntimeWarning)
 
 	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=globalVars["outputDir"], delete=False)
@@ -287,13 +323,20 @@ def doWindowApproach(regions, globalVars):
 
 	for regionChromo, regionStart, regionEnd, _regionGroupType, regionTheta in regions:
 		totalRC = []
-		for filename in globalVars["ctrlbwNames"]:
-			with pyBigWig.open(filename) as bwFile:
+		if pyBigWig.numpy == 1:
+			for bwFile in ctrlBW:
+				temp = bwFile.values(regionChromo, regionStart, regionEnd, numpy=True)
+				totalRC.append(temp)
+
+			for bwFile in expBW:
+				temp = bwFile.values(regionChromo, regionStart, regionEnd, numpy=True)
+				totalRC.append(temp)
+		else:
+			for bwFile in ctrlBW:
 				temp = bwFile.values(regionChromo, regionStart, regionEnd)
 				totalRC.append(temp)
 
-		for filename in globalVars["expbwNames"]:
-			with pyBigWig.open(filename) as bwFile:
+			for bwFile in expBW:
 				temp = bwFile.values(regionChromo, regionStart, regionEnd)
 				totalRC.append(temp)
 
@@ -556,14 +599,22 @@ def doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 				selectWindowVector[2] = pastEnd
 
 			ctrlRC = []
-			for ctrlBWFile in ctrlBWFiles:
-				ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
+			if pyBigWig.numpy == 1:
+				for ctrlBWFile in ctrlBWFiles:
+					ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2], numpy=True))
+			else:
+				for ctrlBWFile in ctrlBWFiles:
+					ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 			ctrlRC = np.array(ctrlRC)
 			ctrlRCPosMean = np.mean(ctrlRC, axis=0)
 
 			expRC = []
-			for expBWFile in expBWFiles:
-				expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
+			if pyBigWig.numpy == 1:
+				for expBWFile in expBWFiles:
+					expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2], numpy=True))
+			else:
+				for expBWFile in expBWFiles:
+					expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 			expRC = np.array(expRC)
 			expRCPosMean = np.mean(expRC, axis=0)
 
@@ -598,14 +649,22 @@ def doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 				selectWindowVector.append(np.min(pastQvalueSets))
 
 				ctrlRC = []
-				for ctrlBWFile in ctrlBWFiles:
-					ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
+				if pyBigWig.numpy == 1:
+					for ctrlBWFile in ctrlBWFiles:
+						ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2], numpy=True))
+				else:
+					for ctrlBWFile in ctrlBWFiles:
+						ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				ctrlRC = np.array(ctrlRC)
 				ctrlRCPosMean = np.mean(ctrlRC, axis=0)
 
 				expRC = []
-				for expBWFile in expBWFiles:
-					expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
+				if pyBigWig.numpy == 1:
+					for expBWFile in expBWFiles:
+						expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2], numpy=True))
+				else:
+					for expBWFile in expBWFiles:
+						expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				expRC = np.array(expRC)
 				expRCPosMean = np.mean(expRC, axis=0)
 
@@ -640,14 +699,22 @@ def doFDRprocedure(inputFilename, selectRegionIdx, globalVars):
 				selectWindowVector.append(np.min(pastQvalueSets))
 
 				ctrlRC = []
-				for ctrlBWFile in ctrlBWFiles:
-					ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
+				if pyBigWig.numpy == 1:
+					for ctrlBWFile in ctrlBWFiles:
+						ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2], numpy=True))
+				else:
+					for ctrlBWFile in ctrlBWFiles:
+						ctrlRC.append(ctrlBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				ctrlRC = np.array(ctrlRC)
 				ctrlRCPosMean = np.mean(ctrlRC, axis=0)
 
 				expRC = []
-				for expBWFile in expBWFiles:
-					expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
+				if pyBigWig.numpy == 1:
+					for expBWFile in expBWFiles:
+						expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2], numpy=True))
+				else:
+					for expBWFile in expBWFiles:
+						expRC.append(expBWFile.values(selectWindowVector[0], selectWindowVector[1], selectWindowVector[2]))
 				expRC = np.array(expRC)
 				expRCPosMean = np.mean(expRC, axis=0)
 
