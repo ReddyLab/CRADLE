@@ -320,6 +320,10 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 	subfile = tempfile.NamedTemporaryFile(mode="w+t", dir=globalVars["outputDir"], delete=False)
 	simesP = []
 	writtenRegionNum = 0
+	binSize2 = globalVars["binSize2"]
+	shiftSize2 = globalVars["shiftSize2"]
+	sbSize = binSize2 + shiftSize2
+	allZeros = globalVars["allZero"]
 
 	for regionChromo, regionStart, regionEnd, _regionGroupType, regionTheta in regions:
 		totalRC = []
@@ -347,67 +351,21 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 		windowPvalue = []
 		windowEnrich = []
 
-		while (binStartIdx + globalVars["binSize2"]) <= analysisEndIdx:
-			if (binStartIdx + globalVars["shiftSize2"] + globalVars["binSize2"]) > analysisEndIdx:
+		while (binStartIdx + binSize2) <= analysisEndIdx:
+			if (binStartIdx + sbSize) > analysisEndIdx:
 				binEndIdx = analysisEndIdx
 			else:
-				binEndIdx = binStartIdx + globalVars["binSize2"]
+				binEndIdx = binStartIdx + binSize2
 
-			readCounts = np.nanmean(totalRC[:,binStartIdx:binEndIdx], axis=1)
+			readCounts = np.nanmean(totalRC[:,binStartIdx:binEndIdx], axis=1).tolist()
 
-			if len(np.where(np.isnan(readCounts))[0]) > 0:
+			if len(np.where(np.isnan(readCounts))[0]) > 0 or readCounts == allZeros:
 				windowPvalue.append(np.nan)
 				windowEnrich.append(np.nan)
-				if (binEndIdx == analysisEndIdx) and (len(windowPvalue) != 0):
-					#### calculate a Simes' p value for the reigon
-					windowPvalue = np.array(windowPvalue)
-					windowPvalueWoNan = windowPvalue[np.isnan(windowPvalue) == False]
-					if len(windowPvalueWoNan) == 0:
-						break
-					rankPvalue = scipy.stats.rankdata(windowPvalueWoNan)
-					numWindow = len(windowPvalueWoNan)
-					pMerged = np.min((windowPvalueWoNan * numWindow) / rankPvalue)
-					simesP.append(pMerged)
-
-					regionInfo = [regionChromo, regionStart, regionEnd, regionTheta, pMerged]
-					subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
-					subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
-					subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
-					writtenRegionNum += 1
-
-				binStartIdx += globalVars["shiftSize2"]
-				continue
-
-			readCounts = readCounts.tolist()
-			if readCounts == globalVars["allZero"]:
-				windowPvalue.append(np.nan)
-				windowEnrich.append(np.nan)
-
-				if (binEndIdx == analysisEndIdx) and (len(windowPvalue) != 0):
-					#### calculate a Simes' p value for the reigon
-					windowPvalue = np.array(windowPvalue)
-					windowPvalueWoNan = windowPvalue[np.isnan(windowPvalue) == False]
-					if len(windowPvalueWoNan) == 0:
-						break
-					rankPvalue = scipy.stats.rankdata(windowPvalueWoNan)
-					numWindow = len(windowPvalueWoNan)
-					pMerged = np.min((windowPvalueWoNan * numWindow) / rankPvalue)
-					simesP.append(pMerged)
-
-					regionInfo = [regionChromo, regionStart, regionEnd, regionTheta, pMerged]
-					subfile.write('\t'.join([str(x) for x in regionInfo]) + "\t")
-					subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
-					subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
-					writtenRegionNum += 1
-
-				binStartIdx += globalVars["shiftSize2"]
-				continue
-
-			windowInfo = doStatTesting(readCounts, globalVars)
-			pvalue = float(windowInfo[1])
-			enrich = int(windowInfo[0])
-			windowPvalue.append(pvalue)
-			windowEnrich.append(enrich)
+			else:
+				enrich, pvalue = doStatTesting(readCounts, globalVars)
+				windowPvalue.append(pvalue)
+				windowEnrich.append(enrich)
 
 			if (binEndIdx == analysisEndIdx) and (len(windowPvalue) != 0):
 				#### calculate a Simes' p value for the reigon
@@ -426,7 +384,7 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 				subfile.write(','.join([str(x) for x in windowEnrich]) + "\n")
 				writtenRegionNum += 1
 
-			binStartIdx += globalVars["shiftSize2"]
+			binStartIdx += shiftSize2
 
 	subfile.close()
 
@@ -446,7 +404,7 @@ def doStatTesting(rc, globalVars):
 	expVar = np.nanvar(expRC)
 
 	if (ctrlVar == 0) and (expVar == 0):
-		statistics = float(np.nanmean(expRC) - np.nanmean(ctrlRC))
+		statistics = np.nanmean(expRC) - np.nanmean(ctrlRC)
 
 		pvalue = scipy.stats.norm.cdf(statistics, loc=0, scale=globalVars["nullStd"])
 
@@ -488,7 +446,7 @@ def doStatTesting(rc, globalVars):
 
 		pvalue = welchResult.pvalue
 
-	windowInfo = [enrich, pvalue]
+	windowInfo = enrich, pvalue
 
 	return windowInfo
 
