@@ -380,10 +380,9 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 				numWindow = len(windowPvalueWoNan)
 				pMerged = np.min((windowPvalueWoNan * numWindow) / rankPvalue)
 
-				regionInfo = f"{regionChromo}\t{strRegionStart}\t{strRegionEnd}\t{strRegionTheta}\t{pMerged}\t"
-				subfile.write(regionInfo)
-				subfile.write(','.join([str(x) for x in windowPvalue]) + "\t")
-				subfile.write(','.join(windowEnrich) + "\n")
+				subfile.write(f"{regionChromo}\t{strRegionStart}\t{strRegionEnd}\t{strRegionTheta}\t{pMerged}\t")
+				subfile.write(f"{','.join([str(x) for x in windowPvalue])}\t")
+				subfile.write(f"{','.join(windowEnrich)}\n")
 				writtenRegion = True
 
 			binStartIdx += shiftSize2
