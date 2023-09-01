@@ -206,9 +206,13 @@ def filterSmallPeaks(peakResult, globalVars):
 
 
 def run(args):
+	globalVars = vari.setGlobalVariables(args)
+	with multiprocessing.Pool(globalVars["numprocess"]) as pool:
+		_run(globalVars, pool)
+
+def _run(globalVars, pool):
 	###### INITIALIZE PARAMETERS
 	print("======  INITIALIZING PARAMETERS ...\n")
-	globalVars = vari.setGlobalVariables(args)
 
 	##### CALCULATE FILTER_CUTOFF
 	print("======  CALCULATING OVERALL VARIANCE FILTER CUTOFF ...")
@@ -222,8 +226,7 @@ def run(args):
 		if regionTotal > 300_000_000:
 			break
 
-	with multiprocessing.Pool(min(len(taskVari), globalVars["numprocess"])) as pool:
-		variancesAndCutoffs = pool.starmap(calculateRC.getVarianceAndRegionCutoff, taskVari)
+	variancesAndCutoffs = pool.starmap(calculateRC.getVarianceAndRegionCutoff, taskVari)
 
 	variances = []
 	diff = []
@@ -250,8 +253,7 @@ def run(args):
 	print("======  PERFORMING STATSTICAL TESTING FOR EACH REGION ...")
 	tasks = [(region, globalVars) for region in globalVars["region"]]
 
-	with multiprocessing.Pool(min(len(tasks), globalVars["numprocess"])) as pool:
-		resultTTestFiles = pool.starmap(calculateRC.statTest, tasks)
+	resultTTestFiles = pool.starmap(calculateRC.statTest, tasks)
 
 	resultTTestFiles = [file for file in resultTTestFiles if file is not None]
 
@@ -313,8 +315,7 @@ def run(args):
 		print(f"There is no peak detected in {globalVars['outputDir']}.")
 		return
 
-	with multiprocessing.Pool(min(len(taskCallPeak), globalVars["numprocess"])) as pool:
-		resultCallPeak = pool.starmap(calculateRC.doFDRprocedure, taskCallPeak)
+	resultCallPeak = pool.starmap(calculateRC.doFDRprocedure, taskCallPeak)
 
 	peakResult = []
 	for inputFilename in resultCallPeak:
