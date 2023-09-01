@@ -458,10 +458,13 @@ def selectTheta(resultTTestFiles, globalVars):
 	totalRegionNumArray = []
 	selectRegionNumArray = []
 
+	values = {}
+
 	for theta in globalVars["filterCutoffsThetas"]:
 		pValueSimes = []
 
 		for ttestFile in resultTTestFiles:
+			values[ttestFile] = []
 			with open(ttestFile) as ttestResults:
 				for region in ttestResults:
 					regionLine = region.split()
@@ -471,12 +474,14 @@ def selectTheta(resultTTestFiles, globalVars):
 					if np.isnan(regionPvalue):
 						continue
 
+					values[ttestFile].append((regionTheta, regionPvalue))
+
 					if regionTheta >= theta:
 						pValueSimes.append(regionPvalue)
 
 		totalRegionNum = len(pValueSimes)
-		pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=alpha, method='fdr_bh')
-		selectRegionNum = len(np.where(pValueGroupBh[0])[0])
+		pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=alpha, method='fdr_bh')[0]
+		selectRegionNum = len(np.where(pValueGroupBh)[0])
 
 		totalRegionNumArray.append(totalRegionNum)
 		selectRegionNumArray.append(selectRegionNum)
@@ -488,7 +493,7 @@ def selectTheta(resultTTestFiles, globalVars):
 
 	adjFDR = ( globalVars["fdr"] * selectRegionNumArray[idx] ) / totalRegionNumArray[idx]
 
-	return globalVars["filterCutoffsThetas"][idx], adjFDR, selectRegionNumArray[idx], totalRegionNumArray[idx]
+	return globalVars["filterCutoffsThetas"][idx], adjFDR, selectRegionNumArray[idx], totalRegionNumArray[idx], values
 
 
 def doFDRprocedure(inputFilename, selectRegionIdx, globalVars):

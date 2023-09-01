@@ -258,15 +258,16 @@ def run(args):
 	##### CHOOSING THETA
 	resultTheta = calculateRC.selectTheta(resultTTestFiles, globalVars)
 
-	globalVars["theta"] = resultTheta[0]
+	theta = resultTheta[0]
 	globalVars["adjFDR"] = resultTheta[1]
 	selectRegionNum = resultTheta[2]
 	totalRegionNum = resultTheta[3]
+	thetaPvalues = resultTheta[4]
 
 
 	##### FDR control
 	print("======  CALLING PEAKS ...")
-	print(f"Selected Variance Theta: {globalVars['theta']}")
+	print(f"Selected Variance Theta: {theta}")
 	print(f"Total number of regions: {totalRegionNum}")
 	print(f"The number of selected regions: {selectRegionNum}")
 	print(f"Newly adjusted cutoff: {globalVars['adjFDR']}")
@@ -276,18 +277,10 @@ def run(args):
 	pValueSimes = []
 
 	### Apply the selected thata to the data
-	for inputFile in resultTTestFiles:
-		with open(inputFile) as statStream:
-			for region in statStream:
-				line = region.split()
-				regionTheta = int(line[3])
-				regionPvalue = float(line[4])
-
-				if np.isnan(regionPvalue):
-					continue
-
-				if regionTheta >= globalVars["theta"]:
-					pValueSimes.append(regionPvalue)
+	for thetaPvalueList in thetaPvalues.values():
+		for regionTheta, regionPvalue in thetaPvalueList:
+			if regionTheta >= theta:
+				pValueSimes.append(regionPvalue)
 
 	pValueGroupBh = statsmodels.sandbox.stats.multicomp.multipletests(pValueSimes, alpha=globalVars["fdr"], method='fdr_bh')[0]
 
@@ -296,30 +289,24 @@ def run(args):
 	taskCallPeak = []
 
 	groupPvalueIdx = 0
-	for inputFile in resultTTestFiles:
-		with open(inputFile) as statStream:
-			selectRegionIdx = []
-			selectedIdx = 0
+	for inputFile in thetaPvalues:
+		selectRegionIdx = []
+		selectedIdx = 0
 
-			for regionIdx, region in enumerate(statStream):
-				line = region.split()
-				regionTheta = int(line[3])
-				regionPvalue = float(line[4])
+		for regionIdx, (regionTheta, regionPvalue) in enumerate(thetaPvalues[inputFile]):
+			if regionTheta < theta:
+				continue
 
-				if regionTheta < globalVars["theta"]:
-					continue
-				if np.isnan(regionPvalue):
-					continue
-				if pValueGroupBh[groupPvalueIdx + selectedIdx]:
-					selectRegionIdx.append(regionIdx)
-				selectedIdx += 1
+			if pValueGroupBh[groupPvalueIdx + selectedIdx]:
+				selectRegionIdx.append(regionIdx)
+			selectedIdx += 1
 
-			groupPvalueIdx += selectedIdx
+		groupPvalueIdx += selectedIdx
 
-			if len(selectRegionIdx) != 0:
-				taskCallPeak.append((inputFile, selectRegionIdx, globalVars))
-			else:
-				os.remove(inputFile)
+		if len(selectRegionIdx) != 0:
+			taskCallPeak.append((inputFile, selectRegionIdx, globalVars))
+		else:
+			os.remove(inputFile)
 
 	if len(taskCallPeak) == 0:
 		print("======= COMPLETED! ===========")
