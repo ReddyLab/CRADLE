@@ -337,6 +337,7 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 			for bwFile in expBW:
 				temp = bwFile.values(regionChromo, regionStart, regionEnd, numpy=True)
 				totalRC.append(temp)
+			totalRC = np.stack(totalRC)
 		else:
 			for bwFile in ctrlBW:
 				temp = bwFile.values(regionChromo, regionStart, regionEnd)
@@ -345,8 +346,8 @@ def doWindowApproach(regions, globalVars, ctrlBW, expBW):
 			for bwFile in expBW:
 				temp = bwFile.values(regionChromo, regionStart, regionEnd)
 				totalRC.append(temp)
+			totalRC = np.array(totalRC)
 
-		totalRC = np.array(totalRC)
 		binStartIdx = 0
 		analysisEndIdx = regionEnd - regionStart
 
