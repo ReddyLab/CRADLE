@@ -3,6 +3,9 @@
 ## Unreleased
 
 - Major speed improvements (80% reduction) to covariate calculation when pcr is one of the bias types
+- Brought covariate calculation code more in line with idiomatic python, making it easier to maintiain
+- Minor speed improvements to peak calling
+- Brought peak calling code more in line with idiomatic python, making it easier to maintain
 
 ## [0.29.0]
 
