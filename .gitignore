@@ -15,4 +15,5 @@ CRADLE.egg-info
 test_cradle*
 test_output/**
 
-
+# Ignore profiling
+sciagraph-result
