@@ -219,7 +219,7 @@ def _run(globalVars, pool):
 	regionTotal = 0
 	taskVari = []
 	for region in globalVars["region"]:
-		regionSize = region[2] - region[1]
+		regionSize = region["end"] - region["start"]
 		regionTotal += regionSize
 		taskVari.append((region, globalVars))
 

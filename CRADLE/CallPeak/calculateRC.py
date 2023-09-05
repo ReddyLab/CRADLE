@@ -11,9 +11,9 @@ def getVarianceAndRegionCutoff(region, globalVars):
 	warnings.filterwarnings('ignore', r'Mean of empty slice')
 	warnings.filterwarnings('ignore', r'Degrees of freedom <= 0 for slice')
 
-	regionChromo = region[0]
-	regionStart = region[1]
-	regionEnd = region[2]
+	regionChromo = region["chromo"]
+	regionStart = region["start"]
+	regionEnd = region["end"]
 
 	numBin = max(1, int((regionEnd - regionStart) / globalVars["binSize1"]))
 
@@ -85,9 +85,9 @@ def defineRegion(region, globalVars, ctrlBW, expBW):
 
 	binSize = globalVars["binSize1"]
 
-	analysisChromo = region[0]
-	analysisStart = region[1]
-	analysisEnd = region[2]
+	analysisChromo = region["chromo"]
+	analysisStart = region["start"]
+	analysisEnd = region["end"]
 
 	#### Number of bins
 	binNum = (analysisEnd - analysisStart) // binSize
@@ -169,7 +169,6 @@ def defineRegion(region, globalVars, ctrlBW, expBW):
 			sampleRC2.append(temp)
 
 	expMean = np.nanmean( np.array(sampleRC2), axis=0)
-	del sampleRC2
 
 	#### diff
 	diff = np.array(expMean - ctrlMean, dtype=np.float64)
@@ -180,7 +179,7 @@ def defineRegion(region, globalVars, ctrlBW, expBW):
 	definedRegion = []
 
 	if lastBinExist:
-		binNum = binNum + 1
+		binNum += 1
 
 	while idx < binNum:
 		if np.isnan(diff[idx]):
@@ -189,8 +188,8 @@ def defineRegion(region, globalVars, ctrlBW, expBW):
 				continue
 
 			definedRegion.append(regionVector)
-			numRegion = numRegion + 1
-			idx = idx + 1
+			numRegion += 1
+			idx += 1
 			pastGroupType = -2
 			continue
 

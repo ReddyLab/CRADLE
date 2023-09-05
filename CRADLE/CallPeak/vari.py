@@ -252,7 +252,7 @@ def setAnlaysisRegion(regionsFile, blacklistFile):
 		regionFinal.append((chromo, start, min(end, chromoLen)))
 	bigWig.close()
 
-	REGION = regionFinal
+	REGION = np.array(regionFinal, dtype=REGION_DTYPE)
 
 
 def setFilterCriteria(fdr):
