@@ -12,30 +12,39 @@ def setGlobalVariables(args):
 	### input bigwig files
 	setBiasFiles(args)
 	FRAGLEN = args.l
-	return {
+	globalVars = {
 		"fragLen": FRAGLEN,
 		"binSize": 1,
-		"shear": SHEAR,
-		"pcr": PCR,
-		"kmer": KMER,
-		"map": MAP,
-		"mapFile": MAPFILE,
-		"gquad": GQUAD,
-		"gquadFile": GQUADFILE,
-		"gquadMax": GQUAD_MAX,
 		"covariNum": COVARI_NUM,
 		"genome": GENOME,
 		"covariOrder": COVARI_ORDER,
-		"n_mgw": N_MGW,
-		"n_prot": N_PROT,
-		"gibbs": GIBBS,
-		"entropy": ENTROPY,
-		"min_tm": MIN_TM,
-		"max_tm": MAX_TM,
-		"para1": PARA1,
-		"para2": PARA2,
-		"n_gibbs": N_GIBBS
+		"shear": SHEAR,
+		"pcr": PCR,
+		"map": MAP,
+		"gquad": GQUAD,
 	}
+
+	if SHEAR:
+		globalVars["n_mgw"] = N_MGW
+		globalVars["n_prot"] = N_PROT
+
+	if PCR:
+		globalVars["n_gibbs"] = N_GIBBS
+		globalVars["entropy"] = ENTROPY
+		globalVars["min_tm"] = MIN_TM
+		globalVars["max_tm"] = MAX_TM
+		globalVars["para1"] = PARA1
+		globalVars["para2"] = PARA2
+
+	if MAP:
+		globalVars["mapFile"] = MAPFILE
+		globalVars["kmer"] = KMER
+
+	if GQUAD:
+		globalVars["gquadFile"] = GQUADFILE
+		globalVars["gquadMax"] = GQUAD_MAX
+
+	return globalVars
 
 
 def setBiasFiles(args):

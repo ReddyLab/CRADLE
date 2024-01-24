@@ -101,11 +101,11 @@ cdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, m
 	cdef int map = globalVars["map"]
 	cdef int gquad = globalVars["gquad"]
 	cdef int covariNum = globalVars["covariNum"]
-	cdef double n_mgw = globalVars["n_mgw"]
-	cdef double n_prot = globalVars["n_prot"]
-	cdef int kmer = globalVars["kmer"]
 
-	cdef int n_gibbs = globalVars["n_gibbs"]
+	cdef double n_mgw
+	cdef double n_prot
+	cdef int kmer
+	cdef int n_gibbs
 	cdef double gibbs = 0
 	cdef double subtract = -1
 	cdef double startGibbs = 0
@@ -117,6 +117,8 @@ cdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, m
 	covariIdxPtr = 0
 
 	if shear == 1:
+		n_mgw = globalVars["n_mgw"]
+		n_prot = globalVars["n_prot"]
 		###  mer1
 		mer1 = sequence[(idx-2):(idx+3)]
 		if b'N' in mer1:
@@ -149,6 +151,7 @@ cdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, m
 	covariIdxPtr += 2
 
 	if pcr == 1:
+		n_gibbs = globalVars["n_gibbs"]
 		if pastStartGibbs == -1:
 			# This huge unweildy nonsense replaces a call to cu.findStartGibbs.
 			# findStartGibbs was a huge bottleneck to speed so this code inlines
@@ -250,7 +253,7 @@ cdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, m
 			sequenceIdx = sequence[idx:idx + fragLen]
 			oldDimer = sequenceIdx[0:2]
 			newDimer = sequenceIdx[(fragLen-2):fragLen]
-			startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs, globalVars["n_gibbs"])
+			startGibbs, gibbs = cu.editStartGibbs(oldDimer, newDimer, pastStartGibbs, n_gibbs)
 
 		annealIdx, denatureIdx = cu.convertGibbs(gibbs, globalVars["entropy"], globalVars["fragLen"], globalVars["min_tm"], globalVars["max_tm"], globalVars["para1"], globalVars["para2"])
 
@@ -259,6 +262,7 @@ cdef fragCovariates(int idx, pastMer1, pastMer2, int pastStartGibbs, sequence, m
 	covariIdxPtr += 2
 
 	if map == 1:
+		kmer = globalVars["kmer"]
 		map1 = mapValues[(idx-2)]
 		map2 = mapValues[(idx+fragLen-2-kmer)]
 		mapIdx = map1 + map2
@@ -399,18 +403,25 @@ cpdef calculateTaskCovariates(regions, globalVars):
 	cdef int map = globalVars["map"]
 	cdef int gquad = globalVars["gquad"]
 	cdef int covariNum = globalVars["covariNum"]
-	cdef double gquadMax = globalVars["gquadMax"]
+	cdef double[:] mapValueView = np.array([])
+	cdef double gquadMax
+	cdef double[:] gquadValueView = np.array([])
 
 	outputDir = globalVars["outputDir"]
-
 	genome = py2bit.open(globalVars["genome"])
-	mapFile = pyBigWig.open(globalVars["mapFile"])
-	gquadFiles = [0] * len(globalVars["gquadFile"])
-	for i, file in enumerate(globalVars["gquadFile"]):
-		gquadFiles[i] = pyBigWig.open(file)
 
 	outputRegions = []
 	chromoEnds = {}
+
+	if map == 1:
+		mapFile = pyBigWig.open(globalVars["mapFile"])
+
+	if gquad == 1:
+		gquadMax = globalVars["gquadMax"]
+		gquadFiles = [0] * len(globalVars["gquadFile"])
+		for i, file in enumerate(globalVars["gquadFile"]):
+			gquadFiles[i] = pyBigWig.open(file)
+
 	##### CALCULATE COVARIATE VALUES
 	for chromo, analysisStart, analysisEnd in regions:
 		chromoEnd = chromoEnds.get(chromo, -1)
@@ -466,9 +477,13 @@ cpdef calculateTaskCovariates(regions, globalVars):
 
 		outputRegions.append((chromo, analysisStart, analysisEnd))
 
-	for file in gquadFiles:
-		file.close()
-	mapFile.close()
+	if map == 1:
+		mapFile.close()
+
+	if gquad == 1:
+		for file in gquadFiles:
+			file.close()
+
 	genome.close()
 
 	return outputRegions
