@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+## [0.30.0]
+
+### Fixed
+
+- CalculateCovariates didn't work if any bias types were left out
+
+### Changed
 - Major speed improvements (80% reduction) to covariate calculation when pcr is one of the bias types
 - Brought covariate calculation code more in line with idiomatic python, making it easier to maintiain
 - Minor speed improvements to peak calling
