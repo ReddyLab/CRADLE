@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## [0.30.1]
+
+### Fixed
+
+- CallPeak bug when calcuating analysis regions using a blacklist
+
 ## [0.30.0]
 
 ### Fixed
