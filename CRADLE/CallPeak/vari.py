@@ -147,67 +147,67 @@ def setAnlaysisRegion(regionsFile, blacklistFile):
 		REGION = regionMerged
 
 	if blacklistFile is not None:  ### REMOVE BLACKLIST REGIONS FROM 'REGION'
-		blRegionTemp = []
+		blRegionsTemp = []
 		with open(blacklistFile) as blacklistRegions:
 			for blacklistRegion in blacklistRegions:
 				temp = blacklistRegion.split()
-				blRegionTemp.append((temp[0], int(temp[1]), int(temp[2])))
+				blRegionsTemp.append((temp[0], int(temp[1]), int(temp[2])))
 
 		## merge overlapping blacklist regions
-		if len(blRegionTemp) == 1:
-			blRegion = blRegionTemp
+		if len(blRegionsTemp) == 1:
+			blRegions = blRegionsTemp
 		else:
-			blRegionTemp = np.array(blRegionTemp, dtype=REGION_DTYPE)
-			blRegionTemp = blRegionTemp[np.lexsort((blRegionTemp[:]["start"], blRegionTemp[:]["chromo"]))]
+			blRegionsTemp = np.array(blRegionsTemp, dtype=REGION_DTYPE)
+			blRegionsTemp = blRegionsTemp[np.lexsort((blRegionsTemp[:]["start"], blRegionsTemp[:]["chromo"]))]
 
-			blRegion = []
-			pastChromo, pastStart, pastEnd = blRegionTemp[0]
+			blRegions = []
+			pastChromo, pastStart, pastEnd = blRegionsTemp[0]
 
-			blRegion.append((pastChromo, pastStart, pastEnd))
+			blRegions.append((pastChromo, pastStart, pastEnd))
 			resultIdx = 0
 
-			for currChromo, currStart, currEnd in blRegionTemp[1:]:
+			for currChromo, currStart, currEnd in blRegionsTemp[1:]:
 				if (currChromo == pastChromo) and (pastStart <= currStart <= pastEnd):
-					blRegion[resultIdx] = (blRegion[resultIdx][0], blRegion[resultIdx][1], currEnd)
+					blRegions[resultIdx] = (blRegions[resultIdx][0], blRegions[resultIdx][1], currEnd)
 				else:
-					blRegion.append((currChromo, currStart, currEnd))
+					blRegions.append((currChromo, currStart, currEnd))
 					resultIdx += 1
 
 				pastChromo = currChromo
 				pastStart = currStart
 				pastEnd = currEnd
-		blRegion = np.array(blRegion, dtype=REGION_DTYPE)
+		blRegions = np.array(blRegions, dtype=REGION_DTYPE)
 
 		regionWoBL = []
 		for regionChromo, regionStart, regionEnd in REGION:
 			overlappedBL = []
 			## overlap Case 1 : A blacklist region completely covers the region.
 			idx = np.where(
-				(blRegion[:]["chromo"] == regionChromo) &
-				(blRegion[:]["start"] <= regionStart) &
-				(blRegion[:]["end"] >= regionEnd)
+				(blRegions[:]["chromo"] == regionChromo) &
+				(blRegions[:]["start"] <= regionStart) &
+				(blRegions[:]["end"] >= regionEnd)
 				)[0]
 			if len(idx) > 0:
 				continue
 
 			## overlap Case 2
 			idx = np.where(
-				(blRegion[:]["chromo"] == regionChromo) &
-				(blRegion[:]["end"] > regionStart) &
-				(blRegion[:]["end"] <= regionEnd)
+				(blRegions[:]["chromo"] == regionChromo) &
+				(blRegions[:]["end"] > regionStart) &
+				(blRegions[:]["end"] <= regionEnd)
 				)[0]
 			if len(idx) > 0:
-				overlappedBL.extend( blRegion[idx].tolist() )
+				overlappedBL.extend(blRegions[idx].tolist() )
 
 			## overlap Case 3
 			idx = np.where(
-				(blRegion[:]["chromo"] == regionChromo) &
-				(blRegion[:]["start"] >= regionStart) &
-				(blRegion[:]["start"] < regionEnd)
+				(blRegions[:]["chromo"] == regionChromo) &
+				(blRegions[:]["start"] >= regionStart) &
+				(blRegions[:]["start"] < regionEnd)
 				)[0]
 
 			if len(idx) > 0:
-				overlappedBL.extend( blRegion[idx].tolist() )
+				overlappedBL.extend(blRegions[idx].tolist() )
 
 			if len(overlappedBL) == 0:
 				regionWoBL.append((regionChromo, regionStart, regionEnd))
