@@ -219,9 +219,9 @@ def setAnlaysisRegion(regionsFile, blacklistFile):
 			overlappedBL = overlappedBL[overlappedBL[:]["start"].argsort()]
 
 			currStart = regionStart
-			for pos in overlappedBL:
-				blStart = pos["start"]
-				blEnd = pos["end"]
+			for pos, blRegion in enumerate(overlappedBL):
+				blStart = blRegion["start"]
+				blEnd = blRegion["end"]
 
 				if blStart <= regionStart:
 					currStart = blEnd
