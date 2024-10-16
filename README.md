@@ -181,7 +181,7 @@ cradle callPeak -ctrlbw ctrl1_corrected.bw ctrl2_corrected.bw ctrl3_corrected.bw
 
 * Optional Arguments
   -  -o <br />
-     Output directory. All corrected bigwig files will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_peak_result.
+     Output directory. All peak calls will be stored here. If the directory doesn't exist, cradle will make the directory. default=CRADLE_peak_result.
   -  -bl <br />
      Text file that shows regions you want to filter out. Each line in the text file should have chromosome, start site, and end site that are tab-spaced. ex) chr1\t1\t100
   -  -rbin <br />
@@ -291,12 +291,12 @@ chr10	68898131	68898381	chr10:68898131-68898381	.	.	-7828	21206	13377	5.41	4.51	
 .
 .
 ```
-* The 1st-3rd columns(chr, start, end): genomic coordiantes
-* The 4th,5th colum (score, strand): not applicable in CRADLE
-* The 6th colum (effectSize):  effect size calculated by subtracting the mean of experimental read counts from the mean of control read counts.
-* The 7th colum (inputCount):  the mean of control read counts.
-* The 8th colum (outputCount):  the mean of experimental read counts.
-* The 9-10th colum (-log(pvalue), -log(qvalue)):  -log10 of p value and q value. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values.
+* The 1st-3rd columns (chr, start, end): genomic coordiantes
+* The 4th,5th column (score, strand): not applicable in CRADLE
+* The 6th column (effectSize):  effect size calculated by subtracting the mean of experimental read counts from the mean of control read counts.
+* The 7th column (inputCount):  the mean of control read counts.
+* The 8th column (outputCount):  the mean of experimental read counts.
+* The 9-10th columns (-log(pvalue), -log(qvalue)):  -log10 of p value and q value. If a p value is zero, we used the maximum of -log(pvalue) values out of the total peaks. The same applies for q values.
 * The 11th column: Cohen's D, standarized effect size. This column will have 'nan' values in the case where there is only one replicate in either -ctrlbw or -expbw.
 * The 12th column: peusdo log2 fold change. This value is calculated by adding an constant to `inputCount` and `outputCount` to make the resulting values positive. The constant is determined by taking the max(normalizedInputCount-inputCount, normalizedOutputCount-outputCount). Here, normalizedInputCount and normalizedOutputCount are calculated by using normalized observed control bigwigs and experimental bigwigs—those bigwigs are from optional arguments called -normCtrlbw and -normExpbw, respectively.
 
